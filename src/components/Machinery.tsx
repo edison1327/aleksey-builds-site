@@ -1,6 +1,7 @@
 import { Settings } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const machinery = [
   {
@@ -21,6 +22,9 @@ const machinery = [
 ];
 
 const Machinery = () => {
+  const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
+  const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
+
   const scrollToContact = () => {
     const element = document.getElementById("contact");
     element?.scrollIntoView({ behavior: "smooth" });
@@ -29,7 +33,10 @@ const Machinery = () => {
   return (
     <section id="machinery" className="py-24 bg-secondary text-secondary-foreground">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 opacity-0 ${titleVisible ? "animate-fade-in" : ""}`}
+        >
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="bg-primary/20 w-12 h-12 rounded-xl flex items-center justify-center">
               <Settings className="h-6 w-6 text-primary" />
@@ -43,9 +50,15 @@ const Machinery = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {machinery.map((item, index) => (
-            <Card key={index} className="group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2">
+            <Card 
+              key={index} 
+              className={`group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2 opacity-0 ${
+                cardsVisible ? "animate-fade-in-up" : ""
+              }`}
+              style={{ animationDelay: `${index * 0.15}s` }}
+            >
               <CardContent className="p-6">
                 <h3 className="text-xl font-heading font-bold mb-3">{item.title}</h3>
                 <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{item.description}</p>
@@ -55,7 +68,7 @@ const Machinery = () => {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className={`text-center mt-12 opacity-0 ${cardsVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
           <Button
             size="lg"
             onClick={scrollToContact}

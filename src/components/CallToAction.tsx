@@ -1,14 +1,17 @@
 import { Button } from "./ui/button";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const CallToAction = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   const scrollToContact = () => {
     const element = document.getElementById("contact");
     element?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section className="py-24 bg-primary">
-      <div className="container mx-auto px-4 text-center">
+    <section ref={ref} className="py-24 bg-primary">
+      <div className={`container mx-auto px-4 text-center opacity-0 ${isVisible ? "animate-scale-in" : ""}`}>
         <h2 className="text-3xl md:text-4xl font-heading font-bold text-primary-foreground mb-4 tracking-wide">
           ¿LISTO PARA COMENZAR SU PROYECTO?
         </h2>
