@@ -4,72 +4,62 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("INICIO");
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
     { id: "home", label: "INICIO", icon: Home, path: "/" },
     { id: "construccion", label: "CONSTRUCCIÓN", icon: Building2, path: "/construccion" },
-    { id: "services", label: "INGENIERÍA", icon: Wrench, path: "/#services" },
-    { id: "vehicles", label: "VEHÍCULOS", icon: Truck, path: "/#vehicles" },
-    { id: "machinery", label: "MAQUINARIA", icon: Settings, path: "/#machinery" },
+    { id: "ingenieria", label: "INGENIERÍA", icon: Wrench, path: "/ingenieria" },
+    { id: "vehiculos", label: "VEHÍCULOS", icon: Truck, path: "/vehiculos" },
+    { id: "maquinaria", label: "MAQUINARIA", icon: Settings, path: "/maquinaria" },
     { id: "contact", label: "CONTACTO", icon: Phone, path: "/#contact" },
   ];
 
   const handleNavClick = (item: typeof navItems[0]) => {
     setIsOpen(false);
     
-    if (item.path === "/construccion") {
-      navigate("/construccion");
-      setActiveSection("construccion");
+    // Direct page navigation
+    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria"].includes(item.path)) {
+      navigate(item.path);
+      setActiveSection(item.label);
       return;
     }
 
+    // Home page navigation
+    if (item.path === "/") {
+      navigate("/");
+      setActiveSection("INICIO");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    // Section navigation (contact)
     if (location.pathname !== "/") {
       navigate(item.path);
       return;
     }
 
-    const sectionId = item.id === "home" ? "home" : item.id;
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(item.id);
     element?.scrollIntoView({ behavior: "smooth" });
     setActiveSection(item.label);
   };
 
-  // Track active section on scroll (only on home page)
+  // Set active based on current route
   useEffect(() => {
-    if (location.pathname !== "/") {
-      if (location.pathname === "/construccion") {
-        setActiveSection("CONSTRUCCIÓN");
-      }
-      return;
-    }
-
-    const handleScroll = () => {
-      const sections = ["home", "services", "vehicles", "machinery", "contact"];
-      const scrollPosition = window.scrollY + 100;
-
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const offsetHeight = element.offsetHeight;
-
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            const item = navItems.find(nav => nav.id === sectionId);
-            if (item && activeSection !== item.label) {
-              setActiveSection(item.label);
-            }
-            break;
-          }
-        }
-      }
+    const routeMap: Record<string, string> = {
+      "/": "INICIO",
+      "/construccion": "CONSTRUCCIÓN",
+      "/ingenieria": "INGENIERÍA",
+      "/vehiculos": "VEHÍCULOS",
+      "/maquinaria": "MAQUINARIA",
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeSection, location.pathname]);
+    
+    if (routeMap[location.pathname]) {
+      setActiveSection(routeMap[location.pathname]);
+    }
+  }, [location.pathname]);
 
   return (
     <nav className="fixed top-0 w-full bg-secondary z-50">
@@ -78,7 +68,10 @@ const Navbar = () => {
           {/* Logo */}
           <div 
             className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4 cursor-pointer"
-            onClick={() => navigate("/")}
+            onClick={() => {
+              navigate("/");
+              setActiveSection("INICIO");
+            }}
           >
             <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-primary-foreground" />
             <span className="text-xl font-heading font-bold text-primary-foreground tracking-wider">ALEKSEY</span>

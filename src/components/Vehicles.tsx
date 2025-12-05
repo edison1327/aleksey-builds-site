@@ -2,6 +2,7 @@ import { Truck } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Link } from "react-router-dom";
 
 import fordTransit from "@/assets/ford-transit.jpg";
 import ram2500 from "@/assets/ram-2500.jpg";
@@ -28,11 +29,6 @@ const vehicles = [
 const Vehicles = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
-
-  const scrollToContact = () => {
-    const element = document.getElementById("contact");
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section id="vehicles" className="py-24 bg-background">
@@ -79,13 +75,14 @@ const Vehicles = () => {
         </div>
 
         <div className={`text-center mt-12 opacity-0 ${cardsVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
-          <Button
-            size="lg"
-            onClick={scrollToContact}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8"
-          >
-            SOLICITAR COTIZACIÓN
-          </Button>
+          <Link to="/vehiculos">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8"
+            >
+              VER MÁS VEHÍCULOS
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

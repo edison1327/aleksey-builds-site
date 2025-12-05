@@ -138,6 +138,13 @@ const Services = () => {
               </Card>
             ))}
           </div>
+          <div className={`text-center mt-8 opacity-0 ${ingenieriaVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
+            <Link to="/ingenieria">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8">
+                VER MÁS INGENIERÍA
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>
