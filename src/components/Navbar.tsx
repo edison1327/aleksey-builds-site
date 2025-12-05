@@ -138,18 +138,10 @@ const Navbar = () => {
             {/* INICIO */}
             <button
               onClick={() => handleNavClick("/", "INICIO")}
-              className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
-                activeSection === "INICIO"
-                  ? "text-primary-foreground" 
-                  : "text-secondary-foreground/80 hover:text-primary-foreground"
-              }`}
+              className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
             >
               <span 
-                className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
-                  activeSection === "INICIO" 
-                    ? "opacity-100 scale-100" 
-                    : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
-                }`}
+                className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 style={{ zIndex: -1 }}
               />
               <Home className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
@@ -159,18 +151,10 @@ const Navbar = () => {
             {/* SOBRE NOSOTROS */}
             <button
               onClick={() => handleNavClick("/nosotros", "SOBRE NOSOTROS")}
-              className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
-                activeSection === "SOBRE NOSOTROS"
-                  ? "text-primary-foreground" 
-                  : "text-secondary-foreground/80 hover:text-primary-foreground"
-              }`}
+              className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
             >
               <span 
-                className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
-                  activeSection === "SOBRE NOSOTROS" 
-                    ? "opacity-100 scale-100" 
-                    : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
-                }`}
+                className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 style={{ zIndex: -1 }}
               />
               <Users className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
@@ -181,18 +165,10 @@ const Navbar = () => {
             <div ref={servicesRef} className="relative">
               <button
                 onClick={() => setIsServicesOpen(!isServicesOpen)}
-                className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
-                  isServiceActive
-                    ? "text-primary-foreground" 
-                    : "text-secondary-foreground/80 hover:text-primary-foreground"
-                }`}
+                className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
               >
                 <span 
-                  className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
-                    isServiceActive 
-                      ? "opacity-100 scale-100" 
-                      : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
-                  }`}
+                  className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                   style={{ zIndex: -1 }}
                 />
                 <Wrench className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
@@ -207,11 +183,7 @@ const Navbar = () => {
                     <button
                       key={item.id}
                       onClick={() => handleNavClick(item.path, item.label)}
-                      className={`flex items-center gap-3 w-full px-4 py-3 text-sm font-heading tracking-wide transition-all duration-300 ${
-                        activeSection === item.label
-                          ? "bg-primary text-primary-foreground"
-                          : "text-secondary-foreground/80 hover:bg-primary/20 hover:text-primary-foreground"
-                      }`}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:bg-primary hover:text-primary-foreground"
                     >
                       <item.icon className="h-4 w-4" />
                       <span>{item.label}</span>
@@ -224,18 +196,10 @@ const Navbar = () => {
             {/* PROYECTOS */}
             <button
               onClick={() => handleNavClick("/proyectos", "PROYECTOS")}
-              className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
-                activeSection === "PROYECTOS"
-                  ? "text-primary-foreground" 
-                  : "text-secondary-foreground/80 hover:text-primary-foreground"
-              }`}
+              className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
             >
               <span 
-                className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
-                  activeSection === "PROYECTOS" 
-                    ? "opacity-100 scale-100" 
-                    : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
-                }`}
+                className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 style={{ zIndex: -1 }}
               />
               <FolderKanban className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
@@ -245,18 +209,10 @@ const Navbar = () => {
             {/* CONTACTO */}
             <button
               onClick={() => handleNavClick("/#contact", "CONTACTO")}
-              className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
-                activeSection === "CONTACTO"
-                  ? "text-primary-foreground" 
-                  : "text-secondary-foreground/80 hover:text-primary-foreground"
-              }`}
+              className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
             >
               <span 
-                className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
-                  activeSection === "CONTACTO" 
-                    ? "opacity-100 scale-100" 
-                    : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
-                }`}
+                className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 style={{ zIndex: -1 }}
               />
               <Phone className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
