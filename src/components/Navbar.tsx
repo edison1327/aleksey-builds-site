@@ -172,7 +172,7 @@ const Navbar = () => {
                   style={{ zIndex: -1 }}
                 />
                 <Wrench className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                <span className="relative z-10">SERVICIOS</span>
+                <span className="relative z-10">NUESTROS SERVICIOS</span>
                 <ChevronDown className={`h-4 w-4 relative z-10 transition-transform duration-300 ${isServicesOpen ? "rotate-180" : ""}`} />
               </button>
 
@@ -270,7 +270,7 @@ const Navbar = () => {
               >
                 <div className="flex items-center gap-3">
                   <Wrench className="h-5 w-5" />
-                  <span className="font-heading tracking-wide">SERVICIOS</span>
+                  <span className="font-heading tracking-wide">NUESTROS SERVICIOS</span>
                 </div>
                 <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${isMobileServicesOpen ? "rotate-180" : ""}`} />
               </button>
