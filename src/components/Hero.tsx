@@ -1,6 +1,7 @@
 import { Building2, Wrench, Truck, Settings, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { useParallax } from "@/hooks/useParallax";
+import { useCountUp } from "@/hooks/useCountUp";
 import heroImage from "@/assets/hero-construction.jpg";
 
 // Video de construcción de Pexels (libre de derechos)
@@ -15,6 +16,11 @@ const services = [
 
 const Hero = () => {
   const parallaxOffset = useParallax(0.1);
+  
+  // Animated counters
+  const projectsCount = useCountUp({ end: 150, duration: 2000, delay: 800, suffix: "+" });
+  const yearsCount = useCountUp({ end: 10, duration: 1500, delay: 1000, suffix: "+" });
+  const clientsCount = useCountUp({ end: 98, duration: 2000, delay: 1200, suffix: "%" });
 
   const scrollToContact = () => {
     const element = document.getElementById("contact");
@@ -143,16 +149,16 @@ const Hero = () => {
             <div 
               className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-secondary-foreground/10 animate-stagger-6"
             >
-              <div>
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">150+</div>
+              <div ref={projectsCount.ref}>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">{projectsCount.display}</div>
                 <div className="text-sm text-secondary-foreground/70 mt-1">Proyectos Completados</div>
               </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">10+</div>
+              <div ref={yearsCount.ref}>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">{yearsCount.display}</div>
                 <div className="text-sm text-secondary-foreground/70 mt-1">Años de Experiencia</div>
               </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">98%</div>
+              <div ref={clientsCount.ref}>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">{clientsCount.display}</div>
                 <div className="text-sm text-secondary-foreground/70 mt-1">Clientes Satisfechos</div>
               </div>
             </div>
