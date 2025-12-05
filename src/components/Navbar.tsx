@@ -23,7 +23,8 @@ const Navbar = () => {
     setIsOpen(false);
     setIsServicesOpen(false);
     
-    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria"].includes(path)) {
+    // Direct page navigation for services
+    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria", "/nosotros", "/proyectos"].includes(path)) {
       navigate(path);
       setActiveSection(label);
       return;
@@ -39,6 +40,7 @@ const Navbar = () => {
       return;
     }
 
+    // Section scroll on home page
     if (path === "/#contact" || path === "/#about" || path === "/#projects") {
       const sectionMap: Record<string, string> = {
         "/#contact": "contact",
@@ -75,6 +77,8 @@ const Navbar = () => {
         "/ingenieria": "INGENIERÍA",
         "/vehiculos": "VEHÍCULOS",
         "/maquinaria": "MAQUINARIA",
+        "/nosotros": "SOBRE NOSOTROS",
+        "/proyectos": "PROYECTOS",
       };
       if (routeMap[location.pathname]) {
         setActiveSection(routeMap[location.pathname]);
@@ -154,7 +158,7 @@ const Navbar = () => {
 
             {/* SOBRE NOSOTROS */}
             <button
-              onClick={() => handleNavClick("/#about", "SOBRE NOSOTROS")}
+              onClick={() => handleNavClick("/nosotros", "SOBRE NOSOTROS")}
               className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
                 activeSection === "SOBRE NOSOTROS"
                   ? "text-primary-foreground" 
@@ -219,7 +223,7 @@ const Navbar = () => {
 
             {/* PROYECTOS */}
             <button
-              onClick={() => handleNavClick("/#projects", "PROYECTOS")}
+              onClick={() => handleNavClick("/proyectos", "PROYECTOS")}
               className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
                 activeSection === "PROYECTOS"
                   ? "text-primary-foreground" 
@@ -287,7 +291,7 @@ const Navbar = () => {
 
             {/* SOBRE NOSOTROS */}
             <button
-              onClick={() => handleNavClick("/#about", "SOBRE NOSOTROS")}
+              onClick={() => handleNavClick("/nosotros", "SOBRE NOSOTROS")}
               className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
                 activeSection === "SOBRE NOSOTROS"
                   ? "text-primary font-bold"
@@ -337,7 +341,7 @@ const Navbar = () => {
 
             {/* PROYECTOS */}
             <button
-              onClick={() => handleNavClick("/#projects", "PROYECTOS")}
+              onClick={() => handleNavClick("/proyectos", "PROYECTOS")}
               className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
                 activeSection === "PROYECTOS"
                   ? "text-primary font-bold"
