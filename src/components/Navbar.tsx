@@ -1,14 +1,9 @@
 import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
-    setIsOpen(false);
-  };
+  const [activeSection, setActiveSection] = useState("home");
 
   const navItems = [
     { id: "home", label: "INICIO", icon: Home },
@@ -18,6 +13,40 @@ const Navbar = () => {
     { id: "machinery", label: "MAQUINARIA", icon: Settings },
     { id: "contact", label: "CONTACTO", icon: Phone },
   ];
+
+  const scrollToSection = (id: string, label: string) => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: "smooth" });
+    setActiveSection(label);
+    setIsOpen(false);
+  };
+
+  // Track active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["home", "services", "vehicles", "machinery", "contact"];
+      const scrollPosition = window.scrollY + 100;
+
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetHeight = element.offsetHeight;
+
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            const item = navItems.find(nav => nav.id === sectionId);
+            if (item && activeSection !== item.label) {
+              setActiveSection(item.label);
+            }
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeSection]);
 
   return (
     <nav className="fixed top-0 w-full bg-secondary z-50">
@@ -33,10 +62,10 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item, index) => (
               <button
-                key={`${item.id}-${index}`}
-                onClick={() => scrollToSection(item.id)}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-colors ${
-                  index === 0 
+                key={`${item.label}-${index}`}
+                onClick={() => scrollToSection(item.id, item.label)}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
+                  activeSection === item.label
                     ? "bg-primary text-primary-foreground rounded-full" 
                     : "text-secondary-foreground/80 hover:text-primary-foreground"
                 }`}
@@ -61,9 +90,13 @@ const Navbar = () => {
           <div className="lg:hidden py-4 space-y-2 border-t border-secondary-foreground/10">
             {navItems.map((item, index) => (
               <button
-                key={`${item.id}-${index}`}
-                onClick={() => scrollToSection(item.id)}
-                className="flex items-center gap-3 w-full text-left text-secondary-foreground/80 hover:text-primary-foreground transition-colors py-2"
+                key={`${item.label}-${index}`}
+                onClick={() => scrollToSection(item.id, item.label)}
+                className={`flex items-center gap-3 w-full text-left py-2 transition-colors ${
+                  activeSection === item.label
+                    ? "text-primary font-bold"
+                    : "text-secondary-foreground/80 hover:text-primary-foreground"
+                }`}
               >
                 <item.icon className="h-5 w-5" />
                 <span className="font-heading tracking-wide">{item.label}</span>
