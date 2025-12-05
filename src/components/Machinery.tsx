@@ -3,6 +3,7 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link } from "react-router-dom";
+import ParallaxImage from "./ParallaxImage";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
@@ -62,11 +63,12 @@ const Machinery = () => {
               }`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
-              <div className="relative h-48 overflow-hidden">
-                <img 
+              <div className="relative h-48">
+                <ParallaxImage 
                   src={item.image} 
                   alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="h-full"
+                  speed={0.15}
                 />
               </div>
               <CardContent className="p-6">
