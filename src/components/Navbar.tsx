@@ -108,7 +108,7 @@ const Navbar = () => {
               setActiveSection("INICIO");
             }}
           >
-            <img src={logoAleksey} alt="ALEKSEY - Ingeniería y Construcción" className="h-10 md:h-12 brightness-0 invert" />
+            <img src={logoAleksey} alt="ALEKSEY - Ingeniería y Construcción" className="h-10 md:h-12" />
           </div>
 
           {/* Desktop Menu */}
