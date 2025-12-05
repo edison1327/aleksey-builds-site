@@ -1,36 +1,34 @@
-import { Building, HardHat, HomeIcon, Wrench, Truck, Settings } from "lucide-react";
+import { Building, Compass, Truck, Settings } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
 
-const services = [
+const construccion = [
   {
-    icon: Building,
     title: "Construcción Residencial",
     description: "Diseño y edificación de viviendas unifamiliares y multifamiliares de alta calidad.",
   },
   {
-    icon: HardHat,
     title: "Infraestructura Vial",
     description: "Construcción y mantenimiento de carreteras, puentes y vías de acceso.",
   },
   {
-    icon: HomeIcon,
-    title: "Edificaciones Comerciales",
-    description: "Construcción de naves industriales, oficinas y locales comerciales.",
+    title: "Edificaciones Comerciales e Industriales",
+    description: "Construcción de naves industriales, oficinas y locales comerciales adaptados a sus necesidades.",
+  },
+];
+
+const ingenieria = [
+  {
+    title: "Diseño y Análisis Estructural",
+    description: "Servicios de ingeniería para el diseño, cálculo y análisis de estructuras de edificios y obras civiles.",
   },
   {
-    icon: Wrench,
-    title: "Ingeniería Civil",
-    description: "Diseño estructural, estudios de suelo y supervisión de obras.",
+    title: "Ingeniería Geotécnica y Cimentaciones",
+    description: "Estudios de suelo, diseño de cimentaciones y soluciones geotécnicas para proyectos de construcción.",
   },
   {
-    icon: Truck,
-    title: "Vehículos Comerciales",
-    description: "Alquiler de camiones, volquetes y vehículos de transporte pesado.",
-  },
-  {
-    icon: Settings,
-    title: "Maquinaria Pesada",
-    description: "Excavadoras, retroexcavadoras, grúas y equipos especializados.",
+    title: "Ingeniería de Infraestructuras Viales",
+    description: "Planificación, diseño y supervisión de proyectos de carreteras, puentes y vías de acceso.",
   },
 ];
 
@@ -47,23 +45,44 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <Card
-              key={index}
-              className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card"
-            >
-              <CardContent className="p-8">
-                <div className="bg-primary/10 w-14 h-14 rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                  <service.icon className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-                <h3 className="text-xl font-heading font-bold text-foreground mb-3 tracking-wide">
-                  {service.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">{service.description}</p>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Construcción */}
+        <div className="mb-16">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
+              <Building className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="text-2xl font-heading font-bold text-foreground tracking-wide">Construcción</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {construccion.map((item, index) => (
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card">
+                <CardContent className="p-6">
+                  <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Ingeniería */}
+        <div>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
+              <Compass className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="text-2xl font-heading font-bold text-foreground tracking-wide">Ingeniería</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {ingenieria.map((item, index) => (
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card">
+                <CardContent className="p-6">
+                  <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </section>
