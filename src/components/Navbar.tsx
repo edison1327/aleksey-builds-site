@@ -9,12 +9,12 @@ const Navbar = () => {
   const location = useLocation();
 
   const navItems = [
-    { id: "home", label: "INICIO", icon: Home, path: "/" },
-    { id: "construccion", label: "CONSTRUCCIÓN", icon: Building2, path: "/construccion" },
-    { id: "ingenieria", label: "INGENIERÍA", icon: Wrench, path: "/ingenieria" },
-    { id: "vehiculos", label: "VEHÍCULOS", icon: Truck, path: "/vehiculos" },
-    { id: "maquinaria", label: "MAQUINARIA", icon: Settings, path: "/maquinaria" },
-    { id: "contact", label: "CONTACTO", icon: Phone, path: "/#contact" },
+    { id: "home", label: "INICIO", icon: Home, path: "/", scrollId: "home" },
+    { id: "construccion", label: "CONSTRUCCIÓN", icon: Building2, path: "/construccion", scrollId: "services" },
+    { id: "ingenieria", label: "INGENIERÍA", icon: Wrench, path: "/ingenieria", scrollId: "services" },
+    { id: "vehiculos", label: "VEHÍCULOS", icon: Truck, path: "/vehiculos", scrollId: "vehicles" },
+    { id: "maquinaria", label: "MAQUINARIA", icon: Settings, path: "/maquinaria", scrollId: "machinery" },
+    { id: "contact", label: "CONTACTO", icon: Phone, path: "/#contact", scrollId: "contact" },
   ];
 
   const handleNavClick = (item: typeof navItems[0]) => {
@@ -29,9 +29,12 @@ const Navbar = () => {
 
     // Home page navigation
     if (item.path === "/") {
-      navigate("/");
+      if (location.pathname === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        navigate("/");
+      }
       setActiveSection("INICIO");
-      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -41,25 +44,56 @@ const Navbar = () => {
       return;
     }
 
-    const element = document.getElementById(item.id);
+    const element = document.getElementById(item.scrollId);
     element?.scrollIntoView({ behavior: "smooth" });
-    setActiveSection(item.label);
   };
 
-  // Set active based on current route
+  // Track scroll position on home page
   useEffect(() => {
-    const routeMap: Record<string, string> = {
-      "/": "INICIO",
-      "/construccion": "CONSTRUCCIÓN",
-      "/ingenieria": "INGENIERÍA",
-      "/vehiculos": "VEHÍCULOS",
-      "/maquinaria": "MAQUINARIA",
-    };
-    
-    if (routeMap[location.pathname]) {
-      setActiveSection(routeMap[location.pathname]);
+    if (location.pathname !== "/") {
+      const routeMap: Record<string, string> = {
+        "/construccion": "CONSTRUCCIÓN",
+        "/ingenieria": "INGENIERÍA",
+        "/vehiculos": "VEHÍCULOS",
+        "/maquinaria": "MAQUINARIA",
+      };
+      if (routeMap[location.pathname]) {
+        setActiveSection(routeMap[location.pathname]);
+      }
+      return;
     }
-  }, [location.pathname]);
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 150;
+      const sections = [
+        { id: "home", label: "INICIO" },
+        { id: "services", label: "CONSTRUCCIÓN" },
+        { id: "vehicles", label: "VEHÍCULOS" },
+        { id: "machinery", label: "MAQUINARIA" },
+        { id: "contact", label: "CONTACTO" },
+      ];
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        const element = document.getElementById(section.id);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          if (scrollPosition >= offsetTop) {
+            if (activeSection !== section.label) {
+              setActiveSection(section.label);
+            }
+            break;
+          }
+        }
+      }
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [location.pathname, activeSection]);
 
   return (
     <nav className="fixed top-0 w-full bg-secondary z-50">
@@ -83,21 +117,20 @@ const Navbar = () => {
               <button
                 key={`${item.label}-${index}`}
                 onClick={() => handleNavClick(item)}
-                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-colors duration-300 ${
+                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
                   activeSection === item.label
                     ? "text-primary-foreground" 
                     : "text-secondary-foreground/80 hover:text-primary-foreground"
                 }`}
               >
-                {activeSection === item.label && (
-                  <span 
-                    className="absolute inset-0 bg-primary rounded-full animate-fade-in"
-                    style={{ 
-                      transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                      zIndex: -1 
-                    }}
-                  />
-                )}
+                <span 
+                  className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
+                    activeSection === item.label 
+                      ? "opacity-100 scale-100" 
+                      : "opacity-0 scale-95"
+                  }`}
+                  style={{ zIndex: -1 }}
+                />
                 <item.icon className="h-4 w-4 relative z-10" />
                 <span className="relative z-10">{item.label}</span>
               </button>
@@ -120,7 +153,7 @@ const Navbar = () => {
               <button
                 key={`${item.label}-${index}`}
                 onClick={() => handleNavClick(item)}
-                className={`flex items-center gap-3 w-full text-left py-2 transition-colors ${
+                className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
                   activeSection === item.label
                     ? "text-primary font-bold"
                     : "text-secondary-foreground/80 hover:text-primary-foreground"
