@@ -54,7 +54,7 @@ const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps) => {
           <img 
             src={logoAleksey} 
             alt="ALEKSEY - Ingeniería y Construcción" 
-            className="h-16 md:h-20 lg:h-24 drop-shadow-lg"
+            className="h-16 md:h-20 lg:h-24 drop-shadow-lg brightness-0 invert"
           />
         </div>
 
