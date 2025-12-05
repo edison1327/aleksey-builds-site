@@ -272,4 +272,14 @@
     transform: scaleX(1);
     transform-origin: left;
   }
+
+  /* Loading bar animation for splash screen */
+  @keyframes loading-bar {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
 }
