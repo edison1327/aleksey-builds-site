@@ -3,21 +3,28 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
+import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
+import cargadorVolvo from "@/assets/cargador-volvo.jpg";
+import retroexcavadoraJcb from "@/assets/retroexcavadora-jcb.jpg";
+
 const machinery = [
   {
     title: "Excavadora Caterpillar 320D",
     description: "Excavadora hidráulica de tamaño mediano, ideal para proyectos de construcción general, excavación de zanjas y movimiento de tierras.",
     price: "$350/día",
+    image: excavadoraCaterpillar,
   },
   {
     title: "Cargador Frontal Volvo L120H",
     description: "Cargador de ruedas versátil y eficiente, perfecto para carga de materiales, manipulación de agregados y trabajos de cantera.",
     price: "$420/día",
+    image: cargadorVolvo,
   },
   {
     title: "Retroexcavadora JCB 3CX",
     description: "Máquina compacta y multifuncional, excelente para excavación, carga y nivelación en espacios reducidos.",
     price: "$280/día",
+    image: retroexcavadoraJcb,
   },
 ];
 
@@ -54,11 +61,18 @@ const Machinery = () => {
           {machinery.map((item, index) => (
             <Card 
               key={index} 
-              className={`group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2 opacity-0 ${
+              className={`group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2 overflow-hidden opacity-0 ${
                 cardsVisible ? "animate-fade-in-up" : ""
               }`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={item.image} 
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
               <CardContent className="p-6">
                 <h3 className="text-xl font-heading font-bold mb-3">{item.title}</h3>
                 <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{item.description}</p>

@@ -2,18 +2,28 @@ import { Building, Compass } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
+import construccionResidencial from "@/assets/construccion-residencial.jpg";
+import infraestructuraVial from "@/assets/infraestructura-vial.jpg";
+import edificacionesComerciales from "@/assets/edificaciones-comerciales.jpg";
+import disenoEstructural from "@/assets/diseno-estructural.jpg";
+import ingenieriaGeotecnica from "@/assets/ingenieria-geotecnica.jpg";
+import ingenieriaVial from "@/assets/ingenieria-vial.jpg";
+
 const construccion = [
   {
     title: "Construcción Residencial",
     description: "Diseño y edificación de viviendas unifamiliares y multifamiliares de alta calidad.",
+    image: construccionResidencial,
   },
   {
     title: "Infraestructura Vial",
     description: "Construcción y mantenimiento de carreteras, puentes y vías de acceso.",
+    image: infraestructuraVial,
   },
   {
     title: "Edificaciones Comerciales e Industriales",
     description: "Construcción de naves industriales, oficinas y locales comerciales adaptados a sus necesidades.",
+    image: edificacionesComerciales,
   },
 ];
 
@@ -21,14 +31,17 @@ const ingenieria = [
   {
     title: "Diseño y Análisis Estructural",
     description: "Servicios de ingeniería para el diseño, cálculo y análisis de estructuras de edificios y obras civiles.",
+    image: disenoEstructural,
   },
   {
     title: "Ingeniería Geotécnica y Cimentaciones",
     description: "Estudios de suelo, diseño de cimentaciones y soluciones geotécnicas para proyectos de construcción.",
+    image: ingenieriaGeotecnica,
   },
   {
     title: "Ingeniería de Infraestructuras Viales",
     description: "Planificación, diseño y supervisión de proyectos de carreteras, puentes y vías de acceso.",
+    image: ingenieriaVial,
   },
 ];
 
@@ -64,11 +77,18 @@ const Services = () => {
             {construccion.map((item, index) => (
               <Card 
                 key={index} 
-                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card opacity-0 ${
+                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
                   construccionVisible ? "animate-fade-in-up" : ""
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={item.image} 
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
                 <CardContent className="p-6">
                   <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
@@ -90,11 +110,18 @@ const Services = () => {
             {ingenieria.map((item, index) => (
               <Card 
                 key={index} 
-                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card opacity-0 ${
+                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
                   ingenieriaVisible ? "animate-fade-in-up" : ""
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={item.image} 
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
                 <CardContent className="p-6">
                   <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
