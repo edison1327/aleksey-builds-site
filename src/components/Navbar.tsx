@@ -96,18 +96,18 @@ const Navbar = () => {
   }, [location.pathname, activeSection]);
 
   return (
-    <nav className="fixed top-0 w-full bg-secondary z-50">
+    <nav className="fixed top-0 w-full bg-secondary z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div 
-            className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4 cursor-pointer"
+            className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4 cursor-pointer transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
             onClick={() => {
               navigate("/");
               setActiveSection("INICIO");
             }}
           >
-            <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-primary-foreground" />
+            <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-primary-foreground transition-transform duration-300 group-hover:scale-110" />
             <span className="text-xl font-heading font-bold text-primary-foreground tracking-wider">ALEKSEY</span>
           </div>
 
@@ -117,7 +117,7 @@ const Navbar = () => {
               <button
                 key={`${item.label}-${index}`}
                 onClick={() => handleNavClick(item)}
-                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
+                className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
                   activeSection === item.label
                     ? "text-primary-foreground" 
                     : "text-secondary-foreground/80 hover:text-primary-foreground"
@@ -127,11 +127,11 @@ const Navbar = () => {
                   className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
                     activeSection === item.label 
                       ? "opacity-100 scale-100" 
-                      : "opacity-0 scale-95"
+                      : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
                   }`}
                   style={{ zIndex: -1 }}
                 />
-                <item.icon className="h-4 w-4 relative z-10" />
+                <item.icon className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
                 <span className="relative z-10">{item.label}</span>
               </button>
             ))}
