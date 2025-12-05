@@ -11,7 +11,7 @@ const services = [
 ];
 
 const Hero = () => {
-  const parallaxOffset = useParallax(0.3);
+  const parallaxOffset = useParallax(0.1);
 
   const scrollToContact = () => {
     const element = document.getElementById("contact");
