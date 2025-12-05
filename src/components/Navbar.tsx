@@ -59,19 +59,28 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1 relative">
             {navItems.map((item, index) => (
               <button
                 key={`${item.label}-${index}`}
                 onClick={() => scrollToSection(item.id, item.label)}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
+                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-colors duration-300 ${
                   activeSection === item.label
-                    ? "bg-primary text-primary-foreground rounded-full" 
+                    ? "text-primary-foreground" 
                     : "text-secondary-foreground/80 hover:text-primary-foreground"
                 }`}
               >
-                <item.icon className="h-4 w-4" />
-                {item.label}
+                {activeSection === item.label && (
+                  <span 
+                    className="absolute inset-0 bg-primary rounded-full animate-fade-in"
+                    style={{ 
+                      transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                      zIndex: -1 
+                    }}
+                  />
+                )}
+                <item.icon className="h-4 w-4 relative z-10" />
+                <span className="relative z-10">{item.label}</span>
               </button>
             ))}
           </div>
