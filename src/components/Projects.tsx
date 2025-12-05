@@ -26,10 +26,10 @@ const Projects = () => {
     <section id="projects" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Proyectos Destacados
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 tracking-wide">
+            PROYECTOS DESTACADOS
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Cada proyecto refleja nuestro compromiso con la excelencia
           </p>
         </div>
@@ -38,7 +38,7 @@ const Projects = () => {
           {projects.map((project, index) => (
             <Card
               key={index}
-              className="group overflow-hidden hover:shadow-2xl transition-all duration-300 border-border bg-card"
+              className="group overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-card"
             >
               <div className="relative overflow-hidden h-64">
                 <img
@@ -46,12 +46,12 @@ const Projects = () => {
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <span className="inline-block px-3 py-1 bg-accent text-accent-foreground text-sm font-semibold rounded-full mb-2">
+                  <span className="inline-block px-3 py-1 bg-primary text-primary-foreground text-sm font-heading font-semibold rounded-full mb-2 tracking-wide">
                     {project.category}
                   </span>
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-xl font-heading font-bold text-secondary-foreground tracking-wide">
                     {project.title}
                   </h3>
                 </div>

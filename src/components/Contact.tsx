@@ -17,26 +17,26 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-secondary/30">
+    <section id="contact" className="py-24 bg-muted">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Contáctanos
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 tracking-wide">
+            CONTÁCTANOS
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Estamos listos para hacer realidad tu próximo proyecto
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="space-y-6">
-            <Card className="border-border bg-card">
+            <Card className="border-0 bg-card shadow-lg">
               <CardContent className="p-6 flex items-start gap-4">
-                <div className="bg-accent/10 p-3 rounded-lg">
-                  <Phone className="h-6 w-6 text-accent" />
+                <div className="bg-primary/10 p-3 rounded-xl">
+                  <Phone className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">
+                  <h3 className="font-heading font-semibold text-foreground mb-1 tracking-wide">
                     Teléfono
                   </h3>
                   <p className="text-muted-foreground">+34 123 456 789</p>
@@ -44,25 +44,27 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-border bg-card">
+            <Card className="border-0 bg-card shadow-lg">
               <CardContent className="p-6 flex items-start gap-4">
-                <div className="bg-accent/10 p-3 rounded-lg">
-                  <Mail className="h-6 w-6 text-accent" />
+                <div className="bg-primary/10 p-3 rounded-xl">
+                  <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Email</h3>
+                  <h3 className="font-heading font-semibold text-foreground mb-1 tracking-wide">
+                    Email
+                  </h3>
                   <p className="text-muted-foreground">info@aleksey.com</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-border bg-card">
+            <Card className="border-0 bg-card shadow-lg">
               <CardContent className="p-6 flex items-start gap-4">
-                <div className="bg-accent/10 p-3 rounded-lg">
-                  <MapPin className="h-6 w-6 text-accent" />
+                <div className="bg-primary/10 p-3 rounded-xl">
+                  <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">
+                  <h3 className="font-heading font-semibold text-foreground mb-1 tracking-wide">
                     Dirección
                   </h3>
                   <p className="text-muted-foreground">
@@ -75,7 +77,7 @@ const Contact = () => {
             </Card>
           </div>
 
-          <Card className="lg:col-span-2 border-border bg-card">
+          <Card className="lg:col-span-2 border-0 bg-card shadow-lg">
             <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -90,7 +92,7 @@ const Contact = () => {
                       id="name"
                       placeholder="Tu nombre"
                       required
-                      className="bg-background border-border"
+                      className="bg-muted border-0"
                     />
                   </div>
                   <div>
@@ -105,7 +107,7 @@ const Contact = () => {
                       type="email"
                       placeholder="tu@email.com"
                       required
-                      className="bg-background border-border"
+                      className="bg-muted border-0"
                     />
                   </div>
                 </div>
@@ -121,7 +123,7 @@ const Contact = () => {
                     id="phone"
                     type="tel"
                     placeholder="+34 123 456 789"
-                    className="bg-background border-border"
+                    className="bg-muted border-0"
                   />
                 </div>
 
@@ -137,16 +139,16 @@ const Contact = () => {
                     placeholder="Cuéntanos sobre tu proyecto..."
                     rows={5}
                     required
-                    className="bg-background border-border"
+                    className="bg-muted border-0"
                   />
                 </div>
 
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
                 >
-                  Enviar Mensaje
+                  ENVIAR MENSAJE
                 </Button>
               </form>
             </CardContent>
