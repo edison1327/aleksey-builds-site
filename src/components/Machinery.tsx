@@ -2,6 +2,7 @@ import { Settings } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Link } from "react-router-dom";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
@@ -31,11 +32,6 @@ const machinery = [
 const Machinery = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
-
-  const scrollToContact = () => {
-    const element = document.getElementById("contact");
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section id="machinery" className="py-24 bg-secondary text-secondary-foreground">
@@ -83,13 +79,14 @@ const Machinery = () => {
         </div>
 
         <div className={`text-center mt-12 opacity-0 ${cardsVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
-          <Button
-            size="lg"
-            onClick={scrollToContact}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8"
-          >
-            SOLICITAR COTIZACIÓN
-          </Button>
+          <Link to="/maquinaria">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8"
+            >
+              VER MÁS MAQUINARIA
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
