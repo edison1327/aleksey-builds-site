@@ -29,7 +29,7 @@ const ScrollToTop = () => {
       aria-label="Volver arriba"
     >
       {/* Glow pulse effect */}
-      <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-30" />
+      <span className="absolute inset-0 rounded-full bg-primary/50 animate-pulse opacity-20" />
       <ArrowUp size={24} className="relative z-10 group-hover:animate-bounce" />
     </button>
   );
