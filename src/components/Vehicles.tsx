@@ -3,18 +3,25 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
+import fordTransit from "@/assets/ford-transit.jpg";
+import ram2500 from "@/assets/ram-2500.jpg";
+import isuzuNpr from "@/assets/isuzu-npr.jpg";
+
 const vehicles = [
   {
     title: "Ford Transit Cargo Van",
     description: "Motor 3.5L V6, Transmisión automática, Capacidad de carga 1,800 kg, Aire acondicionado, Conectividad Bluetooth.",
+    image: fordTransit,
   },
   {
     title: "Ram 2500 Heavy Duty Pickup",
     description: "Motor 6.4L HEMI V8, Transmisión automática de 8 velocidades, Capacidad de remolque 8,000 kg, Tracción 4x4, Asientos de tela.",
+    image: ram2500,
   },
   {
     title: "Isuzu NPR Box Truck",
     description: "Motor diésel 5.2L, Transmisión automática, Caja seca de 16 pies, Capacidad de carga 4,500 kg, Frenos ABS.",
+    image: isuzuNpr,
   },
 ];
 
@@ -51,11 +58,18 @@ const Vehicles = () => {
           {vehicles.map((vehicle, index) => (
             <Card 
               key={index} 
-              className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card opacity-0 ${
+              className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
                 cardsVisible ? "animate-scale-in" : ""
               }`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={vehicle.image} 
+                  alt={vehicle.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
               <CardContent className="p-6">
                 <h3 className="text-xl font-heading font-bold text-foreground mb-3">{vehicle.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{vehicle.description}</p>
