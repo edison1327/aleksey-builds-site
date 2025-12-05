@@ -2,6 +2,7 @@ import { Building2, Wrench, Truck, Settings, ArrowRight, ChevronDown } from "luc
 import { Button } from "./ui/button";
 import { useParallax } from "@/hooks/useParallax";
 import { useCountUp } from "@/hooks/useCountUp";
+import { useTypewriter } from "@/hooks/useTypewriter";
 import heroImage from "@/assets/hero-construction.jpg";
 
 // Video de construcción de Pexels (libre de derechos)
@@ -21,6 +22,13 @@ const Hero = () => {
   const projectsCount = useCountUp({ end: 150, duration: 2000, delay: 800, suffix: "+" });
   const yearsCount = useCountUp({ end: 10, duration: 1500, delay: 1000, suffix: "+" });
   const clientsCount = useCountUp({ end: 98, duration: 2000, delay: 1200, suffix: "%" });
+
+  // Typewriter effect for subtitle
+  const { displayText, isTyping } = useTypewriter({
+    text: "CONSTRUCCIÓN & INGENIERÍA",
+    speed: 60,
+    delay: 400,
+  });
 
   const scrollToContact = () => {
     const element = document.getElementById("contact");
@@ -112,7 +120,8 @@ const Hero = () => {
             >
               <div className="h-1 w-16 bg-primary rounded-full" />
               <h2 className="text-xl md:text-2xl lg:text-3xl font-heading font-medium tracking-[0.2em] text-primary">
-                CONSTRUCCIÓN & INGENIERÍA
+                {displayText}
+                <span className={`inline-block w-0.5 h-6 md:h-8 bg-primary ml-1 ${isTyping ? "animate-pulse" : "opacity-0"}`} />
               </h2>
             </div>
 
