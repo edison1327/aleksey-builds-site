@@ -89,23 +89,20 @@ const Hero = () => {
           <div className="lg:col-span-7 text-secondary-foreground">
             {/* Badge */}
             <div 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-in"
-              style={{ transform: `translateY(${parallaxOffset * -0.05}px)` }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-stagger-1"
             >
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               <span className="text-sm font-medium text-primary tracking-wider">MÁS DE 10 AÑOS DE EXPERIENCIA</span>
             </div>
 
             <h1 
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold tracking-tight mb-2 animate-fade-in"
-              style={{ transform: `translateY(${parallaxOffset * -0.08}px)` }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold tracking-tight mb-2 animate-stagger-2"
             >
               <span className="text-secondary-foreground">ALEKSEY</span>
             </h1>
             
             <div 
-              className="flex items-center gap-4 mb-6 animate-fade-in"
-              style={{ transform: `translateY(${parallaxOffset * -0.06}px)` }}
+              className="flex items-center gap-4 mb-6 animate-stagger-3"
             >
               <div className="h-1 w-16 bg-primary rounded-full" />
               <h2 className="text-xl md:text-2xl lg:text-3xl font-heading font-medium tracking-[0.2em] text-primary">
@@ -114,8 +111,7 @@ const Hero = () => {
             </div>
 
             <p 
-              className="text-base md:text-lg text-secondary-foreground/80 mb-10 max-w-xl animate-fade-in leading-relaxed"
-              style={{ transform: `translateY(${parallaxOffset * -0.04}px)` }}
+              className="text-base md:text-lg text-secondary-foreground/80 mb-10 max-w-xl animate-stagger-4 leading-relaxed"
             >
               Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. 
               Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada.
@@ -123,8 +119,7 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div 
-              className="flex flex-wrap gap-4 animate-fade-in"
-              style={{ transform: `translateY(${parallaxOffset * -0.03}px)` }}
+              className="flex flex-wrap gap-4 animate-stagger-5"
             >
               <Button
                 size="lg"
@@ -146,8 +141,7 @@ const Hero = () => {
 
             {/* Stats */}
             <div 
-              className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-secondary-foreground/10 animate-fade-in"
-              style={{ transform: `translateY(${parallaxOffset * -0.02}px)` }}
+              className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-secondary-foreground/10 animate-stagger-6"
             >
               <div>
                 <div className="text-3xl md:text-4xl font-heading font-bold text-primary">150+</div>
@@ -166,10 +160,9 @@ const Hero = () => {
 
           {/* Right Content - Services Card - 5 columns */}
           <div 
-            className="lg:col-span-5"
-            style={{ transform: `translateY(${parallaxOffset * -0.1}px)` }}
+            className="lg:col-span-5 animate-slide-in-right"
           >
-            <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 md:p-8 animate-fade-in border border-border/50">
+            <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 md:p-8 border border-border/50">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                   <Building2 className="h-5 w-5 text-primary-foreground" />
