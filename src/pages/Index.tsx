@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
 import Services from "@/components/Services";
 import ProjectsSection from "@/components/ProjectsSection";
 import Vehicles from "@/components/Vehicles";
@@ -30,7 +29,6 @@ const Index = () => {
       )}
       <Navbar />
       <Hero />
-      <About />
       <Services />
       <ProjectsSection />
       <Vehicles />
