@@ -1,4 +1,4 @@
-import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logoAleksey from "@/assets/logo-aleksey.png";
@@ -39,8 +39,13 @@ const Navbar = () => {
       return;
     }
 
-    if (path === "/#contact" || path === "/#about") {
-      const sectionId = path === "/#contact" ? "contact" : "about";
+    if (path === "/#contact" || path === "/#about" || path === "/#projects") {
+      const sectionMap: Record<string, string> = {
+        "/#contact": "contact",
+        "/#about": "about",
+        "/#projects": "projects"
+      };
+      const sectionId = sectionMap[path];
       if (location.pathname !== "/") {
         navigate(path);
         return;
@@ -212,6 +217,27 @@ const Navbar = () => {
               )}
             </div>
 
+            {/* PROYECTOS */}
+            <button
+              onClick={() => handleNavClick("/#projects", "PROYECTOS")}
+              className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 ${
+                activeSection === "PROYECTOS"
+                  ? "text-primary-foreground" 
+                  : "text-secondary-foreground/80 hover:text-primary-foreground"
+              }`}
+            >
+              <span 
+                className={`absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out ${
+                  activeSection === "PROYECTOS" 
+                    ? "opacity-100 scale-100" 
+                    : "opacity-0 scale-95 group-hover:opacity-30 group-hover:scale-100"
+                }`}
+                style={{ zIndex: -1 }}
+              />
+              <FolderKanban className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+              <span className="relative z-10">PROYECTOS</span>
+            </button>
+
             {/* CONTACTO */}
             <button
               onClick={() => handleNavClick("/#contact", "CONTACTO")}
@@ -308,6 +334,19 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+
+            {/* PROYECTOS */}
+            <button
+              onClick={() => handleNavClick("/#projects", "PROYECTOS")}
+              className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
+                activeSection === "PROYECTOS"
+                  ? "text-primary font-bold"
+                  : "text-secondary-foreground/80 hover:text-primary-foreground"
+              }`}
+            >
+              <FolderKanban className="h-5 w-5" />
+              <span className="font-heading tracking-wide">PROYECTOS</span>
+            </button>
 
             {/* CONTACTO */}
             <button
