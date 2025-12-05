@@ -3,6 +3,9 @@ import { Button } from "./ui/button";
 import { useParallax } from "@/hooks/useParallax";
 import heroImage from "@/assets/hero-construction.jpg";
 
+// Video de construcción de Pexels (libre de derechos)
+const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/3129671/3129671-sd_640_360_30fps.mp4";
+
 const services = [
   { icon: Building2, title: "CONSTRUCCIÓN", desc: "Proyectos residenciales y comerciales" },
   { icon: Wrench, title: "INGENIERÍA", desc: "Soluciones técnicas especializadas" },
@@ -25,18 +28,30 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Full Background Image with Overlay */}
+      {/* Full Background Video with Overlay */}
       <div 
         className="absolute inset-0 w-full h-[120%] -top-[10%]"
         style={{ transform: `translateY(${parallaxOffset}px)` }}
       >
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          poster={heroImage}
+        >
+          <source src={HERO_VIDEO_URL} type="video/mp4" />
+        </video>
+        {/* Fallback Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary/50 via-transparent to-secondary/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 via-transparent to-secondary/40" />
       </div>
 
       {/* Decorative Elements */}
