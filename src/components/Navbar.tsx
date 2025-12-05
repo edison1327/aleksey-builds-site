@@ -1,4 +1,4 @@
-import { Building2, Menu, X } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 
@@ -11,52 +11,46 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  const navItems = [
+    { id: "home", label: "INICIO", icon: Home },
+    { id: "services", label: "CONSTRUCCIÓN", icon: Building2 },
+    { id: "about", label: "INGENIERÍA", icon: Wrench },
+    { id: "projects", label: "VEHÍCULOS", icon: Truck },
+    { id: "machinery", label: "MAQUINARIA", icon: Settings },
+    { id: "contact", label: "CONTACTO", icon: Phone },
+  ];
+
   return (
-    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
+    <nav className="fixed top-0 w-full bg-secondary z-50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-primary">ALEKSEY</span>
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4">
+            <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-primary-foreground" />
+            <span className="text-xl font-heading font-bold text-primary-foreground tracking-wider">ALEKSEY</span>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <button
-              onClick={() => scrollToSection("home")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Inicio
-            </button>
-            <button
-              onClick={() => scrollToSection("services")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Servicios
-            </button>
-            <button
-              onClick={() => scrollToSection("projects")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Proyectos
-            </button>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Nosotros
-            </button>
-            <Button
-              onClick={() => scrollToSection("contact")}
-              className="bg-accent hover:bg-accent/90 text-accent-foreground"
-            >
-              Contacto
-            </Button>
+          <div className="hidden lg:flex items-center gap-1">
+            {navItems.map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-colors ${
+                  index === 0 
+                    ? "bg-primary text-primary-foreground rounded-full" 
+                    : "text-secondary-foreground/80 hover:text-primary-foreground"
+                }`}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </button>
+            ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-foreground"
+            className="lg:hidden text-secondary-foreground"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -65,37 +59,17 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 space-y-4">
-            <button
-              onClick={() => scrollToSection("home")}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors"
-            >
-              Inicio
-            </button>
-            <button
-              onClick={() => scrollToSection("services")}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors"
-            >
-              Servicios
-            </button>
-            <button
-              onClick={() => scrollToSection("projects")}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors"
-            >
-              Proyectos
-            </button>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors"
-            >
-              Nosotros
-            </button>
-            <Button
-              onClick={() => scrollToSection("contact")}
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
-            >
-              Contacto
-            </Button>
+          <div className="lg:hidden py-4 space-y-2 border-t border-secondary-foreground/10">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="flex items-center gap-3 w-full text-left text-secondary-foreground/80 hover:text-primary-foreground transition-colors py-2"
+              >
+                <item.icon className="h-5 w-5" />
+                <span className="font-heading tracking-wide">{item.label}</span>
+              </button>
+            ))}
           </div>
         )}
       </div>
