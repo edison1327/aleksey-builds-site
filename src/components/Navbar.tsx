@@ -1,6 +1,5 @@
 import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Button } from "./ui/button";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,8 +13,8 @@ const Navbar = () => {
   const navItems = [
     { id: "home", label: "INICIO", icon: Home },
     { id: "services", label: "CONSTRUCCIÓN", icon: Building2 },
-    { id: "about", label: "INGENIERÍA", icon: Wrench },
-    { id: "projects", label: "VEHÍCULOS", icon: Truck },
+    { id: "services", label: "INGENIERÍA", icon: Wrench },
+    { id: "vehicles", label: "VEHÍCULOS", icon: Truck },
     { id: "machinery", label: "MAQUINARIA", icon: Settings },
     { id: "contact", label: "CONTACTO", icon: Phone },
   ];
@@ -34,7 +33,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item, index) => (
               <button
-                key={item.id}
+                key={`${item.id}-${index}`}
                 onClick={() => scrollToSection(item.id)}
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-colors ${
                   index === 0 
@@ -60,9 +59,9 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="lg:hidden py-4 space-y-2 border-t border-secondary-foreground/10">
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <button
-                key={item.id}
+                key={`${item.id}-${index}`}
                 onClick={() => scrollToSection(item.id)}
                 className="flex items-center gap-3 w-full text-left text-secondary-foreground/80 hover:text-primary-foreground transition-colors py-2"
               >
