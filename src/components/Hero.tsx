@@ -25,7 +25,7 @@ const Hero = () => {
 
   // Typewriter effect for subtitle
   const { displayText, isTyping } = useTypewriter({
-    text: "CONSTRUCCIÓN & INGENIERÍA",
+    text: "INGENIERÍA Y CONSTRUCCIÓN",
     speed: 60,
     delay: 400,
   });
