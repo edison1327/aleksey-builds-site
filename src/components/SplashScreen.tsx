@@ -50,18 +50,12 @@ const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps) => {
       {/* Main Content */}
       <div className="relative flex flex-col items-center gap-8">
         {/* Logo */}
-        <div className="animate-fade-in flex flex-col items-center gap-3">
+        <div className="animate-fade-in">
           <img 
             src={logoAleksey} 
             alt="ALEKSEY - Ingeniería y Construcción" 
-            className="h-16 md:h-20 lg:h-24 drop-shadow-lg"
+            className="h-16 md:h-24 lg:h-28 drop-shadow-lg"
           />
-          <span 
-            className="text-secondary-foreground font-semibold tracking-[0.3em] text-xs md:text-sm opacity-0 animate-fade-in"
-            style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}
-          >
-            INGENIERÍA Y CONSTRUCCIÓN
-          </span>
         </div>
 
         {/* Loading bar */}
