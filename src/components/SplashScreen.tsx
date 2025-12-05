@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import logoAleksey from "@/assets/logo-aleksey.png";
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -49,18 +50,12 @@ const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps) => {
       {/* Main Content */}
       <div className="relative flex flex-col items-center gap-8">
         {/* Logo */}
-        <div className="flex items-center gap-3 animate-fade-in">
-          <div className="relative">
-            {/* Triangle logo with animation */}
-            <div 
-              className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-b-[35px] border-b-primary animate-[pulse_1.5s_ease-in-out_infinite]"
-            />
-            {/* Glow effect */}
-            <div className="absolute inset-0 w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-b-[35px] border-b-primary blur-md opacity-50" />
-          </div>
-          <span className="text-4xl md:text-5xl font-heading font-bold text-secondary-foreground tracking-wider">
-            ALEKSEY
-          </span>
+        <div className="animate-fade-in">
+          <img 
+            src={logoAleksey} 
+            alt="ALEKSEY - Ingeniería y Construcción" 
+            className="h-16 md:h-20 lg:h-24 drop-shadow-lg"
+          />
         </div>
 
         {/* Loading bar */}
@@ -72,11 +67,6 @@ const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps) => {
             }}
           />
         </div>
-
-        {/* Tagline */}
-        <p className="text-secondary-foreground/60 font-heading tracking-[0.3em] text-sm animate-fade-in" style={{ animationDelay: "0.3s" }}>
-          CONSTRUCCIÓN & INGENIERÍA
-        </p>
       </div>
 
       {/* Corner decorations */}

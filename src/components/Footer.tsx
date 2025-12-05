@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import logoAleksey from "@/assets/logo-aleksey.png";
 
 const Footer = () => {
   return (
@@ -6,9 +7,8 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[18px] border-b-primary" />
-              <span className="text-2xl font-heading font-bold tracking-wider">ALEKSEY</span>
+            <div className="mb-4">
+              <img src={logoAleksey} alt="ALEKSEY - Ingeniería y Construcción" className="h-10 brightness-0 invert" />
             </div>
             <p className="text-secondary-foreground/80 leading-relaxed">
               Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.

@@ -1,6 +1,7 @@
 import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import logoAleksey from "@/assets/logo-aleksey.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -101,14 +102,13 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div 
-            className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4 cursor-pointer transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
+            className="flex items-center cursor-pointer transition-all duration-300 hover:opacity-80"
             onClick={() => {
               navigate("/");
               setActiveSection("INICIO");
             }}
           >
-            <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-primary-foreground transition-transform duration-300 group-hover:scale-110" />
-            <span className="text-xl font-heading font-bold text-primary-foreground tracking-wider">ALEKSEY</span>
+            <img src={logoAleksey} alt="ALEKSEY - Ingeniería y Construcción" className="h-10 md:h-12" />
           </div>
 
           {/* Desktop Menu */}
