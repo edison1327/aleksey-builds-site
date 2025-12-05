@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
@@ -10,12 +10,20 @@ import Footer from "@/components/Footer";
 import SplashScreen from "@/components/SplashScreen";
 
 const Index = () => {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    // Solo mostrar splash si no se ha visto en esta sesión
+    return !sessionStorage.getItem("splashShown");
+  });
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("splashShown", "true");
+    setShowSplash(false);
+  };
 
   return (
     <div className="min-h-screen">
       {showSplash && (
-        <SplashScreen onComplete={() => setShowSplash(false)} duration={2500} />
+        <SplashScreen onComplete={handleSplashComplete} duration={1500} />
       )}
       <Navbar />
       <Hero />
