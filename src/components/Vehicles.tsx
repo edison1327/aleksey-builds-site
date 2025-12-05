@@ -1,6 +1,7 @@
 import { Truck } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const vehicles = [
   {
@@ -18,6 +19,9 @@ const vehicles = [
 ];
 
 const Vehicles = () => {
+  const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
+  const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
+
   const scrollToContact = () => {
     const element = document.getElementById("contact");
     element?.scrollIntoView({ behavior: "smooth" });
@@ -26,7 +30,10 @@ const Vehicles = () => {
   return (
     <section id="vehicles" className="py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 opacity-0 ${titleVisible ? "animate-fade-in" : ""}`}
+        >
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
               <Truck className="h-6 w-6 text-primary" />
@@ -40,9 +47,15 @@ const Vehicles = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {vehicles.map((vehicle, index) => (
-            <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card">
+            <Card 
+              key={index} 
+              className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card opacity-0 ${
+                cardsVisible ? "animate-scale-in" : ""
+              }`}
+              style={{ animationDelay: `${index * 0.15}s` }}
+            >
               <CardContent className="p-6">
                 <h3 className="text-xl font-heading font-bold text-foreground mb-3">{vehicle.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{vehicle.description}</p>
@@ -51,7 +64,7 @@ const Vehicles = () => {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className={`text-center mt-12 opacity-0 ${cardsVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
           <Button
             size="lg"
             onClick={scrollToContact}

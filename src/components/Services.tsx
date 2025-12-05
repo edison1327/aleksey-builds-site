@@ -1,6 +1,6 @@
-import { Building, Compass, Truck, Settings } from "lucide-react";
+import { Building, Compass } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const construccion = [
   {
@@ -33,10 +33,17 @@ const ingenieria = [
 ];
 
 const Services = () => {
+  const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
+  const { ref: construccionRef, isVisible: construccionVisible } = useScrollAnimation(0.2);
+  const { ref: ingenieriaRef, isVisible: ingenieriaVisible } = useScrollAnimation(0.2);
+
   return (
     <section id="services" className="py-24 bg-muted">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 opacity-0 ${titleVisible ? "animate-fade-in" : ""}`}
+        >
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 tracking-wide">
             NUESTROS SERVICIOS
           </h2>
@@ -46,8 +53,8 @@ const Services = () => {
         </div>
 
         {/* Construcción */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-8">
+        <div ref={construccionRef} className="mb-16">
+          <div className={`flex items-center gap-3 mb-8 opacity-0 ${construccionVisible ? "animate-fade-in-left" : ""}`}>
             <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
               <Building className="h-6 w-6 text-primary" />
             </div>
@@ -55,7 +62,13 @@ const Services = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {construccion.map((item, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card">
+              <Card 
+                key={index} 
+                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card opacity-0 ${
+                  construccionVisible ? "animate-fade-in-up" : ""
+                }`}
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
                 <CardContent className="p-6">
                   <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
@@ -66,8 +79,8 @@ const Services = () => {
         </div>
 
         {/* Ingeniería */}
-        <div>
-          <div className="flex items-center gap-3 mb-8">
+        <div ref={ingenieriaRef}>
+          <div className={`flex items-center gap-3 mb-8 opacity-0 ${ingenieriaVisible ? "animate-fade-in-left" : ""}`}>
             <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
               <Compass className="h-6 w-6 text-primary" />
             </div>
@@ -75,7 +88,13 @@ const Services = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {ingenieria.map((item, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card">
+              <Card 
+                key={index} 
+                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card opacity-0 ${
+                  ingenieriaVisible ? "animate-fade-in-up" : ""
+                }`}
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
                 <CardContent className="p-6">
                   <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
