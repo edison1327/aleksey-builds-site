@@ -80,21 +80,22 @@ const Services = () => {
             {construccion.map((item, index) => (
               <Card 
                 key={index} 
-                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
+                className={`group border-0 bg-card overflow-hidden opacity-0 hover-border-glow ${
                   construccionVisible ? "animate-fade-in-up" : ""
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
-                <div className="relative h-48">
+                <div className="relative h-48 overflow-hidden">
                   <ParallaxImage 
                     src={item.image} 
                     alt={item.title}
-                    className="h-full group-hover:scale-105 transition-transform duration-500"
+                    className="h-full transition-transform duration-500 group-hover:scale-110"
                     speed={0.15}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                <CardContent className="p-6">
-                  <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
+                <CardContent className="p-6 relative">
+                  <h4 className="text-lg font-heading font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">{item.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
                 </CardContent>
               </Card>
@@ -121,21 +122,22 @@ const Services = () => {
             {ingenieria.map((item, index) => (
               <Card 
                 key={index} 
-                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
+                className={`group border-0 bg-card overflow-hidden opacity-0 hover-border-glow ${
                   ingenieriaVisible ? "animate-fade-in-up" : ""
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
-                <div className="relative h-48">
+                <div className="relative h-48 overflow-hidden">
                   <ParallaxImage 
                     src={item.image} 
                     alt={item.title}
-                    className="h-full group-hover:scale-105 transition-transform duration-500"
+                    className="h-full transition-transform duration-500 group-hover:scale-110"
                     speed={0.15}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                <CardContent className="p-6">
-                  <h4 className="text-lg font-heading font-bold text-foreground mb-3">{item.title}</h4>
+                <CardContent className="p-6 relative">
+                  <h4 className="text-lg font-heading font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">{item.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
                 </CardContent>
               </Card>
