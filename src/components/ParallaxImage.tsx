@@ -7,7 +7,7 @@ interface ParallaxImageProps {
   speed?: number;
 }
 
-const ParallaxImage = ({ src, alt, className = "", speed = 0.2 }: ParallaxImageProps) => {
+const ParallaxImage = ({ src, alt, className = "", speed = 0.08 }: ParallaxImageProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState(0);
 
