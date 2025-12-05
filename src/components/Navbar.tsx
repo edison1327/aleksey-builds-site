@@ -1,28 +1,51 @@
 import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
-    { id: "home", label: "INICIO", icon: Home },
-    { id: "services", label: "CONSTRUCCIÓN", icon: Building2 },
-    { id: "services", label: "INGENIERÍA", icon: Wrench },
-    { id: "vehicles", label: "VEHÍCULOS", icon: Truck },
-    { id: "machinery", label: "MAQUINARIA", icon: Settings },
-    { id: "contact", label: "CONTACTO", icon: Phone },
+    { id: "home", label: "INICIO", icon: Home, path: "/" },
+    { id: "construccion", label: "CONSTRUCCIÓN", icon: Building2, path: "/construccion" },
+    { id: "services", label: "INGENIERÍA", icon: Wrench, path: "/#services" },
+    { id: "vehicles", label: "VEHÍCULOS", icon: Truck, path: "/#vehicles" },
+    { id: "machinery", label: "MAQUINARIA", icon: Settings, path: "/#machinery" },
+    { id: "contact", label: "CONTACTO", icon: Phone, path: "/#contact" },
   ];
 
-  const scrollToSection = (id: string, label: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
-    setActiveSection(label);
+  const handleNavClick = (item: typeof navItems[0]) => {
     setIsOpen(false);
+    
+    if (item.path === "/construccion") {
+      navigate("/construccion");
+      setActiveSection("construccion");
+      return;
+    }
+
+    if (location.pathname !== "/") {
+      navigate(item.path);
+      return;
+    }
+
+    const sectionId = item.id === "home" ? "home" : item.id;
+    const element = document.getElementById(sectionId);
+    element?.scrollIntoView({ behavior: "smooth" });
+    setActiveSection(item.label);
   };
 
-  // Track active section on scroll
+  // Track active section on scroll (only on home page)
   useEffect(() => {
+    if (location.pathname !== "/") {
+      if (location.pathname === "/construccion") {
+        setActiveSection("CONSTRUCCIÓN");
+      }
+      return;
+    }
+
     const handleScroll = () => {
       const sections = ["home", "services", "vehicles", "machinery", "contact"];
       const scrollPosition = window.scrollY + 100;
@@ -46,14 +69,17 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeSection]);
+  }, [activeSection, location.pathname]);
 
   return (
     <nav className="fixed top-0 w-full bg-secondary z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4">
+          <div 
+            className="flex items-center gap-2 bg-primary px-4 py-2 -ml-4 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-primary-foreground" />
             <span className="text-xl font-heading font-bold text-primary-foreground tracking-wider">ALEKSEY</span>
           </div>
@@ -63,7 +89,7 @@ const Navbar = () => {
             {navItems.map((item, index) => (
               <button
                 key={`${item.label}-${index}`}
-                onClick={() => scrollToSection(item.id, item.label)}
+                onClick={() => handleNavClick(item)}
                 className={`relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-colors duration-300 ${
                   activeSection === item.label
                     ? "text-primary-foreground" 
@@ -100,7 +126,7 @@ const Navbar = () => {
             {navItems.map((item, index) => (
               <button
                 key={`${item.label}-${index}`}
-                onClick={() => scrollToSection(item.id, item.label)}
+                onClick={() => handleNavClick(item)}
                 className={`flex items-center gap-3 w-full text-left py-2 transition-colors ${
                   activeSection === item.label
                     ? "text-primary font-bold"

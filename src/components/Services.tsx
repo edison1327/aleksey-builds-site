@@ -1,6 +1,8 @@
 import { Building, Compass } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Link } from "react-router-dom";
 
 import construccionResidencial from "@/assets/construccion-residencial.jpg";
 import infraestructuraVial from "@/assets/infraestructura-vial.jpg";
@@ -95,6 +97,13 @@ const Services = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+          <div className={`text-center mt-8 opacity-0 ${construccionVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
+            <Link to="/construccion">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8">
+                VER MÁS CONSTRUCCIÓN
+              </Button>
+            </Link>
           </div>
         </div>
 
