@@ -55,10 +55,24 @@ En ALEKSEY, no solo construimos edificios, construimos relaciones duraderas con 
     <section id="about" className="py-24 bg-secondary text-secondary-foreground">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left side - Text or Image + Text */}
           <div>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 tracking-wide">
               {aboutData?.title || "SOBRE ALEKSEY"}
             </h2>
+            
+            {/* Show image if available */}
+            {aboutData?.image_url && (
+              <div className="relative mb-8 rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src={aboutData.image_url}
+                  alt="Sobre Aleksey"
+                  className="w-full h-64 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-secondary/40 to-transparent" />
+              </div>
+            )}
+            
             {paragraphs.map((paragraph, index) => (
               <p key={index} className="text-lg mb-6 text-secondary-foreground/90 leading-relaxed">
                 {paragraph}
@@ -66,6 +80,7 @@ En ALEKSEY, no solo construimos edificios, construimos relaciones duraderas con 
             ))}
           </div>
 
+          {/* Right side - Stats */}
           <div className="grid grid-cols-2 gap-6">
             {stats.map((stat, index) => (
               <div
