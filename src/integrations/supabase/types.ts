@@ -50,6 +50,39 @@ export type Database = {
         }
         Relationships: []
       }
+      company_benefits: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          is_active: boolean | null
+          sort_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_info: {
         Row: {
           address: string | null
@@ -193,6 +226,51 @@ export type Database = {
           phone?: string
           position?: string
           status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      job_positions: {
+        Row: {
+          created_at: string
+          department: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          location: string
+          requirements: Json | null
+          salary: string | null
+          sort_order: number | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          location: string
+          requirements?: Json | null
+          salary?: string | null
+          sort_order?: number | null
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          requirements?: Json | null
+          salary?: string | null
+          sort_order?: number | null
+          title?: string
+          type?: string
           updated_at?: string
         }
         Relationships: []
