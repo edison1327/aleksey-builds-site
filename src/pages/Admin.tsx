@@ -9,6 +9,8 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info
 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminServices from "@/components/admin/AdminServices";
 import AdminProjects from "@/components/admin/AdminProjects";
@@ -153,11 +155,14 @@ const DashboardOverview = () => {
     pendingMessages: 0,
     pendingApplications: 0,
   });
+  const [messagesData, setMessagesData] = useState<{ month: string; count: number }[]>([]);
+  const [projectsData, setProjectsData] = useState<{ year: string; count: number }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        // Fetch counts
         const [servicesRes, projectsRes, messagesRes, applicationsRes] = await Promise.all([
           supabase.from("services").select("id", { count: "exact", head: true }).eq("is_active", true),
           supabase.from("projects").select("id", { count: "exact", head: true }).eq("is_active", true),
@@ -171,6 +176,64 @@ const DashboardOverview = () => {
           pendingMessages: messagesRes.count || 0,
           pendingApplications: applicationsRes.count || 0,
         });
+
+        // Fetch messages for chart (last 6 months)
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        
+        const { data: messages } = await supabase
+          .from("contact_messages")
+          .select("created_at")
+          .gte("created_at", sixMonthsAgo.toISOString());
+
+        // Group messages by month
+        const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+        const messagesByMonth: Record<string, number> = {};
+        
+        // Initialize last 6 months
+        for (let i = 5; i >= 0; i--) {
+          const date = new Date();
+          date.setMonth(date.getMonth() - i);
+          const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+          messagesByMonth[key] = 0;
+        }
+
+        messages?.forEach((msg) => {
+          const date = new Date(msg.created_at);
+          const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+          if (messagesByMonth[key] !== undefined) {
+            messagesByMonth[key]++;
+          }
+        });
+
+        setMessagesData(
+          Object.entries(messagesByMonth).map(([month, count]) => ({ month, count }))
+        );
+
+        // Fetch projects by year
+        const { data: projects } = await supabase
+          .from("projects")
+          .select("year")
+          .eq("is_active", true)
+          .not("year", "is", null);
+
+        // Group projects by year
+        const projectsByYear: Record<string, number> = {};
+        projects?.forEach((proj) => {
+          if (proj.year) {
+            const yearStr = proj.year.toString();
+            projectsByYear[yearStr] = (projectsByYear[yearStr] || 0) + 1;
+          }
+        });
+
+        // Sort by year and take last 5 years
+        const sortedYears = Object.entries(projectsByYear)
+          .sort(([a], [b]) => parseInt(a) - parseInt(b))
+          .slice(-5)
+          .map(([year, count]) => ({ year, count }));
+
+        setProjectsData(sortedYears);
+
       } catch (error) {
         console.error("Error fetching stats:", error);
       } finally {
@@ -189,27 +252,121 @@ const DashboardOverview = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {statCards.map((stat, index) => (
-        <Card key={index}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardDescription>{stat.label}</CardDescription>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <CardTitle className="text-3xl">
-              {isLoading ? (
-                <span className="inline-block w-8 h-8 bg-muted animate-pulse rounded" />
-              ) : (
-                stat.value
-              )}
-            </CardTitle>
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statCards.map((stat, index) => (
+          <Card key={index}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardDescription>{stat.label}</CardDescription>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-3xl">
+                {isLoading ? (
+                  <span className="inline-block w-8 h-8 bg-muted animate-pulse rounded" />
+                ) : (
+                  stat.value
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{stat.description}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Messages Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Mensajes por Mes</CardTitle>
+            <CardDescription>Últimos 6 meses</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">{stat.description}</p>
+            {isLoading ? (
+              <div className="h-64 bg-muted animate-pulse rounded" />
+            ) : (
+              <ChartContainer
+                config={{
+                  count: { label: "Mensajes", color: "hsl(var(--primary))" },
+                }}
+                className="h-64"
+              >
+                <BarChart data={messagesData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar 
+                    dataKey="count" 
+                    fill="hsl(var(--primary))" 
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ChartContainer>
+            )}
           </CardContent>
         </Card>
-      ))}
+
+        {/* Projects Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Proyectos por Año</CardTitle>
+            <CardDescription>Distribución de proyectos</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="h-64 bg-muted animate-pulse rounded" />
+            ) : projectsData.length > 0 ? (
+              <ChartContainer
+                config={{
+                  count: { label: "Proyectos", color: "hsl(var(--primary))" },
+                }}
+                className="h-64"
+              >
+                <BarChart data={projectsData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="year" 
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar 
+                    dataKey="count" 
+                    fill="hsl(var(--primary))" 
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
+                No hay datos de proyectos por año
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
