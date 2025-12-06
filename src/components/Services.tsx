@@ -4,6 +4,8 @@ import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
+import { useServices } from "@/hooks/useSiteData";
+import { Skeleton } from "./ui/skeleton";
 
 import construccionResidencial from "@/assets/construccion-residencial.jpg";
 import infraestructuraVial from "@/assets/infraestructura-vial.jpg";
@@ -12,7 +14,8 @@ import disenoEstructural from "@/assets/diseno-estructural.jpg";
 import ingenieriaGeotecnica from "@/assets/ingenieria-geotecnica.jpg";
 import ingenieriaVial from "@/assets/ingenieria-vial.jpg";
 
-const construccion = [
+// Default data as fallback
+const defaultConstruccion = [
   {
     title: "Construcción Residencial",
     description: "Diseño y edificación de viviendas unifamiliares y multifamiliares de alta calidad.",
@@ -30,7 +33,7 @@ const construccion = [
   },
 ];
 
-const ingenieria = [
+const defaultIngenieria = [
   {
     title: "Diseño y Análisis Estructural",
     description: "Servicios de ingeniería para el diseño, cálculo y análisis de estructuras de edificios y obras civiles.",
@@ -48,10 +51,80 @@ const ingenieria = [
   },
 ];
 
+// Map icon names to default images
+const imageMap: Record<string, string> = {
+  "Home": construccionResidencial,
+  "Construction": infraestructuraVial,
+  "Building2": edificacionesComerciales,
+  "Ruler": disenoEstructural,
+  "Layers": ingenieriaGeotecnica,
+  "ClipboardList": ingenieriaVial,
+  "Mountain": infraestructuraVial,
+};
+
+// Keywords to categorize services
+const construccionKeywords = ["construcción", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras"];
+const ingenieriaKeywords = ["ingeniería", "diseño", "estructural", "geotécnica", "consultoría", "vial"];
+
 const Services = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: construccionRef, isVisible: construccionVisible } = useScrollAnimation(0.2);
   const { ref: ingenieriaRef, isVisible: ingenieriaVisible } = useScrollAnimation(0.2);
+  
+  const { data: servicesData, isLoading } = useServices();
+
+  // Categorize services from DB or use defaults
+  const categorizeServices = () => {
+    if (!servicesData || servicesData.length === 0) {
+      return { construccion: defaultConstruccion, ingenieria: defaultIngenieria };
+    }
+
+    const construccion = servicesData
+      .filter(s => construccionKeywords.some(k => s.title.toLowerCase().includes(k)))
+      .slice(0, 3)
+      .map(s => ({
+        title: s.title,
+        description: s.description || "",
+        image: s.image_url || imageMap[s.icon] || construccionResidencial,
+      }));
+
+    const ingenieria = servicesData
+      .filter(s => ingenieriaKeywords.some(k => s.title.toLowerCase().includes(k)))
+      .slice(0, 3)
+      .map(s => ({
+        title: s.title,
+        description: s.description || "",
+        image: s.image_url || imageMap[s.icon] || disenoEstructural,
+      }));
+
+    return {
+      construccion: construccion.length > 0 ? construccion : defaultConstruccion,
+      ingenieria: ingenieria.length > 0 ? ingenieria : defaultIngenieria,
+    };
+  };
+
+  const { construccion, ingenieria } = categorizeServices();
+
+  if (isLoading) {
+    return (
+      <section id="services" className="py-24 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Skeleton className="h-12 w-64 mx-auto mb-4" />
+            <Skeleton className="h-6 w-96 mx-auto" />
+          </div>
+          <div className="mb-16">
+            <Skeleton className="h-8 w-48 mb-8" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-80 w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="services" className="py-24 bg-muted">
