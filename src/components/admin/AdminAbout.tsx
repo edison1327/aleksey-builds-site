@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Loader2, Plus, X } from "lucide-react";
+import ImageUpload from "./ImageUpload";
 
 interface AboutContent {
   id: string;
@@ -195,6 +196,14 @@ const AdminAbout = () => {
                 onChange={(e) => setContent(prev => prev ? { ...prev, vision: e.target.value } : null)}
                 placeholder="La visión de la empresa..."
                 rows={4}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Imagen</label>
+              <ImageUpload
+                value={content?.image_url || ""}
+                onChange={(url) => setContent(prev => prev ? { ...prev, image_url: url } : null)}
+                folder="about"
               />
             </div>
           </CardContent>
