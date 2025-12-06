@@ -17,6 +17,7 @@ interface Machinery {
   category: string | null;
   brand: string | null;
   model: string | null;
+  price: string | null;
   image_url: string | null;
   is_available: boolean;
   is_active: boolean;
@@ -61,6 +62,7 @@ const AdminMachinery = () => {
             category: editingMachine.category,
             brand: editingMachine.brand,
             model: editingMachine.model,
+            price: editingMachine.price,
             image_url: editingMachine.image_url,
             is_available: editingMachine.is_available,
             is_active: editingMachine.is_active,
@@ -78,6 +80,7 @@ const AdminMachinery = () => {
             category: editingMachine.category,
             brand: editingMachine.brand,
             model: editingMachine.model,
+            price: editingMachine.price,
             image_url: editingMachine.image_url,
             is_available: editingMachine.is_available,
             is_active: editingMachine.is_active,
@@ -119,6 +122,7 @@ const AdminMachinery = () => {
       category: "",
       brand: "",
       model: "",
+      price: "",
       image_url: "",
       is_available: true,
       is_active: true,
@@ -228,6 +232,14 @@ const AdminMachinery = () => {
               <Input
                 value={editingMachine?.category || ""}
                 onChange={(e) => setEditingMachine(prev => prev ? { ...prev, category: e.target.value } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Precio (ej: S/ 500/día)</label>
+              <Input
+                value={editingMachine?.price || ""}
+                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, price: e.target.value } : null)}
+                placeholder="S/ 500/día"
               />
             </div>
             <div>

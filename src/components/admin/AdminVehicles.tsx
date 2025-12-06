@@ -17,6 +17,7 @@ interface Vehicle {
   category: string | null;
   brand: string | null;
   model: string | null;
+  price: string | null;
   image_url: string | null;
   is_available: boolean;
   is_active: boolean;
@@ -61,6 +62,7 @@ const AdminVehicles = () => {
             category: editingVehicle.category,
             brand: editingVehicle.brand,
             model: editingVehicle.model,
+            price: editingVehicle.price,
             image_url: editingVehicle.image_url,
             is_available: editingVehicle.is_available,
             is_active: editingVehicle.is_active,
@@ -78,6 +80,7 @@ const AdminVehicles = () => {
             category: editingVehicle.category,
             brand: editingVehicle.brand,
             model: editingVehicle.model,
+            price: editingVehicle.price,
             image_url: editingVehicle.image_url,
             is_available: editingVehicle.is_available,
             is_active: editingVehicle.is_active,
@@ -119,6 +122,7 @@ const AdminVehicles = () => {
       category: "",
       brand: "",
       model: "",
+      price: "",
       image_url: "",
       is_available: true,
       is_active: true,
@@ -228,6 +232,14 @@ const AdminVehicles = () => {
               <Input
                 value={editingVehicle?.category || ""}
                 onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, category: e.target.value } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Precio (ej: S/ 300/día)</label>
+              <Input
+                value={editingVehicle?.price || ""}
+                onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, price: e.target.value } : null)}
+                placeholder="S/ 300/día"
               />
             </div>
             <div>
