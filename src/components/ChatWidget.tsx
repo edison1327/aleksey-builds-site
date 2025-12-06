@@ -133,6 +133,10 @@ const ChatWidget = () => {
         aria-label={isOpen ? "Cerrar chat" : "Abrir chat"}
       >
         {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {/* Pulse animation when closed */}
+        {!isOpen && (
+          <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-25" />
+        )}
       </button>
 
       {/* Chat Window */}
