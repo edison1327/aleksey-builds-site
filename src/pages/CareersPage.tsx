@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, Users, TrendingUp, Heart, Send, MapPin, Clock, DollarSign } from "lucide-react";
 
 const benefits = [
@@ -85,22 +86,49 @@ const CareersPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const { error } = await supabase
+        .from('job_applications')
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          position: formData.position,
+          message: formData.message.trim() || null,
+        });
 
-    toast({
-      title: "¡Solicitud enviada!",
-      description: "Hemos recibido tu información. Nos pondremos en contacto contigo pronto.",
-    });
+      if (error) {
+        console.error('Error submitting application:', error);
+        toast({
+          title: "Error",
+          description: "Hubo un problema al enviar tu solicitud. Por favor, intenta de nuevo.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      position: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      toast({
+        title: "¡Solicitud enviada!",
+        description: "Hemos recibido tu información. Nos pondremos en contacto contigo pronto.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        position: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Hubo un problema al enviar tu solicitud. Por favor, intenta de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
