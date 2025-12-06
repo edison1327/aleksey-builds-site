@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Users, Eye, FileText, Download } from "lucide-react";
+import { Trash2, Loader2, Users, Eye, FileText, Download, FileSpreadsheet } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -120,6 +120,50 @@ const AdminJobApplications = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (applications.length === 0) {
+      toast({ title: "Sin datos", description: "No hay postulaciones para exportar.", variant: "destructive" });
+      return;
+    }
+
+    // CSV headers
+    const headers = ["Nombre", "Email", "Teléfono", "Posición", "Estado", "Mensaje", "Tiene CV", "Fecha"];
+    
+    // CSV rows
+    const rows = applications.map((app) => [
+      `"${app.name.replace(/"/g, '""')}"`,
+      `"${app.email}"`,
+      `"${app.phone}"`,
+      `"${app.position.replace(/"/g, '""')}"`,
+      `"${statusLabels[app.status] || app.status}"`,
+      `"${(app.message || "").replace(/"/g, '""').replace(/\n/g, " ")}"`,
+      app.resume_url ? "Sí" : "No",
+      `"${format(new Date(app.created_at), "dd/MM/yyyy HH:mm", { locale: es })}"`,
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
+
+    // Add BOM for Excel compatibility with UTF-8
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `postulaciones-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({ title: "Exportado", description: `Se exportaron ${applications.length} postulaciones.` });
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -130,9 +174,17 @@ const AdminJobApplications = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-heading font-bold">Postulaciones de Empleo</h2>
-        <p className="text-muted-foreground">Postulaciones recibidas desde la página de convocatoria</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-heading font-bold">Postulaciones de Empleo</h2>
+          <p className="text-muted-foreground">Postulaciones recibidas desde la página de convocatoria</p>
+        </div>
+        {applications.length > 0 && (
+          <Button onClick={exportToCSV} variant="outline" className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" />
+            Exportar CSV
+          </Button>
+        )}
       </div>
 
       {applications.length === 0 ? (
