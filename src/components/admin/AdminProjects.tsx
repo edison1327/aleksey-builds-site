@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Star } from "lucide-react";
+import ImageUpload from "./ImageUpload";
 
 interface Project {
   id: string;
@@ -234,10 +235,11 @@ const AdminProjects = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">URL de imagen</label>
-              <Input
+              <label className="text-sm font-medium">Imagen</label>
+              <ImageUpload
                 value={editingProject?.image_url || ""}
-                onChange={(e) => setEditingProject(prev => prev ? { ...prev, image_url: e.target.value } : null)}
+                onChange={(url) => setEditingProject(prev => prev ? { ...prev, image_url: url } : null)}
+                folder="projects"
               />
             </div>
             <div className="flex items-center gap-4">
