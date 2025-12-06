@@ -137,7 +137,7 @@ const Services = () => {
       <div className="container mx-auto px-4">
         <div 
           ref={titleRef}
-          className={`text-center mb-16 opacity-0 ${titleVisible ? "animate-fade-in" : ""}`}
+          className={`text-center mb-16 transition-all duration-700 ${titleVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}
         >
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 tracking-wide">
             NUESTROS SERVICIOS
@@ -149,7 +149,7 @@ const Services = () => {
 
         {/* Construcción */}
         <div ref={construccionRef} className="mb-16">
-          <div className={`flex items-center gap-3 mb-8 opacity-0 ${construccionVisible ? "animate-fade-in-left" : ""}`}>
+          <div className={`flex items-center gap-3 mb-8 transition-all duration-700 ${construccionVisible ? "opacity-100 translate-x-0" : "opacity-100"}`}>
             <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
               <Building className="h-6 w-6 text-primary" />
             </div>
@@ -159,8 +159,8 @@ const Services = () => {
             {construccion.map((item, index) => (
               <Card 
                 key={index} 
-                className={`group border-0 bg-card overflow-hidden opacity-0 hover-border-glow ${
-                  construccionVisible ? "animate-fade-in-up" : ""
+                className={`group border-0 bg-card overflow-hidden transition-all duration-700 hover-border-glow ${
+                  construccionVisible ? "opacity-100 translate-y-0" : "opacity-100"
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
@@ -180,7 +180,7 @@ const Services = () => {
               </Card>
             ))}
           </div>
-          <div className={`text-center mt-8 opacity-0 ${construccionVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
+          <div className={`text-center mt-8 transition-all duration-700 ${construccionVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}>
             <Link to="/construccion">
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8">
                 VER MÁS CONSTRUCCIÓN
@@ -191,7 +191,7 @@ const Services = () => {
 
         {/* Ingeniería */}
         <div ref={ingenieriaRef}>
-          <div className={`flex items-center gap-3 mb-8 opacity-0 ${ingenieriaVisible ? "animate-fade-in-left" : ""}`}>
+          <div className={`flex items-center gap-3 mb-8 transition-all duration-700 ${ingenieriaVisible ? "opacity-100 translate-x-0" : "opacity-100"}`}>
             <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
               <Compass className="h-6 w-6 text-primary" />
             </div>
@@ -201,8 +201,8 @@ const Services = () => {
             {ingenieria.map((item, index) => (
               <Card 
                 key={index} 
-                className={`group border-0 bg-card overflow-hidden opacity-0 hover-border-glow ${
-                  ingenieriaVisible ? "animate-fade-in-up" : ""
+                className={`group border-0 bg-card overflow-hidden transition-all duration-700 hover-border-glow ${
+                  ingenieriaVisible ? "opacity-100 translate-y-0" : "opacity-100"
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
@@ -222,7 +222,7 @@ const Services = () => {
               </Card>
             ))}
           </div>
-          <div className={`text-center mt-8 opacity-0 ${ingenieriaVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
+          <div className={`text-center mt-8 transition-all duration-700 ${ingenieriaVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}>
             <Link to="/ingenieria">
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider px-8">
                 VER MÁS INGENIERÍA
