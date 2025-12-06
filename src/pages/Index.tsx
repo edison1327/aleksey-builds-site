@@ -29,10 +29,10 @@ const Index = () => {
       )}
       <Navbar />
       <Hero />
+      <Services />
       <ProjectsSection />
       <Vehicles />
       <Machinery />
-      <Services />
       <CallToAction />
       <Contact />
       <Footer />
