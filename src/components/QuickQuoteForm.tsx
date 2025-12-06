@@ -17,7 +17,7 @@ const quoteSchema = z.object({
 
 interface QuickQuoteFormProps {
   itemName: string;
-  itemType: "vehículo" | "maquinaria";
+  itemType: "vehículo" | "maquinaria" | "servicio";
   onSuccess?: () => void;
 }
 
