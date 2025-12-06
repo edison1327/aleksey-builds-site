@@ -32,7 +32,13 @@ const VehiclesPage = () => {
   const { data: vehicles, isLoading } = useVehicles();
 
   const scrollToContact = () => {
-    navigate("/#contact");
+    navigate("/");
+    setTimeout(() => {
+      const contactSection = document.getElementById("contact");
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   const getDefaultImage = (index: number) => defaultImages[index % defaultImages.length];

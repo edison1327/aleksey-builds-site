@@ -54,7 +54,13 @@ const Construction = () => {
   ];
 
   const scrollToContact = () => {
-    navigate("/#contact");
+    navigate("/");
+    setTimeout(() => {
+      const contactSection = document.getElementById("contact");
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   const getServiceImage = (service: Service, index: number) => {
