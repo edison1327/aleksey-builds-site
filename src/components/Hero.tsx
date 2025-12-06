@@ -5,8 +5,8 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import heroImage from "@/assets/hero-construction.jpg";
 
-// Video de construcción de Pexels (libre de derechos)
-const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/3129671/3129671-sd_640_360_30fps.mp4";
+// Video de maquinaria de construcción de Pexels (libre de derechos)
+const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/5765320/5765320-uhd_2560_1440_25fps.mp4";
 
 const services = [
   { icon: Building2, title: "CONSTRUCCIÓN", desc: "Proyectos residenciales y comerciales" },
