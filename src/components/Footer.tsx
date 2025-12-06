@@ -1,8 +1,30 @@
 import { Facebook, Instagram, Linkedin, Twitter, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useContactInfo } from "@/hooks/useSiteData";
 import logoAleksey from "@/assets/logo-aleksey.png";
 
+// Default contact info
+const defaultContact = {
+  address: "Av. Principal 123, Ciudad Capital",
+  city: "Venezuela",
+  phone: "+58 414 123 4567",
+  email: "info@aleksey.com",
+  business_hours: "Lun - Vie: 8:00 AM - 6:00 PM",
+};
+
 const Footer = () => {
+  const { data: contactInfo } = useContactInfo();
+  
+  // Use database contact info or defaults
+  const address = contactInfo?.address || defaultContact.address;
+  const city = contactInfo?.city || defaultContact.city;
+  const country = contactInfo?.country || "";
+  const phone = contactInfo?.phone || defaultContact.phone;
+  const email = contactInfo?.email || defaultContact.email;
+  const businessHours = contactInfo?.business_hours || defaultContact.business_hours;
+  
+  const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
+
   return (
     <footer className="bg-secondary text-secondary-foreground py-12">
       <div className="container mx-auto px-4">
@@ -76,19 +98,19 @@ const Footer = () => {
             <ul className="space-y-3 text-secondary-foreground/80">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <span>Av. Principal 123, Ciudad Capital, Venezuela</span>
+                <span>{fullAddress}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                <a href="tel:+584141234567" className="hover:text-primary transition-colors">+58 414 123 4567</a>
+                <a href={`tel:${phone.replace(/\s/g, '')}`} className="hover:text-primary transition-colors">{phone}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                <a href="mailto:info@aleksey.com" className="hover:text-primary transition-colors">info@aleksey.com</a>
+                <a href={`mailto:${email}`} className="hover:text-primary transition-colors">{email}</a>
               </li>
               <li className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <span>Lun - Vie: 8:00 AM - 6:00 PM</span>
+                <span>{businessHours}</span>
               </li>
             </ul>
           </div>

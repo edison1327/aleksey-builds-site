@@ -4,32 +4,44 @@ import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
+import { useVehicles } from "@/hooks/useSiteData";
 
 import fordTransit from "@/assets/ford-transit.jpg";
 import ram2500 from "@/assets/ram-2500.jpg";
 import isuzuNpr from "@/assets/isuzu-npr.jpg";
 
-const vehicles = [
+// Default vehicles for when database is empty
+const defaultVehicles = [
   {
-    title: "Ford Transit Cargo Van",
+    id: "1",
+    name: "Ford Transit Cargo Van",
     description: "Motor 3.5L V6, Transmisión automática, Capacidad de carga 1,800 kg, Aire acondicionado, Conectividad Bluetooth.",
-    image: fordTransit,
+    image_url: fordTransit,
+    is_available: true,
   },
   {
-    title: "Ram 2500 Heavy Duty Pickup",
+    id: "2",
+    name: "Ram 2500 Heavy Duty Pickup",
     description: "Motor 6.4L HEMI V8, Transmisión automática de 8 velocidades, Capacidad de remolque 8,000 kg, Tracción 4x4, Asientos de tela.",
-    image: ram2500,
+    image_url: ram2500,
+    is_available: true,
   },
   {
-    title: "Isuzu NPR Box Truck",
+    id: "3",
+    name: "Isuzu NPR Box Truck",
     description: "Motor diésel 5.2L, Transmisión automática, Caja seca de 16 pies, Capacidad de carga 4,500 kg, Frenos ABS.",
-    image: isuzuNpr,
+    image_url: isuzuNpr,
+    is_available: true,
   },
 ];
 
 const Vehicles = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
+  const { data: dbVehicles } = useVehicles(3);
+  
+  // Use database vehicles if available, otherwise use defaults
+  const vehicles = dbVehicles.length > 0 ? dbVehicles : defaultVehicles;
 
   return (
     <section id="vehicles" className="py-24 bg-background">
@@ -54,7 +66,7 @@ const Vehicles = () => {
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {vehicles.map((vehicle, index) => (
             <Card 
-              key={index} 
+              key={vehicle.id} 
               className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
                 cardsVisible ? "animate-scale-in" : ""
               }`}
@@ -62,15 +74,20 @@ const Vehicles = () => {
             >
               <div className="relative h-48">
                 <ParallaxImage 
-                  src={vehicle.image} 
-                  alt={vehicle.title}
+                  src={vehicle.image_url || fordTransit} 
+                  alt={vehicle.name}
                   className="h-full"
                   speed={0.15}
                 />
               </div>
               <CardContent className="p-6">
-                <h3 className="text-xl font-heading font-bold text-foreground mb-3">{vehicle.title}</h3>
+                <h3 className="text-xl font-heading font-bold text-foreground mb-3">{vehicle.name}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{vehicle.description}</p>
+                {vehicle.is_available !== undefined && (
+                  <span className={`text-sm font-medium mt-2 inline-block ${vehicle.is_available ? "text-green-600" : "text-red-600"}`}>
+                    {vehicle.is_available ? "Disponible" : "No disponible"}
+                  </span>
+                )}
               </CardContent>
             </Card>
           ))}
