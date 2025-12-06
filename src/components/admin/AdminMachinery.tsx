@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import ImageUpload from "./ImageUpload";
 
 interface Machinery {
   id: string;
@@ -230,10 +231,11 @@ const AdminMachinery = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">URL de imagen</label>
-              <Input
+              <label className="text-sm font-medium">Imagen</label>
+              <ImageUpload
                 value={editingMachine?.image_url || ""}
-                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, image_url: e.target.value } : null)}
+                onChange={(url) => setEditingMachine(prev => prev ? { ...prev, image_url: url } : null)}
+                folder="machinery"
               />
             </div>
             <div className="flex items-center gap-4">

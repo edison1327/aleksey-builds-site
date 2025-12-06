@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, GripVertical } from "lucide-react";
+import ImageUpload from "./ImageUpload";
 
 interface Service {
   id: string;
@@ -204,10 +205,11 @@ const AdminServices = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">URL de imagen</label>
-              <Input
+              <label className="text-sm font-medium">Imagen</label>
+              <ImageUpload
                 value={editingService?.image_url || ""}
-                onChange={(e) => setEditingService(prev => prev ? { ...prev, image_url: e.target.value } : null)}
+                onChange={(url) => setEditingService(prev => prev ? { ...prev, image_url: url } : null)}
+                folder="services"
               />
             </div>
             <div className="flex items-center gap-2">
