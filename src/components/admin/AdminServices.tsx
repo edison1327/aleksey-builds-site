@@ -142,7 +142,16 @@ const AdminServices = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {services.map((service) => (
-          <Card key={service.id} className={!service.is_active ? "opacity-50" : ""}>
+          <Card key={service.id} className={`overflow-hidden ${!service.is_active ? "opacity-50" : ""}`}>
+            {service.image_url && (
+              <div className="relative h-32 overflow-hidden">
+                <img 
+                  src={service.image_url} 
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{service.title}</CardTitle>
@@ -169,6 +178,11 @@ const AdminServices = () => {
                 <span className={`text-xs px-2 py-1 rounded ${service.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
                   {service.is_active ? "Activo" : "Inactivo"}
                 </span>
+                {!service.image_url && (
+                  <span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">
+                    Sin imagen
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>
