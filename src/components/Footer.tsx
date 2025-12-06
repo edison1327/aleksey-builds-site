@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 import logoAleksey from "@/assets/logo-aleksey.png";
 
 const Footer = () => {
@@ -18,20 +19,20 @@ const Footer = () => {
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
             <ul className="space-y-2 text-secondary-foreground/80">
-              <li className="hover:text-primary transition-colors cursor-pointer">Construcción</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">Ingeniería</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">Vehículos</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">Maquinaria</li>
+              <li><Link to="/construccion" className="hover:text-primary transition-colors">Construcción</Link></li>
+              <li><Link to="/ingenieria" className="hover:text-primary transition-colors">Ingeniería</Link></li>
+              <li><Link to="/vehiculos" className="hover:text-primary transition-colors">Vehículos</Link></li>
+              <li><Link to="/maquinaria" className="hover:text-primary transition-colors">Maquinaria</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
             <ul className="space-y-2 text-secondary-foreground/80">
-              <li className="hover:text-primary transition-colors cursor-pointer">Sobre Nosotros</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">Proyectos</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">Contacto</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">Trabaja con Nosotros</li>
+              <li><Link to="/nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
+              <li><Link to="/proyectos" className="hover:text-primary transition-colors">Proyectos</Link></li>
+              <li><a href="/#contact" className="hover:text-primary transition-colors">Contacto</a></li>
+              <li><Link to="/convocatoria" className="hover:text-primary transition-colors">Trabaja con Nosotros</Link></li>
             </ul>
           </div>
 
