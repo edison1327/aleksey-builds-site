@@ -219,3 +219,35 @@ export const useContactInfo = () => {
 
   return { data, isLoading };
 };
+
+// Types for About Content
+export interface AboutContent {
+  id: string;
+  title: string;
+  description: string | null;
+  mission: string | null;
+  vision: string | null;
+  values: string[] | null;
+  image_url: string | null;
+}
+
+// Hook for About Content
+export const useAboutContent = () => {
+  const [data, setData] = useState<AboutContent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: aboutData } = await supabase
+        .from("about_content")
+        .select("*")
+        .maybeSingle();
+      
+      setData(aboutData);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  return { data, isLoading };
+};
