@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useMachinery, Machinery } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
+import QuickQuoteForm from "@/components/QuickQuoteForm";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
@@ -186,16 +187,19 @@ const MachineryPage = () => {
                 )}
               </div>
               
-              <Button
-                onClick={() => {
-                  setSelectedMachine(null);
-                  scrollToContact();
-                }}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
-                disabled={!selectedMachine.is_available}
-              >
-                {selectedMachine.is_available ? "SOLICITAR COTIZACIÓN" : "NO DISPONIBLE"}
-              </Button>
+              {selectedMachine.is_available ? (
+                <QuickQuoteForm 
+                  itemName={selectedMachine.name} 
+                  itemType="maquinaria"
+                  onSuccess={() => setSelectedMachine(null)}
+                />
+              ) : (
+                <div className="border-t pt-4 mt-4">
+                  <p className="text-center text-muted-foreground">
+                    Esta maquinaria no está disponible actualmente.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>
