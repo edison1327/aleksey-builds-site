@@ -16,8 +16,14 @@ import consultoriaProyectos from "@/assets/consultoria-proyectos.jpg";
 
 const defaultImages = [construccionResidencial, infraestructuraVial, edificacionesComerciales, movimientoTierras, consultoriaProyectos];
 
-// Keywords to identify construction services
-const construccionKeywords = ["construcción", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras", "industrial"];
+// Keywords to identify construction services (normalized without accents)
+const construccionKeywords = ["construccion", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras", "industrial"];
+
+// Helper to normalize text for matching (remove accents and lowercase)
+const normalizeText = (text: string) => 
+  text.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
 const Construction = () => {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -30,7 +36,7 @@ const Construction = () => {
 
   // Filter construction services
   const services = allServices.filter(s => 
-    construccionKeywords.some(k => s.title.toLowerCase().includes(k))
+    construccionKeywords.some(k => normalizeText(s.title).includes(k))
   );
 
   const stats = [
