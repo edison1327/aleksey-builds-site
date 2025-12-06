@@ -1,4 +1,4 @@
-import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban, Briefcase } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logoAleksey from "@/assets/logo-aleksey.png";
@@ -24,7 +24,7 @@ const Navbar = () => {
     setIsServicesOpen(false);
     
     // Direct page navigation for services
-    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria", "/nosotros", "/proyectos"].includes(path)) {
+    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria", "/nosotros", "/proyectos", "/convocatoria"].includes(path)) {
       navigate(path);
       setActiveSection(label);
       return;
@@ -79,6 +79,7 @@ const Navbar = () => {
         "/maquinaria": "MAQUINARIA",
         "/nosotros": "SOBRE NOSOTROS",
         "/proyectos": "PROYECTOS",
+        "/convocatoria": "CONVOCATORIA",
       };
       if (routeMap[location.pathname]) {
         setActiveSection(routeMap[location.pathname]);
@@ -218,6 +219,19 @@ const Navbar = () => {
               <Phone className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
               <span className="relative z-10">CONTACTO</span>
             </button>
+
+            {/* CONVOCATORIA */}
+            <button
+              onClick={() => handleNavClick("/convocatoria", "CONVOCATORIA")}
+              className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+            >
+              <span 
+                className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
+                style={{ zIndex: -1 }}
+              />
+              <Briefcase className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+              <span className="relative z-10">CONVOCATORIA</span>
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -319,6 +333,19 @@ const Navbar = () => {
             >
               <Phone className="h-5 w-5" />
               <span className="font-heading tracking-wide">CONTACTO</span>
+            </button>
+
+            {/* CONVOCATORIA */}
+            <button
+              onClick={() => handleNavClick("/convocatoria", "CONVOCATORIA")}
+              className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
+                activeSection === "CONVOCATORIA"
+                  ? "text-primary font-bold"
+                  : "text-secondary-foreground/80 hover:text-primary-foreground"
+              }`}
+            >
+              <Briefcase className="h-5 w-5" />
+              <span className="font-heading tracking-wide">CONVOCATORIA</span>
             </button>
           </div>
         )}
