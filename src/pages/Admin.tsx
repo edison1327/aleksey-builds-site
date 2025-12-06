@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
-  Mail, Users, Settings, LayoutDashboard 
+  Mail, Users, Settings, LayoutDashboard, Info
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminServices from "@/components/admin/AdminServices";
@@ -16,6 +16,7 @@ import AdminVehicles from "@/components/admin/AdminVehicles";
 import AdminContact from "@/components/admin/AdminContact";
 import AdminMessages from "@/components/admin/AdminMessages";
 import AdminJobApplications from "@/components/admin/AdminJobApplications";
+import AdminAbout from "@/components/admin/AdminAbout";
 
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
@@ -48,6 +49,7 @@ const Admin = () => {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "hero", label: "Hero", icon: Home },
+    { id: "about", label: "About", icon: Info },
     { id: "services", label: "Servicios", icon: Building2 },
     { id: "projects", label: "Proyectos", icon: FolderOpen },
     { id: "machinery", label: "Maquinaria", icon: Truck },
@@ -104,6 +106,10 @@ const Admin = () => {
 
           <TabsContent value="hero">
             <AdminHero />
+          </TabsContent>
+
+          <TabsContent value="about">
+            <AdminAbout />
           </TabsContent>
 
           <TabsContent value="services">
