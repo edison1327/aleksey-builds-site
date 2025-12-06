@@ -14,8 +14,14 @@ import ingenieriaVial from "@/assets/ingenieria-vial.jpg";
 
 const defaultImages = [disenoEstructural, ingenieriaGeotecnica, ingenieriaVial];
 
-// Keywords to identify engineering services
-const ingenieriaKeywords = ["ingeniería", "diseño", "estructural", "geotécnica", "consultoría", "vial", "análisis"];
+// Keywords to identify engineering services (normalized without accents)
+const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "vial", "analisis"];
+
+// Helper to normalize text for matching (remove accents and lowercase)
+const normalizeText = (text: string) => 
+  text.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
 const Engineering = () => {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -28,7 +34,7 @@ const Engineering = () => {
 
   // Filter engineering services
   const services = allServices.filter(s => 
-    ingenieriaKeywords.some(k => s.title.toLowerCase().includes(k))
+    ingenieriaKeywords.some(k => normalizeText(s.title).includes(k))
   );
 
   const stats = [
