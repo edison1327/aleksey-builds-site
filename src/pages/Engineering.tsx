@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Compass, Check, Clock, Award, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,8 +6,14 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useServices, useHeroContent } from "@/hooks/useSiteData";
+import { useServices, useHeroContent, Service } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import disenoEstructural from "@/assets/diseno-estructural.jpg";
 import ingenieriaGeotecnica from "@/assets/ingenieria-geotecnica.jpg";
@@ -28,6 +35,7 @@ const Engineering = () => {
   const { ref: servicesRef, isVisible: servicesVisible } = useScrollAnimation(0.1);
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
   
   const { data: allServices, isLoading } = useServices();
   const { data: heroData } = useHeroContent();
@@ -46,6 +54,10 @@ const Engineering = () => {
 
   const scrollToContact = () => {
     navigate("/#contact");
+  };
+
+  const getServiceImage = (service: Service, index: number) => {
+    return service.image_url || defaultImages[index % defaultImages.length];
   };
 
   return (
@@ -83,17 +95,9 @@ const Engineering = () => {
           </div>
 
           {isLoading ? (
-            <div className="space-y-16">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <Skeleton className="h-80 w-full rounded-2xl" />
-                  <div className="space-y-4">
-                    <Skeleton className="h-8 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-2/3" />
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Skeleton key={i} className="h-80 w-full rounded-2xl" />
               ))}
             </div>
           ) : services.length === 0 ? (
@@ -101,48 +105,32 @@ const Engineering = () => {
               <p className="text-muted-foreground text-lg">No hay servicios de ingeniería disponibles.</p>
             </div>
           ) : (
-            <div className="space-y-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service, index) => (
-                <div 
+                <Card 
                   key={service.id}
-                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center transition-all duration-700 ${
+                  className={`overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                     servicesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                  onClick={() => setSelectedService(service)}
                 >
-                  <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                    <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
-                      <img 
-                        src={service.image_url || defaultImages[index % defaultImages.length]} 
-                        alt={service.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={getServiceImage(service, index)} 
+                      alt={service.title}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
                   </div>
-                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                    <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
+                  <CardContent className="p-4">
+                    <h3 className="text-lg font-heading font-bold text-foreground mb-2 line-clamp-1">
                       {service.title}
                     </h3>
                     {service.description && (
-                      <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{service.description}</p>
                     )}
-                    {service.features && service.features.length > 0 && (
-                      <>
-                        <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Características</h4>
-                        <div className="grid grid-cols-2 gap-3">
-                          {service.features.map((feature, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                              <div className="bg-primary/10 p-1 rounded-full">
-                                <Check className="h-4 w-4 text-primary" />
-                              </div>
-                              <span className="text-sm text-foreground">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
@@ -205,6 +193,55 @@ const Engineering = () => {
       </section>
 
       <Footer />
+
+      {/* Service Detail Modal */}
+      <Dialog open={!!selectedService} onOpenChange={() => setSelectedService(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-heading font-bold">
+              {selectedService?.title}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedService && (
+            <div className="space-y-4">
+              <div className="relative h-64 rounded-lg overflow-hidden">
+                <img 
+                  src={selectedService.image_url || defaultImages[0]} 
+                  alt={selectedService.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {selectedService.description && (
+                <p className="text-muted-foreground leading-relaxed">{selectedService.description}</p>
+              )}
+              {selectedService.features && selectedService.features.length > 0 && (
+                <div>
+                  <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Características</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {selectedService.features.map((feature, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="bg-primary/10 p-1 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="text-sm text-foreground">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <Button
+                onClick={() => {
+                  setSelectedService(null);
+                  scrollToContact();
+                }}
+                className="w-full font-heading tracking-wider"
+              >
+                SOLICITAR INFORMACIÓN
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
