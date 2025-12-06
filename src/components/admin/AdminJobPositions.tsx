@@ -8,7 +8,24 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Briefcase } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Briefcase, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface JobPosition {
   id: string;
@@ -34,12 +51,93 @@ const emptyPosition: Omit<JobPosition, "id"> & { id: string } = {
   sort_order: 0,
 };
 
+interface SortablePositionCardProps {
+  position: JobPosition;
+  onEdit: (position: JobPosition) => void;
+  onDelete: (id: string) => void;
+  onToggleActive: (id: string, isActive: boolean) => void;
+}
+
+const SortablePositionCard = ({ position, onEdit, onDelete, onToggleActive }: SortablePositionCardProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: position.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={`${!position.is_active ? "opacity-60" : ""} ${isDragging ? "shadow-lg ring-2 ring-primary" : ""}`}
+    >
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <button
+              {...attributes}
+              {...listeners}
+              className="mt-1 cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
+            >
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <div>
+              <CardTitle className="text-lg">{position.title}</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {position.department} • {position.location} • {position.type}
+                {position.salary && ` • ${position.salary}`}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={position.is_active}
+              onCheckedChange={(checked) => onToggleActive(position.id, checked)}
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(position)}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => onDelete(position.id)}>
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      {position.description && (
+        <CardContent className="pt-0 pl-12">
+          <p className="text-sm text-muted-foreground line-clamp-2">{position.description}</p>
+        </CardContent>
+      )}
+    </Card>
+  );
+};
+
 const AdminJobPositions = () => {
   const [positions, setPositions] = useState<JobPosition[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingPosition, setEditingPosition] = useState<JobPosition | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     fetchPositions();
@@ -57,6 +155,39 @@ const AdminJobPositions = () => {
       setPositions(data || []);
     }
     setIsLoading(false);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = positions.findIndex((p) => p.id === active.id);
+      const newIndex = positions.findIndex((p) => p.id === over.id);
+
+      const newPositions = arrayMove(positions, oldIndex, newIndex);
+      setPositions(newPositions);
+
+      // Update sort_order in database
+      try {
+        const updates = newPositions.map((p, index) => ({
+          id: p.id,
+          sort_order: index,
+        }));
+
+        for (const update of updates) {
+          await supabase
+            .from("job_positions")
+            .update({ sort_order: update.sort_order })
+            .eq("id", update.id);
+        }
+
+        toast({ title: "Orden actualizado", description: "El orden se guardó correctamente." });
+      } catch (error) {
+        console.error("Error updating order:", error);
+        toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+        fetchPositions();
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -147,7 +278,7 @@ const AdminJobPositions = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-heading font-bold">Vacantes</h2>
-          <p className="text-muted-foreground">Gestiona las posiciones abiertas</p>
+          <p className="text-muted-foreground">Gestiona las posiciones abiertas. Arrastra para reordenar.</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -263,47 +394,31 @@ const AdminJobPositions = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {positions.map((position) => (
-            <Card key={position.id} className={!position.is_active ? "opacity-60" : ""}>
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{position.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {position.department} • {position.location} • {position.type}
-                      {position.salary && ` • ${position.salary}`}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      checked={position.is_active}
-                      onCheckedChange={(checked) => handleToggleActive(position.id, checked)}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setEditingPosition(position);
-                        setIsDialogOpen(true);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(position.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              {position.description && (
-                <CardContent className="pt-0">
-                  <p className="text-sm text-muted-foreground line-clamp-2">{position.description}</p>
-                </CardContent>
-              )}
-            </Card>
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={positions.map((p) => p.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-3">
+              {positions.map((position) => (
+                <SortablePositionCard
+                  key={position.id}
+                  position={position}
+                  onEdit={(p) => {
+                    setEditingPosition(p);
+                    setIsDialogOpen(true);
+                  }}
+                  onDelete={handleDelete}
+                  onToggleActive={handleToggleActive}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );

@@ -9,8 +9,25 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Heart } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Heart, GripVertical } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Benefit {
   id: string;
@@ -36,12 +53,114 @@ const iconOptions = [
   "Home", "Zap", "Coffee", "Globe", "Gift"
 ];
 
+const getIcon = (iconName: string): React.ComponentType<{ className?: string }> => {
+  const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+    DollarSign: LucideIcons.DollarSign,
+    GraduationCap: LucideIcons.GraduationCap,
+    Shield: LucideIcons.Shield,
+    TrendingUp: LucideIcons.TrendingUp,
+    Users: LucideIcons.Users,
+    Building2: LucideIcons.Building2,
+    Heart: LucideIcons.Heart,
+    Briefcase: LucideIcons.Briefcase,
+    Star: LucideIcons.Star,
+    Award: LucideIcons.Award,
+    Clock: LucideIcons.Clock,
+    Home: LucideIcons.Home,
+    Zap: LucideIcons.Zap,
+    Coffee: LucideIcons.Coffee,
+    Globe: LucideIcons.Globe,
+    Gift: LucideIcons.Gift,
+  };
+  return icons[iconName] || LucideIcons.Star;
+};
+
+interface SortableBenefitCardProps {
+  benefit: Benefit;
+  onEdit: (benefit: Benefit) => void;
+  onDelete: (id: string) => void;
+  onToggleActive: (id: string, isActive: boolean) => void;
+}
+
+const SortableBenefitCard = ({ benefit, onEdit, onDelete, onToggleActive }: SortableBenefitCardProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: benefit.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const IconComponent = getIcon(benefit.icon);
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={`${!benefit.is_active ? "opacity-60" : ""} ${isDragging ? "shadow-lg ring-2 ring-primary" : ""}`}
+    >
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
+            >
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+              <IconComponent className="h-5 w-5 text-primary" />
+            </div>
+            <CardTitle className="text-base">{benefit.title}</CardTitle>
+          </div>
+          <Switch
+            checked={benefit.is_active}
+            onCheckedChange={(checked) => onToggleActive(benefit.id, checked)}
+          />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          {benefit.description}
+        </p>
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onEdit(benefit)}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => onDelete(benefit.id)}>
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 const AdminBenefits = () => {
   const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingBenefit, setEditingBenefit] = useState<Benefit | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     fetchBenefits();
@@ -61,26 +180,37 @@ const AdminBenefits = () => {
     setIsLoading(false);
   };
 
-  const getIcon = (iconName: string): React.ComponentType<{ className?: string }> => {
-    const icons: Record<string, React.ComponentType<{ className?: string }>> = {
-      DollarSign: LucideIcons.DollarSign,
-      GraduationCap: LucideIcons.GraduationCap,
-      Shield: LucideIcons.Shield,
-      TrendingUp: LucideIcons.TrendingUp,
-      Users: LucideIcons.Users,
-      Building2: LucideIcons.Building2,
-      Heart: LucideIcons.Heart,
-      Briefcase: LucideIcons.Briefcase,
-      Star: LucideIcons.Star,
-      Award: LucideIcons.Award,
-      Clock: LucideIcons.Clock,
-      Home: LucideIcons.Home,
-      Zap: LucideIcons.Zap,
-      Coffee: LucideIcons.Coffee,
-      Globe: LucideIcons.Globe,
-      Gift: LucideIcons.Gift,
-    };
-    return icons[iconName] || LucideIcons.Star;
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = benefits.findIndex((b) => b.id === active.id);
+      const newIndex = benefits.findIndex((b) => b.id === over.id);
+
+      const newBenefits = arrayMove(benefits, oldIndex, newIndex);
+      setBenefits(newBenefits);
+
+      // Update sort_order in database
+      try {
+        const updates = newBenefits.map((b, index) => ({
+          id: b.id,
+          sort_order: index,
+        }));
+
+        for (const update of updates) {
+          await supabase
+            .from("company_benefits")
+            .update({ sort_order: update.sort_order })
+            .eq("id", update.id);
+        }
+
+        toast({ title: "Orden actualizado", description: "El orden se guardó correctamente." });
+      } catch (error) {
+        console.error("Error updating order:", error);
+        toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+        fetchBenefits();
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -165,7 +295,7 @@ const AdminBenefits = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-heading font-bold">Beneficios</h2>
-          <p className="text-muted-foreground">Gestiona los beneficios de la empresa</p>
+          <p className="text-muted-foreground">Gestiona los beneficios de la empresa. Arrastra para reordenar.</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -263,49 +393,31 @@ const AdminBenefits = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {benefits.map((benefit) => {
-            const IconComponent = getIcon(benefit.icon);
-            return (
-              <Card key={benefit.id} className={!benefit.is_active ? "opacity-60" : ""}>
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <IconComponent className="h-5 w-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-base">{benefit.title}</CardTitle>
-                    </div>
-                    <Switch
-                      checked={benefit.is_active}
-                      onCheckedChange={(checked) => handleToggleActive(benefit.id, checked)}
-                    />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                    {benefit.description}
-                  </p>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setEditingBenefit(benefit);
-                        setIsDialogOpen(true);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => handleDelete(benefit.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={benefits.map((b) => b.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {benefits.map((benefit) => (
+                <SortableBenefitCard
+                  key={benefit.id}
+                  benefit={benefit}
+                  onEdit={(b) => {
+                    setEditingBenefit(b);
+                    setIsDialogOpen(true);
+                  }}
+                  onDelete={handleDelete}
+                  onToggleActive={handleToggleActive}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );
