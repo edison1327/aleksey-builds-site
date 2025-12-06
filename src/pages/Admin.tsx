@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
-  Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart
+  Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -22,11 +23,14 @@ import AdminJobApplications from "@/components/admin/AdminJobApplications";
 import AdminJobPositions from "@/components/admin/AdminJobPositions";
 import AdminBenefits from "@/components/admin/AdminBenefits";
 import AdminAbout from "@/components/admin/AdminAbout";
+import AdminSiteSettings from "@/components/admin/AdminSiteSettings";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const { data: siteSettings } = useSiteSettings();
 
   useEffect(() => {
     if (!isLoading && (!user || !isAdmin)) {
@@ -41,8 +45,11 @@ const Admin = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-muted flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted to-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground">Cargando...</p>
+        </div>
       </div>
     );
   }
@@ -53,6 +60,7 @@ const Admin = () => {
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "site", label: "Logo & Sitio", icon: Image },
     { id: "hero", label: "Hero", icon: Home },
     { id: "about", label: "About", icon: Info },
     { id: "services", label: "Servicios", icon: Building2 },
@@ -67,93 +75,130 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-muted">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/50 to-background">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="bg-card/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-heading font-bold text-foreground tracking-wide">
-              ALEKSEY CMS
-            </h1>
+            {siteSettings?.logo_url ? (
+              <img 
+                src={siteSettings.logo_url} 
+                alt={siteSettings.company_name || "Logo"} 
+                className="h-8 object-contain"
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="bg-primary rounded-lg p-2">
+                  <Building2 className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <span className="text-xl font-heading font-bold text-foreground tracking-wide">
+                  {siteSettings?.company_name || "ALEKSEY"}
+                </span>
+              </div>
+            )}
+            <div className="h-6 w-px bg-border hidden sm:block" />
+            <span className="text-sm font-medium text-muted-foreground hidden sm:block">
+              Panel de Administración
+            </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Link to="/">
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2 shadow-sm hover:shadow transition-shadow">
                 <Home className="h-4 w-4" />
-                Ver sitio
+                <span className="hidden sm:inline">Ver sitio</span>
               </Button>
             </Link>
-            <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleSignOut} 
+              className="gap-2 text-muted-foreground hover:text-foreground"
+            >
               <LogOut className="h-4 w-4" />
-              Salir
+              <span className="hidden sm:inline">Salir</span>
             </Button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="flex flex-wrap gap-2 h-auto bg-card p-2 rounded-xl">
-            {menuItems.map((item) => (
-              <TabsTrigger
-                key={item.id}
-                value={item.id}
-                className="gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          {/* Improved Navigation */}
+          <div className="bg-card/80 backdrop-blur-sm rounded-2xl border border-border/50 shadow-lg p-2">
+            <ScrollArea className="w-full">
+              <TabsList className="flex w-max gap-1 bg-transparent p-0">
+                {menuItems.map((item) => (
+                  <TabsTrigger
+                    key={item.id}
+                    value={item.id}
+                    className="gap-2 px-4 py-2.5 rounded-xl text-muted-foreground transition-all duration-300
+                      data-[state=active]:bg-primary data-[state=active]:text-primary-foreground 
+                      data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25
+                      hover:bg-muted hover:text-foreground"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className="font-medium">{item.label}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </ScrollArea>
+          </div>
 
-          <TabsContent value="dashboard">
-            <DashboardOverview />
-          </TabsContent>
+          {/* Content Cards with animations */}
+          <div className="animate-fade-in">
+            <TabsContent value="dashboard" className="mt-0">
+              <DashboardOverview />
+            </TabsContent>
 
-          <TabsContent value="hero">
-            <AdminHero />
-          </TabsContent>
+            <TabsContent value="site" className="mt-0">
+              <AdminSiteSettings />
+            </TabsContent>
 
-          <TabsContent value="about">
-            <AdminAbout />
-          </TabsContent>
+            <TabsContent value="hero" className="mt-0">
+              <AdminHero />
+            </TabsContent>
 
-          <TabsContent value="services">
-            <AdminServices />
-          </TabsContent>
+            <TabsContent value="about" className="mt-0">
+              <AdminAbout />
+            </TabsContent>
 
-          <TabsContent value="projects">
-            <AdminProjects />
-          </TabsContent>
+            <TabsContent value="services" className="mt-0">
+              <AdminServices />
+            </TabsContent>
 
-          <TabsContent value="machinery">
-            <AdminMachinery />
-          </TabsContent>
+            <TabsContent value="projects" className="mt-0">
+              <AdminProjects />
+            </TabsContent>
 
-          <TabsContent value="vehicles">
-            <AdminVehicles />
-          </TabsContent>
+            <TabsContent value="machinery" className="mt-0">
+              <AdminMachinery />
+            </TabsContent>
 
-          <TabsContent value="contact">
-            <AdminContact />
-          </TabsContent>
+            <TabsContent value="vehicles" className="mt-0">
+              <AdminVehicles />
+            </TabsContent>
 
-          <TabsContent value="messages">
-            <AdminMessages />
-          </TabsContent>
+            <TabsContent value="contact" className="mt-0">
+              <AdminContact />
+            </TabsContent>
 
-          <TabsContent value="positions">
-            <AdminJobPositions />
-          </TabsContent>
+            <TabsContent value="messages" className="mt-0">
+              <AdminMessages />
+            </TabsContent>
 
-          <TabsContent value="benefits">
-            <AdminBenefits />
-          </TabsContent>
+            <TabsContent value="positions" className="mt-0">
+              <AdminJobPositions />
+            </TabsContent>
 
-          <TabsContent value="applications">
-            <AdminJobApplications />
-          </TabsContent>
+            <TabsContent value="benefits" className="mt-0">
+              <AdminBenefits />
+            </TabsContent>
+
+            <TabsContent value="applications" className="mt-0">
+              <AdminJobApplications />
+            </TabsContent>
+          </div>
         </Tabs>
       </div>
     </div>
@@ -174,7 +219,6 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Fetch counts
         const [servicesRes, projectsRes, messagesRes, applicationsRes] = await Promise.all([
           supabase.from("services").select("id", { count: "exact", head: true }).eq("is_active", true),
           supabase.from("projects").select("id", { count: "exact", head: true }).eq("is_active", true),
@@ -189,7 +233,6 @@ const DashboardOverview = () => {
           pendingApplications: applicationsRes.count || 0,
         });
 
-        // Fetch messages for chart (last 6 months)
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         
@@ -198,11 +241,9 @@ const DashboardOverview = () => {
           .select("created_at")
           .gte("created_at", sixMonthsAgo.toISOString());
 
-        // Group messages by month
         const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
         const messagesByMonth: Record<string, number> = {};
         
-        // Initialize last 6 months
         for (let i = 5; i >= 0; i--) {
           const date = new Date();
           date.setMonth(date.getMonth() - i);
@@ -222,14 +263,12 @@ const DashboardOverview = () => {
           Object.entries(messagesByMonth).map(([month, count]) => ({ month, count }))
         );
 
-        // Fetch projects by year
         const { data: projects } = await supabase
           .from("projects")
           .select("year")
           .eq("is_active", true)
           .not("year", "is", null);
 
-        // Group projects by year
         const projectsByYear: Record<string, number> = {};
         projects?.forEach((proj) => {
           if (proj.year) {
@@ -238,7 +277,6 @@ const DashboardOverview = () => {
           }
         });
 
-        // Sort by year and take last 5 years
         const sortedYears = Object.entries(projectsByYear)
           .sort(([a], [b]) => parseInt(a) - parseInt(b))
           .slice(-5)
@@ -257,26 +295,39 @@ const DashboardOverview = () => {
   }, []);
 
   const statCards = [
-    { label: "Servicios", value: stats.services, description: "Servicios activos", icon: Building2 },
-    { label: "Proyectos", value: stats.projects, description: "Proyectos publicados", icon: FolderOpen },
-    { label: "Mensajes", value: stats.pendingMessages, description: "Mensajes pendientes", icon: Mail },
-    { label: "Postulaciones", value: stats.pendingApplications, description: "Postulaciones nuevas", icon: Users },
+    { label: "Servicios", value: stats.services, description: "Servicios activos", icon: Building2, color: "from-blue-500 to-blue-600" },
+    { label: "Proyectos", value: stats.projects, description: "Proyectos publicados", icon: FolderOpen, color: "from-emerald-500 to-emerald-600" },
+    { label: "Mensajes", value: stats.pendingMessages, description: "Mensajes pendientes", icon: Mail, color: "from-amber-500 to-amber-600" },
+    { label: "Postulaciones", value: stats.pendingApplications, description: "Postulaciones nuevas", icon: Users, color: "from-purple-500 to-purple-600" },
   ];
 
   return (
     <div className="space-y-6">
+      {/* Welcome Section */}
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-6 border border-primary/20">
+        <h2 className="text-2xl font-heading font-bold text-foreground mb-2">
+          Bienvenido al Panel de Administración
+        </h2>
+        <p className="text-muted-foreground">
+          Gestiona todo el contenido de tu sitio web desde aquí.
+        </p>
+      </div>
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, index) => (
-          <Card key={index}>
-            <CardHeader className="pb-2">
+          <Card key={index} className="border-none shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+            <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity`} />
+            <CardHeader className="pb-2 relative">
               <div className="flex items-center justify-between">
-                <CardDescription>{stat.label}</CardDescription>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
+                <CardDescription className="font-medium">{stat.label}</CardDescription>
+                <div className={`bg-gradient-to-br ${stat.color} p-2 rounded-lg shadow-lg`}>
+                  <stat.icon className="h-4 w-4 text-white" />
+                </div>
               </div>
-              <CardTitle className="text-3xl">
+              <CardTitle className="text-4xl font-bold">
                 {isLoading ? (
-                  <span className="inline-block w-8 h-8 bg-muted animate-pulse rounded" />
+                  <span className="inline-block w-12 h-10 bg-muted animate-pulse rounded" />
                 ) : (
                   stat.value
                 )}
@@ -291,15 +342,17 @@ const DashboardOverview = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Messages Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Mensajes por Mes</CardTitle>
+        <Card className="border-none shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Mail className="h-5 w-5 text-primary" />
+              Mensajes por Mes
+            </CardTitle>
             <CardDescription>Últimos 6 meses</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4">
             {isLoading ? (
-              <div className="h-64 bg-muted animate-pulse rounded" />
+              <div className="h-64 bg-muted animate-pulse rounded-lg" />
             ) : (
               <ChartContainer
                 config={{
@@ -325,7 +378,7 @@ const DashboardOverview = () => {
                   <Bar 
                     dataKey="count" 
                     fill="hsl(var(--primary))" 
-                    radius={[4, 4, 0, 0]}
+                    radius={[6, 6, 0, 0]}
                   />
                 </BarChart>
               </ChartContainer>
@@ -333,15 +386,17 @@ const DashboardOverview = () => {
           </CardContent>
         </Card>
 
-        {/* Projects Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Proyectos por Año</CardTitle>
+        <Card className="border-none shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <FolderOpen className="h-5 w-5 text-primary" />
+              Proyectos por Año
+            </CardTitle>
             <CardDescription>Distribución de proyectos</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4">
             {isLoading ? (
-              <div className="h-64 bg-muted animate-pulse rounded" />
+              <div className="h-64 bg-muted animate-pulse rounded-lg" />
             ) : projectsData.length > 0 ? (
               <ChartContainer
                 config={{
@@ -367,13 +422,16 @@ const DashboardOverview = () => {
                   <Bar 
                     dataKey="count" 
                     fill="hsl(var(--primary))" 
-                    radius={[4, 4, 0, 0]}
+                    radius={[6, 6, 0, 0]}
                   />
                 </BarChart>
               </ChartContainer>
             ) : (
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
-                No hay datos de proyectos por año
+              <div className="h-64 flex items-center justify-center text-muted-foreground bg-muted/30 rounded-lg">
+                <div className="text-center">
+                  <FolderOpen className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>No hay datos de proyectos por año</p>
+                </div>
               </div>
             )}
           </CardContent>
