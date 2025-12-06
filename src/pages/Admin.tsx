@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
-  Mail, Users, Settings, LayoutDashboard, Info
+  Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -19,6 +19,8 @@ import AdminVehicles from "@/components/admin/AdminVehicles";
 import AdminContact from "@/components/admin/AdminContact";
 import AdminMessages from "@/components/admin/AdminMessages";
 import AdminJobApplications from "@/components/admin/AdminJobApplications";
+import AdminJobPositions from "@/components/admin/AdminJobPositions";
+import AdminBenefits from "@/components/admin/AdminBenefits";
 import AdminAbout from "@/components/admin/AdminAbout";
 
 const Admin = () => {
@@ -59,6 +61,8 @@ const Admin = () => {
     { id: "vehicles", label: "Vehículos", icon: Car },
     { id: "contact", label: "Contacto", icon: Settings },
     { id: "messages", label: "Mensajes", icon: Mail },
+    { id: "positions", label: "Vacantes", icon: Briefcase },
+    { id: "benefits", label: "Beneficios", icon: Heart },
     { id: "applications", label: "Postulaciones", icon: Users },
   ];
 
@@ -137,6 +141,14 @@ const Admin = () => {
 
           <TabsContent value="messages">
             <AdminMessages />
+          </TabsContent>
+
+          <TabsContent value="positions">
+            <AdminJobPositions />
+          </TabsContent>
+
+          <TabsContent value="benefits">
+            <AdminBenefits />
           </TabsContent>
 
           <TabsContent value="applications">
