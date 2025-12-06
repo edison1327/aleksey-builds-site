@@ -1,56 +1,18 @@
-import { Truck, Check, Clock, Shield, Wrench } from "lucide-react";
+import { Truck, Clock, Shield, Wrench } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useVehicles } from "@/hooks/useSiteData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import fordTransit from "@/assets/ford-transit.jpg";
 import ram2500 from "@/assets/ram-2500.jpg";
 import isuzuNpr from "@/assets/isuzu-npr.jpg";
 
-const vehicles = [
-  {
-    title: "Ford Transit Cargo Van",
-    shortDesc: "Furgoneta de carga versátil y confiable para transporte urbano.",
-    specs: [
-      "Motor 3.5L V6",
-      "Transmisión automática",
-      "Capacidad de carga 1,800 kg",
-      "Aire acondicionado",
-      "Conectividad Bluetooth"
-    ],
-    features: ["Ideal para entregas urbanas", "Bajo consumo de combustible", "Fácil maniobrabilidad", "Amplio espacio de carga"],
-    image: fordTransit,
-  },
-  {
-    title: "Ram 2500 Heavy Duty Pickup",
-    shortDesc: "Camioneta de trabajo pesado con potencia y capacidad excepcionales.",
-    specs: [
-      "Motor 6.4L HEMI V8",
-      "Transmisión automática de 8 velocidades",
-      "Capacidad de remolque 8,000 kg",
-      "Tracción 4x4",
-      "Asientos de tela"
-    ],
-    features: ["Máxima potencia", "Capacidad de remolque superior", "Durabilidad comprobada", "Confort en cabina"],
-    image: ram2500,
-  },
-  {
-    title: "Isuzu NPR Box Truck",
-    shortDesc: "Camión de caja seca perfecto para logística y distribución.",
-    specs: [
-      "Motor diésel 5.2L",
-      "Transmisión automática",
-      "Caja seca de 16 pies",
-      "Capacidad de carga 4,500 kg",
-      "Frenos ABS"
-    ],
-    features: ["Eficiencia en combustible", "Gran capacidad de carga", "Fácil acceso lateral", "Ideal para distribución"],
-    image: isuzuNpr,
-  },
-];
+const defaultImages = [fordTransit, ram2500, isuzuNpr];
 
 const benefits = [
   { icon: Shield, title: "Seguro Incluido", desc: "Todos nuestros vehículos incluyen seguro completo" },
@@ -63,6 +25,8 @@ const VehiclesPage = () => {
   const { ref: vehiclesRef, isVisible: vehiclesVisible } = useScrollAnimation(0.1);
   const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
+  
+  const { data: vehicles, isLoading } = useVehicles();
 
   const scrollToContact = () => {
     navigate("/#contact");
@@ -102,59 +66,89 @@ const VehiclesPage = () => {
             </p>
           </div>
 
-          <div ref={vehiclesRef} className="space-y-16">
-            {vehicles.map((vehicle, index) => (
-              <div 
-                key={index}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
-                  vehiclesVisible ? "animate-fade-in-up" : ""
-                }`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
-                    <img 
-                      src={vehicle.image} 
-                      alt={vehicle.title}
-                      className="w-full h-full object-cover"
-                    />
+          {isLoading ? (
+            <div className="space-y-16">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Skeleton className="h-80 w-full rounded-2xl" />
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
                   </div>
                 </div>
-                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
-                    {vehicle.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">{vehicle.shortDesc}</p>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-2">Especificaciones</h4>
-                  <ul className="text-muted-foreground mb-6 space-y-1">
-                    {vehicle.specs.map((spec, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        {spec}
-                      </li>
-                    ))}
-                  </ul>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Características</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {vehicle.features.map((feature, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="bg-primary/10 p-1 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
-                        </div>
-                        <span className="text-sm text-foreground">{feature}</span>
+              ))}
+            </div>
+          ) : vehicles.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">No hay vehículos disponibles.</p>
+            </div>
+          ) : (
+            <div ref={vehiclesRef} className="space-y-16">
+              {vehicles.map((vehicle, index) => (
+                <div 
+                  key={vehicle.id}
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
+                    vehiclesVisible ? "animate-fade-in-up" : ""
+                  }`}
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className={index % 2 === 1 ? "lg:order-2" : ""}>
+                    <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
+                      <img 
+                        src={vehicle.image_url || defaultImages[index % defaultImages.length]} 
+                        alt={vehicle.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className={`absolute top-4 right-4 px-4 py-2 rounded-full font-heading font-bold ${
+                        vehicle.is_available 
+                          ? "bg-green-500 text-white" 
+                          : "bg-red-500 text-white"
+                      }`}>
+                        {vehicle.is_available ? "Disponible" : "No disponible"}
                       </div>
-                    ))}
+                    </div>
                   </div>
-                  <Button
-                    onClick={scrollToContact}
-                    className="mt-6 bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
-                  >
-                    SOLICITAR COTIZACIÓN
-                  </Button>
+                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
+                    <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
+                      {vehicle.name}
+                    </h3>
+                    {vehicle.description && (
+                      <p className="text-muted-foreground mb-4">{vehicle.description}</p>
+                    )}
+                    <div className="space-y-2 mb-6">
+                      {vehicle.brand && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">Marca:</span>
+                          <span className="text-sm text-muted-foreground">{vehicle.brand}</span>
+                        </div>
+                      )}
+                      {vehicle.model && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">Modelo:</span>
+                          <span className="text-sm text-muted-foreground">{vehicle.model}</span>
+                        </div>
+                      )}
+                      {vehicle.category && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">Categoría:</span>
+                          <span className="text-sm text-muted-foreground">{vehicle.category}</span>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      onClick={scrollToContact}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
+                      disabled={!vehicle.is_available}
+                    >
+                      {vehicle.is_available ? "SOLICITAR COTIZACIÓN" : "NO DISPONIBLE"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

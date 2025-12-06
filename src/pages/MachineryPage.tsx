@@ -5,55 +5,14 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useMachinery } from "@/hooks/useSiteData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
 import retroexcavadoraJcb from "@/assets/retroexcavadora-jcb.jpg";
 
-const machinery = [
-  {
-    title: "Excavadora Caterpillar 320D",
-    shortDesc: "Excavadora hidráulica de tamaño mediano, ideal para proyectos de construcción general.",
-    price: "$350/día",
-    specs: [
-      "Peso operativo: 20,000 kg",
-      "Profundidad de excavación: 6.7 m",
-      "Motor: Cat C6.4 ACERT",
-      "Potencia: 140 HP",
-      "Capacidad del cucharón: 1.2 m³"
-    ],
-    features: ["Alta productividad", "Bajo consumo", "Fácil mantenimiento", "Cabina confortable"],
-    image: excavadoraCaterpillar,
-  },
-  {
-    title: "Cargador Frontal Volvo L120H",
-    shortDesc: "Cargador de ruedas versátil y eficiente, perfecto para carga de materiales.",
-    price: "$420/día",
-    specs: [
-      "Peso operativo: 19,500 kg",
-      "Capacidad del cucharón: 3.5 m³",
-      "Motor: Volvo D8J",
-      "Potencia: 220 HP",
-      "Altura de descarga: 3.0 m"
-    ],
-    features: ["Máxima eficiencia", "Sistema OptiShift", "Visibilidad superior", "Bajo impacto ambiental"],
-    image: cargadorVolvo,
-  },
-  {
-    title: "Retroexcavadora JCB 3CX",
-    shortDesc: "Máquina compacta y multifuncional, excelente para excavación y carga.",
-    price: "$280/día",
-    specs: [
-      "Peso operativo: 8,000 kg",
-      "Profundidad de excavación: 5.5 m",
-      "Motor: JCB EcoMAX",
-      "Potencia: 92 HP",
-      "Capacidad de carga: 1.0 m³"
-    ],
-    features: ["Versatilidad total", "Espacios reducidos", "Fácil transporte", "Operación sencilla"],
-    image: retroexcavadoraJcb,
-  },
-];
+const defaultImages = [excavadoraCaterpillar, cargadorVolvo, retroexcavadoraJcb];
 
 const benefits = [
   { icon: Shield, title: "Equipos Certificados", desc: "Toda nuestra maquinaria cuenta con certificaciones vigentes" },
@@ -66,6 +25,8 @@ const MachineryPage = () => {
   const { ref: machineryRef, isVisible: machineryVisible } = useScrollAnimation(0.1);
   const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
+  
+  const { data: machinery, isLoading } = useMachinery();
 
   const scrollToContact = () => {
     navigate("/#contact");
@@ -105,62 +66,89 @@ const MachineryPage = () => {
             </p>
           </div>
 
-          <div ref={machineryRef} className="space-y-16">
-            {machinery.map((item, index) => (
-              <div 
-                key={index}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
-                  machineryVisible ? "animate-fade-in-up" : ""
-                }`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
-                    <img 
-                      src={item.image} 
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-4 py-2 rounded-full font-heading font-bold">
-                      {item.price}
+          {isLoading ? (
+            <div className="space-y-16">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Skeleton className="h-80 w-full rounded-2xl" />
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : machinery.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">No hay maquinaria disponible.</p>
+            </div>
+          ) : (
+            <div ref={machineryRef} className="space-y-16">
+              {machinery.map((item, index) => (
+                <div 
+                  key={item.id}
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
+                    machineryVisible ? "animate-fade-in-up" : ""
+                  }`}
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className={index % 2 === 1 ? "lg:order-2" : ""}>
+                    <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
+                      <img 
+                        src={item.image_url || defaultImages[index % defaultImages.length]} 
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className={`absolute top-4 right-4 px-4 py-2 rounded-full font-heading font-bold ${
+                        item.is_available 
+                          ? "bg-green-500 text-white" 
+                          : "bg-red-500 text-white"
+                      }`}>
+                        {item.is_available ? "Disponible" : "No disponible"}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
-                    {item.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">{item.shortDesc}</p>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-2">Especificaciones Técnicas</h4>
-                  <ul className="text-muted-foreground mb-6 space-y-1">
-                    {item.specs.map((spec, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        {spec}
-                      </li>
-                    ))}
-                  </ul>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Características</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {item.features.map((feature, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="bg-primary/10 p-1 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
+                    <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
+                      {item.name}
+                    </h3>
+                    {item.description && (
+                      <p className="text-muted-foreground mb-4">{item.description}</p>
+                    )}
+                    <div className="space-y-2 mb-6">
+                      {item.brand && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">Marca:</span>
+                          <span className="text-sm text-muted-foreground">{item.brand}</span>
                         </div>
-                        <span className="text-sm text-foreground">{feature}</span>
-                      </div>
-                    ))}
+                      )}
+                      {item.model && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">Modelo:</span>
+                          <span className="text-sm text-muted-foreground">{item.model}</span>
+                        </div>
+                      )}
+                      {item.category && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">Categoría:</span>
+                          <span className="text-sm text-muted-foreground">{item.category}</span>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      onClick={scrollToContact}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
+                      disabled={!item.is_available}
+                    >
+                      {item.is_available ? "SOLICITAR COTIZACIÓN" : "NO DISPONIBLE"}
+                    </Button>
                   </div>
-                  <Button
-                    onClick={scrollToContact}
-                    className="mt-6 bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
-                  >
-                    SOLICITAR COTIZACIÓN
-                  </Button>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

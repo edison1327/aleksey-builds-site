@@ -5,46 +5,37 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useServices, useHeroContent } from "@/hooks/useSiteData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import disenoEstructural from "@/assets/diseno-estructural.jpg";
 import ingenieriaGeotecnica from "@/assets/ingenieria-geotecnica.jpg";
 import ingenieriaVial from "@/assets/ingenieria-vial.jpg";
 
-const services = [
-  {
-    title: "Diseño y Análisis Estructural",
-    shortDesc: "Servicios de ingeniería para el diseño, cálculo y análisis de estructuras de edificios y obras civiles.",
-    longDesc: "Nuestro equipo de ingenieros estructurales ofrece servicios completos de diseño, cálculo y análisis de estructuras para todo tipo de edificaciones. Utilizamos software de última generación y metodologías avanzadas para garantizar la seguridad, estabilidad y eficiencia de cada proyecto, cumpliendo con todas las normativas vigentes.",
-    benefits: ["Diseño optimizado", "Seguridad estructural", "Cumplimiento normativo", "Análisis avanzado"],
-    image: disenoEstructural,
-  },
-  {
-    title: "Ingeniería Geotécnica y Cimentaciones",
-    shortDesc: "Estudios de suelo, diseño de cimentaciones y soluciones geotécnicas para proyectos de construcción.",
-    longDesc: "Realizamos estudios geotécnicos completos que incluyen sondeos, ensayos de laboratorio y análisis de suelos. Diseñamos cimentaciones adaptadas a las condiciones específicas de cada terreno, garantizando la estabilidad y durabilidad de las estructuras. Ofrecemos soluciones para terrenos complejos y proyectos especiales.",
-    benefits: ["Estudios completos", "Cimentaciones seguras", "Soluciones innovadoras", "Terrenos difíciles"],
-    image: ingenieriaGeotecnica,
-  },
-  {
-    title: "Ingeniería de Infraestructuras Viales",
-    shortDesc: "Planificación, diseño y supervisión de proyectos de carreteras, puentes y vías de acceso.",
-    longDesc: "Ofrecemos servicios integrales de ingeniería vial, desde la planificación y diseño hasta la supervisión de construcción. Nuestro equipo desarrolla proyectos de carreteras, autopistas, puentes, túneles y obras de drenaje, aplicando las mejores prácticas y tecnologías para garantizar infraestructuras seguras y duraderas.",
-    benefits: ["Planificación integral", "Diseño vial avanzado", "Supervisión experta", "Infraestructura duradera"],
-    image: ingenieriaVial,
-  },
-];
+const defaultImages = [disenoEstructural, ingenieriaGeotecnica, ingenieriaVial];
 
-const stats = [
-  { value: "50+", label: "Ingenieros Especializados", desc: "Equipo multidisciplinario de profesionales", icon: Users },
-  { value: "200+", label: "Proyectos de Ingeniería", desc: "Proyectos diseñados y supervisados", icon: Award },
-  { value: "100%", label: "Cumplimiento Normativo", desc: "Todos nuestros diseños cumplen las normas", icon: Clock },
-];
+// Keywords to identify engineering services
+const ingenieriaKeywords = ["ingeniería", "diseño", "estructural", "geotécnica", "consultoría", "vial", "análisis"];
 
 const Engineering = () => {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: servicesRef, isVisible: servicesVisible } = useScrollAnimation(0.1);
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
+  
+  const { data: allServices, isLoading } = useServices();
+  const { data: heroData } = useHeroContent();
+
+  // Filter engineering services
+  const services = allServices.filter(s => 
+    ingenieriaKeywords.some(k => s.title.toLowerCase().includes(k))
+  );
+
+  const stats = [
+    { value: "50+", label: "Ingenieros Especializados", desc: "Equipo multidisciplinario de profesionales", icon: Users },
+    { value: `${heroData?.projects_count ? Math.floor(heroData.projects_count * 0.6) : 200}+`, label: "Proyectos de Ingeniería", desc: "Proyectos diseñados y supervisados", icon: Award },
+    { value: "100%", label: "Cumplimiento Normativo", desc: "Todos nuestros diseños cumplen las normas", icon: Clock },
+  ];
 
   const scrollToContact = () => {
     navigate("/#contact");
@@ -84,46 +75,70 @@ const Engineering = () => {
             </p>
           </div>
 
-          <div ref={servicesRef} className="space-y-16">
-            {services.map((service, index) => (
-              <div 
-                key={index}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
-                  servicesVisible ? "animate-fade-in-up" : ""
-                }`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
-                    <img 
-                      src={service.image} 
-                      alt={service.title}
-                      className="w-full h-full object-cover"
-                    />
+          {isLoading ? (
+            <div className="space-y-16">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Skeleton className="h-80 w-full rounded-2xl" />
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
                   </div>
                 </div>
-                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">{service.shortDesc}</p>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-2">Descripción Detallada</h4>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">{service.longDesc}</p>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Beneficios Clave</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {service.benefits.map((benefit, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="bg-primary/10 p-1 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+              ))}
+            </div>
+          ) : services.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">No hay servicios de ingeniería disponibles.</p>
+            </div>
+          ) : (
+            <div ref={servicesRef} className="space-y-16">
+              {services.map((service, index) => (
+                <div 
+                  key={service.id}
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
+                    servicesVisible ? "animate-fade-in-up" : ""
+                  }`}
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className={index % 2 === 1 ? "lg:order-2" : ""}>
+                    <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
+                      <img 
+                        src={service.image_url || defaultImages[index % defaultImages.length]} 
+                        alt={service.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
+                    <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
+                      {service.title}
+                    </h3>
+                    {service.description && (
+                      <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
+                    )}
+                    {service.features && service.features.length > 0 && (
+                      <>
+                        <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Características</h4>
+                        <div className="grid grid-cols-2 gap-3">
+                          {service.features.map((feature, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <div className="bg-primary/10 p-1 rounded-full">
+                                <Check className="h-4 w-4 text-primary" />
+                              </div>
+                              <span className="text-sm text-foreground">{feature}</span>
+                            </div>
+                          ))}
                         </div>
-                        <span className="text-sm text-foreground">{benefit}</span>
-                      </div>
-                    ))}
+                      </>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
