@@ -64,7 +64,7 @@ const imageMap: Record<string, string> = {
 
 // Keywords to categorize services (lowercase, normalized without accents for matching)
 const construccionKeywords = ["construccion", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras"];
-const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "vial"];
+const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "analisis"];
 
 // Helper to normalize text for matching (remove accents and lowercase)
 const normalizeText = (text: string) => 
