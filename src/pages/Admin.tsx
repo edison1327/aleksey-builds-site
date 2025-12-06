@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -146,47 +147,69 @@ const Admin = () => {
 };
 
 const DashboardOverview = () => {
+  const [stats, setStats] = useState({
+    services: 0,
+    projects: 0,
+    pendingMessages: 0,
+    pendingApplications: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [servicesRes, projectsRes, messagesRes, applicationsRes] = await Promise.all([
+          supabase.from("services").select("id", { count: "exact", head: true }).eq("is_active", true),
+          supabase.from("projects").select("id", { count: "exact", head: true }).eq("is_active", true),
+          supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "pending"),
+          supabase.from("job_applications").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        ]);
+
+        setStats({
+          services: servicesRes.count || 0,
+          projects: projectsRes.count || 0,
+          pendingMessages: messagesRes.count || 0,
+          pendingApplications: applicationsRes.count || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const statCards = [
+    { label: "Servicios", value: stats.services, description: "Servicios activos", icon: Building2 },
+    { label: "Proyectos", value: stats.projects, description: "Proyectos publicados", icon: FolderOpen },
+    { label: "Mensajes", value: stats.pendingMessages, description: "Mensajes pendientes", icon: Mail },
+    { label: "Postulaciones", value: stats.pendingApplications, description: "Postulaciones nuevas", icon: Users },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardDescription>Servicios</CardDescription>
-          <CardTitle className="text-3xl">-</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Servicios activos</p>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardDescription>Proyectos</CardDescription>
-          <CardTitle className="text-3xl">-</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Proyectos publicados</p>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardDescription>Mensajes</CardDescription>
-          <CardTitle className="text-3xl">-</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Mensajes pendientes</p>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardDescription>Postulaciones</CardDescription>
-          <CardTitle className="text-3xl">-</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Postulaciones nuevas</p>
-        </CardContent>
-      </Card>
+      {statCards.map((stat, index) => (
+        <Card key={index}>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardDescription>{stat.label}</CardDescription>
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <CardTitle className="text-3xl">
+              {isLoading ? (
+                <span className="inline-block w-8 h-8 bg-muted animate-pulse rounded" />
+              ) : (
+                stat.value
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">{stat.description}</p>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };
