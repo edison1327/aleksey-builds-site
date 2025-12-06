@@ -290,6 +290,7 @@ export type Database = {
           is_available: boolean | null
           model: string | null
           name: string
+          price: string | null
           sort_order: number | null
           specs: Json | null
           updated_at: string
@@ -305,6 +306,7 @@ export type Database = {
           is_available?: boolean | null
           model?: string | null
           name: string
+          price?: string | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
@@ -320,6 +322,7 @@ export type Database = {
           is_available?: boolean | null
           model?: string | null
           name?: string
+          price?: string | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
@@ -473,6 +476,7 @@ export type Database = {
           is_available: boolean | null
           model: string | null
           name: string
+          price: string | null
           sort_order: number | null
           specs: Json | null
           updated_at: string
@@ -488,6 +492,7 @@ export type Database = {
           is_available?: boolean | null
           model?: string | null
           name: string
+          price?: string | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
@@ -503,6 +508,7 @@ export type Database = {
           is_available?: boolean | null
           model?: string | null
           name?: string
+          price?: string | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string

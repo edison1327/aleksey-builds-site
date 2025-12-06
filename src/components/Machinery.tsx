@@ -48,7 +48,7 @@ const Machinery = () => {
       <div className="container mx-auto px-4">
         <div 
           ref={titleRef}
-          className={`text-center mb-16 opacity-0 ${titleVisible ? "animate-fade-in" : ""}`}
+          className={`text-center mb-16 transition-all duration-700 ${titleVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="bg-primary/20 w-12 h-12 rounded-xl flex items-center justify-center">
@@ -67,10 +67,10 @@ const Machinery = () => {
           {machinery.map((item, index) => (
             <Card 
               key={item.id} 
-              className={`group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2 overflow-hidden opacity-0 ${
-                cardsVisible ? "animate-fade-in-up" : ""
+              className={`group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2 overflow-hidden ${
+                cardsVisible ? "opacity-100 translate-y-0" : "opacity-100"
               }`}
-              style={{ animationDelay: `${index * 0.15}s` }}
+              style={{ transitionDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-48">
                 <ParallaxImage 
@@ -83,8 +83,11 @@ const Machinery = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-heading font-bold mb-3">{item.name}</h3>
                 <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{item.description}</p>
+                {(item as any).price && (
+                  <p className="text-lg font-bold text-primary mb-2">{(item as any).price}</p>
+                )}
                 {item.is_available !== undefined && (
-                  <span className={`text-sm font-medium ${item.is_available ? "text-green-400" : "text-red-400"}`}>
+                  <span className={`text-sm ${item.is_available ? "text-green-400 font-bold" : "text-red-400"}`}>
                     {item.is_available ? "Disponible" : "No disponible"}
                   </span>
                 )}
@@ -93,7 +96,7 @@ const Machinery = () => {
           ))}
         </div>
 
-        <div className={`text-center mt-12 opacity-0 ${cardsVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
+        <div className={`text-center mt-12 transition-all duration-700 ${cardsVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}>
           <Link to="/maquinaria">
             <Button
               size="lg"

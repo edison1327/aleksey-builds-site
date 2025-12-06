@@ -48,7 +48,7 @@ const Vehicles = () => {
       <div className="container mx-auto px-4">
         <div 
           ref={titleRef}
-          className={`text-center mb-16 opacity-0 ${titleVisible ? "animate-fade-in" : ""}`}
+          className={`text-center mb-16 transition-all duration-700 ${titleVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
@@ -67,10 +67,10 @@ const Vehicles = () => {
           {vehicles.map((vehicle, index) => (
             <Card 
               key={vehicle.id} 
-              className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden opacity-0 ${
-                cardsVisible ? "animate-scale-in" : ""
+              className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-card overflow-hidden ${
+                cardsVisible ? "opacity-100 translate-y-0" : "opacity-100"
               }`}
-              style={{ animationDelay: `${index * 0.15}s` }}
+              style={{ transitionDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-48">
                 <ParallaxImage 
@@ -82,9 +82,12 @@ const Vehicles = () => {
               </div>
               <CardContent className="p-6">
                 <h3 className="text-xl font-heading font-bold text-foreground mb-3">{vehicle.name}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{vehicle.description}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">{vehicle.description}</p>
+                {(vehicle as any).price && (
+                  <p className="text-lg font-bold text-primary mb-2">{(vehicle as any).price}</p>
+                )}
                 {vehicle.is_available !== undefined && (
-                  <span className={`text-sm font-medium mt-2 inline-block ${vehicle.is_available ? "text-green-600" : "text-red-600"}`}>
+                  <span className={`text-sm ${vehicle.is_available ? "text-green-600 font-bold" : "text-red-600"}`}>
                     {vehicle.is_available ? "Disponible" : "No disponible"}
                   </span>
                 )}
@@ -93,7 +96,7 @@ const Vehicles = () => {
           ))}
         </div>
 
-        <div className={`text-center mt-12 opacity-0 ${cardsVisible ? "animate-fade-in-up" : ""}`} style={{ animationDelay: "0.5s" }}>
+        <div className={`text-center mt-12 transition-all duration-700 ${cardsVisible ? "opacity-100 translate-y-0" : "opacity-100"}`}>
           <Link to="/vehiculos">
             <Button
               size="lg"
