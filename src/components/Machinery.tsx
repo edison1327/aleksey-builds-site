@@ -84,7 +84,7 @@ const Machinery = () => {
                 <h3 className="text-xl font-heading font-bold mb-3">{item.name}</h3>
                 <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{item.description}</p>
                 {(item as any).price && (
-                  <p className="text-lg font-bold text-primary mb-2">{(item as any).price}</p>
+                  <p className="text-lg font-bold text-primary mb-2">$ {(item as any).price}</p>
                 )}
                 {item.is_available !== undefined && (
                   <span className={`text-sm ${item.is_available ? "text-green-400 font-bold" : "text-red-400"}`}>
