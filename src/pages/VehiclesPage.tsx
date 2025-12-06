@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Truck, Clock, Shield, Wrench, X } from "lucide-react";
+import { Truck, Clock, Shield, Wrench } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useVehicles, Vehicle } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
+import QuickQuoteForm from "@/components/QuickQuoteForm";
 
 import fordTransit from "@/assets/ford-transit.jpg";
 import ram2500 from "@/assets/ram-2500.jpg";
@@ -186,16 +187,19 @@ const VehiclesPage = () => {
                 )}
               </div>
               
-              <Button
-                onClick={() => {
-                  setSelectedVehicle(null);
-                  scrollToContact();
-                }}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
-                disabled={!selectedVehicle.is_available}
-              >
-                {selectedVehicle.is_available ? "SOLICITAR COTIZACIÓN" : "NO DISPONIBLE"}
-              </Button>
+              {selectedVehicle.is_available ? (
+                <QuickQuoteForm 
+                  itemName={selectedVehicle.name} 
+                  itemType="vehículo"
+                  onSuccess={() => setSelectedVehicle(null)}
+                />
+              ) : (
+                <div className="border-t pt-4 mt-4">
+                  <p className="text-center text-muted-foreground">
+                    Este vehículo no está disponible actualmente.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>
