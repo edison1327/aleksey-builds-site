@@ -1,11 +1,13 @@
-import { Settings, Check, Clock, Shield, Wrench } from "lucide-react";
+import { useState } from "react";
+import { Settings, Clock, Shield, Wrench } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useMachinery } from "@/hooks/useSiteData";
+import { useMachinery, Machinery } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
@@ -25,12 +27,15 @@ const MachineryPage = () => {
   const { ref: machineryRef, isVisible: machineryVisible } = useScrollAnimation(0.1);
   const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
+  const [selectedMachine, setSelectedMachine] = useState<Machinery | null>(null);
   
   const { data: machinery, isLoading } = useMachinery();
 
   const scrollToContact = () => {
     navigate("/#contact");
   };
+
+  const getDefaultImage = (index: number) => defaultImages[index % defaultImages.length];
 
   return (
     <div className="min-h-screen">
@@ -67,17 +72,9 @@ const MachineryPage = () => {
           </div>
 
           {isLoading ? (
-            <div className="space-y-16">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <Skeleton className="h-80 w-full rounded-2xl" />
-                  <div className="space-y-4">
-                    <Skeleton className="h-8 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-2/3" />
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Skeleton key={i} className="h-72 w-full rounded-2xl" />
               ))}
             </div>
           ) : machinery.length === 0 ? (
@@ -85,72 +82,118 @@ const MachineryPage = () => {
               <p className="text-muted-foreground text-lg">No hay maquinaria disponible.</p>
             </div>
           ) : (
-            <div className="space-y-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {machinery.map((item, index) => (
-                <div 
+                <Card 
                   key={item.id}
-                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center transition-all duration-700 ${
+                  onClick={() => setSelectedMachine(item)}
+                  className={`group cursor-pointer overflow-hidden border-0 bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${
                     machineryVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
+                  style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                    <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
-                      <img 
-                        src={item.image_url || defaultImages[index % defaultImages.length]} 
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className={`absolute top-4 right-4 px-4 py-2 rounded-full font-heading font-bold ${
-                        item.is_available 
-                          ? "bg-green-500 text-white" 
-                          : "bg-red-500 text-white"
-                      }`}>
-                        {item.is_available ? "Disponible" : "No disponible"}
-                      </div>
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={item.image_url || getDefaultImage(index)} 
+                      alt={item.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${
+                      item.is_available 
+                        ? "bg-green-500 text-white" 
+                        : "bg-red-500 text-white"
+                    }`}>
+                      {item.is_available ? "Disponible" : "No disponible"}
                     </div>
                   </div>
-                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                    <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
+                  <CardContent className="p-5">
+                    <h3 className="text-lg font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                       {item.name}
                     </h3>
-                    {item.description && (
-                      <p className="text-muted-foreground mb-4">{item.description}</p>
+                    {item.brand && (
+                      <p className="text-sm text-muted-foreground mb-2">{item.brand} {item.model}</p>
                     )}
-                    <div className="space-y-2 mb-6">
-                      {item.brand && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-foreground">Marca:</span>
-                          <span className="text-sm text-muted-foreground">{item.brand}</span>
-                        </div>
-                      )}
-                      {item.model && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-foreground">Modelo:</span>
-                          <span className="text-sm text-muted-foreground">{item.model}</span>
-                        </div>
-                      )}
-                      {item.category && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-foreground">Categoría:</span>
-                          <span className="text-sm text-muted-foreground">{item.category}</span>
-                        </div>
-                      )}
-                    </div>
-                    <Button
-                      onClick={scrollToContact}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
-                      disabled={!item.is_available}
-                    >
-                      {item.is_available ? "SOLICITAR COTIZACIÓN" : "NO DISPONIBLE"}
-                    </Button>
-                  </div>
-                </div>
+                    {(item as any).price && (
+                      <p className="text-lg font-bold text-primary">$ {(item as any).price}</p>
+                    )}
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
         </div>
       </section>
+
+      {/* Machine Detail Modal */}
+      <Dialog open={!!selectedMachine} onOpenChange={() => setSelectedMachine(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-heading font-bold">
+              {selectedMachine?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedMachine && (
+            <div className="space-y-6">
+              <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
+                <img 
+                  src={selectedMachine.image_url || getDefaultImage(0)} 
+                  alt={selectedMachine.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className={`absolute top-4 right-4 px-4 py-2 rounded-full font-bold ${
+                  selectedMachine.is_available 
+                    ? "bg-green-500 text-white" 
+                    : "bg-red-500 text-white"
+                }`}>
+                  {selectedMachine.is_available ? "Disponible" : "No disponible"}
+                </div>
+              </div>
+              
+              {selectedMachine.description && (
+                <p className="text-muted-foreground">{selectedMachine.description}</p>
+              )}
+              
+              <div className="grid grid-cols-2 gap-4">
+                {selectedMachine.brand && (
+                  <div className="bg-muted p-4 rounded-lg">
+                    <span className="text-sm text-muted-foreground">Marca</span>
+                    <p className="font-bold text-foreground">{selectedMachine.brand}</p>
+                  </div>
+                )}
+                {selectedMachine.model && (
+                  <div className="bg-muted p-4 rounded-lg">
+                    <span className="text-sm text-muted-foreground">Modelo</span>
+                    <p className="font-bold text-foreground">{selectedMachine.model}</p>
+                  </div>
+                )}
+                {selectedMachine.category && (
+                  <div className="bg-muted p-4 rounded-lg">
+                    <span className="text-sm text-muted-foreground">Categoría</span>
+                    <p className="font-bold text-foreground">{selectedMachine.category}</p>
+                  </div>
+                )}
+                {(selectedMachine as any).price && (
+                  <div className="bg-muted p-4 rounded-lg">
+                    <span className="text-sm text-muted-foreground">Precio</span>
+                    <p className="font-bold text-primary text-lg">$ {(selectedMachine as any).price}</p>
+                  </div>
+                )}
+              </div>
+              
+              <Button
+                onClick={() => {
+                  setSelectedMachine(null);
+                  scrollToContact();
+                }}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading tracking-wider"
+                disabled={!selectedMachine.is_available}
+              >
+                {selectedMachine.is_available ? "SOLICITAR COTIZACIÓN" : "NO DISPONIBLE"}
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Benefits Section */}
       <section ref={benefitsRef} className="py-24 bg-secondary text-secondary-foreground">
