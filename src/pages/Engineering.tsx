@@ -15,7 +15,7 @@ import ingenieriaVial from "@/assets/ingenieria-vial.jpg";
 const defaultImages = [disenoEstructural, ingenieriaGeotecnica, ingenieriaVial];
 
 // Keywords to identify engineering services (normalized without accents)
-const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "vial", "analisis"];
+const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "analisis"];
 
 // Helper to normalize text for matching (remove accents and lowercase)
 const normalizeText = (text: string) => 
@@ -33,9 +33,10 @@ const Engineering = () => {
   const { data: heroData } = useHeroContent();
 
   // Filter engineering services
-  const services = allServices.filter(s => 
-    ingenieriaKeywords.some(k => normalizeText(s.title).includes(k))
-  );
+  const services = allServices.filter(s => {
+    const normalized = normalizeText(s.title);
+    return ingenieriaKeywords.some(k => normalized.includes(k));
+  });
 
   const stats = [
     { value: "50+", label: "Ingenieros Especializados", desc: "Equipo multidisciplinario de profesionales", icon: Users },
@@ -70,9 +71,9 @@ const Engineering = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-muted">
+      <section ref={servicesRef} className="py-24 bg-muted">
         <div className="container mx-auto px-4">
-          <div className={`text-center mb-16 opacity-0 ${servicesVisible ? "animate-fade-in" : ""}`}>
+          <div className={`text-center mb-16 transition-all duration-700 ${servicesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 tracking-wide">
               NUESTROS SERVICIOS
             </h2>
@@ -100,14 +101,14 @@ const Engineering = () => {
               <p className="text-muted-foreground text-lg">No hay servicios de ingeniería disponibles.</p>
             </div>
           ) : (
-            <div ref={servicesRef} className="space-y-16">
+            <div className="space-y-16">
               {services.map((service, index) => (
                 <div 
                   key={service.id}
-                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
-                    servicesVisible ? "animate-fade-in-up" : ""
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center transition-all duration-700 ${
+                    servicesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
-                  style={{ animationDelay: `${index * 0.15}s` }}
+                  style={{ transitionDelay: `${index * 150}ms` }}
                 >
                   <div className={index % 2 === 1 ? "lg:order-2" : ""}>
                     <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
