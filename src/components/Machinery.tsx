@@ -4,35 +4,44 @@ import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
+import { useMachinery } from "@/hooks/useSiteData";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
 import retroexcavadoraJcb from "@/assets/retroexcavadora-jcb.jpg";
 
-const machinery = [
+// Default machinery for when database is empty
+const defaultMachinery = [
   {
-    title: "Excavadora Caterpillar 320D",
+    id: "1",
+    name: "Excavadora Caterpillar 320D",
     description: "Excavadora hidráulica de tamaño mediano, ideal para proyectos de construcción general, excavación de zanjas y movimiento de tierras.",
-    price: "$350/día",
-    image: excavadoraCaterpillar,
+    image_url: excavadoraCaterpillar,
+    is_available: true,
   },
   {
-    title: "Cargador Frontal Volvo L120H",
+    id: "2",
+    name: "Cargador Frontal Volvo L120H",
     description: "Cargador de ruedas versátil y eficiente, perfecto para carga de materiales, manipulación de agregados y trabajos de cantera.",
-    price: "$420/día",
-    image: cargadorVolvo,
+    image_url: cargadorVolvo,
+    is_available: true,
   },
   {
-    title: "Retroexcavadora JCB 3CX",
+    id: "3",
+    name: "Retroexcavadora JCB 3CX",
     description: "Máquina compacta y multifuncional, excelente para excavación, carga y nivelación en espacios reducidos.",
-    price: "$280/día",
-    image: retroexcavadoraJcb,
+    image_url: retroexcavadoraJcb,
+    is_available: true,
   },
 ];
 
 const Machinery = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
+  const { data: dbMachinery } = useMachinery(3);
+  
+  // Use database machinery if available, otherwise use defaults
+  const machinery = dbMachinery.length > 0 ? dbMachinery : defaultMachinery;
 
   return (
     <section id="machinery" className="py-24 bg-secondary text-secondary-foreground">
@@ -57,7 +66,7 @@ const Machinery = () => {
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {machinery.map((item, index) => (
             <Card 
-              key={index} 
+              key={item.id} 
               className={`group bg-secondary-foreground/10 border-0 hover:bg-secondary-foreground/15 transition-all duration-300 hover:-translate-y-2 overflow-hidden opacity-0 ${
                 cardsVisible ? "animate-fade-in-up" : ""
               }`}
@@ -65,16 +74,20 @@ const Machinery = () => {
             >
               <div className="relative h-48">
                 <ParallaxImage 
-                  src={item.image} 
-                  alt={item.title}
+                  src={item.image_url || excavadoraCaterpillar} 
+                  alt={item.name}
                   className="h-full"
                   speed={0.15}
                 />
               </div>
               <CardContent className="p-6">
-                <h3 className="text-xl font-heading font-bold mb-3">{item.title}</h3>
+                <h3 className="text-xl font-heading font-bold mb-3">{item.name}</h3>
                 <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{item.description}</p>
-                <p className="text-2xl font-heading font-bold text-primary">{item.price}</p>
+                {item.is_available !== undefined && (
+                  <span className={`text-sm font-medium ${item.is_available ? "text-green-400" : "text-red-400"}`}>
+                    {item.is_available ? "Disponible" : "No disponible"}
+                  </span>
+                )}
               </CardContent>
             </Card>
           ))}

@@ -3,10 +3,11 @@ import { Button } from "./ui/button";
 import { useParallax } from "@/hooks/useParallax";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useTypewriter } from "@/hooks/useTypewriter";
+import { useHeroContent } from "@/hooks/useSiteData";
 import heroImage from "@/assets/hero-construction.jpg";
 
-// Video de obra de construcción de Pexels (libre de derechos)
-const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/3194277/3194277-uhd_2560_1440_30fps.mp4";
+// Default video URL
+const DEFAULT_VIDEO_URL = "https://videos.pexels.com/video-files/3194277/3194277-uhd_2560_1440_30fps.mp4";
 
 const services = [
   { icon: Building2, title: "CONSTRUCCIÓN", desc: "Proyectos residenciales y comerciales" },
@@ -17,15 +18,38 @@ const services = [
 
 const Hero = () => {
   const parallaxOffset = useParallax(0.1);
+  const { data: heroContent } = useHeroContent();
+  
+  // Use database values or defaults
+  const title = heroContent?.title || "ALEKSEY";
+  const subtitle = heroContent?.subtitle || "INGENIERÍA Y CONSTRUCCIÓN";
+  const description = heroContent?.description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada.";
+  const badgeText = heroContent?.badge_text || "MÁS DE 10 AÑOS DE EXPERIENCIA";
+  const videoUrl = heroContent?.video_url || DEFAULT_VIDEO_URL;
   
   // Animated counters
-  const projectsCount = useCountUp({ end: 150, duration: 2000, delay: 800, suffix: "+" });
-  const yearsCount = useCountUp({ end: 10, duration: 1500, delay: 1000, suffix: "+" });
-  const clientsCount = useCountUp({ end: 98, duration: 2000, delay: 1200, suffix: "%" });
+  const projectsCount = useCountUp({ 
+    end: heroContent?.projects_count || 150, 
+    duration: 2000, 
+    delay: 800, 
+    suffix: "+" 
+  });
+  const yearsCount = useCountUp({ 
+    end: heroContent?.years_count || 10, 
+    duration: 1500, 
+    delay: 1000, 
+    suffix: "+" 
+  });
+  const clientsCount = useCountUp({ 
+    end: heroContent?.clients_percentage || 98, 
+    duration: 2000, 
+    delay: 1200, 
+    suffix: "%" 
+  });
 
   // Typewriter effect for subtitle
   const { displayText, isTyping } = useTypewriter({
-    text: "INGENIERÍA Y CONSTRUCCIÓN",
+    text: subtitle,
     speed: 60,
     delay: 400,
   });
@@ -56,7 +80,7 @@ const Hero = () => {
           className="absolute inset-0 w-full h-full object-cover"
           poster={heroImage}
         >
-          <source src={HERO_VIDEO_URL} type="video/mp4" />
+          <source src={videoUrl} type="video/mp4" />
         </video>
         {/* Fallback Image */}
         <div 
@@ -106,13 +130,13 @@ const Hero = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-stagger-1"
             >
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm font-medium text-primary tracking-wider">MÁS DE 10 AÑOS DE EXPERIENCIA</span>
+              <span className="text-sm font-medium text-primary tracking-wider">{badgeText}</span>
             </div>
 
             <h1 
               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold tracking-tight mb-2 animate-stagger-2"
             >
-              <span className="text-secondary-foreground">ALEKSEY</span>
+              <span className="text-secondary-foreground">{title}</span>
             </h1>
             
             <div 
@@ -128,8 +152,7 @@ const Hero = () => {
             <p 
               className="text-base md:text-lg text-secondary-foreground/80 mb-10 max-w-xl animate-stagger-4 leading-relaxed"
             >
-              Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. 
-              Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada.
+              {description}
             </p>
 
             {/* CTA Buttons */}

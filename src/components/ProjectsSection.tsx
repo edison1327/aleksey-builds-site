@@ -1,35 +1,41 @@
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useProjects } from "@/hooks/useSiteData";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 
-const projects = [
+// Default projects for when database is empty
+const defaultProjects = [
   {
-    id: 1,
+    id: "1",
     title: "Torre Residencial Mirador",
     category: "Construcción Residencial",
     description: "Complejo habitacional de 15 pisos con 120 departamentos de lujo.",
-    image: project1,
+    image_url: project1,
   },
   {
-    id: 2,
+    id: "2",
     title: "Centro Comercial Plaza Norte",
     category: "Edificación Comercial",
     description: "Centro comercial de 25,000 m² con diseño arquitectónico moderno.",
-    image: project2,
+    image_url: project2,
   },
   {
-    id: 3,
+    id: "3",
     title: "Autopista Regional Sur",
     category: "Infraestructura Vial",
     description: "Construcción de 45 km de autopista con 3 intercambios viales.",
-    image: project3,
+    image_url: project3,
   },
 ];
 
 const ProjectsSection = () => {
   const navigate = useNavigate();
+  const { data: dbProjects, isLoading } = useProjects(3);
+  
+  // Use database projects if available, otherwise use defaults
+  const projects = dbProjects.length > 0 ? dbProjects : defaultProjects;
 
   return (
     <section id="projects" className="py-24 bg-background">
@@ -51,7 +57,7 @@ const ProjectsSection = () => {
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img
-                  src={project.image}
+                  src={project.image_url || project1}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -59,7 +65,7 @@ const ProjectsSection = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                 <span className="inline-block px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {project.category}
+                  {project.category || "Proyecto"}
                 </span>
                 <h3 className="text-xl font-heading font-bold text-secondary-foreground mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
                   {project.title}
