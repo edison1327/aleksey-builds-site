@@ -62,9 +62,15 @@ const imageMap: Record<string, string> = {
   "Mountain": infraestructuraVial,
 };
 
-// Keywords to categorize services
-const construccionKeywords = ["construcción", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras"];
-const ingenieriaKeywords = ["ingeniería", "diseño", "estructural", "geotécnica", "consultoría", "vial"];
+// Keywords to categorize services (lowercase, normalized without accents for matching)
+const construccionKeywords = ["construccion", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras"];
+const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "vial"];
+
+// Helper to normalize text for matching (remove accents and lowercase)
+const normalizeText = (text: string) => 
+  text.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
 const Services = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
@@ -80,7 +86,7 @@ const Services = () => {
     }
 
     const construccion = servicesData
-      .filter(s => construccionKeywords.some(k => s.title.toLowerCase().includes(k)))
+      .filter(s => construccionKeywords.some(k => normalizeText(s.title).includes(k)))
       .slice(0, 3)
       .map(s => ({
         title: s.title,
@@ -89,7 +95,7 @@ const Services = () => {
       }));
 
     const ingenieria = servicesData
-      .filter(s => ingenieriaKeywords.some(k => s.title.toLowerCase().includes(k)))
+      .filter(s => ingenieriaKeywords.some(k => normalizeText(s.title).includes(k)))
       .slice(0, 3)
       .map(s => ({
         title: s.title,
