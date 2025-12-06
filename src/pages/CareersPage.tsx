@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
-import { Briefcase, MapPin, Clock, DollarSign, Send, Loader2 } from "lucide-react";
+import { Briefcase, MapPin, Clock, DollarSign, Send, Loader2, Upload, FileText, X } from "lucide-react";
 
 interface JobPosition {
   id: string;
@@ -40,6 +40,7 @@ const CareersPage = () => {
     position: "",
     message: "",
   });
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -83,11 +84,62 @@ const CareersPage = () => {
     return icons[iconName] || LucideIcons.Star;
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Formato no válido",
+          description: "Por favor, sube un archivo PDF o Word (.doc, .docx)",
+          variant: "destructive",
+        });
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Archivo muy grande",
+          description: "El archivo debe ser menor a 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setResumeFile(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      let resumeUrl: string | null = null;
+
+      // Upload resume if provided
+      if (resumeFile) {
+        const fileExt = resumeFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${formData.name.replace(/\s+/g, '-')}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('resumes')
+          .upload(fileName, resumeFile);
+
+        if (uploadError) {
+          console.error('Error uploading resume:', uploadError);
+          toast({
+            title: "Error",
+            description: "No se pudo subir el CV. Por favor, intenta de nuevo.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        resumeUrl = fileName;
+      }
+
       const { error } = await supabase
         .from('job_applications')
         .insert({
@@ -96,6 +148,7 @@ const CareersPage = () => {
           phone: formData.phone.trim(),
           position: formData.position,
           message: formData.message.trim() || null,
+          resume_url: resumeUrl,
         });
 
       if (error) {
@@ -120,6 +173,7 @@ const CareersPage = () => {
         position: "",
         message: "",
       });
+      setResumeFile(null);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -335,6 +389,43 @@ const CareersPage = () => {
                     ))}
                     <option value="Otra">Otra posición</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Resume Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="resume">Currículum / CV</Label>
+                <div className="relative">
+                  {resumeFile ? (
+                    <div className="flex items-center gap-3 p-3 bg-background rounded-md border border-input">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <span className="text-sm flex-1 truncate">{resumeFile.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => setResumeFile(null)}
+                        className="p-1 hover:bg-muted rounded"
+                      >
+                        <X className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor="resume"
+                      className="flex items-center justify-center gap-2 p-4 bg-background rounded-md border border-dashed border-input cursor-pointer hover:border-primary transition-colors"
+                    >
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        Subir CV (PDF o Word, máx. 5MB)
+                      </span>
+                    </label>
+                  )}
+                  <input
+                    id="resume"
+                    type="file"
+                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={handleFileChange}
+                    className="sr-only"
+                  />
                 </div>
               </div>
 

@@ -203,6 +203,7 @@ export type Database = {
           name: string
           phone: string
           position: string
+          resume_url: string | null
           status: string
           updated_at: string
         }
@@ -214,6 +215,7 @@ export type Database = {
           name: string
           phone: string
           position: string
+          resume_url?: string | null
           status?: string
           updated_at?: string
         }
@@ -225,6 +227,7 @@ export type Database = {
           name?: string
           phone?: string
           position?: string
+          resume_url?: string | null
           status?: string
           updated_at?: string
         }
