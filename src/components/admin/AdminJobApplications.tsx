@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Users, Eye } from "lucide-react";
+import { Trash2, Loader2, Users, Eye, FileText, Download } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -18,6 +18,7 @@ interface JobApplication {
   position: string;
   message: string | null;
   status: string;
+  resume_url: string | null;
   created_at: string;
 }
 
@@ -77,10 +78,15 @@ const AdminJobApplications = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, resumeUrl: string | null) => {
     if (!confirm("¿Estás seguro de eliminar esta postulación?")) return;
 
     try {
+      // Delete resume from storage if exists
+      if (resumeUrl) {
+        await supabase.storage.from("resumes").remove([resumeUrl]);
+      }
+
       const { error } = await supabase.from("job_applications").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Postulación eliminada correctamente." });
@@ -88,6 +94,29 @@ const AdminJobApplications = () => {
     } catch (error) {
       console.error("Error deleting application:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleDownloadResume = async (resumeUrl: string, applicantName: string) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("resumes")
+        .download(resumeUrl);
+
+      if (error) throw error;
+
+      // Create download link
+      const url = URL.createObjectURL(data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `CV-${applicantName.replace(/\s+/g, "-")}.${resumeUrl.split(".").pop()}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading resume:", error);
+      toast({ title: "Error", description: "No se pudo descargar el CV.", variant: "destructive" });
     }
   };
 
@@ -124,8 +153,24 @@ const AdminJobApplications = () => {
                     <Badge className={statusColors[app.status] || "bg-gray-100"}>
                       {statusLabels[app.status] || app.status}
                     </Badge>
+                    {app.resume_url && (
+                      <Badge variant="outline" className="gap-1">
+                        <FileText className="h-3 w-3" />
+                        CV
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex gap-1">
+                    {app.resume_url && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDownloadResume(app.resume_url!, app.name)}
+                        title="Descargar CV"
+                      >
+                        <Download className="h-4 w-4 text-primary" />
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -133,7 +178,7 @@ const AdminJobApplications = () => {
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(app.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(app.id, app.resume_url)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
@@ -178,6 +223,20 @@ const AdminJobApplications = () => {
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Mensaje</label>
                 <p className="whitespace-pre-wrap">{selectedApplication.message}</p>
+              </div>
+            )}
+            {selectedApplication?.resume_url && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Currículum</label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-1 gap-2"
+                  onClick={() => handleDownloadResume(selectedApplication.resume_url!, selectedApplication.name)}
+                >
+                  <Download className="h-4 w-4" />
+                  Descargar CV
+                </Button>
               </div>
             )}
             <div>
