@@ -53,6 +53,7 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
     try {
       const fullMessage = `[Cotización de ${itemType}: ${itemName}]\n\n${formData.message || "Solicito información y cotización."}`;
 
+      // Save to database
       const { error } = await supabase.from("contact_messages").insert({
         name: formData.name.trim(),
         email: formData.email.trim(),
@@ -61,6 +62,22 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
       });
 
       if (error) throw error;
+
+      // Send email notification (don't fail if email fails)
+      try {
+        await supabase.functions.invoke("send-quote-notification", {
+          body: {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            phone: formData.phone?.trim() || null,
+            message: fullMessage,
+            itemName,
+            itemType,
+          },
+        });
+      } catch (emailError) {
+        console.error("Failed to send email notification:", emailError);
+      }
 
       toast({
         title: "¡Solicitud enviada!",
