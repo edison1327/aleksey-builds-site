@@ -2,33 +2,66 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Award, Users, Clock, CheckCircle, Target, Eye, Heart } from "lucide-react";
-
-const stats = [
-  { icon: Award, value: "10+", label: "Años de Experiencia" },
-  { icon: Users, value: "500+", label: "Proyectos Completados" },
-  { icon: Clock, value: "100%", label: "Entregas a Tiempo" },
-  { icon: CheckCircle, value: "98%", label: "Clientes Satisfechos" },
-];
-
-const values = [
-  {
-    icon: Target,
-    title: "Misión",
-    description: "Brindar soluciones integrales de ingeniería y construcción con los más altos estándares de calidad, seguridad y eficiencia, superando las expectativas de nuestros clientes."
-  },
-  {
-    icon: Eye,
-    title: "Visión",
-    description: "Ser la empresa líder en el sector de la construcción e ingeniería, reconocida por nuestra innovación, compromiso con la excelencia y contribución al desarrollo sostenible."
-  },
-  {
-    icon: Heart,
-    title: "Valores",
-    description: "Integridad, compromiso, innovación, trabajo en equipo, responsabilidad social y ambiental son los pilares que guían cada uno de nuestros proyectos."
-  },
-];
+import { useAboutContent, useHeroContent } from "@/hooks/useSiteData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AboutPage = () => {
+  const { data: aboutData, isLoading: aboutLoading } = useAboutContent();
+  const { data: heroData, isLoading: heroLoading } = useHeroContent();
+
+  const isLoading = aboutLoading || heroLoading;
+
+  const stats = [
+    { icon: Award, value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia" },
+    { icon: Users, value: `${heroData?.projects_count || 500}+`, label: "Proyectos Completados" },
+    { icon: Clock, value: "100%", label: "Entregas a Tiempo" },
+    { icon: CheckCircle, value: `${heroData?.clients_percentage || 98}%`, label: "Clientes Satisfechos" },
+  ];
+
+  const defaultValues = [
+    {
+      icon: Target,
+      title: "Misión",
+      description: "Brindar soluciones integrales de ingeniería y construcción con los más altos estándares de calidad, seguridad y eficiencia, superando las expectativas de nuestros clientes."
+    },
+    {
+      icon: Eye,
+      title: "Visión",
+      description: "Ser la empresa líder en el sector de la construcción e ingeniería, reconocida por nuestra innovación, compromiso con la excelencia y contribución al desarrollo sostenible."
+    },
+    {
+      icon: Heart,
+      title: "Valores",
+      description: "Integridad, compromiso, innovación, trabajo en equipo, responsabilidad social y ambiental son los pilares que guían cada uno de nuestros proyectos."
+    },
+  ];
+
+  const values = [
+    {
+      icon: Target,
+      title: "Misión",
+      description: aboutData?.mission || defaultValues[0].description
+    },
+    {
+      icon: Eye,
+      title: "Visión",
+      description: aboutData?.vision || defaultValues[1].description
+    },
+    {
+      icon: Heart,
+      title: "Valores",
+      description: aboutData?.values?.join(", ") || defaultValues[2].description
+    },
+  ];
+
+  const description = aboutData?.description || `ALEKSEY nació hace más de una década con la visión de transformar el sector de la construcción e ingeniería en nuestra región. Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una empresa líder, reconocida por nuestra dedicación a la excelencia y nuestro compromiso inquebrantable con la calidad.
+
+Nuestro equipo está conformado por profesionales altamente capacitados y apasionados por su trabajo. Ingenieros, arquitectos, técnicos y personal de obra trabajan en conjunto para garantizar que cada proyecto se ejecute con los más altos estándares de calidad y seguridad.
+
+A lo largo de los años, hemos completado más de 500 proyectos exitosos, desde construcciones residenciales hasta grandes obras de infraestructura.`;
+
+  const paragraphs = description.split('\n\n').filter(p => p.trim());
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -50,20 +83,28 @@ const AboutPage = () => {
       {/* Stats Section */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-card rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <stat.icon className="h-10 w-10 mx-auto mb-4 text-primary" />
-                <div className="text-4xl font-heading font-bold mb-2 text-foreground">{stat.value}</div>
-                <div className="text-sm text-muted-foreground font-medium">
-                  {stat.label}
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="h-32 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {stats.map((stat, index) => (
+                <div
+                  key={index}
+                  className="bg-card rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <stat.icon className="h-10 w-10 mx-auto mb-4 text-primary" />
+                  <div className="text-4xl font-heading font-bold mb-2 text-foreground">{stat.value}</div>
+                  <div className="text-sm text-muted-foreground font-medium">
+                    {stat.label}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -74,17 +115,19 @@ const AboutPage = () => {
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-foreground">
               Nuestra Historia
             </h2>
-            <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
-              <p>
-                ALEKSEY nació hace más de una década con la visión de transformar el sector de la construcción e ingeniería en nuestra región. Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una empresa líder, reconocida por nuestra dedicación a la excelencia y nuestro compromiso inquebrantable con la calidad.
-              </p>
-              <p>
-                Nuestro equipo está conformado por profesionales altamente capacitados y apasionados por su trabajo. Ingenieros, arquitectos, técnicos y personal de obra trabajan en conjunto para garantizar que cada proyecto se ejecute con los más altos estándares de calidad y seguridad.
-              </p>
-              <p>
-                A lo largo de los años, hemos completado más de 500 proyectos exitosos, desde construcciones residenciales hasta grandes obras de infraestructura. Cada proyecto representa nuestra dedicación al detalle y nuestro compromiso con la satisfacción del cliente.
-              </p>
-            </div>
+            {isLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-3/4" />
+              </div>
+            ) : (
+              <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -92,24 +135,32 @@ const AboutPage = () => {
       {/* Mission, Vision, Values */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {values.map((item, index) => (
-              <div
-                key={index}
-                className="bg-card rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-              >
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                  <item.icon className="h-8 w-8 text-primary" />
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-64 w-full rounded-2xl" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {values.map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-card rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                >
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <item.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-heading font-bold mb-4 text-foreground">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-foreground">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
