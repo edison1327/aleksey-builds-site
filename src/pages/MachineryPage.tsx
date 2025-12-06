@@ -55,9 +55,9 @@ const MachineryPage = () => {
       </section>
 
       {/* Machinery Section */}
-      <section className="py-24 bg-muted">
+      <section ref={machineryRef} className="py-24 bg-muted">
         <div className="container mx-auto px-4">
-          <div className={`text-center mb-16 opacity-0 ${machineryVisible ? "animate-fade-in" : ""}`}>
+          <div className={`text-center mb-16 transition-all duration-700 ${machineryVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 tracking-wide">
               NUESTROS EQUIPOS
             </h2>
@@ -85,14 +85,14 @@ const MachineryPage = () => {
               <p className="text-muted-foreground text-lg">No hay maquinaria disponible.</p>
             </div>
           ) : (
-            <div ref={machineryRef} className="space-y-16">
+            <div className="space-y-16">
               {machinery.map((item, index) => (
                 <div 
                   key={item.id}
-                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
-                    machineryVisible ? "animate-fade-in-up" : ""
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center transition-all duration-700 ${
+                    machineryVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
-                  style={{ animationDelay: `${index * 0.15}s` }}
+                  style={{ transitionDelay: `${index * 150}ms` }}
                 >
                   <div className={index % 2 === 1 ? "lg:order-2" : ""}>
                     <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
@@ -153,9 +153,9 @@ const MachineryPage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 bg-secondary text-secondary-foreground">
+      <section ref={benefitsRef} className="py-24 bg-secondary text-secondary-foreground">
         <div className="container mx-auto px-4">
-          <div className={`text-center mb-16 opacity-0 ${benefitsVisible ? "animate-fade-in" : ""}`}>
+          <div className={`text-center mb-16 transition-all duration-700 ${benefitsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4 tracking-wide">
               ¿POR QUÉ ALQUILAR CON NOSOTROS?
             </h2>
@@ -164,14 +164,14 @@ const MachineryPage = () => {
             </p>
           </div>
 
-          <div ref={benefitsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
               <Card 
                 key={index}
-                className={`bg-secondary-foreground/10 border-0 text-center opacity-0 ${
-                  benefitsVisible ? "animate-scale-in" : ""
+                className={`bg-secondary-foreground/10 border-0 text-center transition-all duration-700 ${
+                  benefitsVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
                 }`}
-                style={{ animationDelay: `${index * 0.15}s` }}
+                style={{ transitionDelay: `${index * 150}ms` }}
               >
                 <CardContent className="p-8">
                   <div className="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
