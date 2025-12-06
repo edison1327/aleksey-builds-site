@@ -4,11 +4,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
-  Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image
+  Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
+  Menu, ChevronLeft, ChevronRight, X
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -25,11 +26,14 @@ import AdminBenefits from "@/components/admin/AdminBenefits";
 import AdminAbout from "@/components/admin/AdminAbout";
 import AdminSiteSettings from "@/components/admin/AdminSiteSettings";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { cn } from "@/lib/utils";
 
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { data: siteSettings } = useSiteSettings();
 
   useEffect(() => {
@@ -59,27 +63,42 @@ const Admin = () => {
   }
 
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "site", label: "Logo & Sitio", icon: Image },
-    { id: "hero", label: "Hero", icon: Home },
-    { id: "about", label: "About", icon: Info },
-    { id: "services", label: "Servicios", icon: Building2 },
-    { id: "projects", label: "Proyectos", icon: FolderOpen },
-    { id: "machinery", label: "Maquinaria", icon: Truck },
-    { id: "vehicles", label: "Vehículos", icon: Car },
-    { id: "contact", label: "Contacto", icon: Settings },
-    { id: "messages", label: "Mensajes", icon: Mail },
-    { id: "positions", label: "Vacantes", icon: Briefcase },
-    { id: "benefits", label: "Beneficios", icon: Heart },
-    { id: "applications", label: "Postulaciones", icon: Users },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
+    { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
+    { id: "hero", label: "Hero", icon: Home, category: "contenido" },
+    { id: "about", label: "About", icon: Info, category: "contenido" },
+    { id: "services", label: "Servicios", icon: Building2, category: "contenido" },
+    { id: "projects", label: "Proyectos", icon: FolderOpen, category: "contenido" },
+    { id: "machinery", label: "Maquinaria", icon: Truck, category: "contenido" },
+    { id: "vehicles", label: "Vehículos", icon: Car, category: "contenido" },
+    { id: "contact", label: "Contacto", icon: Settings, category: "comunicacion" },
+    { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion" },
+    { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
+    { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
+    { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/50 to-background">
-      {/* Header */}
-      <header className="bg-card/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+  const categories = [
+    { id: "general", label: "General" },
+    { id: "contenido", label: "Contenido" },
+    { id: "comunicacion", label: "Comunicación" },
+    { id: "rrhh", label: "Recursos Humanos" },
+  ];
+
+  const handleMenuClick = (id: string) => {
+    setActiveTab(id);
+    setSidebarOpen(false);
+  };
+
+  const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
+    <div className="flex flex-col h-full">
+      {/* Sidebar Header */}
+      <div className={cn(
+        "p-4 border-b border-border/50",
+        sidebarCollapsed && !isMobile && "px-2"
+      )}>
+        {(!sidebarCollapsed || isMobile) ? (
+          <div className="flex items-center gap-3">
             {siteSettings?.logo_url ? (
               <img 
                 src={siteSettings.logo_url} 
@@ -87,119 +106,199 @@ const Admin = () => {
                 className="h-8 object-contain"
               />
             ) : (
-              <div className="flex items-center gap-2">
-                <div className="bg-primary rounded-lg p-2">
-                  <Building2 className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-heading font-bold text-foreground tracking-wide">
-                  {siteSettings?.company_name || "ALEKSEY"}
-                </span>
+              <div className="bg-primary rounded-lg p-2">
+                <Building2 className="h-5 w-5 text-primary-foreground" />
               </div>
             )}
-            <div className="h-6 w-px bg-border hidden sm:block" />
-            <span className="text-sm font-medium text-muted-foreground hidden sm:block">
-              Panel de Administración
-            </span>
+            <div className="flex-1 min-w-0">
+              <p className="font-heading font-bold text-sm truncate">
+                {siteSettings?.company_name || "ALEKSEY"}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">CMS</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+        ) : (
+          <div className="flex justify-center">
+            <div className="bg-primary rounded-lg p-2">
+              <Building2 className="h-5 w-5 text-primary-foreground" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Menu Items */}
+      <ScrollArea className="flex-1 py-4">
+        <nav className="space-y-6 px-2">
+          {categories.map((category) => (
+            <div key={category.id}>
+              {(!sidebarCollapsed || isMobile) && (
+                <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  {category.label}
+                </p>
+              )}
+              <div className="space-y-1">
+                {menuItems
+                  .filter((item) => item.category === category.id)
+                  .map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleMenuClick(item.id)}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+                        activeTab === item.id
+                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        sidebarCollapsed && !isMobile && "justify-center px-2"
+                      )}
+                      title={sidebarCollapsed && !isMobile ? item.label : undefined}
+                    >
+                      <item.icon className="h-5 w-5 shrink-0" />
+                      {(!sidebarCollapsed || isMobile) && <span>{item.label}</span>}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+      </ScrollArea>
+
+      {/* Sidebar Footer */}
+      <div className={cn(
+        "p-4 border-t border-border/50 space-y-2",
+        sidebarCollapsed && !isMobile && "px-2"
+      )}>
+        <Link to="/" className="block">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className={cn(
+              "w-full gap-2 justify-start",
+              sidebarCollapsed && !isMobile && "justify-center px-2"
+            )}
+          >
+            <Home className="h-4 w-4" />
+            {(!sidebarCollapsed || isMobile) && <span>Ver sitio</span>}
+          </Button>
+        </Link>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={handleSignOut}
+          className={cn(
+            "w-full gap-2 justify-start text-muted-foreground hover:text-destructive",
+            sidebarCollapsed && !isMobile && "justify-center px-2"
+          )}
+        >
+          <LogOut className="h-4 w-4" />
+          {(!sidebarCollapsed || isMobile) && <span>Cerrar sesión</span>}
+        </Button>
+      </div>
+    </div>
+  );
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "dashboard": return <DashboardOverview />;
+      case "site": return <AdminSiteSettings />;
+      case "hero": return <AdminHero />;
+      case "about": return <AdminAbout />;
+      case "services": return <AdminServices />;
+      case "projects": return <AdminProjects />;
+      case "machinery": return <AdminMachinery />;
+      case "vehicles": return <AdminVehicles />;
+      case "contact": return <AdminContact />;
+      case "messages": return <AdminMessages />;
+      case "positions": return <AdminJobPositions />;
+      case "benefits": return <AdminBenefits />;
+      case "applications": return <AdminJobApplications />;
+      default: return <DashboardOverview />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex">
+      {/* Desktop Sidebar */}
+      <aside className={cn(
+        "hidden lg:flex flex-col bg-card/95 backdrop-blur-md border-r border-border/50 transition-all duration-300 sticky top-0 h-screen",
+        sidebarCollapsed ? "w-[72px]" : "w-64"
+      )}>
+        <SidebarContent />
+        
+        {/* Collapse Toggle */}
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="absolute -right-3 top-20 bg-card border border-border rounded-full p-1.5 shadow-md hover:bg-muted transition-colors"
+        >
+          {sidebarCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+        </button>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile/Tablet Header */}
+        <header className="lg:hidden bg-card/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-40">
+          <div className="flex items-center justify-between px-4 py-3">
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="shrink-0">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-72">
+                <SidebarContent isMobile />
+              </SheetContent>
+            </Sheet>
+            
+            <div className="flex items-center gap-2 min-w-0">
+              {siteSettings?.logo_url ? (
+                <img 
+                  src={siteSettings.logo_url} 
+                  alt={siteSettings.company_name || "Logo"} 
+                  className="h-7 object-contain"
+                />
+              ) : (
+                <span className="font-heading font-bold text-sm truncate">
+                  {siteSettings?.company_name || "ALEKSEY"} CMS
+                </span>
+              )}
+            </div>
+
             <Link to="/">
-              <Button variant="outline" size="sm" className="gap-2 shadow-sm hover:shadow transition-shadow">
-                <Home className="h-4 w-4" />
-                <span className="hidden sm:inline">Ver sitio</span>
+              <Button variant="ghost" size="icon" className="shrink-0">
+                <Home className="h-5 w-5" />
               </Button>
             </Link>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleSignOut} 
-              className="gap-2 text-muted-foreground hover:text-foreground"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Salir</span>
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          {/* Improved Navigation */}
-          <div className="bg-card/80 backdrop-blur-sm rounded-2xl border border-border/50 shadow-lg p-2">
-            <ScrollArea className="w-full">
-              <TabsList className="flex w-max gap-1 bg-transparent p-0">
-                {menuItems.map((item) => (
-                  <TabsTrigger
-                    key={item.id}
-                    value={item.id}
-                    className="gap-2 px-4 py-2.5 rounded-xl text-muted-foreground transition-all duration-300
-                      data-[state=active]:bg-primary data-[state=active]:text-primary-foreground 
-                      data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25
-                      hover:bg-muted hover:text-foreground"
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span className="font-medium">{item.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </ScrollArea>
           </div>
 
-          {/* Content Cards with animations */}
-          <div className="animate-fade-in">
-            <TabsContent value="dashboard" className="mt-0">
-              <DashboardOverview />
-            </TabsContent>
-
-            <TabsContent value="site" className="mt-0">
-              <AdminSiteSettings />
-            </TabsContent>
-
-            <TabsContent value="hero" className="mt-0">
-              <AdminHero />
-            </TabsContent>
-
-            <TabsContent value="about" className="mt-0">
-              <AdminAbout />
-            </TabsContent>
-
-            <TabsContent value="services" className="mt-0">
-              <AdminServices />
-            </TabsContent>
-
-            <TabsContent value="projects" className="mt-0">
-              <AdminProjects />
-            </TabsContent>
-
-            <TabsContent value="machinery" className="mt-0">
-              <AdminMachinery />
-            </TabsContent>
-
-            <TabsContent value="vehicles" className="mt-0">
-              <AdminVehicles />
-            </TabsContent>
-
-            <TabsContent value="contact" className="mt-0">
-              <AdminContact />
-            </TabsContent>
-
-            <TabsContent value="messages" className="mt-0">
-              <AdminMessages />
-            </TabsContent>
-
-            <TabsContent value="positions" className="mt-0">
-              <AdminJobPositions />
-            </TabsContent>
-
-            <TabsContent value="benefits" className="mt-0">
-              <AdminBenefits />
-            </TabsContent>
-
-            <TabsContent value="applications" className="mt-0">
-              <AdminJobApplications />
-            </TabsContent>
+          {/* Current Section Indicator */}
+          <div className="px-4 pb-3">
+            <div className="flex items-center gap-2 text-sm">
+              {(() => {
+                const currentItem = menuItems.find(item => item.id === activeTab);
+                if (currentItem) {
+                  return (
+                    <>
+                      <currentItem.icon className="h-4 w-4 text-primary" />
+                      <span className="font-medium">{currentItem.label}</span>
+                    </>
+                  );
+                }
+                return null;
+              })()}
+            </div>
           </div>
-        </Tabs>
+        </header>
+
+        {/* Content */}
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+          <div className="max-w-7xl mx-auto animate-fade-in">
+            {renderContent()}
+          </div>
+        </main>
       </div>
     </div>
   );
@@ -304,72 +403,72 @@ const DashboardOverview = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-6 border border-primary/20">
-        <h2 className="text-2xl font-heading font-bold text-foreground mb-2">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-4 md:p-6 border border-primary/20">
+        <h2 className="text-xl md:text-2xl font-heading font-bold text-foreground mb-2">
           Bienvenido al Panel de Administración
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm md:text-base">
           Gestiona todo el contenido de tu sitio web desde aquí.
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {statCards.map((stat, index) => (
           <Card key={index} className="border-none shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
             <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity`} />
-            <CardHeader className="pb-2 relative">
+            <CardHeader className="pb-2 relative p-3 md:p-6">
               <div className="flex items-center justify-between">
-                <CardDescription className="font-medium">{stat.label}</CardDescription>
-                <div className={`bg-gradient-to-br ${stat.color} p-2 rounded-lg shadow-lg`}>
-                  <stat.icon className="h-4 w-4 text-white" />
+                <CardDescription className="font-medium text-xs md:text-sm">{stat.label}</CardDescription>
+                <div className={`bg-gradient-to-br ${stat.color} p-1.5 md:p-2 rounded-lg shadow-lg`}>
+                  <stat.icon className="h-3 w-3 md:h-4 md:w-4 text-white" />
                 </div>
               </div>
-              <CardTitle className="text-4xl font-bold">
+              <CardTitle className="text-2xl md:text-4xl font-bold">
                 {isLoading ? (
-                  <span className="inline-block w-12 h-10 bg-muted animate-pulse rounded" />
+                  <span className="inline-block w-8 md:w-12 h-8 md:h-10 bg-muted animate-pulse rounded" />
                 ) : (
                   stat.value
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{stat.description}</p>
+            <CardContent className="p-3 md:p-6 pt-0">
+              <p className="text-xs md:text-sm text-muted-foreground">{stat.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <Card className="border-none shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Mail className="h-5 w-5 text-primary" />
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl p-4 md:p-6">
+            <CardTitle className="text-base md:text-lg flex items-center gap-2">
+              <Mail className="h-4 w-4 md:h-5 md:w-5 text-primary" />
               Mensajes por Mes
             </CardTitle>
-            <CardDescription>Últimos 6 meses</CardDescription>
+            <CardDescription className="text-xs md:text-sm">Últimos 6 meses</CardDescription>
           </CardHeader>
-          <CardContent className="pt-4">
+          <CardContent className="pt-4 p-3 md:p-6">
             {isLoading ? (
-              <div className="h-64 bg-muted animate-pulse rounded-lg" />
+              <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
             ) : (
               <ChartContainer
                 config={{
                   count: { label: "Mensajes", color: "hsl(var(--primary))" },
                 }}
-                className="h-64"
+                className="h-48 md:h-64"
               >
                 <BarChart data={messagesData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                   <XAxis 
                     dataKey="month" 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                   />
                   <YAxis 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
@@ -387,33 +486,33 @@ const DashboardOverview = () => {
         </Card>
 
         <Card className="border-none shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <FolderOpen className="h-5 w-5 text-primary" />
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl p-4 md:p-6">
+            <CardTitle className="text-base md:text-lg flex items-center gap-2">
+              <FolderOpen className="h-4 w-4 md:h-5 md:w-5 text-primary" />
               Proyectos por Año
             </CardTitle>
-            <CardDescription>Distribución de proyectos</CardDescription>
+            <CardDescription className="text-xs md:text-sm">Distribución de proyectos</CardDescription>
           </CardHeader>
-          <CardContent className="pt-4">
+          <CardContent className="pt-4 p-3 md:p-6">
             {isLoading ? (
-              <div className="h-64 bg-muted animate-pulse rounded-lg" />
+              <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
             ) : projectsData.length > 0 ? (
               <ChartContainer
                 config={{
                   count: { label: "Proyectos", color: "hsl(var(--primary))" },
                 }}
-                className="h-64"
+                className="h-48 md:h-64"
               >
                 <BarChart data={projectsData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                   <XAxis 
                     dataKey="year" 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                   />
                   <YAxis 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
@@ -427,10 +526,10 @@ const DashboardOverview = () => {
                 </BarChart>
               </ChartContainer>
             ) : (
-              <div className="h-64 flex items-center justify-center text-muted-foreground bg-muted/30 rounded-lg">
+              <div className="h-48 md:h-64 flex items-center justify-center text-muted-foreground bg-muted/30 rounded-lg">
                 <div className="text-center">
-                  <FolderOpen className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>No hay datos de proyectos por año</p>
+                  <FolderOpen className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No hay datos de proyectos por año</p>
                 </div>
               </div>
             )}
