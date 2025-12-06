@@ -5,6 +5,8 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useServices, useHeroContent } from "@/hooks/useSiteData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import construccionResidencial from "@/assets/construccion-residencial.jpg";
 import infraestructuraVial from "@/assets/infraestructura-vial.jpg";
@@ -12,55 +14,30 @@ import edificacionesComerciales from "@/assets/edificaciones-comerciales.jpg";
 import movimientoTierras from "@/assets/movimiento-tierras.jpg";
 import consultoriaProyectos from "@/assets/consultoria-proyectos.jpg";
 
-const services = [
-  {
-    title: "Construcción Residencial",
-    shortDesc: "Diseño y edificación de viviendas unifamiliares y multifamiliares de alta calidad.",
-    longDesc: "Ofrecemos servicios integrales de construcción residencial, desde la conceptualización y diseño arquitectónico hasta la entrega llave en mano. Nos especializamos en la creación de espacios habitables modernos, funcionales y sostenibles, utilizando materiales de primera y técnicas constructivas avanzadas para garantizar la durabilidad y el confort de su hogar.",
-    benefits: ["Diseños personalizados", "Calidad garantizada", "Entrega a tiempo", "Sostenibilidad"],
-    image: construccionResidencial,
-  },
-  {
-    title: "Infraestructura Vial",
-    shortDesc: "Construcción y mantenimiento de carreteras, puentes y vías de acceso.",
-    longDesc: "Nuestra experiencia en infraestructura vial abarca la construcción de nuevas carreteras, la rehabilitación de vías existentes, la edificación de puentes y pasos a desnivel. Contamos con maquinaria pesada y personal cualificado para ejecutar proyectos de gran envergadura, asegurando la conectividad y el desarrollo de las comunidades.",
-    benefits: ["Experiencia comprobada", "Maquinaria avanzada", "Seguridad vial", "Durabilidad"],
-    image: infraestructuraVial,
-  },
-  {
-    title: "Edificaciones Comerciales e Industriales",
-    shortDesc: "Construcción de naves industriales, oficinas y locales comerciales adaptados a sus necesidades.",
-    longDesc: "Desarrollamos proyectos de construcción para el sector comercial e industrial, incluyendo la edificación de centros logísticos, fábricas, almacenes, edificios de oficinas y locales comerciales. Nos enfocamos en la eficiencia operativa, la optimización de espacios y el cumplimiento de normativas específicas para cada tipo de negocio.",
-    benefits: ["Diseño funcional", "Eficiencia energética", "Cumplimiento normativo", "Amplios espacios"],
-    image: edificacionesComerciales,
-  },
-  {
-    title: "Movimiento de Tierras y Excavaciones",
-    shortDesc: "Servicios especializados en preparación de terrenos, excavaciones y nivelaciones para cualquier proyecto.",
-    longDesc: "Realizamos todo tipo de trabajos de movimiento de tierras, incluyendo excavaciones masivas, rellenos, nivelaciones, compactaciones y demoliciones. Contamos con una flota de maquinaria pesada moderna y operadores expertos para garantizar la precisión y seguridad en la preparación de su sitio de construcción, optimizando los tiempos de ejecución.",
-    benefits: ["Precisión", "Rapidez", "Seguridad", "Maquinaria moderna"],
-    image: movimientoTierras,
-  },
-  {
-    title: "Consultoría y Gestión de Proyectos",
-    shortDesc: "Asesoramiento experto y gestión integral para el éxito de sus proyectos de construcción.",
-    longDesc: "Ofrecemos servicios de consultoría y gestión de proyectos, desde la fase de planificación y viabilidad hasta la supervisión y control de obra. Nuestro equipo de ingenieros y especialistas le brindará el soporte necesario para optimizar recursos, cumplir plazos y asegurar la calidad, garantizando el éxito de su inversión.",
-    benefits: ["Optimización de recursos", "Control de calidad", "Cumplimiento de plazos", "Asesoramiento experto"],
-    image: consultoriaProyectos,
-  },
-];
+const defaultImages = [construccionResidencial, infraestructuraVial, edificacionesComerciales, movimientoTierras, consultoriaProyectos];
 
-const stats = [
-  { value: "10+", label: "Años de Experiencia", desc: "Más de una década construyendo proyectos exitosos", icon: Clock },
-  { value: "100+", label: "Proyectos Completados", desc: "Cientos de proyectos entregados con éxito", icon: Award },
-  { value: "24/7", label: "Soporte Continuo", desc: "Atención y seguimiento durante todo el proyecto", icon: Users },
-];
+// Keywords to identify construction services
+const construccionKeywords = ["construcción", "residencial", "comercial", "edificacion", "infraestructura", "movimiento", "tierras", "industrial"];
 
 const Construction = () => {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: servicesRef, isVisible: servicesVisible } = useScrollAnimation(0.1);
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
+  
+  const { data: allServices, isLoading } = useServices();
+  const { data: heroData } = useHeroContent();
+
+  // Filter construction services
+  const services = allServices.filter(s => 
+    construccionKeywords.some(k => s.title.toLowerCase().includes(k))
+  );
+
+  const stats = [
+    { value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia", desc: "Más de una década construyendo proyectos exitosos", icon: Clock },
+    { value: `${heroData?.projects_count || 100}+`, label: "Proyectos Completados", desc: "Cientos de proyectos entregados con éxito", icon: Award },
+    { value: "24/7", label: "Soporte Continuo", desc: "Atención y seguimiento durante todo el proyecto", icon: Users },
+  ];
 
   const scrollToContact = () => {
     navigate("/#contact");
@@ -100,46 +77,70 @@ const Construction = () => {
             </p>
           </div>
 
-          <div ref={servicesRef} className="space-y-16">
-            {services.map((service, index) => (
-              <div 
-                key={index}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
-                  servicesVisible ? "animate-fade-in-up" : ""
-                }`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
-                    <img 
-                      src={service.image} 
-                      alt={service.title}
-                      className="w-full h-full object-cover"
-                    />
+          {isLoading ? (
+            <div className="space-y-16">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Skeleton className="h-80 w-full rounded-2xl" />
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
                   </div>
                 </div>
-                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">{service.shortDesc}</p>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-2">Descripción Detallada</h4>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">{service.longDesc}</p>
-                  <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Beneficios Clave</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {service.benefits.map((benefit, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="bg-primary/10 p-1 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+              ))}
+            </div>
+          ) : services.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">No hay servicios de construcción disponibles.</p>
+            </div>
+          ) : (
+            <div ref={servicesRef} className="space-y-16">
+              {services.map((service, index) => (
+                <div 
+                  key={service.id}
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center opacity-0 ${
+                    servicesVisible ? "animate-fade-in-up" : ""
+                  }`}
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className={index % 2 === 1 ? "lg:order-2" : ""}>
+                    <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
+                      <img 
+                        src={service.image_url || defaultImages[index % defaultImages.length]} 
+                        alt={service.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
+                    <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
+                      {service.title}
+                    </h3>
+                    {service.description && (
+                      <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
+                    )}
+                    {service.features && service.features.length > 0 && (
+                      <>
+                        <h4 className="text-lg font-heading font-semibold text-foreground mb-3">Características</h4>
+                        <div className="grid grid-cols-2 gap-3">
+                          {service.features.map((feature, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <div className="bg-primary/10 p-1 rounded-full">
+                                <Check className="h-4 w-4 text-primary" />
+                              </div>
+                              <span className="text-sm text-foreground">{feature}</span>
+                            </div>
+                          ))}
                         </div>
-                        <span className="text-sm text-foreground">{benefit}</span>
-                      </div>
-                    ))}
+                      </>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
