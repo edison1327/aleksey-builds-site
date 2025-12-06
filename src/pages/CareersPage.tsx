@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -8,71 +8,31 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Briefcase, Users, TrendingUp, Heart, Send, MapPin, Clock, DollarSign } from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { Briefcase, MapPin, Clock, DollarSign, Send, Loader2 } from "lucide-react";
 
-const benefits = [
-  {
-    icon: TrendingUp,
-    title: "Crecimiento Profesional",
-    description: "Oportunidades de desarrollo y capacitación continua para impulsar tu carrera."
-  },
-  {
-    icon: Users,
-    title: "Ambiente Colaborativo",
-    description: "Trabaja con un equipo de profesionales apasionados y comprometidos."
-  },
-  {
-    icon: Heart,
-    title: "Beneficios Competitivos",
-    description: "Seguro médico, bonos por desempeño y prestaciones superiores a la ley."
-  },
-  {
-    icon: Briefcase,
-    title: "Proyectos Desafiantes",
-    description: "Participa en proyectos de gran envergadura que marcan la diferencia."
-  },
-];
+interface JobPosition {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  salary: string | null;
+  description: string | null;
+}
 
-const openPositions = [
-  {
-    title: "Ingeniero Civil Senior",
-    department: "Ingeniería",
-    location: "Ciudad Capital",
-    type: "Tiempo Completo",
-    salary: "Competitivo",
-  },
-  {
-    title: "Arquitecto de Proyectos",
-    department: "Diseño",
-    location: "Ciudad Capital",
-    type: "Tiempo Completo",
-    salary: "Competitivo",
-  },
-  {
-    title: "Supervisor de Obra",
-    department: "Construcción",
-    location: "Varias Ubicaciones",
-    type: "Tiempo Completo",
-    salary: "Competitivo",
-  },
-  {
-    title: "Operador de Maquinaria Pesada",
-    department: "Operaciones",
-    location: "Varias Ubicaciones",
-    type: "Tiempo Completo",
-    salary: "A convenir",
-  },
-  {
-    title: "Asistente Administrativo",
-    department: "Administración",
-    location: "Ciudad Capital",
-    type: "Tiempo Completo",
-    salary: "Competitivo",
-  },
-];
+interface Benefit {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
 
 const CareersPage = () => {
   const { toast } = useToast();
+  const [positions, setPositions] = useState<JobPosition[]>([]);
+  const [benefits, setBenefits] = useState<Benefit[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -81,6 +41,47 @@ const CareersPage = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      
+      const [positionsRes, benefitsRes] = await Promise.all([
+        supabase
+          .from('job_positions')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true }),
+        supabase
+          .from('company_benefits')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+      ]);
+
+      if (positionsRes.data) setPositions(positionsRes.data);
+      if (benefitsRes.data) setBenefits(benefitsRes.data);
+      
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  const getIcon = (iconName: string): React.ComponentType<{ className?: string }> => {
+    const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+      DollarSign: LucideIcons.DollarSign,
+      GraduationCap: LucideIcons.GraduationCap,
+      Shield: LucideIcons.Shield,
+      TrendingUp: LucideIcons.TrendingUp,
+      Users: LucideIcons.Users,
+      Building2: LucideIcons.Building2,
+      Heart: LucideIcons.Heart,
+      Briefcase: LucideIcons.Briefcase,
+      Star: LucideIcons.Star,
+    };
+    return icons[iconName] || LucideIcons.Star;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,6 +139,18 @@ const CareersPage = () => {
     });
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -162,23 +175,26 @@ const CareersPage = () => {
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12 text-foreground">
             ¿Por qué trabajar en ALEKSEY?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-              >
-                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <benefit.icon className="h-7 w-7 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {benefits.map((benefit) => {
+              const IconComponent = getIcon(benefit.icon);
+              return (
+                <div
+                  key={benefit.id}
+                  className="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                >
+                  <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <IconComponent className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-heading font-bold mb-2 text-foreground">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {benefit.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-heading font-bold mb-2 text-foreground">
-                  {benefit.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -192,47 +208,58 @@ const CareersPage = () => {
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
             Explora nuestras oportunidades laborales actuales y encuentra la posición ideal para ti.
           </p>
-          <div className="max-w-4xl mx-auto space-y-4">
-            {openPositions.map((position, index) => (
-              <div
-                key={index}
-                className="bg-card rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-              >
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-foreground mb-2">
-                    {position.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Briefcase className="h-4 w-4" />
-                      {position.department}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      {position.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {position.type}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <DollarSign className="h-4 w-4" />
-                      {position.salary}
-                    </span>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => {
-                    setFormData({ ...formData, position: position.title });
-                    document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 font-heading"
+          
+          {positions.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">
+                No hay vacantes disponibles en este momento. ¡Vuelve pronto!
+              </p>
+            </div>
+          ) : (
+            <div className="max-w-4xl mx-auto space-y-4">
+              {positions.map((position) => (
+                <div
+                  key={position.id}
+                  className="bg-card rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                 >
-                  Aplicar
-                </Button>
-              </div>
-            ))}
-          </div>
+                  <div>
+                    <h3 className="text-xl font-heading font-bold text-foreground mb-2">
+                      {position.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Briefcase className="h-4 w-4" />
+                        {position.department}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {position.location}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {position.type}
+                      </span>
+                      {position.salary && (
+                        <span className="flex items-center gap-1">
+                          <DollarSign className="h-4 w-4" />
+                          {position.salary}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setFormData({ ...formData, position: position.title });
+                      document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 font-heading"
+                  >
+                    Aplicar
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -301,8 +328,8 @@ const CareersPage = () => {
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Selecciona una posición</option>
-                    {openPositions.map((pos, index) => (
-                      <option key={index} value={pos.title}>
+                    {positions.map((pos) => (
+                      <option key={pos.id} value={pos.title}>
                         {pos.title}
                       </option>
                     ))}
