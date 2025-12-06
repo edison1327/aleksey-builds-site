@@ -1,0 +1,265 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+
+interface Machinery {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  brand: string | null;
+  model: string | null;
+  image_url: string | null;
+  is_available: boolean;
+  is_active: boolean;
+  sort_order: number;
+}
+
+const AdminMachinery = () => {
+  const [machinery, setMachinery] = useState<Machinery[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingMachine, setEditingMachine] = useState<Machinery | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchMachinery();
+  }, []);
+
+  const fetchMachinery = async () => {
+    const { data, error } = await supabase
+      .from("machinery")
+      .select("*")
+      .order("sort_order", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching machinery:", error);
+    } else {
+      setMachinery(data || []);
+    }
+    setIsLoading(false);
+  };
+
+  const handleSave = async () => {
+    if (!editingMachine) return;
+
+    try {
+      if (editingMachine.id) {
+        const { error } = await supabase
+          .from("machinery")
+          .update({
+            name: editingMachine.name,
+            description: editingMachine.description,
+            category: editingMachine.category,
+            brand: editingMachine.brand,
+            model: editingMachine.model,
+            image_url: editingMachine.image_url,
+            is_available: editingMachine.is_available,
+            is_active: editingMachine.is_active,
+            sort_order: editingMachine.sort_order,
+          })
+          .eq("id", editingMachine.id);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("machinery")
+          .insert({
+            name: editingMachine.name,
+            description: editingMachine.description,
+            category: editingMachine.category,
+            brand: editingMachine.brand,
+            model: editingMachine.model,
+            image_url: editingMachine.image_url,
+            is_available: editingMachine.is_available,
+            is_active: editingMachine.is_active,
+            sort_order: machinery.length,
+          });
+
+        if (error) throw error;
+      }
+
+      toast({ title: "Guardado", description: "Maquinaria actualizada correctamente." });
+      setIsDialogOpen(false);
+      setEditingMachine(null);
+      fetchMachinery();
+    } catch (error) {
+      console.error("Error saving machinery:", error);
+      toast({ title: "Error", description: "No se pudo guardar.", variant: "destructive" });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Estás seguro de eliminar esta maquinaria?")) return;
+
+    try {
+      const { error } = await supabase.from("machinery").delete().eq("id", id);
+      if (error) throw error;
+      toast({ title: "Eliminado", description: "Maquinaria eliminada correctamente." });
+      fetchMachinery();
+    } catch (error) {
+      console.error("Error deleting machinery:", error);
+      toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const openNewDialog = () => {
+    setEditingMachine({
+      id: "",
+      name: "",
+      description: "",
+      category: "",
+      brand: "",
+      model: "",
+      image_url: "",
+      is_available: true,
+      is_active: true,
+      sort_order: machinery.length,
+    });
+    setIsDialogOpen(true);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-heading font-bold">Maquinaria</h2>
+          <p className="text-muted-foreground">Administra el catálogo de maquinaria</p>
+        </div>
+        <Button onClick={openNewDialog} className="gap-2">
+          <Plus className="h-4 w-4" />
+          Nueva maquinaria
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {machinery.map((machine) => (
+          <Card key={machine.id} className={!machine.is_active ? "opacity-50" : ""}>
+            <CardHeader className="pb-2">
+              <div className="flex items-start justify-between">
+                <CardTitle className="text-lg">{machine.name}</CardTitle>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setEditingMachine(machine);
+                      setIsDialogOpen(true);
+                    }}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(machine.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground line-clamp-2">{machine.description}</p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {machine.brand && (
+                  <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">{machine.brand}</span>
+                )}
+                <span className={`text-xs px-2 py-1 rounded ${machine.is_available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                  {machine.is_available ? "Disponible" : "No disponible"}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingMachine?.id ? "Editar maquinaria" : "Nueva maquinaria"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium">Nombre</label>
+              <Input
+                value={editingMachine?.name || ""}
+                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, name: e.target.value } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Descripción</label>
+              <Textarea
+                value={editingMachine?.description || ""}
+                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, description: e.target.value } : null)}
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Marca</label>
+                <Input
+                  value={editingMachine?.brand || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, brand: e.target.value } : null)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Modelo</label>
+                <Input
+                  value={editingMachine?.model || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, model: e.target.value } : null)}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Categoría</label>
+              <Input
+                value={editingMachine?.category || ""}
+                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, category: e.target.value } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">URL de imagen</label>
+              <Input
+                value={editingMachine?.image_url || ""}
+                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, image_url: e.target.value } : null)}
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={editingMachine?.is_available || false}
+                  onCheckedChange={(checked) => setEditingMachine(prev => prev ? { ...prev, is_available: checked } : null)}
+                />
+                <label className="text-sm font-medium">Disponible</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={editingMachine?.is_active || false}
+                  onCheckedChange={(checked) => setEditingMachine(prev => prev ? { ...prev, is_active: checked } : null)}
+                />
+                <label className="text-sm font-medium">Activo</label>
+              </div>
+            </div>
+            <Button onClick={handleSave} className="w-full">
+              Guardar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default AdminMachinery;
