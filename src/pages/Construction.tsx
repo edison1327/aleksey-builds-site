@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import QuickQuoteForm from "@/components/QuickQuoteForm";
 
 import construccionResidencial from "@/assets/construccion-residencial.jpg";
 import infraestructuraVial from "@/assets/infraestructura-vial.jpg";
@@ -248,15 +249,11 @@ const Construction = () => {
                   </div>
                 </div>
               )}
-              <Button
-                onClick={() => {
-                  setSelectedService(null);
-                  scrollToContact();
-                }}
-                className="w-full font-heading tracking-wider"
-              >
-                SOLICITAR INFORMACIÓN
-              </Button>
+              <QuickQuoteForm 
+                itemName={selectedService.title} 
+                itemType="servicio"
+                onSuccess={() => setSelectedService(null)}
+              />
             </div>
           )}
         </DialogContent>
