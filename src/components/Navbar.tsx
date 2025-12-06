@@ -1,7 +1,8 @@
 import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import logoAleksey from "@/assets/logo-aleksey.png";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const servicesRef = useRef<HTMLDivElement>(null);
+  const { data: siteSettings } = useSiteSettings();
+
+  const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
+  const companyName = siteSettings?.company_name || "ALEKSEY";
 
   const serviceItems = [
     { id: "construccion", label: "CONSTRUCCIÓN", icon: Building2, path: "/construccion" },
@@ -23,7 +28,6 @@ const Navbar = () => {
     setIsOpen(false);
     setIsServicesOpen(false);
     
-    // Direct page navigation for services
     if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria", "/nosotros", "/proyectos", "/convocatoria"].includes(path)) {
       navigate(path);
       setActiveSection(label);
@@ -40,7 +44,6 @@ const Navbar = () => {
       return;
     }
 
-    // Section scroll on home page
     if (path === "/#contact" || path === "/#about" || path === "/#projects") {
       const sectionMap: Record<string, string> = {
         "/#contact": "contact",
@@ -58,7 +61,6 @@ const Navbar = () => {
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (servicesRef.current && !servicesRef.current.contains(event.target as Node)) {
@@ -69,7 +71,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Track scroll position on home page
   useEffect(() => {
     if (location.pathname !== "/") {
       const routeMap: Record<string, string> = {
@@ -131,7 +132,7 @@ const Navbar = () => {
               setActiveSection("INICIO");
             }}
           >
-            <img src={logoAleksey} alt="ALEKSEY - Ingeniería y Construcción" className="h-10 md:h-12" />
+            <img src={logoUrl} alt={`${companyName} - Ingeniería y Construcción`} className="h-10 md:h-12" />
           </div>
 
           {/* Desktop Menu */}
@@ -177,7 +178,6 @@ const Navbar = () => {
                 <ChevronDown className={`h-4 w-4 relative z-10 transition-transform duration-300 ${isServicesOpen ? "rotate-180" : ""}`} />
               </button>
 
-              {/* Dropdown Menu */}
               {isServicesOpen && (
                 <div className="absolute top-full left-0 mt-2 w-56 bg-secondary border border-secondary-foreground/10 rounded-lg shadow-xl overflow-hidden z-50">
                   {serviceItems.map((item) => (
@@ -233,7 +233,6 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="lg:hidden py-4 space-y-2 border-t border-secondary-foreground/10">
-            {/* INICIO */}
             <button
               onClick={() => handleNavClick("/", "INICIO")}
               className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
@@ -246,7 +245,6 @@ const Navbar = () => {
               <span className="font-heading tracking-wide">INICIO</span>
             </button>
 
-            {/* SOBRE NOSOTROS */}
             <button
               onClick={() => handleNavClick("/nosotros", "SOBRE NOSOTROS")}
               className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
@@ -259,7 +257,6 @@ const Navbar = () => {
               <span className="font-heading tracking-wide">SOBRE NOSOTROS</span>
             </button>
 
-            {/* SERVICIOS Accordion */}
             <div>
               <button
                 onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
@@ -296,7 +293,6 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* PROYECTOS */}
             <button
               onClick={() => handleNavClick("/proyectos", "PROYECTOS")}
               className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${
@@ -309,7 +305,6 @@ const Navbar = () => {
               <span className="font-heading tracking-wide">PROYECTOS</span>
             </button>
 
-            {/* CONTACTO */}
             <button
               onClick={() => handleNavClick("/#contact", "CONTACTO")}
               className={`flex items-center gap-3 w-full text-left py-2 transition-all duration-300 ${

@@ -1,9 +1,9 @@
 import { Facebook, Instagram, Linkedin, Twitter, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useContactInfo } from "@/hooks/useSiteData";
-import logoAleksey from "@/assets/logo-aleksey.png";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 
-// Default contact info
 const defaultContact = {
   address: "Av. Principal 123, Ciudad Capital",
   city: "Venezuela",
@@ -14,8 +14,11 @@ const defaultContact = {
 
 const Footer = () => {
   const { data: contactInfo } = useContactInfo();
+  const { data: siteSettings } = useSiteSettings();
   
-  // Use database contact info or defaults
+  const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
+  const companyName = siteSettings?.company_name || "ALEKSEY";
+  
   const address = contactInfo?.address || defaultContact.address;
   const city = contactInfo?.city || defaultContact.city;
   const country = contactInfo?.country || "";
@@ -32,7 +35,7 @@ const Footer = () => {
           {/* Logo y descripción */}
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <img src={logoAleksey} alt="ALEKSEY - Ingeniería y Construcción" className="h-10 brightness-0 invert" />
+              <img src={logoUrl} alt={`${companyName} - Ingeniería y Construcción`} className="h-10 brightness-0 invert" />
             </div>
             <p className="text-secondary-foreground/80 leading-relaxed mb-6">
               Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.
@@ -118,7 +121,7 @@ const Footer = () => {
 
         <div className="border-t border-secondary-foreground/20 pt-8 text-center text-secondary-foreground/60">
           <p>
-            © {new Date().getFullYear()} ALEKSEY. Todos los derechos reservados.
+            © {new Date().getFullYear()} {companyName}. Todos los derechos reservados.
           </p>
         </div>
       </div>
