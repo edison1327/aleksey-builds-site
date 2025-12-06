@@ -14,12 +14,31 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-assista
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "¡Hola! Soy el asistente virtual de Aleksey. ¿En qué puedo ayudarte hoy?" }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Show welcome message after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpen) {
+        setShowWelcome(true);
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Hide welcome when chat opens
+  useEffect(() => {
+    if (isOpen) {
+      setShowWelcome(false);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -138,6 +157,34 @@ const ChatWidget = () => {
           <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-25" />
         )}
       </button>
+
+      {/* Welcome Message Bubble */}
+      {showWelcome && !isOpen && (
+        <div className="fixed bottom-24 right-6 z-50 animate-fade-in">
+          <div className="relative bg-background border shadow-lg rounded-2xl p-4 max-w-[280px]">
+            <button
+              onClick={() => setShowWelcome(false)}
+              className="absolute -top-2 -right-2 bg-muted hover:bg-muted/80 rounded-full p-1 transition-colors"
+              aria-label="Cerrar mensaje"
+            >
+              <X className="h-3 w-3" />
+            </button>
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded-full shrink-0">
+                <Bot className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">¡Hola! 👋</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  ¿Tienes alguna pregunta? Estoy aquí para ayudarte.
+                </p>
+              </div>
+            </div>
+            {/* Arrow pointing to button */}
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-background border-b border-r transform rotate-45" />
+          </div>
+        </div>
+      )}
 
       {/* Chat Window */}
       {isOpen && (
