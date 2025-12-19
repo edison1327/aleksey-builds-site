@@ -4,19 +4,21 @@ import { useParallax } from "@/hooks/useParallax";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { useHeroContent } from "@/hooks/useSiteData";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-construction.jpg";
 
 // Default video URL
 const DEFAULT_VIDEO_URL = "https://videos.pexels.com/video-files/3194277/3194277-uhd_2560_1440_30fps.mp4";
 
 const services = [
-  { icon: Building2, title: "CONSTRUCCIÓN", desc: "Proyectos residenciales y comerciales" },
-  { icon: Wrench, title: "INGENIERÍA", desc: "Soluciones técnicas especializadas" },
-  { icon: Truck, title: "VEHÍCULOS", desc: "Alquiler de vehículos comerciales" },
-  { icon: Settings, title: "MAQUINARIA", desc: "Equipos pesados para construcción" },
+  { icon: Building2, title: "CONSTRUCCIÓN", desc: "Proyectos residenciales y comerciales", path: "/construccion" },
+  { icon: Wrench, title: "INGENIERÍA", desc: "Soluciones técnicas especializadas", path: "/ingenieria" },
+  { icon: Truck, title: "VEHÍCULOS", desc: "Alquiler de vehículos comerciales", path: "/vehiculos" },
+  { icon: Settings, title: "MAQUINARIA", desc: "Equipos pesados para construcción", path: "/maquinaria" },
 ];
 
 const Hero = () => {
+  const navigate = useNavigate();
   const parallaxOffset = useParallax(0.1);
   const { data: heroContent } = useHeroContent();
   
@@ -214,6 +216,7 @@ const Hero = () => {
                 {services.map((service, index) => (
                   <div 
                     key={index} 
+                    onClick={() => navigate(service.path)}
                     className="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300 hover:bg-muted cursor-pointer"
                   >
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-primary group-hover:scale-105">
