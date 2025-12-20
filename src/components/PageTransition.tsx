@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useLocation } from "react-router-dom";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -8,34 +9,56 @@ interface PageTransitionProps {
 const PageTransition = ({ children }: PageTransitionProps) => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [displayChildren, setDisplayChildren] = useState(children);
 
   useEffect(() => {
-    // Reset animation on route change
+    // Start loading state and hide content
+    setIsLoading(true);
     setIsVisible(false);
     
     // Small delay for exit animation
     const exitTimer = setTimeout(() => {
       setDisplayChildren(children);
-      // Start enter animation
-      requestAnimationFrame(() => {
-        setIsVisible(true);
-      });
+      
+      // End loading and start enter animation
+      const loadTimer = setTimeout(() => {
+        setIsLoading(false);
+        requestAnimationFrame(() => {
+          setIsVisible(true);
+        });
+      }, 300);
+
+      return () => clearTimeout(loadTimer);
     }, 150);
 
     return () => clearTimeout(exitTimer);
   }, [location.pathname, children]);
 
   return (
-    <div
-      className={`transition-all duration-300 ease-out ${
-        isVisible 
-          ? "opacity-100 translate-y-0" 
-          : "opacity-0 translate-y-4"
-      }`}
-    >
-      {displayChildren}
-    </div>
+    <>
+      {/* Loading Spinner Overlay */}
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-background transition-opacity duration-300 ${
+          isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <LoadingSpinner size="lg" text="Cargando..." />
+      </div>
+
+      {/* Page Content */}
+      <div
+        className={`transition-all duration-300 ease-out ${
+          isVisible 
+            ? "opacity-100 translate-y-0" 
+            : "opacity-0 translate-y-4"
+        }`}
+      >
+        <Suspense fallback={<LoadingSpinner size="lg" text="Cargando..." fullScreen />}>
+          {displayChildren}
+        </Suspense>
+      </div>
+    </>
   );
 };
 
