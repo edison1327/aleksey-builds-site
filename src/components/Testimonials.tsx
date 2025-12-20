@@ -3,6 +3,7 @@ import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useTestimonials } from "@/hooks/useSiteData";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -13,10 +14,10 @@ interface Testimonial {
   company: string;
   content: string;
   rating: number;
-  avatar?: string;
+  avatar_url?: string | null;
 }
 
-const testimonials: Testimonial[] = [
+const defaultTestimonials: Testimonial[] = [
   {
     id: "1",
     name: "Carlos Mendoza",
@@ -39,22 +40,6 @@ const testimonials: Testimonial[] = [
     role: "Ingeniero Civil",
     company: "Proyectos Andinos",
     content: "Profesionales de primera. Su experiencia en ingeniería geotécnica nos ayudó a resolver problemas complejos de cimentación. Un equipo confiable y competente.",
-    rating: 5,
-  },
-  {
-    id: "4",
-    name: "Ana Torres",
-    role: "CEO",
-    company: "Desarrollo Urbano Corp",
-    content: "Llevamos 5 años trabajando con ALEKSEY y cada proyecto ha sido un éxito. Su compromiso con la calidad y los tiempos de entrega es incomparable.",
-    rating: 5,
-  },
-  {
-    id: "5",
-    name: "Jorge Ramírez",
-    role: "Jefe de Obras",
-    company: "Infraestructura Nacional",
-    content: "El alquiler de vehículos y maquinaria fue fundamental para nuestro proyecto vial. Equipos modernos, bien mantenidos y con excelente servicio de soporte.",
     rating: 5,
   },
 ];
@@ -82,6 +67,10 @@ const getAvatarColor = (name: string) => {
 
 const Testimonials = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
+  const { data: dbTestimonials, isLoading } = useTestimonials();
+  
+  // Use database testimonials if available, otherwise use defaults
+  const testimonials = dbTestimonials.length > 0 ? dbTestimonials : defaultTestimonials;
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { 
       loop: true, 
@@ -204,9 +193,9 @@ const Testimonials = () => {
                         <div 
                           className={`w-12 h-12 rounded-full bg-gradient-to-br ${getAvatarColor(testimonial.name)} flex items-center justify-center text-white font-bold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300`}
                         >
-                          {testimonial.avatar ? (
+                          {testimonial.avatar_url ? (
                             <img 
-                              src={testimonial.avatar} 
+                              src={testimonial.avatar_url} 
                               alt={testimonial.name}
                               className="w-full h-full rounded-full object-cover"
                             />
