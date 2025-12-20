@@ -191,7 +191,7 @@ const Navbar = () => {
               {/* INICIO */}
               <button
                 onClick={() => handleNavClick("/", "INICIO")}
-                className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+                className="group relative flex items-center gap-2 px-4 py-2 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
               >
                 <span 
                   className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
@@ -204,7 +204,7 @@ const Navbar = () => {
               {/* SOBRE NOSOTROS */}
               <button
                 onClick={() => handleNavClick("/nosotros", "SOBRE NOSOTROS")}
-                className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+                className="group relative flex items-center gap-2 px-4 py-2 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
               >
                 <span 
                   className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
@@ -218,7 +218,7 @@ const Navbar = () => {
               <div ref={servicesRef} className="relative">
                 <button
                   onClick={() => setIsServicesOpen(!isServicesOpen)}
-                  className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+                  className="group relative flex items-center gap-2 px-4 py-2 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
                 >
                   <span 
                     className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
@@ -235,7 +235,7 @@ const Navbar = () => {
                       <button
                         key={item.id}
                         onClick={() => handleNavClick(item.path, item.label)}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:bg-primary hover:text-primary-foreground"
+                        className="flex items-center gap-3 w-full px-4 py-3 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:bg-primary hover:text-primary-foreground"
                       >
                         <item.icon className="h-4 w-4" />
                         <span>{item.label}</span>
@@ -248,7 +248,7 @@ const Navbar = () => {
               {/* PROYECTOS */}
               <button
                 onClick={() => handleNavClick("/proyectos", "PROYECTOS")}
-                className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+                className="group relative flex items-center gap-2 px-4 py-2 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
               >
                 <span 
                   className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
@@ -261,7 +261,7 @@ const Navbar = () => {
               {/* CONTACTO */}
               <button
                 onClick={() => handleNavClick("/#contact", "CONTACTO")}
-                className="group relative flex items-center gap-2 px-4 py-2 text-sm font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+                className="group relative flex items-center gap-2 px-4 py-2 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
               >
                 <span 
                   className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
