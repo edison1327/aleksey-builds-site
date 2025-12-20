@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Star, Images } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import MultiImageUpload from "./MultiImageUpload";
 
 interface Project {
   id: string;
@@ -18,6 +19,7 @@ interface Project {
   location: string | null;
   year: number | null;
   image_url: string | null;
+  gallery_images: string[];
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
@@ -62,6 +64,7 @@ const AdminProjects = () => {
             location: editingProject.location,
             year: editingProject.year,
             image_url: editingProject.image_url,
+            gallery_images: editingProject.gallery_images,
             is_featured: editingProject.is_featured,
             is_active: editingProject.is_active,
             sort_order: editingProject.sort_order,
@@ -79,6 +82,7 @@ const AdminProjects = () => {
             location: editingProject.location,
             year: editingProject.year,
             image_url: editingProject.image_url,
+            gallery_images: editingProject.gallery_images,
             is_featured: editingProject.is_featured,
             is_active: editingProject.is_active,
             sort_order: projects.length,
@@ -120,6 +124,7 @@ const AdminProjects = () => {
       location: "",
       year: new Date().getFullYear(),
       image_url: "",
+      gallery_images: [],
       is_featured: false,
       is_active: true,
       sort_order: projects.length,
@@ -183,6 +188,12 @@ const AdminProjects = () => {
                 {project.year && (
                   <span className="text-xs px-2 py-1 rounded bg-muted text-muted-foreground">{project.year}</span>
                 )}
+                {project.gallery_images && project.gallery_images.length > 0 && (
+                  <span className="text-xs px-2 py-1 rounded bg-muted text-muted-foreground flex items-center gap-1">
+                    <Images className="h-3 w-3" />
+                    {project.gallery_images.length + 1}
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -240,6 +251,15 @@ const AdminProjects = () => {
                 value={editingProject?.image_url || ""}
                 onChange={(url) => setEditingProject(prev => prev ? { ...prev, image_url: url } : null)}
                 folder="projects"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Galería de imágenes adicionales</label>
+              <MultiImageUpload
+                value={editingProject?.gallery_images || []}
+                onChange={(urls) => setEditingProject(prev => prev ? { ...prev, gallery_images: urls } : null)}
+                folder="projects/gallery"
+                maxImages={10}
               />
             </div>
             <div className="flex items-center gap-4">

@@ -2,9 +2,9 @@ import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import { useProjects } from "@/hooks/useSiteData";
+import { useProjects, Project } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin, ZoomIn } from "lucide-react";
+import { MapPin, ZoomIn, Images } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
 import { useLightbox } from "@/hooks/useLightbox";
 
@@ -15,9 +15,24 @@ import project3 from "@/assets/project-3.jpg";
 
 const defaultImages = [project1, project2, project3];
 
+// Helper to get all images for a project
+const getProjectImages = (project: Project, fallbackIndex: number) => {
+  const mainImage = project.image_url || defaultImages[fallbackIndex % defaultImages.length];
+  const galleryImages = project.gallery_images || [];
+  return [
+    { src: mainImage, alt: project.title, title: project.title },
+    ...galleryImages.map((url, idx) => ({
+      src: url,
+      alt: `${project.title} - Imagen ${idx + 2}`,
+      title: project.title,
+    })),
+  ];
+};
+
 const ProjectsPage = () => {
   const { data: projects, isLoading } = useProjects();
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
 
   // Get unique categories from projects
   const categories = ["Todos", ...new Set(projects.map(p => p.category).filter(Boolean))];
@@ -27,17 +42,21 @@ const ProjectsPage = () => {
     ? projects 
     : projects.filter(p => p.category === activeCategory);
 
-  // Prepare images for lightbox
-  const lightboxImages = useMemo(() => 
-    filteredProjects.map((project, index) => ({
-      src: project.image_url || defaultImages[index % defaultImages.length],
-      alt: project.title,
-      title: project.title,
-    })),
-    [filteredProjects]
-  );
+  // Prepare images for lightbox - all images from selected project
+  const lightboxImages = useMemo(() => {
+    if (selectedProjectIndex === null || !filteredProjects[selectedProjectIndex]) {
+      return [];
+    }
+    return getProjectImages(filteredProjects[selectedProjectIndex], selectedProjectIndex);
+  }, [filteredProjects, selectedProjectIndex]);
 
   const { isOpen, currentIndex, open, close, next, prev } = useLightbox(lightboxImages);
+
+  const handleOpenLightbox = (projectIndex: number) => {
+    setSelectedProjectIndex(projectIndex);
+    // Small delay to ensure lightboxImages is updated
+    setTimeout(() => open(0), 10);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -99,7 +118,7 @@ const ProjectsPage = () => {
                 >
                   <div 
                     className="aspect-[4/3] overflow-hidden relative cursor-pointer"
-                    onClick={() => open(index)}
+                    onClick={() => handleOpenLightbox(index)}
                   >
                     <img
                       src={project.image_url || defaultImages[index % defaultImages.length]}
@@ -111,6 +130,13 @@ const ProjectsPage = () => {
                         <ZoomIn className="w-6 h-6" />
                       </div>
                     </div>
+                    {/* Image count badge */}
+                    {project.gallery_images && project.gallery_images.length > 0 && (
+                      <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        <Images className="w-3 h-3" />
+                        {(project.gallery_images?.length || 0) + 1}
+                      </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-3 mb-3">
