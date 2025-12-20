@@ -70,7 +70,7 @@ const Construction = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative pt-16 bg-secondary">
+      <section className="relative pt-24 bg-secondary">
         <div 
           ref={heroRef}
           className={`container mx-auto px-4 py-24 text-center opacity-0 ${heroVisible ? "animate-fade-in" : ""}`}
