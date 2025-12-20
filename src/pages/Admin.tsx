@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
-  Menu, ChevronLeft, ChevronRight, X
+  Menu, ChevronLeft, ChevronRight, X, Quote
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -25,6 +25,7 @@ import AdminJobPositions from "@/components/admin/AdminJobPositions";
 import AdminBenefits from "@/components/admin/AdminBenefits";
 import AdminAbout from "@/components/admin/AdminAbout";
 import AdminSiteSettings from "@/components/admin/AdminSiteSettings";
+import AdminTestimonials from "@/components/admin/AdminTestimonials";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { cn } from "@/lib/utils";
 
@@ -69,6 +70,7 @@ const Admin = () => {
     { id: "about", label: "About", icon: Info, category: "contenido" },
     { id: "services", label: "Servicios", icon: Building2, category: "contenido" },
     { id: "projects", label: "Proyectos", icon: FolderOpen, category: "contenido" },
+    { id: "testimonials", label: "Testimonios", icon: Quote, category: "contenido" },
     { id: "machinery", label: "Maquinaria", icon: Truck, category: "contenido" },
     { id: "vehicles", label: "Vehículos", icon: Car, category: "contenido" },
     { id: "contact", label: "Contacto", icon: Settings, category: "comunicacion" },
@@ -204,6 +206,7 @@ const Admin = () => {
       case "about": return <AdminAbout />;
       case "services": return <AdminServices />;
       case "projects": return <AdminProjects />;
+      case "testimonials": return <AdminTestimonials />;
       case "machinery": return <AdminMachinery />;
       case "vehicles": return <AdminVehicles />;
       case "contact": return <AdminContact />;

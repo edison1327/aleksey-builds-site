@@ -251,3 +251,38 @@ export const useAboutContent = () => {
 
   return { data, isLoading };
 };
+
+// Types for Testimonials
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  rating: number;
+  avatar_url: string | null;
+  is_active: boolean;
+  sort_order: number;
+}
+
+// Hook for Testimonials
+export const useTestimonials = () => {
+  const [data, setData] = useState<Testimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: testimonials } = await supabase
+        .from("testimonials")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      
+      setData(testimonials || []);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  return { data, isLoading };
+};
