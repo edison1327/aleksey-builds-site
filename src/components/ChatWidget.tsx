@@ -28,7 +28,12 @@ const ChatWidget = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when messages change
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Play notification sound
   const playNotificationSound = () => {
@@ -73,9 +78,7 @@ const ChatWidget = () => {
   }, [isOpen]);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [messages, isTyping]);
 
   const sendMessage = async (messageText?: string) => {
@@ -248,7 +251,7 @@ const ChatWidget = () => {
           </div>
 
           {/* Messages */}
-          <ScrollArea ref={scrollRef} className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
               {messages.map((message, index) => (
                 <div
@@ -302,6 +305,9 @@ const ChatWidget = () => {
                   </div>
                 </div>
               )}
+              
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
 
