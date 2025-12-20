@@ -1,4 +1,4 @@
-import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban, Sparkles } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -24,6 +24,16 @@ const Navbar = () => {
     { id: "ingenieria", label: "INGENIERÍA", icon: Wrench, path: "/ingenieria" },
     { id: "vehiculos", label: "VEHÍCULOS", icon: Truck, path: "/vehiculos" },
     { id: "maquinaria", label: "MAQUINARIA", icon: Settings, path: "/maquinaria" },
+  ];
+
+  const mobileMenuItems = [
+    { id: "inicio", label: "INICIO", icon: Home, path: "/", section: "INICIO" },
+    { id: "nosotros", label: "SOBRE NOSOTROS", icon: Users, path: "/nosotros", section: "SOBRE NOSOTROS" },
+  ];
+
+  const bottomMenuItems = [
+    { id: "proyectos", label: "PROYECTOS", icon: FolderKanban, path: "/proyectos", section: "PROYECTOS" },
+    { id: "contacto", label: "CONTACTO", icon: Phone, path: "/#contact", section: "CONTACTO" },
   ];
 
   const handleNavClick = (path: string, label: string) => {
@@ -262,13 +272,26 @@ const Navbar = () => {
               </button>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Animated Hamburger Button */}
             <button
-              className="lg:hidden flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-lg transition-colors"
+              className="lg:hidden relative flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl transition-all duration-300"
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             >
-              {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+              <div className="relative w-6 h-5 flex flex-col justify-between">
+                <span className={cn(
+                  "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
+                  isOpen ? "rotate-45 translate-y-2" : ""
+                )} />
+                <span className={cn(
+                  "block h-0.5 w-6 bg-current rounded-full transition-all duration-300",
+                  isOpen ? "opacity-0 scale-0" : "opacity-100"
+                )} />
+                <span className={cn(
+                  "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
+                  isOpen ? "-rotate-45 -translate-y-2" : ""
+                )} />
+              </div>
             </button>
           </div>
         </div>
@@ -277,124 +300,213 @@ const Navbar = () => {
       {/* Mobile Menu Overlay */}
       <div 
         className={cn(
-          "lg:hidden fixed inset-0 bg-black/60 z-[99] transition-opacity duration-300",
+          "lg:hidden fixed inset-0 z-[99] transition-all duration-500",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}
         onClick={() => setIsOpen(false)}
-      />
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 backdrop-blur-sm" />
+      </div>
 
       {/* Mobile Menu Panel */}
       <div className={cn(
-        "lg:hidden fixed top-14 sm:top-16 left-0 right-0 bottom-0 bg-secondary z-[101] transition-transform duration-300 ease-out overflow-y-auto",
-        isOpen ? "translate-y-0" : "-translate-y-full"
+        "lg:hidden fixed top-14 sm:top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-500 ease-out overflow-hidden",
+        isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
       )}>
-        <div className="container mx-auto px-4 py-6 space-y-2">
-          {/* INICIO */}
-          <button
-            onClick={() => handleNavClick("/", "INICIO")}
-            className={cn(
-              "flex items-center gap-4 w-full text-left py-4 px-5 rounded-xl transition-all duration-300",
-              activeSection === "INICIO"
-                ? "bg-primary text-primary-foreground"
-                : "text-secondary-foreground hover:bg-secondary-foreground/10"
-            )}
-          >
-            <Home className="h-6 w-6" />
-            <span className="font-heading tracking-wide text-lg">INICIO</span>
-          </button>
+        {/* Animated Background */}
+        <div className={cn(
+          "absolute inset-0 bg-secondary transition-transform duration-500 ease-out",
+          isOpen ? "translate-y-0" : "-translate-y-full"
+        )}>
+          {/* Decorative gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
+          
+          {/* Animated circles */}
+          <div className={cn(
+            "absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl transition-all duration-700",
+            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-50"
+          )} />
+          <div className={cn(
+            "absolute -bottom-20 -left-20 w-60 h-60 bg-primary/5 rounded-full blur-3xl transition-all duration-1000 delay-200",
+            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-50"
+          )} />
+        </div>
 
-          {/* SOBRE NOSOTROS */}
-          <button
-            onClick={() => handleNavClick("/nosotros", "SOBRE NOSOTROS")}
-            className={cn(
-              "flex items-center gap-4 w-full text-left py-4 px-5 rounded-xl transition-all duration-300",
-              activeSection === "SOBRE NOSOTROS"
-                ? "bg-primary text-primary-foreground"
-                : "text-secondary-foreground hover:bg-secondary-foreground/10"
-            )}
-          >
-            <Users className="h-6 w-6" />
-            <span className="font-heading tracking-wide text-lg">SOBRE NOSOTROS</span>
-          </button>
+        {/* Menu Content */}
+        <div className={cn(
+          "relative h-full overflow-y-auto transition-all duration-500",
+          isOpen ? "translate-y-0" : "-translate-y-8"
+        )}>
+          <div className="container mx-auto px-4 py-6 space-y-3">
+            {/* Top Menu Items */}
+            {mobileMenuItems.map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.path, item.section)}
+                className={cn(
+                  "group flex items-center gap-4 w-full text-left py-4 px-5 rounded-2xl transition-all duration-300",
+                  "transform",
+                  isOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0",
+                  activeSection === item.section
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    : "text-secondary-foreground hover:bg-secondary-foreground/10"
+                )}
+                style={{ transitionDelay: isOpen ? `${index * 50}ms` : '0ms' }}
+              >
+                <div className={cn(
+                  "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300",
+                  activeSection === item.section 
+                    ? "bg-primary-foreground/20" 
+                    : "bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110"
+                )}>
+                  <item.icon className={cn(
+                    "h-6 w-6 transition-all duration-300",
+                    activeSection === item.section ? "" : "text-primary group-hover:rotate-12"
+                  )} />
+                </div>
+                <span className="font-heading tracking-wide text-lg">{item.label}</span>
+                {activeSection === item.section && (
+                  <Sparkles className="h-4 w-4 ml-auto animate-pulse" />
+                )}
+              </button>
+            ))}
 
-          {/* SERVICIOS Accordion */}
-          <div className="space-y-1">
-            <button
-              onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+            {/* SERVICIOS Accordion */}
+            <div 
               className={cn(
-                "flex items-center justify-between w-full text-left py-4 px-5 rounded-xl transition-all duration-300",
-                isServiceActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-secondary-foreground hover:bg-secondary-foreground/10"
+                "space-y-2 transition-all duration-300",
+                isOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0"
               )}
+              style={{ transitionDelay: isOpen ? '100ms' : '0ms' }}
             >
-              <div className="flex items-center gap-4">
-                <Wrench className="h-6 w-6" />
-                <span className="font-heading tracking-wide text-lg">SERVICIOS</span>
-              </div>
-              <ChevronDown className={cn(
-                "h-6 w-6 transition-transform duration-300",
-                isMobileServicesOpen ? "rotate-180" : ""
-              )} />
-            </button>
+              <button
+                onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+                className={cn(
+                  "group flex items-center justify-between w-full text-left py-4 px-5 rounded-2xl transition-all duration-300",
+                  isServiceActive
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    : "text-secondary-foreground hover:bg-secondary-foreground/10"
+                )}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={cn(
+                    "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300",
+                    isServiceActive 
+                      ? "bg-primary-foreground/20" 
+                      : "bg-primary/10 group-hover:bg-primary/20"
+                  )}>
+                    <Wrench className={cn(
+                      "h-6 w-6 transition-all duration-500",
+                      isServiceActive ? "" : "text-primary",
+                      isMobileServicesOpen ? "rotate-180" : "group-hover:rotate-45"
+                    )} />
+                  </div>
+                  <span className="font-heading tracking-wide text-lg">SERVICIOS</span>
+                </div>
+                <div className={cn(
+                  "flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-300",
+                  isServiceActive ? "bg-primary-foreground/20" : "bg-secondary-foreground/10"
+                )}>
+                  <ChevronDown className={cn(
+                    "h-5 w-5 transition-transform duration-300",
+                    isMobileServicesOpen ? "rotate-180" : ""
+                  )} />
+                </div>
+              </button>
 
-            <div className={cn(
-              "overflow-hidden transition-all duration-300 ease-out",
-              isMobileServicesOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-            )}>
-              <div className="pl-6 space-y-1 py-2">
-                {serviceItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.path, item.label)}
-                    className={cn(
-                      "flex items-center gap-4 w-full text-left py-3 px-5 rounded-xl transition-all duration-300",
-                      activeSection === item.label
-                        ? "bg-primary/80 text-primary-foreground"
-                        : "text-secondary-foreground/80 hover:bg-secondary-foreground/10"
-                    )}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span className="font-heading tracking-wide">{item.label}</span>
-                  </button>
-                ))}
+              {/* Services Submenu */}
+              <div className={cn(
+                "overflow-hidden transition-all duration-500 ease-out",
+                isMobileServicesOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+              )}>
+                <div className="pl-4 space-y-2 py-2">
+                  {serviceItems.map((item, index) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleNavClick(item.path, item.label)}
+                      className={cn(
+                        "group flex items-center gap-4 w-full text-left py-3 px-4 rounded-xl transition-all duration-300",
+                        "transform",
+                        isMobileServicesOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
+                        activeSection === item.label
+                          ? "bg-primary/90 text-primary-foreground shadow-md"
+                          : "text-secondary-foreground/80 hover:bg-secondary-foreground/10"
+                      )}
+                      style={{ transitionDelay: isMobileServicesOpen ? `${index * 75}ms` : '0ms' }}
+                    >
+                      <div className={cn(
+                        "flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-300",
+                        activeSection === item.label 
+                          ? "bg-primary-foreground/20" 
+                          : "bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110"
+                      )}>
+                        <item.icon className={cn(
+                          "h-5 w-5 transition-all duration-300",
+                          activeSection === item.label ? "" : "text-primary group-hover:rotate-12"
+                        )} />
+                      </div>
+                      <span className="font-heading tracking-wide">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* PROYECTOS */}
-          <button
-            onClick={() => handleNavClick("/proyectos", "PROYECTOS")}
-            className={cn(
-              "flex items-center gap-4 w-full text-left py-4 px-5 rounded-xl transition-all duration-300",
-              activeSection === "PROYECTOS"
-                ? "bg-primary text-primary-foreground"
-                : "text-secondary-foreground hover:bg-secondary-foreground/10"
-            )}
-          >
-            <FolderKanban className="h-6 w-6" />
-            <span className="font-heading tracking-wide text-lg">PROYECTOS</span>
-          </button>
+            {/* Bottom Menu Items */}
+            {bottomMenuItems.map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.path, item.section)}
+                className={cn(
+                  "group flex items-center gap-4 w-full text-left py-4 px-5 rounded-2xl transition-all duration-300",
+                  "transform",
+                  isOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0",
+                  activeSection === item.section
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    : "text-secondary-foreground hover:bg-secondary-foreground/10"
+                )}
+                style={{ transitionDelay: isOpen ? `${(index + 3) * 50}ms` : '0ms' }}
+              >
+                <div className={cn(
+                  "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300",
+                  activeSection === item.section 
+                    ? "bg-primary-foreground/20" 
+                    : "bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110"
+                )}>
+                  <item.icon className={cn(
+                    "h-6 w-6 transition-all duration-300",
+                    activeSection === item.section ? "" : "text-primary group-hover:rotate-12"
+                  )} />
+                </div>
+                <span className="font-heading tracking-wide text-lg">{item.label}</span>
+                {activeSection === item.section && (
+                  <Sparkles className="h-4 w-4 ml-auto animate-pulse" />
+                )}
+              </button>
+            ))}
 
-          {/* CONTACTO */}
-          <button
-            onClick={() => handleNavClick("/#contact", "CONTACTO")}
-            className={cn(
-              "flex items-center gap-4 w-full text-left py-4 px-5 rounded-xl transition-all duration-300",
-              activeSection === "CONTACTO"
-                ? "bg-primary text-primary-foreground"
-                : "text-secondary-foreground hover:bg-secondary-foreground/10"
-            )}
-          >
-            <Phone className="h-6 w-6" />
-            <span className="font-heading tracking-wide text-lg">CONTACTO</span>
-          </button>
-
-          {/* Company info */}
-          <div className="pt-8 mt-6 border-t border-secondary-foreground/20">
-            <p className="text-sm text-secondary-foreground/60 px-5">
-              {siteSettings?.tagline || "Ingeniería y Construcción"}
-            </p>
+            {/* Company info with animation */}
+            <div 
+              className={cn(
+                "pt-8 mt-6 border-t border-secondary-foreground/10 transition-all duration-500",
+                isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              )}
+              style={{ transitionDelay: isOpen ? '300ms' : '0ms' }}
+            >
+              <div className="flex items-center gap-3 px-5">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Building2 className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-heading font-bold text-secondary-foreground">
+                    {companyName}
+                  </p>
+                  <p className="text-xs text-secondary-foreground/60">
+                    {siteSettings?.tagline || "Ingeniería y Construcción"}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
