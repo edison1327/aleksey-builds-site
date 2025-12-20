@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useProjects } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin } from "lucide-react";
+import { MapPin, ZoomIn } from "lucide-react";
+import Lightbox from "@/components/Lightbox";
+import { useLightbox } from "@/hooks/useLightbox";
 
 // Default images as fallback
 import project1 from "@/assets/project-1.jpg";
@@ -24,6 +26,18 @@ const ProjectsPage = () => {
   const filteredProjects = activeCategory === "Todos" 
     ? projects 
     : projects.filter(p => p.category === activeCategory);
+
+  // Prepare images for lightbox
+  const lightboxImages = useMemo(() => 
+    filteredProjects.map((project, index) => ({
+      src: project.image_url || defaultImages[index % defaultImages.length],
+      alt: project.title,
+      title: project.title,
+    })),
+    [filteredProjects]
+  );
+
+  const { isOpen, currentIndex, open, close, next, prev } = useLightbox(lightboxImages);
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,12 +97,20 @@ const ProjectsPage = () => {
                   key={project.id}
                   className="group bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
                 >
-                  <div className="aspect-[4/3] overflow-hidden">
+                  <div 
+                    className="aspect-[4/3] overflow-hidden relative cursor-pointer"
+                    onClick={() => open(index)}
+                  >
                     <img
                       src={project.image_url || defaultImages[index % defaultImages.length]}
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 rounded-full bg-primary text-primary-foreground">
+                        <ZoomIn className="w-6 h-6" />
+                      </div>
+                    </div>
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-3 mb-3">
@@ -143,6 +165,16 @@ const ProjectsPage = () => {
 
       <Footer />
       <ScrollToTop />
+      
+      {/* Lightbox */}
+      <Lightbox
+        images={lightboxImages}
+        currentIndex={currentIndex}
+        isOpen={isOpen}
+        onClose={close}
+        onPrev={prev}
+        onNext={next}
+      />
     </div>
   );
 };
