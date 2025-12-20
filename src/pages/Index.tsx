@@ -11,7 +11,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SplashScreen from "@/components/SplashScreen";
 import ScrollToTop from "@/components/ScrollToTop";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import SkipToContent from "@/components/SkipToContent";
 
 const Index = () => {
@@ -44,7 +43,6 @@ const Index = () => {
       </main>
       <Footer />
       <ScrollToTop />
-      <WhatsAppButton />
     </div>
   );
 };
