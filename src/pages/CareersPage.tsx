@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
@@ -196,7 +195,6 @@ const CareersPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
@@ -207,8 +205,6 @@ const CareersPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-secondary">
         <div className="container mx-auto px-4">

@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useServices, useHeroContent, Service } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -70,8 +69,6 @@ const Construction = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="relative pt-16 bg-secondary">
         <div 

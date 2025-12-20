@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Award, Users, Clock, CheckCircle, Target, Eye, Heart } from "lucide-react";
@@ -64,8 +63,6 @@ A lo largo de los años, hemos completado más de 500 proyectos exitosos, desde 
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-secondary">
         <div className="container mx-auto px-4">

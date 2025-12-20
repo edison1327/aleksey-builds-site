@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import ProjectsSection from "@/components/ProjectsSection";
@@ -30,7 +29,7 @@ const Index = () => {
       {showSplash && (
         <SplashScreen onComplete={handleSplashComplete} duration={1500} />
       )}
-      <Navbar />
+      
       <main id="main-content">
         <Hero />
         <Services />
