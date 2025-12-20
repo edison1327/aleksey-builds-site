@@ -162,7 +162,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu - hidden on mobile and tablet */}
-          <div className="hidden xl:flex items-center gap-1 relative">
+          <div className="hidden lg:flex items-center gap-1 relative">
             {/* INICIO */}
             <button
               onClick={() => handleNavClick("/", "INICIO")}
@@ -249,7 +249,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="xl:hidden text-secondary-foreground p-2 hover:bg-secondary-foreground/10 rounded-lg transition-colors"
+            className="lg:hidden text-secondary-foreground p-2 hover:bg-secondary-foreground/10 rounded-lg transition-colors"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
           >
@@ -259,7 +259,7 @@ const Navbar = () => {
 
         {/* Mobile Menu - fullscreen overlay */}
         <div className={cn(
-          "xl:hidden fixed inset-x-0 top-14 sm:top-16 bottom-0 bg-secondary/98 backdrop-blur-md transition-all duration-300 overflow-auto",
+          "lg:hidden fixed inset-x-0 top-14 sm:top-16 bottom-0 bg-secondary/98 backdrop-blur-md transition-all duration-300 overflow-auto",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}>
           <div className="container mx-auto px-4 py-6 space-y-2">
