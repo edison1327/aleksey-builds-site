@@ -334,6 +334,7 @@ export type Database = {
           category: string | null
           created_at: string
           description: string | null
+          gallery_images: string[] | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -348,6 +349,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -362,6 +364,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null

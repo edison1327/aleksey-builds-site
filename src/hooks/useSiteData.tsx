@@ -33,6 +33,7 @@ export interface Project {
   location: string | null;
   year: number | null;
   image_url: string | null;
+  gallery_images: string[] | null;
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
