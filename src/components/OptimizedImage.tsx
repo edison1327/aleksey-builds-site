@@ -1,27 +1,28 @@
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
-interface ParallaxImageProps {
+interface OptimizedImageProps {
   src: string;
   alt: string;
   className?: string;
-  speed?: number;
+  width?: number;
+  height?: number;
   priority?: boolean;
 }
 
-const ParallaxImage = ({ 
+const OptimizedImage = ({ 
   src, 
   alt, 
   className = "", 
-  speed = 0.08,
+  width,
+  height,
   priority = false 
-}: ParallaxImageProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [offset, setOffset] = useState(0);
+}: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
   const [hasError, setHasError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Lazy loading with intersection observer
   useEffect(() => {
     if (priority) {
       setIsInView(true);
@@ -36,7 +37,7 @@ const ParallaxImage = ({
         }
       },
       {
-        rootMargin: "200px",
+        rootMargin: "200px", // Start loading 200px before entering viewport
         threshold: 0.01
       }
     );
@@ -48,26 +49,6 @@ const ParallaxImage = ({
     return () => observer.disconnect();
   }, [priority]);
 
-  // Parallax effect
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      
-      const rect = containerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      if (rect.top < windowHeight && rect.bottom > 0) {
-        const scrollProgress = (windowHeight - rect.top) / (windowHeight + rect.height);
-        setOffset((scrollProgress - 0.5) * 100 * speed);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [speed]);
-
   const handleLoad = () => {
     setIsLoaded(true);
   };
@@ -78,14 +59,18 @@ const ParallaxImage = ({
   };
 
   return (
-    <div ref={containerRef} className={`overflow-hidden relative ${className}`}>
+    <div 
+      ref={containerRef} 
+      className={`relative overflow-hidden ${className}`}
+      style={{ width, height }}
+    >
       {/* Skeleton placeholder */}
       <div 
         className={`absolute inset-0 bg-gradient-to-r from-muted via-muted/80 to-muted animate-pulse transition-opacity duration-500 ${
-          isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+          isLoaded ? "opacity-0" : "opacity-100"
         }`}
       />
-
+      
       {/* Error placeholder */}
       {hasError && (
         <div className="absolute inset-0 bg-muted flex items-center justify-center">
@@ -108,23 +93,23 @@ const ParallaxImage = ({
         </div>
       )}
 
-      {/* Actual image with parallax */}
+      {/* Actual image - only loads when in view */}
       {isInView && !hasError && (
-        <img 
-          src={src} 
+        <img
+          ref={imgRef}
+          src={src}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           onLoad={handleLoad}
           onError={handleError}
-          className={`w-full h-[120%] object-cover transition-all duration-300 ease-out ${
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
             isLoaded ? "opacity-100" : "opacity-0"
           }`}
-          style={{ transform: `translateY(${offset}px) scale(1.1)` }}
         />
       )}
     </div>
   );
 };
 
-export default ParallaxImage;
+export default OptimizedImage;
