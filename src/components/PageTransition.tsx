@@ -48,10 +48,10 @@ const PageTransition = ({ children }: PageTransitionProps) => {
 
       {/* Page Content */}
       <div
-        className={`transition-all duration-300 ease-out ${
+        className={`transition-opacity duration-300 ease-out ${
           isVisible 
-            ? "opacity-100 translate-y-0" 
-            : "opacity-0 translate-y-4"
+            ? "opacity-100" 
+            : "opacity-0 pointer-events-none"
         }`}
       >
         <Suspense fallback={<LoadingSpinner size="lg" text="Cargando..." fullScreen />}>
