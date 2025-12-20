@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
@@ -11,6 +11,8 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SplashScreen from "@/components/SplashScreen";
 import ScrollToTop from "@/components/ScrollToTop";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import SkipToContent from "@/components/SkipToContent";
 
 const Index = () => {
   const [showSplash, setShowSplash] = useState(() => {
@@ -25,20 +27,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SkipToContent />
       {showSplash && (
         <SplashScreen onComplete={handleSplashComplete} duration={1500} />
       )}
       <Navbar />
-      <Hero />
-      <Services />
-      <Vehicles />
-      <Machinery />
-      <ProjectsSection />
-      <Testimonials />
-      <CallToAction />
-      <Contact />
+      <main id="main-content">
+        <Hero />
+        <Services />
+        <Vehicles />
+        <Machinery />
+        <ProjectsSection />
+        <Testimonials />
+        <CallToAction />
+        <Contact />
+      </main>
       <Footer />
       <ScrollToTop />
+      <WhatsAppButton />
     </div>
   );
 };
