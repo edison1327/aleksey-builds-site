@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import PageTransition from "./PageTransition";
 import Index from "@/pages/Index";
@@ -12,26 +13,41 @@ import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
 import NotFound from "@/pages/NotFound";
 
+// Component that scrolls to top on route change
+const ScrollToTopOnNavigate = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Scroll to top immediately when route changes
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
-    <PageTransition key={location.pathname}>
-      <Routes location={location}>
-        <Route path="/" element={<Index />} />
-        <Route path="/construccion" element={<Construction />} />
-        <Route path="/ingenieria" element={<Engineering />} />
-        <Route path="/vehiculos" element={<VehiclesPage />} />
-        <Route path="/maquinaria" element={<MachineryPage />} />
-        <Route path="/nosotros" element={<AboutPage />} />
-        <Route path="/proyectos" element={<ProjectsPage />} />
-        <Route path="/convocatoria" element={<CareersPage />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </PageTransition>
+    <>
+      <ScrollToTopOnNavigate />
+      <PageTransition key={location.pathname}>
+        <Routes location={location}>
+          <Route path="/" element={<Index />} />
+          <Route path="/construccion" element={<Construction />} />
+          <Route path="/ingenieria" element={<Engineering />} />
+          <Route path="/vehiculos" element={<VehiclesPage />} />
+          <Route path="/maquinaria" element={<MachineryPage />} />
+          <Route path="/nosotros" element={<AboutPage />} />
+          <Route path="/proyectos" element={<ProjectsPage />} />
+          <Route path="/convocatoria" element={<CareersPage />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageTransition>
+    </>
   );
 };
 
