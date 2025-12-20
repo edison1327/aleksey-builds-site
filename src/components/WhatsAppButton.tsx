@@ -50,10 +50,12 @@ const WhatsAppButton = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3">
+    <div 
+      className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3 animate-in slide-in-from-right-10 fade-in duration-500"
+    >
       {/* Tooltip */}
       {showTooltip && (
-        <div className="relative animate-fade-in">
+        <div className="relative animate-in slide-in-from-bottom-2 fade-in duration-300">
           <div className="bg-card text-card-foreground px-4 py-3 rounded-2xl shadow-2xl border border-border/50 max-w-[200px]">
             <button
               onClick={() => setShowTooltip(false)}
