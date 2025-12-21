@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import AnimatedStat from "@/components/AnimatedStat";
 import { Award, Users, Clock, CheckCircle, Target, Eye, Heart, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase, Shield } from "lucide-react";
 import { useAboutContent, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,11 +31,11 @@ const AboutPage = () => {
   const isLoading = aboutLoading || heroLoading || teamStatsLoading;
 
   const stats = [
-    { icon: Award, value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia" },
-    { icon: Users, value: `${heroData?.projects_count || 500}+`, label: "Proyectos Completados" },
-    { icon: Shield, value: `${(heroData?.accident_free_hours || 10000).toLocaleString()}+`, label: "Horas Sin Accidentes" },
-    { icon: Clock, value: "100%", label: "Entregas a Tiempo" },
-    { icon: CheckCircle, value: `${heroData?.clients_percentage || 98}%`, label: "Clientes Satisfechos" },
+    { icon: Award, numValue: heroData?.years_count || 10, suffix: "+", label: "Años de Experiencia" },
+    { icon: Users, numValue: heroData?.projects_count || 500, suffix: "+", label: "Proyectos Completados" },
+    { icon: Shield, numValue: heroData?.accident_free_hours || 10000, suffix: "+", label: "Horas Sin Accidentes" },
+    { icon: Clock, numValue: 100, suffix: "%", label: "Entregas a Tiempo" },
+    { icon: CheckCircle, numValue: heroData?.clients_percentage || 98, suffix: "%", label: "Clientes Satisfechos" },
   ];
 
   const defaultValues = [
@@ -142,7 +143,12 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
                   className="bg-card rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <stat.icon className="h-10 w-10 mx-auto mb-4 text-primary" />
-                  <div className="text-4xl font-heading font-bold mb-2 text-foreground">{stat.value}</div>
+                  <AnimatedStat 
+                    value={stat.numValue} 
+                    suffix={stat.suffix}
+                    delay={index * 100}
+                    className="text-4xl font-heading font-bold mb-2 text-foreground"
+                  />
                   <div className="text-sm text-muted-foreground font-medium">
                     {stat.label}
                   </div>
@@ -221,13 +227,23 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               {teamStats.length > 0 ? (
-                teamStats.map((stat) => {
+                teamStats.map((stat, index) => {
                   const IconComponent = iconMap[stat.icon] || Users;
                   const displayValue = replacePlaceholders(stat.value);
+                  // Extract numeric value from displayValue for animation
+                  const numericMatch = displayValue.match(/^(\d+)/);
+                  const numericValue = numericMatch ? parseInt(numericMatch[1], 10) : 0;
+                  const suffix = displayValue.replace(/^\d+/, '');
+                  
                   return (
                     <div key={stat.id} className="p-4">
                       <IconComponent className="h-6 w-6 mx-auto mb-2 text-primary/70" />
-                      <div className="text-3xl font-heading font-bold text-primary mb-2">{displayValue}</div>
+                      <AnimatedStat 
+                        value={numericValue} 
+                        suffix={suffix}
+                        delay={index * 150}
+                        className="text-3xl font-heading font-bold text-primary mb-2"
+                      />
                       <div className="text-sm text-secondary-foreground/70">{stat.label}</div>
                     </div>
                   );
