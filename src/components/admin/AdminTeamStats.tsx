@@ -170,8 +170,11 @@ const AdminTeamStats = () => {
                     <Input
                       value={stat.value}
                       onChange={(e) => updateStat(stat.id, "value", e.target.value)}
-                      placeholder="Ej: 25+"
+                      placeholder="Ej: 25+ o {hours}+"
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Placeholders: {"{hours}"}, {"{projects}"}, {"{years}"}, {"{clients}"}, {"{employees}"}, {"{active_projects}"}
+                    </p>
                   </div>
                   
                   <div>
