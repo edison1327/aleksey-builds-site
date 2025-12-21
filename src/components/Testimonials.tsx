@@ -3,7 +3,7 @@ import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useTestimonials } from "@/hooks/useSiteData";
+import { useTestimonials, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -63,6 +63,40 @@ const getAvatarColor = (name: string) => {
   ];
   const index = name.charCodeAt(0) % colors.length;
   return colors[index];
+};
+
+const TestimonialsStats = () => {
+  const { data: heroData } = useHeroContent();
+  const { data: teamStats } = useTeamStats();
+
+  const defaultStats = [
+    { value: `${heroData?.clients_percentage || 98}%`, label: "Clientes Satisfechos" },
+    { value: `${heroData?.projects_count || 150}+`, label: "Proyectos Completados" },
+    { value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia" },
+    { value: "50+", label: "Empresas Confían en Nosotros" },
+  ];
+
+  const stats = teamStats.length > 0 
+    ? teamStats.slice(0, 4).map(stat => ({ value: stat.value, label: stat.label }))
+    : defaultStats;
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+      {stats.map((stat, index) => (
+        <div 
+          key={index} 
+          className="text-center p-6 rounded-2xl bg-card/50 border border-border/50 hover:border-primary/30 transition-all duration-300 group"
+        >
+          <div className="text-3xl md:text-4xl font-heading font-bold text-primary group-hover:scale-110 transition-transform duration-300">
+            {stat.value}
+          </div>
+          <div className="text-sm text-muted-foreground mt-2">
+            {stat.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 const Testimonials = () => {
@@ -242,26 +276,7 @@ const Testimonials = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
-          {[
-            { value: "98%", label: "Clientes Satisfechos" },
-            { value: "150+", label: "Proyectos Completados" },
-            { value: "10+", label: "Años de Experiencia" },
-            { value: "50+", label: "Empresas Confían en Nosotros" },
-          ].map((stat, index) => (
-            <div 
-              key={index} 
-              className="text-center p-6 rounded-2xl bg-card/50 border border-border/50 hover:border-primary/30 transition-all duration-300 group"
-            >
-              <div className="text-3xl md:text-4xl font-heading font-bold text-primary group-hover:scale-110 transition-transform duration-300">
-                {stat.value}
-              </div>
-              <div className="text-sm text-muted-foreground mt-2">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
+        <TestimonialsStats />
       </div>
     </section>
   );
