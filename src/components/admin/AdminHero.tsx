@@ -65,12 +65,48 @@ const AdminHero = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedVideos, setUploadedVideos] = useState<{ name: string; url: string; created_at: string }[]>([]);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchContent();
+    fetchUploadedVideos();
   }, []);
+
+  const fetchUploadedVideos = async () => {
+    setIsLoadingVideos(true);
+    try {
+      const { data, error } = await supabase.storage
+        .from('hero-videos')
+        .list('', {
+          limit: 20,
+          sortBy: { column: 'created_at', order: 'desc' }
+        });
+
+      if (error) throw error;
+
+      const videos = (data || [])
+        .filter(file => file.name.endsWith('.mp4') || file.name.endsWith('.webm') || file.name.endsWith('.mov'))
+        .map(file => {
+          const { data: urlData } = supabase.storage
+            .from('hero-videos')
+            .getPublicUrl(file.name);
+          return {
+            name: file.name,
+            url: urlData.publicUrl,
+            created_at: file.created_at || ''
+          };
+        });
+
+      setUploadedVideos(videos);
+    } catch (error) {
+      console.error("Error fetching uploaded videos:", error);
+    } finally {
+      setIsLoadingVideos(false);
+    }
+  };
 
   const fetchContent = async () => {
     const { data, error } = await supabase
@@ -351,6 +387,63 @@ const AdminHero = () => {
                 );
               })}
             </div>
+
+            {/* Uploaded Videos Gallery */}
+            {uploadedVideos.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Videos subidos anteriormente</label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={fetchUploadedVideos}
+                    disabled={isLoadingVideos}
+                  >
+                    {isLoadingVideos ? <Loader2 className="h-4 w-4 animate-spin" /> : "Actualizar"}
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {uploadedVideos.map((video) => {
+                    const isSelected = content?.video_url === video.url;
+                    return (
+                      <div
+                        key={video.name}
+                        onClick={() => setContent(prev => prev ? { ...prev, video_url: video.url } : null)}
+                        className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                          isSelected 
+                            ? "border-primary ring-2 ring-primary/20" 
+                            : "border-border hover:border-primary/50"
+                        }`}
+                      >
+                        <div className="aspect-video bg-muted relative">
+                          <video
+                            src={video.url}
+                            className="w-full h-full object-cover"
+                            muted
+                            playsInline
+                            onMouseEnter={(e) => e.currentTarget.play()}
+                            onMouseLeave={(e) => { e.currentTarget.pause(); e.currentTarget.currentTime = 0; }}
+                          />
+                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <Play className="h-6 w-6 text-white" />
+                          </div>
+                        </div>
+                        <div className="p-2 bg-card">
+                          <p className="text-xs font-medium truncate" title={video.name}>
+                            {video.name.replace(/^hero-video-\d+-?/, '').replace(/\.\w+$/, '') || 'Video subido'}
+                          </p>
+                        </div>
+                        {isSelected && (
+                          <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                            <Check className="h-3 w-3 text-primary-foreground" />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             
             {/* Upload Section */}
             <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
@@ -358,7 +451,10 @@ const AdminHero = () => {
                 ref={fileInputRef}
                 type="file"
                 accept="video/*"
-                onChange={handleVideoUpload}
+                onChange={async (e) => {
+                  await handleVideoUpload(e);
+                  fetchUploadedVideos(); // Refresh gallery after upload
+                }}
                 className="hidden"
                 id="video-upload"
               />
@@ -373,7 +469,7 @@ const AdminHero = () => {
               ) : (
                 <label htmlFor="video-upload" className="cursor-pointer block">
                   <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-sm font-medium">Subir tu propio video</p>
+                  <p className="text-sm font-medium">Subir nuevo video</p>
                   <p className="text-xs text-muted-foreground mt-1">MP4, WebM o MOV (máx. 100MB)</p>
                 </label>
               )}
