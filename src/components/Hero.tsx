@@ -52,6 +52,18 @@ const Hero = () => {
     delay: 1200, 
     suffix: "%" 
   });
+  const activeProjectsCount = useCountUp({ 
+    end: heroContent?.active_projects_count || 5, 
+    duration: 1500, 
+    delay: 1400, 
+    suffix: "" 
+  });
+  const employeesCount = useCountUp({ 
+    end: heroContent?.employees_count || 50, 
+    duration: 2000, 
+    delay: 1600, 
+    suffix: "+" 
+  });
 
   // Typewriter effect for subtitle
   const { displayText, isTyping } = useTypewriter({
@@ -207,19 +219,27 @@ const Hero = () => {
 
             {/* Stats */}
             <div 
-              className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-secondary-foreground/10 animate-stagger-6"
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-12 pt-8 border-t border-secondary-foreground/10 animate-stagger-6"
             >
               <div ref={projectsCount.ref}>
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">{projectsCount.display}</div>
-                <div className="text-sm text-secondary-foreground/70 mt-1">Proyectos Completados</div>
+                <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{projectsCount.display}</div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 mt-1">Proyectos Completados</div>
               </div>
               <div ref={yearsCount.ref}>
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">{yearsCount.display}</div>
-                <div className="text-sm text-secondary-foreground/70 mt-1">Años de Experiencia</div>
+                <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{yearsCount.display}</div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 mt-1">Años de Experiencia</div>
               </div>
               <div ref={clientsCount.ref}>
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary">{clientsCount.display}</div>
-                <div className="text-sm text-secondary-foreground/70 mt-1">Clientes Satisfechos</div>
+                <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{clientsCount.display}</div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 mt-1">Clientes Satisfechos</div>
+              </div>
+              <div ref={activeProjectsCount.ref}>
+                <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{activeProjectsCount.display}</div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 mt-1">Proyectos Activos</div>
+              </div>
+              <div ref={employeesCount.ref}>
+                <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{employeesCount.display}</div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 mt-1">Empleados</div>
               </div>
             </div>
           </div>
