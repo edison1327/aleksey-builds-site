@@ -9,9 +9,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
-  Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2
+  Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
+  FileText, TrendingUp
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminServices from "@/components/admin/AdminServices";
@@ -326,6 +327,7 @@ const DashboardOverview = () => {
     vehicles: 0,
   });
   const [messagesData, setMessagesData] = useState<{ month: string; count: number }[]>([]);
+  const [quotesData, setQuotesData] = useState<{ month: string; count: number }[]>([]);
   const [projectsData, setProjectsData] = useState<{ year: string; count: number }[]>([]);
   const [machineryData, setMachineryData] = useState<{ category: string; count: number }[]>([]);
   const [vehiclesData, setVehiclesData] = useState<{ category: string; count: number }[]>([]);
@@ -381,17 +383,19 @@ const DashboardOverview = () => {
         
         const { data: messages } = await supabase
           .from("contact_messages")
-          .select("created_at")
+          .select("created_at, message")
           .gte("created_at", sixMonthsAgo.toISOString());
 
         const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
         const messagesByMonth: Record<string, number> = {};
+        const quotesByMonth: Record<string, number> = {};
         
         for (let i = 5; i >= 0; i--) {
           const date = new Date();
           date.setMonth(date.getMonth() - i);
           const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
           messagesByMonth[key] = 0;
+          quotesByMonth[key] = 0;
         }
 
         messages?.forEach((msg) => {
@@ -399,11 +403,19 @@ const DashboardOverview = () => {
           const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
           if (messagesByMonth[key] !== undefined) {
             messagesByMonth[key]++;
+            // Check if it's a quote request
+            if (msg.message?.startsWith("[Cotización")) {
+              quotesByMonth[key]++;
+            }
           }
         });
 
         setMessagesData(
           Object.entries(messagesByMonth).map(([month, count]) => ({ month, count }))
+        );
+
+        setQuotesData(
+          Object.entries(quotesByMonth).map(([month, count]) => ({ month, count }))
         );
 
         const { data: projects } = await supabase
@@ -642,7 +654,82 @@ const DashboardOverview = () => {
         </Card>
       </div>
 
-      {/* Machinery & Vehicles Charts */}
+      {/* Quote Trend Chart */}
+      <Card className="border-none shadow-lg overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-rose-500/10">
+                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-rose-500" />
+                </div>
+                Tendencia de Cotizaciones
+              </CardTitle>
+              <CardDescription className="text-xs md:text-sm mt-1">Solicitudes de cotización por mes</CardDescription>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-foreground">
+                {quotesData.reduce((acc, curr) => acc + curr.count, 0)}
+              </p>
+              <p className="text-xs text-muted-foreground">Total cotizaciones</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 p-4 md:p-6">
+          {isLoading ? (
+            <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
+          ) : (
+            <ChartContainer
+              config={{
+                count: { label: "Cotizaciones", color: "hsl(350, 89%, 60%)" },
+              }}
+              className="h-48 md:h-64"
+            >
+              <AreaChart data={quotesData}>
+                <defs>
+                  <linearGradient id="quotesGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(350, 89%, 60%)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="hsl(350, 89%, 60%)" stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  vertical={false}
+                  className="stroke-muted/50" 
+                />
+                <XAxis 
+                  dataKey="month" 
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                  tickLine={false}
+                  axisLine={false}
+                  dy={8}
+                />
+                <YAxis 
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                  dx={-8}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent />}
+                  cursor={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1, strokeDasharray: '4 4' }}
+                />
+                <Area 
+                  type="monotone"
+                  dataKey="count" 
+                  stroke="hsl(350, 89%, 60%)" 
+                  strokeWidth={3}
+                  fill="url(#quotesGradient)"
+                  dot={{ fill: 'hsl(350, 89%, 60%)', strokeWidth: 0, r: 4 }}
+                  activeDot={{ r: 6, fill: 'hsl(350, 89%, 60%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                />
+              </AreaChart>
+            </ChartContainer>
+          )}
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <Card className="border-none shadow-lg overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-orange-500/10 via-orange-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
