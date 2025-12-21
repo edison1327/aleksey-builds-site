@@ -12,7 +12,7 @@ import {
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminServices from "@/components/admin/AdminServices";
@@ -328,6 +328,7 @@ const DashboardOverview = () => {
   });
   const [messagesData, setMessagesData] = useState<{ month: string; count: number }[]>([]);
   const [quotesData, setQuotesData] = useState<{ month: string; count: number }[]>([]);
+  const [quotesByTypeData, setQuotesByTypeData] = useState<{ type: string; count: number; fill: string }[]>([]);
   const [projectsData, setProjectsData] = useState<{ year: string; count: number }[]>([]);
   const [machineryData, setMachineryData] = useState<{ category: string; count: number }[]>([]);
   const [vehiclesData, setVehiclesData] = useState<{ category: string; count: number }[]>([]);
@@ -389,6 +390,11 @@ const DashboardOverview = () => {
         const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
         const messagesByMonth: Record<string, number> = {};
         const quotesByMonth: Record<string, number> = {};
+        const quotesByType: Record<string, number> = {
+          "Maquinaria": 0,
+          "Vehículos": 0,
+          "Servicios": 0,
+        };
         
         for (let i = 5; i >= 0; i--) {
           const date = new Date();
@@ -403,9 +409,21 @@ const DashboardOverview = () => {
           const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
           if (messagesByMonth[key] !== undefined) {
             messagesByMonth[key]++;
-            // Check if it's a quote request
+            // Check if it's a quote request and extract type
             if (msg.message?.startsWith("[Cotización")) {
               quotesByMonth[key]++;
+              // Extract type from message format: [Cotización de {tipo}: {nombre}]
+              const typeMatch = msg.message.match(/\[Cotización de (\w+):/);
+              if (typeMatch) {
+                const type = typeMatch[1].toLowerCase();
+                if (type === "maquinaria") {
+                  quotesByType["Maquinaria"]++;
+                } else if (type === "vehículo") {
+                  quotesByType["Vehículos"]++;
+                } else if (type === "servicio") {
+                  quotesByType["Servicios"]++;
+                }
+              }
             }
           }
         });
@@ -416,6 +434,18 @@ const DashboardOverview = () => {
 
         setQuotesData(
           Object.entries(quotesByMonth).map(([month, count]) => ({ month, count }))
+        );
+
+        const typeColors: Record<string, string> = {
+          "Maquinaria": "hsl(25, 95%, 53%)",
+          "Vehículos": "hsl(187, 85%, 43%)",
+          "Servicios": "hsl(250, 80%, 60%)",
+        };
+
+        setQuotesByTypeData(
+          Object.entries(quotesByType)
+            .map(([type, count]) => ({ type, count, fill: typeColors[type] }))
+            .filter(item => item.count > 0)
         );
 
         const { data: projects } = await supabase
@@ -726,6 +756,87 @@ const DashboardOverview = () => {
                 />
               </AreaChart>
             </ChartContainer>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Quotes by Type Chart */}
+      <Card className="border-none shadow-lg overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-violet-500/10 via-violet-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-violet-500/10">
+                  <FileText className="h-4 w-4 md:h-5 md:w-5 text-violet-500" />
+                </div>
+                Cotizaciones por Tipo
+              </CardTitle>
+              <CardDescription className="text-xs md:text-sm mt-1">Desglose por categoría de solicitud</CardDescription>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-foreground">
+                {quotesByTypeData.reduce((acc, curr) => acc + curr.count, 0)}
+              </p>
+              <p className="text-xs text-muted-foreground">Total cotizaciones</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 p-4 md:p-6">
+          {isLoading ? (
+            <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
+          ) : quotesByTypeData.length > 0 ? (
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="w-full md:w-1/2 h-48 md:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={quotesByTypeData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={90}
+                      paddingAngle={4}
+                      dataKey="count"
+                      strokeWidth={0}
+                    >
+                      {quotesByTypeData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="type" />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="w-full md:w-1/2 space-y-3">
+                {quotesByTypeData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: item.fill }}
+                      />
+                      <span className="font-medium text-sm">{item.type}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold">{item.count}</span>
+                      <span className="text-xs text-muted-foreground">
+                        ({Math.round((item.count / quotesByTypeData.reduce((a, b) => a + b.count, 0)) * 100)}%)
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="h-48 md:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl border border-dashed border-border">
+              <div className="text-center">
+                <div className="p-3 rounded-full bg-muted/50 w-fit mx-auto mb-3">
+                  <FileText className="h-8 w-8 md:h-10 md:w-10 opacity-50" />
+                </div>
+                <p className="text-sm font-medium">No hay cotizaciones registradas</p>
+                <p className="text-xs text-muted-foreground mt-1">Las solicitudes de cotización aparecerán aquí</p>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
