@@ -13,12 +13,13 @@ const queryClient = new QueryClient();
 const AppShell = () => {
   const { pathname } = useLocation();
   const hideNavbar = pathname.startsWith("/admin");
+  const hideChatWidget = pathname.startsWith("/admin");
 
   return (
     <>
       {!hideNavbar && <Navbar />}
       <AnimatedRoutes />
-      <ChatWidget />
+      {!hideChatWidget && <ChatWidget />}
     </>
   );
 };
