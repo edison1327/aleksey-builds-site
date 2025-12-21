@@ -28,6 +28,8 @@ const Hero = () => {
   const description = heroContent?.description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada.";
   const badgeText = heroContent?.badge_text || "MÁS DE 10 AÑOS DE EXPERIENCIA";
   const videoUrl = heroContent?.video_url || DEFAULT_VIDEO_URL;
+  const backgroundType = heroContent?.background_type || "video";
+  const backgroundImageUrl = heroContent?.background_image_url;
   
   // Animated counters
   const projectsCount = useCountUp({ 
@@ -74,7 +76,7 @@ const Hero = () => {
         style={{ transform: `translateY(${parallaxOffset}px)` }}
       >
         {/* Video Background */}
-        {videoUrl && (
+        {backgroundType === "video" && videoUrl && (
           <video
             key={videoUrl}
             autoPlay
@@ -86,6 +88,13 @@ const Hero = () => {
           >
             <source src={videoUrl} type="video/mp4" />
           </video>
+        )}
+        {/* Image Background */}
+        {backgroundType === "image" && backgroundImageUrl && (
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${backgroundImageUrl})` }}
+          />
         )}
         {/* Fallback Image */}
         <div 

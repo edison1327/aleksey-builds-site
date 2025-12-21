@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Play, Check, Upload, X, Video, Trash2 } from "lucide-react";
+import { Save, Loader2, Play, Check, Upload, X, Video, Trash2, Image } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   AlertDialog,
@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const VIDEO_OPTIONS = [
   {
@@ -68,6 +69,8 @@ interface HeroContent {
   years_count: number | null;
   clients_percentage: number | null;
   video_url: string | null;
+  background_type: string | null;
+  background_image_url: string | null;
 }
 
 const AdminHero = () => {
@@ -77,13 +80,18 @@ const AdminHero = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedVideos, setUploadedVideos] = useState<{ name: string; url: string; created_at: string }[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<{ name: string; url: string; created_at: string }[]>([]);
   const [isLoadingVideos, setIsLoadingVideos] = useState(false);
+  const [isLoadingImages, setIsLoadingImages] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchContent();
     fetchUploadedVideos();
+    fetchUploadedImages();
   }, []);
 
   const fetchUploadedVideos = async () => {
@@ -119,6 +127,39 @@ const AdminHero = () => {
     }
   };
 
+  const fetchUploadedImages = async () => {
+    setIsLoadingImages(true);
+    try {
+      const { data, error } = await supabase.storage
+        .from('hero-images')
+        .list('', {
+          limit: 20,
+          sortBy: { column: 'created_at', order: 'desc' }
+        });
+
+      if (error) throw error;
+
+      const images = (data || [])
+        .filter(file => file.name.match(/\.(jpg|jpeg|png|webp|gif)$/i))
+        .map(file => {
+          const { data: urlData } = supabase.storage
+            .from('hero-images')
+            .getPublicUrl(file.name);
+          return {
+            name: file.name,
+            url: urlData.publicUrl,
+            created_at: file.created_at || ''
+          };
+        });
+
+      setUploadedImages(images);
+    } catch (error) {
+      console.error("Error fetching uploaded images:", error);
+    } finally {
+      setIsLoadingImages(false);
+    }
+  };
+
   const handleDeleteVideo = async (fileName: string, videoUrl: string) => {
     try {
       const { error } = await supabase.storage
@@ -149,6 +190,99 @@ const AdminHero = () => {
     }
   };
 
+  const handleDeleteImage = async (fileName: string, imageUrl: string) => {
+    try {
+      const { error } = await supabase.storage
+        .from('hero-images')
+        .remove([fileName]);
+
+      if (error) throw error;
+
+      // If the deleted image was selected, reset
+      if (content?.background_image_url === imageUrl) {
+        setContent(prev => prev ? { ...prev, background_image_url: "" } : null);
+      }
+
+      fetchUploadedImages();
+
+      toast({
+        title: "Imagen eliminada",
+        description: "La imagen se ha eliminado correctamente.",
+      });
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la imagen.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Error",
+        description: "Por favor selecciona un archivo de imagen válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast({
+        title: "Error",
+        description: "La imagen no puede superar los 10MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `hero-image-${Date.now()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('hero-images')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (error) throw error;
+
+      const { data: urlData } = supabase.storage
+        .from('hero-images')
+        .getPublicUrl(data.path);
+
+      setContent(prev => prev ? { ...prev, background_image_url: urlData.publicUrl } : null);
+      fetchUploadedImages();
+
+      toast({
+        title: "Imagen subida",
+        description: "La imagen se ha subido correctamente.",
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo subir la imagen.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingImage(false);
+      if (imageInputRef.current) {
+        imageInputRef.current.value = '';
+      }
+    }
+  };
+
   const fetchContent = async () => {
     const { data, error } = await supabase
       .from("hero_content")
@@ -171,6 +305,8 @@ const AdminHero = () => {
         years_count: 10,
         clients_percentage: 98,
         video_url: "",
+        background_type: "video",
+        background_image_url: "",
       });
     }
     setIsLoading(false);
@@ -194,6 +330,8 @@ const AdminHero = () => {
             years_count: content.years_count,
             clients_percentage: content.clients_percentage,
             video_url: content.video_url,
+            background_type: content.background_type,
+            background_image_url: content.background_image_url,
           })
           .eq("id", content.id);
 
@@ -210,6 +348,8 @@ const AdminHero = () => {
             years_count: content.years_count,
             clients_percentage: content.clients_percentage,
             video_url: content.video_url,
+            background_type: content.background_type,
+            background_image_url: content.background_image_url,
           })
           .select()
           .single();
@@ -376,10 +516,26 @@ const AdminHero = () => {
 
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Video de Fondo</CardTitle>
-            <CardDescription>Selecciona un video predefinido o ingresa una URL personalizada</CardDescription>
+            <CardTitle>Fondo del Hero</CardTitle>
+            <CardDescription>Elige entre video o imagen como fondo</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            <Tabs 
+              value={content?.background_type || "video"} 
+              onValueChange={(value) => setContent(prev => prev ? { ...prev, background_type: value } : null)}
+            >
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="video" className="gap-2">
+                  <Video className="h-4 w-4" />
+                  Video
+                </TabsTrigger>
+                <TabsTrigger value="image" className="gap-2">
+                  <Image className="h-4 w-4" />
+                  Imagen
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="video" className="space-y-6 mt-6">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {VIDEO_OPTIONS.map((video) => {
                 const isSelected = video.id === "custom" 
@@ -609,6 +765,140 @@ const AdminHero = () => {
                 )}
               </div>
             )}
+              </TabsContent>
+              
+              <TabsContent value="image" className="space-y-6 mt-6">
+                {/* Uploaded Images Gallery */}
+                {uploadedImages.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">Imágenes subidas</label>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={fetchUploadedImages}
+                        disabled={isLoadingImages}
+                      >
+                        {isLoadingImages ? <Loader2 className="h-4 w-4 animate-spin" /> : "Actualizar"}
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {uploadedImages.map((image) => {
+                        const isSelected = content?.background_image_url === image.url;
+                        return (
+                          <div
+                            key={image.name}
+                            className={`relative group rounded-lg overflow-hidden border-2 transition-all ${
+                              isSelected 
+                                ? "border-primary ring-2 ring-primary/20" 
+                                : "border-border hover:border-primary/50"
+                            }`}
+                          >
+                            <div 
+                              className="aspect-video bg-muted relative cursor-pointer"
+                              onClick={() => setContent(prev => prev ? { ...prev, background_image_url: image.url } : null)}
+                            >
+                              <img
+                                src={image.url}
+                                alt={image.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="p-2 bg-card flex items-center justify-between gap-1">
+                              <p className="text-xs font-medium truncate flex-1" title={image.name}>
+                                {image.name.replace(/^hero-image-\d+-?/, '').replace(/\.\w+$/, '') || 'Imagen'}
+                              </p>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>¿Eliminar imagen?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta acción no se puede deshacer. La imagen será eliminada permanentemente.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleDeleteImage(image.name, image.url)}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      Eliminar
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                            {isSelected && (
+                              <div className="absolute top-2 left-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                <Check className="h-3 w-3 text-primary-foreground" />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Image Upload Section */}
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  
+                  {isUploadingImage ? (
+                    <div className="space-y-4">
+                      <Image className="h-12 w-12 mx-auto text-primary animate-pulse" />
+                      <p className="text-sm text-muted-foreground">Subiendo imagen...</p>
+                    </div>
+                  ) : (
+                    <label htmlFor="image-upload" className="cursor-pointer block">
+                      <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-sm font-medium">Subir nueva imagen</p>
+                      <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WebP o GIF (máx. 10MB)</p>
+                    </label>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium">URL de la imagen</label>
+                  <Input
+                    value={content?.background_image_url || ""}
+                    onChange={(e) => setContent(prev => prev ? { ...prev, background_image_url: e.target.value } : null)}
+                    placeholder="https://..."
+                    className="mt-1"
+                  />
+                </div>
+
+                {content?.background_image_url && (
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium">Vista previa</label>
+                    <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+                      <img
+                        src={content.background_image_url}
+                        alt="Vista previa"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
 

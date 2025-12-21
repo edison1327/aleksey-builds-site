@@ -12,6 +12,8 @@ export interface HeroContent {
   years_count: number | null;
   clients_percentage: number | null;
   video_url: string | null;
+  background_type: string | null;
+  background_image_url: string | null;
 }
 
 export interface Service {
