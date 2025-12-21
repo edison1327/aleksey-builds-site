@@ -5,8 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Play, Check, Upload, X, Video } from "lucide-react";
+import { Save, Loader2, Play, Check, Upload, X, Video, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const VIDEO_OPTIONS = [
   {
@@ -105,6 +116,36 @@ const AdminHero = () => {
       console.error("Error fetching uploaded videos:", error);
     } finally {
       setIsLoadingVideos(false);
+    }
+  };
+
+  const handleDeleteVideo = async (fileName: string, videoUrl: string) => {
+    try {
+      const { error } = await supabase.storage
+        .from('hero-videos')
+        .remove([fileName]);
+
+      if (error) throw error;
+
+      // If the deleted video was selected, reset to default
+      if (content?.video_url === videoUrl) {
+        setContent(prev => prev ? { ...prev, video_url: VIDEO_OPTIONS[0].url } : null);
+      }
+
+      // Refresh the gallery
+      fetchUploadedVideos();
+
+      toast({
+        title: "Video eliminado",
+        description: "El video se ha eliminado correctamente.",
+      });
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el video.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -408,14 +449,16 @@ const AdminHero = () => {
                     return (
                       <div
                         key={video.name}
-                        onClick={() => setContent(prev => prev ? { ...prev, video_url: video.url } : null)}
-                        className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                        className={`relative group rounded-lg overflow-hidden border-2 transition-all ${
                           isSelected 
                             ? "border-primary ring-2 ring-primary/20" 
                             : "border-border hover:border-primary/50"
                         }`}
                       >
-                        <div className="aspect-video bg-muted relative">
+                        <div 
+                          className="aspect-video bg-muted relative cursor-pointer"
+                          onClick={() => setContent(prev => prev ? { ...prev, video_url: video.url } : null)}
+                        >
                           <video
                             src={video.url}
                             className="w-full h-full object-cover"
@@ -424,17 +467,46 @@ const AdminHero = () => {
                             onMouseEnter={(e) => e.currentTarget.play()}
                             onMouseLeave={(e) => { e.currentTarget.pause(); e.currentTarget.currentTime = 0; }}
                           />
-                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <Play className="h-6 w-6 text-white" />
                           </div>
                         </div>
-                        <div className="p-2 bg-card">
-                          <p className="text-xs font-medium truncate" title={video.name}>
+                        <div className="p-2 bg-card flex items-center justify-between gap-1">
+                          <p className="text-xs font-medium truncate flex-1" title={video.name}>
                             {video.name.replace(/^hero-video-\d+-?/, '').replace(/\.\w+$/, '') || 'Video subido'}
                           </p>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>¿Eliminar video?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Esta acción no se puede deshacer. El video será eliminado permanentemente del almacenamiento.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteVideo(video.name, video.url)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Eliminar
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                         {isSelected && (
-                          <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                          <div className="absolute top-2 left-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
                             <Check className="h-3 w-3 text-primary-foreground" />
                           </div>
                         )}
