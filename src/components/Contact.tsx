@@ -81,6 +81,20 @@ const Contact = () => {
         });
       
       if (error) throw error;
+
+      // Send email notification
+      try {
+        await supabase.functions.invoke("send-contact-notification", {
+          body: {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            phone: formData.phone.trim() || null,
+            message: formData.message.trim(),
+          },
+        });
+      } catch (emailError) {
+        console.error("Failed to send email notification:", emailError);
+      }
       
       toast({
         title: "Mensaje enviado",
