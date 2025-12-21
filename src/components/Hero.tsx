@@ -30,6 +30,7 @@ const Hero = () => {
   const videoUrl = heroContent?.video_url || DEFAULT_VIDEO_URL;
   const backgroundType = heroContent?.background_type || "video";
   const backgroundImageUrl = heroContent?.background_image_url;
+  const overlayOpacity = heroContent?.overlay_opacity ?? 0.7;
   
   // Animated counters
   const projectsCount = useCountUp({ 
@@ -102,8 +103,14 @@ const Hero = () => {
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-secondary/90 via-secondary/70 to-secondary/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary/50 via-transparent to-secondary/30" />
+        <div 
+          className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary to-secondary/40"
+          style={{ opacity: overlayOpacity }}
+        />
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-secondary/50 via-transparent to-secondary/30"
+          style={{ opacity: overlayOpacity }}
+        />
       </div>
 
       {/* Decorative Elements */}

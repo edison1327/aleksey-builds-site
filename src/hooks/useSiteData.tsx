@@ -14,6 +14,7 @@ export interface HeroContent {
   video_url: string | null;
   background_type: string | null;
   background_image_url: string | null;
+  overlay_opacity: number | null;
 }
 
 export interface Service {
