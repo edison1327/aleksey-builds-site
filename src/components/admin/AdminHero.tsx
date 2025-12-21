@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Play, Check, Upload, X, Video, Trash2, Image } from "lucide-react";
+import { Save, Loader2, Play, Check, Upload, X, Video, Trash2, Image, Eye } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   AlertDialog,
@@ -71,6 +71,7 @@ interface HeroContent {
   video_url: string | null;
   background_type: string | null;
   background_image_url: string | null;
+  overlay_opacity: number | null;
 }
 
 const AdminHero = () => {
@@ -307,6 +308,7 @@ const AdminHero = () => {
         video_url: "",
         background_type: "video",
         background_image_url: "",
+        overlay_opacity: 0.7,
       });
     }
     setIsLoading(false);
@@ -332,6 +334,7 @@ const AdminHero = () => {
             video_url: content.video_url,
             background_type: content.background_type,
             background_image_url: content.background_image_url,
+            overlay_opacity: content.overlay_opacity,
           })
           .eq("id", content.id);
 
@@ -350,6 +353,7 @@ const AdminHero = () => {
             video_url: content.video_url,
             background_type: content.background_type,
             background_image_url: content.background_image_url,
+            overlay_opacity: content.overlay_opacity,
           })
           .select()
           .single();
@@ -520,6 +524,29 @@ const AdminHero = () => {
             <CardDescription>Elige entre video o imagen como fondo</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Opacity Control */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  Transparencia del overlay
+                </label>
+                <span className="text-sm text-muted-foreground">
+                  {Math.round((content?.overlay_opacity ?? 0.7) * 100)}%
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={Math.round((content?.overlay_opacity ?? 0.7) * 100)}
+                onChange={(e) => setContent(prev => prev ? { ...prev, overlay_opacity: parseInt(e.target.value) / 100 } : null)}
+                className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+              <p className="text-xs text-muted-foreground">
+                Menor valor = más visible el video/imagen. Mayor valor = más oscuro.
+              </p>
+            </div>
             <Tabs 
               value={content?.background_type || "video"} 
               onValueChange={(value) => setContent(prev => prev ? { ...prev, background_type: value } : null)}
