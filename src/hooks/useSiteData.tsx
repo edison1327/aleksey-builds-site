@@ -42,6 +42,8 @@ export interface HeroContent {
   projects_count: number | null;
   years_count: number | null;
   clients_percentage: number | null;
+  active_projects_count: number | null;
+  employees_count: number | null;
   video_url: string | null;
   background_type: string | null;
   background_image_url: string | null;

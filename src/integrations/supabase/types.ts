@@ -154,12 +154,14 @@ export type Database = {
       }
       hero_content: {
         Row: {
+          active_projects_count: number | null
           background_image_url: string | null
           background_type: string | null
           badge_text: string | null
           clients_percentage: number | null
           created_at: string
           description: string | null
+          employees_count: number | null
           id: string
           overlay_color: string | null
           overlay_opacity: number | null
@@ -171,12 +173,14 @@ export type Database = {
           years_count: number | null
         }
         Insert: {
+          active_projects_count?: number | null
           background_image_url?: string | null
           background_type?: string | null
           badge_text?: string | null
           clients_percentage?: number | null
           created_at?: string
           description?: string | null
+          employees_count?: number | null
           id?: string
           overlay_color?: string | null
           overlay_opacity?: number | null
@@ -188,12 +192,14 @@ export type Database = {
           years_count?: number | null
         }
         Update: {
+          active_projects_count?: number | null
           background_image_url?: string | null
           background_type?: string | null
           badge_text?: string | null
           clients_percentage?: number | null
           created_at?: string
           description?: string | null
+          employees_count?: number | null
           id?: string
           overlay_color?: string | null
           overlay_opacity?: number | null

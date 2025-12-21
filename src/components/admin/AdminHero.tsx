@@ -68,6 +68,8 @@ interface HeroContent {
   projects_count: number | null;
   years_count: number | null;
   clients_percentage: number | null;
+  active_projects_count: number | null;
+  employees_count: number | null;
   video_url: string | null;
   background_type: string | null;
   background_image_url: string | null;
@@ -306,6 +308,8 @@ const AdminHero = () => {
         projects_count: 150,
         years_count: 10,
         clients_percentage: 98,
+        active_projects_count: 5,
+        employees_count: 50,
         video_url: "",
         background_type: "video",
         background_image_url: "",
@@ -333,6 +337,8 @@ const AdminHero = () => {
             projects_count: content.projects_count,
             years_count: content.years_count,
             clients_percentage: content.clients_percentage,
+            active_projects_count: content.active_projects_count,
+            employees_count: content.employees_count,
             video_url: content.video_url,
             background_type: content.background_type,
             background_image_url: content.background_image_url,
@@ -353,6 +359,8 @@ const AdminHero = () => {
             projects_count: content.projects_count,
             years_count: content.years_count,
             clients_percentage: content.clients_percentage,
+            active_projects_count: content.active_projects_count,
+            employees_count: content.employees_count,
             video_url: content.video_url,
             background_type: content.background_type,
             background_image_url: content.background_image_url,
@@ -971,7 +979,7 @@ const AdminHero = () => {
         <Card>
           <CardHeader>
             <CardTitle>Estadísticas</CardTitle>
-            <CardDescription>Números destacados</CardDescription>
+            <CardDescription>Números destacados que se muestran en todo el sitio</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -996,6 +1004,22 @@ const AdminHero = () => {
                 type="number"
                 value={content?.clients_percentage || 0}
                 onChange={(e) => setContent(prev => prev ? { ...prev, clients_percentage: parseInt(e.target.value) || 0 } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Proyectos activos</label>
+              <Input
+                type="number"
+                value={content?.active_projects_count || 0}
+                onChange={(e) => setContent(prev => prev ? { ...prev, active_projects_count: parseInt(e.target.value) || 0 } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Total de empleados</label>
+              <Input
+                type="number"
+                value={content?.employees_count || 0}
+                onChange={(e) => setContent(prev => prev ? { ...prev, employees_count: parseInt(e.target.value) || 0 } : null)}
               />
             </div>
           </CardContent>
