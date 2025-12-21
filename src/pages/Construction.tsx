@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building, Check, Clock, Award, Users } from "lucide-react";
+import { Building, Check, Clock, Award, Users, Briefcase, HardHat } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -50,7 +50,9 @@ const Construction = () => {
   const stats = [
     { value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia", desc: "Más de una década construyendo proyectos exitosos", icon: Clock },
     { value: `${heroData?.projects_count || 100}+`, label: "Proyectos Completados", desc: "Cientos de proyectos entregados con éxito", icon: Award },
-    { value: "24/7", label: "Soporte Continuo", desc: "Atención y seguimiento durante todo el proyecto", icon: Users },
+    { value: `${heroData?.clients_percentage || 98}%`, label: "Clientes Satisfechos", desc: "Satisfacción garantizada en cada obra", icon: Users },
+    { value: `${heroData?.active_projects_count || 5}`, label: "Proyectos Activos", desc: "Obras actualmente en desarrollo", icon: Briefcase },
+    { value: `${heroData?.employees_count || 50}+`, label: "Empleados", desc: "Profesionales especializados en construcción", icon: HardHat },
   ];
 
   const scrollToContact = () => {
@@ -154,38 +156,27 @@ const Construction = () => {
             </p>
           </div>
 
-          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {stats.map((stat, index) => (
               <Card 
                 key={index}
                 className={`bg-secondary-foreground/10 border-0 text-center opacity-0 ${
                   statsVisible ? "animate-scale-in" : ""
                 }`}
-                style={{ animationDelay: `${index * 0.15}s` }}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <CardContent className="p-8">
-                  <div className="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <stat.icon className="h-8 w-8 text-primary" />
+                <CardContent className="p-6">
+                  <div className="bg-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <stat.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <p className="text-5xl font-heading font-bold text-primary mb-2">{stat.value}</p>
-                  <h3 className="text-xl font-heading font-bold mb-2">{stat.label}</h3>
-                  <p className="text-secondary-foreground/70 text-sm">{stat.desc}</p>
+                  <p className="text-3xl md:text-4xl font-heading font-bold text-primary mb-1">{stat.value}</p>
+                  <h3 className="text-sm md:text-base font-heading font-bold mb-1">{stat.label}</h3>
+                  <p className="text-secondary-foreground/70 text-xs hidden md:block">{stat.desc}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <Card className="bg-secondary-foreground/10 border-0 mt-8">
-            <CardContent className="p-8 text-center">
-              <div className="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-heading font-bold mb-2">Calidad Garantizada</h3>
-              <p className="text-secondary-foreground/70 text-sm">
-                Materiales de primera calidad y mano de obra especializada
-              </p>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
