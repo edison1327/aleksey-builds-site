@@ -52,9 +52,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Processing contact notification from: ${name} - ${email}`);
 
+    // IMPORTANT: In Resend test mode, we can only send to the verified email
+    // Change this to your verified email address, or verify a domain at resend.com/domains
+    const ADMIN_EMAIL = "edisone13.eer@gmail.com";
+
     // Send notification to admin
     const adminEmailResponse = await sendEmail(
-      ["admin@aleksey.pe"],
+      [ADMIN_EMAIL],
       `Nuevo Mensaje de Contacto: ${name}`,
       `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -83,50 +87,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Admin notification sent:", adminEmailResponse);
 
-    // Send confirmation to customer
-    const customerEmailResponse = await sendEmail(
-      [email],
-      "Hemos recibido tu mensaje - Aleksey",
-      `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #1a1a1a; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">
-            ¡Gracias por contactarnos, ${name}!
-          </h1>
-          
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">
-            Hemos recibido tu mensaje y nuestro equipo lo revisará a la brevedad posible.
-          </p>
-          
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #f59e0b; margin-top: 0;">Tu mensaje:</h3>
-            <p style="white-space: pre-wrap; color: #666; font-style: italic;">${message}</p>
-          </div>
-          
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">
-            Te contactaremos pronto a través de tu email o número de teléfono proporcionado.
-          </p>
-          
-          <p style="margin-top: 30px;">
-            <strong>Saludos cordiales,</strong><br>
-            El equipo de Aleksey
-          </p>
-          
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-          
-          <p style="color: #6b7280; font-size: 12px;">
-            Si tienes alguna pregunta adicional, no dudes en contactarnos.
-          </p>
-        </div>
-      `
-    );
-
-    console.log("Customer confirmation sent:", customerEmailResponse);
+    // Note: Customer confirmation email is disabled in test mode
+    // To enable it, verify a domain at resend.com/domains and update the 'from' address
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        adminEmail: adminEmailResponse, 
-        customerEmail: customerEmailResponse 
+        adminEmail: adminEmailResponse,
+        note: "Customer email disabled in test mode - verify domain at resend.com/domains to enable"
       }), 
       {
         status: 200,
