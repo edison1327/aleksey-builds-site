@@ -71,6 +71,9 @@ interface HeroContent {
   active_projects_count: number | null;
   employees_count: number | null;
   accident_free_hours: number | null;
+  engineers_count: number | null;
+  technicians_count: number | null;
+  helpers_count: number | null;
   video_url: string | null;
   background_type: string | null;
   background_image_url: string | null;
@@ -310,8 +313,11 @@ const AdminHero = () => {
         years_count: 10,
         clients_percentage: 98,
         active_projects_count: 5,
-        employees_count: 50,
+        employees_count: 10,
         accident_free_hours: 10000,
+        engineers_count: 3,
+        technicians_count: 2,
+        helpers_count: 5,
         video_url: "",
         background_type: "video",
         background_image_url: "",
@@ -1019,12 +1025,41 @@ const AdminHero = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Total de empleados</label>
+              <label className="text-sm font-medium">Ingenieros</label>
               <Input
                 type="number"
-                value={content?.employees_count || 0}
-                onChange={(e) => setContent(prev => prev ? { ...prev, employees_count: parseInt(e.target.value) || 0 } : null)}
+                value={content?.engineers_count || 0}
+                onChange={(e) => setContent(prev => prev ? { ...prev, engineers_count: parseInt(e.target.value) || 0 } : null)}
               />
+              <p className="text-xs text-muted-foreground mt-1">Placeholder: {"{engineers}"}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Técnicos</label>
+              <Input
+                type="number"
+                value={content?.technicians_count || 0}
+                onChange={(e) => setContent(prev => prev ? { ...prev, technicians_count: parseInt(e.target.value) || 0 } : null)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Placeholder: {"{technicians}"}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Ayudantes</label>
+              <Input
+                type="number"
+                value={content?.helpers_count || 0}
+                onChange={(e) => setContent(prev => prev ? { ...prev, helpers_count: parseInt(e.target.value) || 0 } : null)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Placeholder: {"{helpers}"}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Total de empleados (automático)</label>
+              <Input
+                type="number"
+                value={(content?.engineers_count || 0) + (content?.technicians_count || 0) + (content?.helpers_count || 0)}
+                disabled
+                className="bg-muted"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Suma de ingenieros + técnicos + ayudantes. Placeholder: {"{employees}"}</p>
             </div>
             <div>
               <label className="text-sm font-medium">Horas sin accidentes</label>
@@ -1033,7 +1068,7 @@ const AdminHero = () => {
                 value={content?.accident_free_hours || 0}
                 onChange={(e) => setContent(prev => prev ? { ...prev, accident_free_hours: parseInt(e.target.value) || 0 } : null)}
               />
-              <p className="text-xs text-muted-foreground mt-1">Usa {"{hours}"} en el badge para mostrar este valor</p>
+              <p className="text-xs text-muted-foreground mt-1">Placeholder: {"{hours}"}</p>
             </div>
           </CardContent>
         </Card>

@@ -79,6 +79,9 @@ const AboutPage = () => {
   const clientsCount = heroData?.clients_percentage || 98;
   const employeesCount = heroData?.employees_count || 50;
   const activeProjectsCount = heroData?.active_projects_count || 5;
+  const engineersCount = heroData?.engineers_count || 3;
+  const techniciansCount = heroData?.technicians_count || 2;
+  const helpersCount = heroData?.helpers_count || 5;
   
   // Function to replace placeholders with hero_content values
   const replacePlaceholders = (text: string): string => {
@@ -88,7 +91,10 @@ const AboutPage = () => {
       .replace(/\{years\}/g, String(yearsCount))
       .replace(/\{clients\}/g, String(clientsCount))
       .replace(/\{employees\}/g, String(employeesCount))
-      .replace(/\{active_projects\}/g, String(activeProjectsCount));
+      .replace(/\{active_projects\}/g, String(activeProjectsCount))
+      .replace(/\{engineers\}/g, String(engineersCount))
+      .replace(/\{technicians\}/g, String(techniciansCount))
+      .replace(/\{helpers\}/g, String(helpersCount));
   };
 
   const defaultDescription = `ALEKSEY nació hace ${yearsCount} años con la visión de transformar el sector de la construcción e ingeniería en nuestra región. Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una empresa líder, reconocida por nuestra dedicación a la excelencia y nuestro compromiso inquebrantable con la calidad.
