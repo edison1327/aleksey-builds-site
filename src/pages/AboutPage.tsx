@@ -75,18 +75,30 @@ const AboutPage = () => {
 
   const yearsCount = heroData?.years_count || 10;
   const projectsCount = heroData?.projects_count || 500;
+  const hoursCount = heroData?.accident_free_hours || 10000;
+  const clientsCount = heroData?.clients_percentage || 98;
+  const employeesCount = heroData?.employees_count || 50;
+  const activeProjectsCount = heroData?.active_projects_count || 5;
   
+  // Function to replace placeholders with hero_content values
+  const replacePlaceholders = (text: string): string => {
+    return text
+      .replace(/\{hours\}/g, hoursCount.toLocaleString())
+      .replace(/\{projects\}/g, String(projectsCount))
+      .replace(/\{years\}/g, String(yearsCount))
+      .replace(/\{clients\}/g, String(clientsCount))
+      .replace(/\{employees\}/g, String(employeesCount))
+      .replace(/\{active_projects\}/g, String(activeProjectsCount));
+  };
+
   const defaultDescription = `ALEKSEY nació hace ${yearsCount} años con la visión de transformar el sector de la construcción e ingeniería en nuestra región. Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una empresa líder, reconocida por nuestra dedicación a la excelencia y nuestro compromiso inquebrantable con la calidad.
 
 Nuestro equipo está conformado por profesionales altamente capacitados y apasionados por su trabajo. Ingenieros, arquitectos, técnicos y personal de obra trabajan en conjunto para garantizar que cada proyecto se ejecute con los más altos estándares de calidad y seguridad.
 
 A lo largo de los años, hemos completado más de ${projectsCount} proyectos exitosos, desde construcciones residenciales hasta grandes obras de infraestructura.`;
 
-  // Replace placeholders in custom description if it exists
   const description = aboutData?.description 
-    ? aboutData.description
-        .replace(/\{years\}/g, String(yearsCount))
-        .replace(/\{projects\}/g, String(projectsCount))
+    ? replacePlaceholders(aboutData.description)
     : defaultDescription;
 
   const paragraphs = description.split('\n\n').filter(p => p.trim());
@@ -205,10 +217,11 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
               {teamStats.length > 0 ? (
                 teamStats.map((stat) => {
                   const IconComponent = iconMap[stat.icon] || Users;
+                  const displayValue = replacePlaceholders(stat.value);
                   return (
                     <div key={stat.id} className="p-4">
                       <IconComponent className="h-6 w-6 mx-auto mb-2 text-primary/70" />
-                      <div className="text-3xl font-heading font-bold text-primary mb-2">{stat.value}</div>
+                      <div className="text-3xl font-heading font-bold text-primary mb-2">{displayValue}</div>
                       <div className="text-sm text-secondary-foreground/70">{stat.label}</div>
                     </div>
                   );
