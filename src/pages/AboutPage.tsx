@@ -1,14 +1,32 @@
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import { Award, Users, Clock, CheckCircle, Target, Eye, Heart } from "lucide-react";
-import { useAboutContent, useHeroContent } from "@/hooks/useSiteData";
+import { Award, Users, Clock, CheckCircle, Target, Eye, Heart, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase } from "lucide-react";
+import { useAboutContent, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Award,
+  Users,
+  Clock,
+  CheckCircle,
+  Wrench,
+  Building2,
+  HardHat,
+  Truck,
+  Settings,
+  TrendingUp,
+  Briefcase,
+  Target,
+  Eye,
+  Heart,
+};
 
 const AboutPage = () => {
   const { data: aboutData, isLoading: aboutLoading } = useAboutContent();
   const { data: heroData, isLoading: heroLoading } = useHeroContent();
+  const { data: teamStats, isLoading: teamStatsLoading } = useTeamStats();
 
-  const isLoading = aboutLoading || heroLoading;
+  const isLoading = aboutLoading || heroLoading || teamStatsLoading;
 
   const stats = [
     { icon: Award, value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia" },
@@ -169,25 +187,40 @@ A lo largo de los años, hemos completado más de 500 proyectos exitosos, desde 
               Nuestro Equipo
             </h2>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed mb-8">
-              Contamos con un equipo multidisciplinario de más de 100 profesionales especializados en diferentes áreas de la construcción e ingeniería. Nuestro capital humano es nuestra mayor fortaleza.
+              Contamos con un equipo multidisciplinario de profesionales especializados en diferentes áreas de la construcción e ingeniería. Nuestro capital humano es nuestra mayor fortaleza.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div className="p-4">
-                <div className="text-3xl font-heading font-bold text-primary mb-2">25+</div>
-                <div className="text-sm text-secondary-foreground/70">Ingenieros</div>
-              </div>
-              <div className="p-4">
-                <div className="text-3xl font-heading font-bold text-primary mb-2">15+</div>
-                <div className="text-sm text-secondary-foreground/70">Arquitectos</div>
-              </div>
-              <div className="p-4">
-                <div className="text-3xl font-heading font-bold text-primary mb-2">40+</div>
-                <div className="text-sm text-secondary-foreground/70">Técnicos</div>
-              </div>
-              <div className="p-4">
-                <div className="text-3xl font-heading font-bold text-primary mb-2">50+</div>
-                <div className="text-sm text-secondary-foreground/70">Personal de Obra</div>
-              </div>
+              {teamStats.length > 0 ? (
+                teamStats.map((stat) => {
+                  const IconComponent = iconMap[stat.icon] || Users;
+                  return (
+                    <div key={stat.id} className="p-4">
+                      <IconComponent className="h-6 w-6 mx-auto mb-2 text-primary/70" />
+                      <div className="text-3xl font-heading font-bold text-primary mb-2">{stat.value}</div>
+                      <div className="text-sm text-secondary-foreground/70">{stat.label}</div>
+                    </div>
+                  );
+                })
+              ) : (
+                <>
+                  <div className="p-4">
+                    <div className="text-3xl font-heading font-bold text-primary mb-2">25+</div>
+                    <div className="text-sm text-secondary-foreground/70">Ingenieros</div>
+                  </div>
+                  <div className="p-4">
+                    <div className="text-3xl font-heading font-bold text-primary mb-2">15+</div>
+                    <div className="text-sm text-secondary-foreground/70">Arquitectos</div>
+                  </div>
+                  <div className="p-4">
+                    <div className="text-3xl font-heading font-bold text-primary mb-2">40+</div>
+                    <div className="text-sm text-secondary-foreground/70">Técnicos</div>
+                  </div>
+                  <div className="p-4">
+                    <div className="text-3xl font-heading font-bold text-primary mb-2">50+</div>
+                    <div className="text-sm text-secondary-foreground/70">Personal de Obra</div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

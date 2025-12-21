@@ -1,6 +1,6 @@
-import { Facebook, Instagram, Linkedin, Twitter, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useContactInfo } from "@/hooks/useSiteData";
+import { useContactInfo, useNavigationLinks, useSocialLinks } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 
@@ -12,9 +12,21 @@ const defaultContact = {
   business_hours: "Lun - Vie: 8:00 AM - 6:00 PM",
 };
 
+const socialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+  Youtube,
+  MessageCircle,
+};
+
 const Footer = () => {
   const { data: contactInfo } = useContactInfo();
   const { data: siteSettings } = useSiteSettings();
+  const { data: footerServices } = useNavigationLinks("footer_services");
+  const { data: footerCompany } = useNavigationLinks("footer_company");
+  const { data: socialLinks } = useSocialLinks();
   
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
@@ -27,6 +39,11 @@ const Footer = () => {
   const businessHours = contactInfo?.business_hours || defaultContact.business_hours;
   
   const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
+
+  const getSocialIcon = (iconName: string | null) => {
+    if (!iconName) return Facebook;
+    return socialIcons[iconName] || Facebook;
+  };
 
   return (
     <footer className="bg-secondary text-secondary-foreground py-12">
@@ -42,34 +59,54 @@ const Footer = () => {
             </p>
             {/* Redes sociales */}
             <div className="flex gap-3">
-              <a
-                href="#"
-                className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
+              {socialLinks.length > 0 ? (
+                socialLinks.map((link) => {
+                  const IconComponent = getSocialIcon(link.icon);
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                      aria-label={link.platform}
+                    >
+                      <IconComponent className="h-5 w-5" />
+                    </a>
+                  );
+                })
+              ) : (
+                <>
+                  <a
+                    href="#"
+                    className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label="Facebook"
+                  >
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="#"
+                    className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label="Instagram"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="#"
+                    className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="#"
+                    className="bg-secondary-foreground/10 p-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label="Twitter"
+                  >
+                    <Twitter className="h-5 w-5" />
+                  </a>
+                </>
+              )}
             </div>
           </div>
 
@@ -77,10 +114,22 @@ const Footer = () => {
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
             <ul className="space-y-2 text-secondary-foreground/80">
-              <li><Link to="/construccion" className="hover:text-primary transition-colors">Construcción</Link></li>
-              <li><Link to="/ingenieria" className="hover:text-primary transition-colors">Ingeniería</Link></li>
-              <li><Link to="/vehiculos" className="hover:text-primary transition-colors">Vehículos</Link></li>
-              <li><Link to="/maquinaria" className="hover:text-primary transition-colors">Maquinaria</Link></li>
+              {footerServices.length > 0 ? (
+                footerServices.map((link) => (
+                  <li key={link.id}>
+                    <Link to={link.path} className="hover:text-primary transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><Link to="/construccion" className="hover:text-primary transition-colors">Construcción</Link></li>
+                  <li><Link to="/ingenieria" className="hover:text-primary transition-colors">Ingeniería</Link></li>
+                  <li><Link to="/vehiculos" className="hover:text-primary transition-colors">Vehículos</Link></li>
+                  <li><Link to="/maquinaria" className="hover:text-primary transition-colors">Maquinaria</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -88,10 +137,28 @@ const Footer = () => {
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
             <ul className="space-y-2 text-secondary-foreground/80">
-              <li><Link to="/nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
-              <li><Link to="/proyectos" className="hover:text-primary transition-colors">Proyectos</Link></li>
-              <li><a href="/#contact" className="hover:text-primary transition-colors">Contacto</a></li>
-              <li><Link to="/convocatoria" className="hover:text-primary transition-colors">Trabaja con Nosotros</Link></li>
+              {footerCompany.length > 0 ? (
+                footerCompany.map((link) => (
+                  <li key={link.id}>
+                    {link.path.startsWith("/#") ? (
+                      <a href={link.path} className="hover:text-primary transition-colors">
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link to={link.path} className="hover:text-primary transition-colors">
+                        {link.label}
+                      </Link>
+                    )}
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><Link to="/nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
+                  <li><Link to="/proyectos" className="hover:text-primary transition-colors">Proyectos</Link></li>
+                  <li><a href="/#contact" className="hover:text-primary transition-colors">Contacto</a></li>
+                  <li><Link to="/convocatoria" className="hover:text-primary transition-colors">Trabaja con Nosotros</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
