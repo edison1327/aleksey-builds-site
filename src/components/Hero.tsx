@@ -27,8 +27,18 @@ const Hero = () => {
   const subtitle = heroContent?.subtitle || "INGENIERÍA Y CONSTRUCCIÓN";
   const description = heroContent?.description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada.";
   const yearsValue = heroContent?.years_count || 10;
+  const projectsValue = heroContent?.projects_count || 150;
+  const clientsValue = heroContent?.clients_percentage || 98;
+  const employeesValue = heroContent?.employees_count || 50;
+  const activeProjectsValue = heroContent?.active_projects_count || 5;
+  
   const badgeTextRaw = heroContent?.badge_text || "MÁS DE {years} AÑOS DE EXPERIENCIA";
-  const badgeText = badgeTextRaw.replace(/\{years\}/g, String(yearsValue));
+  const badgeText = badgeTextRaw
+    .replace(/\{years\}/g, String(yearsValue))
+    .replace(/\{projects\}/g, String(projectsValue))
+    .replace(/\{clients\}/g, String(clientsValue))
+    .replace(/\{employees\}/g, String(employeesValue))
+    .replace(/\{active_projects\}/g, String(activeProjectsValue));
   const videoUrl = heroContent?.video_url || DEFAULT_VIDEO_URL;
   const backgroundType = heroContent?.background_type || "video";
   const backgroundImageUrl = heroContent?.background_image_url;
