@@ -18,6 +18,7 @@ const AdminSiteSettings = () => {
     tagline: "",
     logo_url: "",
     footer_description: "",
+    footer_copyright: "",
   });
 
   useEffect(() => {
@@ -27,6 +28,7 @@ const AdminSiteSettings = () => {
         tagline: settings.tagline || "",
         logo_url: settings.logo_url || "",
         footer_description: settings.footer_description || "",
+        footer_copyright: settings.footer_copyright || "",
       });
     }
   }, [settings]);
@@ -154,6 +156,20 @@ const AdminSiteSettings = () => {
               />
               <p className="text-sm text-muted-foreground">
                 Este texto aparece debajo del logo en el footer del sitio.
+              </p>
+            </div>
+
+            {/* Footer Copyright */}
+            <div className="space-y-2">
+              <Label htmlFor="footer_copyright">Texto de Copyright</Label>
+              <Input
+                id="footer_copyright"
+                value={formData.footer_copyright}
+                onChange={(e) => setFormData({ ...formData, footer_copyright: e.target.value })}
+                placeholder="Todos los derechos reservados."
+              />
+              <p className="text-sm text-muted-foreground">
+                Aparece al final del footer junto con el año y nombre de la empresa.
               </p>
             </div>
 

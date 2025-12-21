@@ -7,6 +7,7 @@ interface SiteSettings {
   company_name: string;
   tagline: string;
   footer_description: string | null;
+  footer_copyright: string | null;
   created_at: string;
   updated_at: string;
 }

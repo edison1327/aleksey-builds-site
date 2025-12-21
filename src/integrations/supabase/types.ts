@@ -468,6 +468,7 @@ export type Database = {
         Row: {
           company_name: string | null
           created_at: string
+          footer_copyright: string | null
           footer_description: string | null
           id: string
           logo_url: string | null
@@ -477,6 +478,7 @@ export type Database = {
         Insert: {
           company_name?: string | null
           created_at?: string
+          footer_copyright?: string | null
           footer_description?: string | null
           id?: string
           logo_url?: string | null
@@ -486,6 +488,7 @@ export type Database = {
         Update: {
           company_name?: string | null
           created_at?: string
+          footer_copyright?: string | null
           footer_description?: string | null
           id?: string
           logo_url?: string | null
