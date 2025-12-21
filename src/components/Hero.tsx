@@ -102,8 +102,8 @@ const Hero = () => {
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 via-transparent to-secondary/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-secondary/90 via-secondary/70 to-secondary/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary/50 via-transparent to-secondary/30" />
       </div>
 
       {/* Decorative Elements */}
