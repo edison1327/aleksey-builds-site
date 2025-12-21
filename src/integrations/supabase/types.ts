@@ -154,6 +154,7 @@ export type Database = {
       }
       hero_content: {
         Row: {
+          accident_free_hours: number | null
           active_projects_count: number | null
           background_image_url: string | null
           background_type: string | null
@@ -173,6 +174,7 @@ export type Database = {
           years_count: number | null
         }
         Insert: {
+          accident_free_hours?: number | null
           active_projects_count?: number | null
           background_image_url?: string | null
           background_type?: string | null
@@ -192,6 +194,7 @@ export type Database = {
           years_count?: number | null
         }
         Update: {
+          accident_free_hours?: number | null
           active_projects_count?: number | null
           background_image_url?: string | null
           background_type?: string | null

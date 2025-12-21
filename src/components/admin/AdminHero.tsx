@@ -70,6 +70,7 @@ interface HeroContent {
   clients_percentage: number | null;
   active_projects_count: number | null;
   employees_count: number | null;
+  accident_free_hours: number | null;
   video_url: string | null;
   background_type: string | null;
   background_image_url: string | null;
@@ -310,6 +311,7 @@ const AdminHero = () => {
         clients_percentage: 98,
         active_projects_count: 5,
         employees_count: 50,
+        accident_free_hours: 10000,
         video_url: "",
         background_type: "video",
         background_image_url: "",
@@ -339,6 +341,7 @@ const AdminHero = () => {
             clients_percentage: content.clients_percentage,
             active_projects_count: content.active_projects_count,
             employees_count: content.employees_count,
+            accident_free_hours: content.accident_free_hours,
             video_url: content.video_url,
             background_type: content.background_type,
             background_image_url: content.background_image_url,
@@ -361,6 +364,7 @@ const AdminHero = () => {
             clients_percentage: content.clients_percentage,
             active_projects_count: content.active_projects_count,
             employees_count: content.employees_count,
+            accident_free_hours: content.accident_free_hours,
             video_url: content.video_url,
             background_type: content.background_type,
             background_image_url: content.background_image_url,
@@ -1021,6 +1025,15 @@ const AdminHero = () => {
                 value={content?.employees_count || 0}
                 onChange={(e) => setContent(prev => prev ? { ...prev, employees_count: parseInt(e.target.value) || 0 } : null)}
               />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Horas sin accidentes</label>
+              <Input
+                type="number"
+                value={content?.accident_free_hours || 0}
+                onChange={(e) => setContent(prev => prev ? { ...prev, accident_free_hours: parseInt(e.target.value) || 0 } : null)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Usa {"{hours}"} en el badge para mostrar este valor</p>
             </div>
           </CardContent>
         </Card>
