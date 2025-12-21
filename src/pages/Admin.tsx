@@ -453,43 +453,71 @@ const DashboardOverview = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        <Card className="border-none shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl p-4 md:p-6">
-            <CardTitle className="text-base md:text-lg flex items-center gap-2">
-              <Mail className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-              Mensajes por Mes
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">Últimos 6 meses</CardDescription>
+        <Card className="border-none shadow-lg overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-amber-500/10">
+                    <Mail className="h-4 w-4 md:h-5 md:w-5 text-amber-500" />
+                  </div>
+                  Mensajes por Mes
+                </CardTitle>
+                <CardDescription className="text-xs md:text-sm mt-1">Últimos 6 meses</CardDescription>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">
+                  {messagesData.reduce((acc, curr) => acc + curr.count, 0)}
+                </p>
+                <p className="text-xs text-muted-foreground">Total mensajes</p>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="pt-4 p-3 md:p-6">
+          <CardContent className="pt-6 p-4 md:p-6">
             {isLoading ? (
               <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
             ) : (
               <ChartContainer
                 config={{
-                  count: { label: "Mensajes", color: "hsl(var(--primary))" },
+                  count: { label: "Mensajes", color: "hsl(38, 92%, 50%)" },
                 }}
                 className="h-48 md:h-64"
               >
-                <BarChart data={messagesData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <BarChart data={messagesData} barCategoryGap="20%">
+                  <defs>
+                    <linearGradient id="messagesGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(38, 92%, 50%)" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(38, 92%, 50%)" stopOpacity={0.6} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    vertical={false}
+                    className="stroke-muted/50" 
+                  />
                   <XAxis 
                     dataKey="month" 
-                    tick={{ fontSize: 10 }}
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                     tickLine={false}
                     axisLine={false}
+                    dy={8}
                   />
                   <YAxis 
-                    tick={{ fontSize: 10 }}
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
+                    dx={-8}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.3 }}
+                  />
                   <Bar 
                     dataKey="count" 
-                    fill="hsl(var(--primary))" 
-                    radius={[6, 6, 0, 0]}
+                    fill="url(#messagesGradient)" 
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={50}
                   />
                 </BarChart>
               </ChartContainer>
@@ -497,51 +525,82 @@ const DashboardOverview = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl p-4 md:p-6">
-            <CardTitle className="text-base md:text-lg flex items-center gap-2">
-              <FolderOpen className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-              Proyectos por Año
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">Distribución de proyectos</CardDescription>
+        <Card className="border-none shadow-lg overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-emerald-500/10">
+                    <FolderOpen className="h-4 w-4 md:h-5 md:w-5 text-emerald-500" />
+                  </div>
+                  Proyectos por Año
+                </CardTitle>
+                <CardDescription className="text-xs md:text-sm mt-1">Distribución de proyectos</CardDescription>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">
+                  {projectsData.reduce((acc, curr) => acc + curr.count, 0)}
+                </p>
+                <p className="text-xs text-muted-foreground">Total proyectos</p>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="pt-4 p-3 md:p-6">
+          <CardContent className="pt-6 p-4 md:p-6">
             {isLoading ? (
               <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
             ) : projectsData.length > 0 ? (
               <ChartContainer
                 config={{
-                  count: { label: "Proyectos", color: "hsl(var(--primary))" },
+                  count: { label: "Proyectos", color: "hsl(152, 69%, 40%)" },
                 }}
                 className="h-48 md:h-64"
               >
-                <BarChart data={projectsData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <BarChart data={projectsData} barCategoryGap="20%">
+                  <defs>
+                    <linearGradient id="projectsGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(152, 69%, 40%)" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0.6} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    vertical={false}
+                    className="stroke-muted/50" 
+                  />
                   <XAxis 
                     dataKey="year" 
-                    tick={{ fontSize: 10 }}
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                     tickLine={false}
                     axisLine={false}
+                    dy={8}
                   />
                   <YAxis 
-                    tick={{ fontSize: 10 }}
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
+                    dx={-8}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.3 }}
+                  />
                   <Bar 
                     dataKey="count" 
-                    fill="hsl(var(--primary))" 
-                    radius={[6, 6, 0, 0]}
+                    fill="url(#projectsGradient)" 
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={50}
                   />
                 </BarChart>
               </ChartContainer>
             ) : (
-              <div className="h-48 md:h-64 flex items-center justify-center text-muted-foreground bg-muted/30 rounded-lg">
+              <div className="h-48 md:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl border border-dashed border-border">
                 <div className="text-center">
-                  <FolderOpen className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No hay datos de proyectos por año</p>
+                  <div className="p-3 rounded-full bg-muted/50 w-fit mx-auto mb-3">
+                    <FolderOpen className="h-8 w-8 md:h-10 md:w-10 opacity-50" />
+                  </div>
+                  <p className="text-sm font-medium">No hay datos disponibles</p>
+                  <p className="text-xs text-muted-foreground mt-1">Agrega proyectos con año asignado</p>
                 </div>
               </div>
             )}
