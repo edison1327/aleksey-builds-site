@@ -5,7 +5,48 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Play, Check } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+
+const VIDEO_OPTIONS = [
+  {
+    id: "construction-1",
+    name: "Construcción Industrial",
+    url: "https://videos.pexels.com/video-files/3194277/3194277-uhd_2560_1440_30fps.mp4",
+    thumbnail: "https://images.pexels.com/videos/3194277/free-video-3194277.jpg?auto=compress&cs=tinysrgb&w=300"
+  },
+  {
+    id: "construction-2", 
+    name: "Grúa en Obra",
+    url: "https://videos.pexels.com/video-files/2491284/2491284-uhd_2560_1440_24fps.mp4",
+    thumbnail: "https://images.pexels.com/videos/2491284/free-video-2491284.jpg?auto=compress&cs=tinysrgb&w=300"
+  },
+  {
+    id: "construction-3",
+    name: "Trabajo en Altura",
+    url: "https://videos.pexels.com/video-files/3255275/3255275-uhd_2560_1440_25fps.mp4",
+    thumbnail: "https://images.pexels.com/videos/3255275/free-video-3255275.jpg?auto=compress&cs=tinysrgb&w=300"
+  },
+  {
+    id: "construction-4",
+    name: "Ciudad en Desarrollo",
+    url: "https://videos.pexels.com/video-files/1721294/1721294-uhd_2560_1440_25fps.mp4",
+    thumbnail: "https://images.pexels.com/videos/1721294/free-video-1721294.jpg?auto=compress&cs=tinysrgb&w=300"
+  },
+  {
+    id: "construction-5",
+    name: "Maquinaria Pesada",
+    url: "https://videos.pexels.com/video-files/6077417/6077417-uhd_2560_1440_25fps.mp4",
+    thumbnail: "https://images.pexels.com/videos/6077417/pexels-photo-6077417.jpeg?auto=compress&cs=tinysrgb&w=300"
+  },
+  {
+    id: "custom",
+    name: "URL Personalizada",
+    url: "",
+    thumbnail: ""
+  }
+];
 
 interface HeroContent {
   id: string;
@@ -178,10 +219,98 @@ const AdminHero = () => {
           </CardContent>
         </Card>
 
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Video de Fondo</CardTitle>
+            <CardDescription>Selecciona un video predefinido o ingresa una URL personalizada</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {VIDEO_OPTIONS.map((video) => {
+                const isSelected = video.id === "custom" 
+                  ? !VIDEO_OPTIONS.slice(0, -1).some(v => v.url === content?.video_url)
+                  : video.url === content?.video_url;
+                
+                return (
+                  <div
+                    key={video.id}
+                    onClick={() => {
+                      if (video.id !== "custom") {
+                        setContent(prev => prev ? { ...prev, video_url: video.url } : null);
+                      }
+                    }}
+                    className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                      isSelected 
+                        ? "border-primary ring-2 ring-primary/20" 
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    {video.thumbnail ? (
+                      <div className="aspect-video relative">
+                        <img 
+                          src={video.thumbnail} 
+                          alt={video.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <Play className="h-8 w-8 text-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-muted flex items-center justify-center">
+                        <span className="text-muted-foreground text-sm">URL Personalizada</span>
+                      </div>
+                    )}
+                    <div className="p-2 bg-card">
+                      <p className="text-sm font-medium truncate">{video.name}</p>
+                    </div>
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                        <Check className="h-4 w-4 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium">URL del video (personalizada o seleccionada)</label>
+              <Input
+                value={content?.video_url || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, video_url: e.target.value } : null)}
+                placeholder="https://..."
+                className="mt-1"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Puedes seleccionar un video de arriba o pegar tu propia URL de video MP4
+              </p>
+            </div>
+
+            {content?.video_url && (
+              <div>
+                <label className="text-sm font-medium mb-2 block">Vista previa</label>
+                <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+                  <video
+                    key={content.video_url}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={content.video_url} type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
-            <CardTitle>Estadísticas y Video</CardTitle>
-            <CardDescription>Números y video de fondo</CardDescription>
+            <CardTitle>Estadísticas</CardTitle>
+            <CardDescription>Números destacados</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -206,14 +335,6 @@ const AdminHero = () => {
                 type="number"
                 value={content?.clients_percentage || 0}
                 onChange={(e) => setContent(prev => prev ? { ...prev, clients_percentage: parseInt(e.target.value) || 0 } : null)}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">URL del video de fondo</label>
-              <Input
-                value={content?.video_url || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, video_url: e.target.value } : null)}
-                placeholder="https://..."
               />
             </div>
           </CardContent>
