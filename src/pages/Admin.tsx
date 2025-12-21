@@ -322,19 +322,25 @@ const DashboardOverview = () => {
     projects: 0,
     pendingMessages: 0,
     pendingApplications: 0,
+    machinery: 0,
+    vehicles: 0,
   });
   const [messagesData, setMessagesData] = useState<{ month: string; count: number }[]>([]);
   const [projectsData, setProjectsData] = useState<{ year: string; count: number }[]>([]);
+  const [machineryData, setMachineryData] = useState<{ category: string; count: number }[]>([]);
+  const [vehiclesData, setVehiclesData] = useState<{ category: string; count: number }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [servicesRes, projectsRes, messagesRes, applicationsRes] = await Promise.all([
+        const [servicesRes, projectsRes, messagesRes, applicationsRes, machineryRes, vehiclesRes] = await Promise.all([
           supabase.from("services").select("id", { count: "exact", head: true }).eq("is_active", true),
           supabase.from("projects").select("id", { count: "exact", head: true }).eq("is_active", true),
           supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "pending"),
           supabase.from("job_applications").select("id", { count: "exact", head: true }).eq("status", "pending"),
+          supabase.from("machinery").select("id, category", { count: "exact" }).eq("is_active", true),
+          supabase.from("vehicles").select("id, category", { count: "exact" }).eq("is_active", true),
         ]);
 
         setStats({
@@ -342,7 +348,33 @@ const DashboardOverview = () => {
           projects: projectsRes.count || 0,
           pendingMessages: messagesRes.count || 0,
           pendingApplications: applicationsRes.count || 0,
+          machinery: machineryRes.count || 0,
+          vehicles: vehiclesRes.count || 0,
         });
+
+        // Group machinery by category
+        const machineryByCategory: Record<string, number> = {};
+        machineryRes.data?.forEach((item) => {
+          const cat = item.category || "Sin categoría";
+          machineryByCategory[cat] = (machineryByCategory[cat] || 0) + 1;
+        });
+        setMachineryData(
+          Object.entries(machineryByCategory)
+            .map(([category, count]) => ({ category, count }))
+            .sort((a, b) => b.count - a.count)
+        );
+
+        // Group vehicles by category
+        const vehiclesByCategory: Record<string, number> = {};
+        vehiclesRes.data?.forEach((item) => {
+          const cat = item.category || "Sin categoría";
+          vehiclesByCategory[cat] = (vehiclesByCategory[cat] || 0) + 1;
+        });
+        setVehiclesData(
+          Object.entries(vehiclesByCategory)
+            .map(([category, count]) => ({ category, count }))
+            .sort((a, b) => b.count - a.count)
+        );
 
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -408,6 +440,8 @@ const DashboardOverview = () => {
   const statCards = [
     { label: "Servicios", value: stats.services, description: "Servicios activos", icon: Building2, color: "from-blue-500 to-blue-600" },
     { label: "Proyectos", value: stats.projects, description: "Proyectos publicados", icon: FolderOpen, color: "from-emerald-500 to-emerald-600" },
+    { label: "Maquinaria", value: stats.machinery, description: "Equipos disponibles", icon: Truck, color: "from-orange-500 to-orange-600" },
+    { label: "Vehículos", value: stats.vehicles, description: "Vehículos disponibles", icon: Car, color: "from-cyan-500 to-cyan-600" },
     { label: "Mensajes", value: stats.pendingMessages, description: "Mensajes pendientes", icon: Mail, color: "from-amber-500 to-amber-600" },
     { label: "Postulaciones", value: stats.pendingApplications, description: "Postulaciones nuevas", icon: Users, color: "from-purple-500 to-purple-600" },
   ];
@@ -601,6 +635,171 @@ const DashboardOverview = () => {
                   </div>
                   <p className="text-sm font-medium">No hay datos disponibles</p>
                   <p className="text-xs text-muted-foreground mt-1">Agrega proyectos con año asignado</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Machinery & Vehicles Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <Card className="border-none shadow-lg overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-orange-500/10 via-orange-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-orange-500/10">
+                    <Truck className="h-4 w-4 md:h-5 md:w-5 text-orange-500" />
+                  </div>
+                  Maquinaria por Categoría
+                </CardTitle>
+                <CardDescription className="text-xs md:text-sm mt-1">Distribución de equipos</CardDescription>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">{stats.machinery}</p>
+                <p className="text-xs text-muted-foreground">Total equipos</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6 p-4 md:p-6">
+            {isLoading ? (
+              <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
+            ) : machineryData.length > 0 ? (
+              <ChartContainer
+                config={{
+                  count: { label: "Equipos", color: "hsl(25, 95%, 53%)" },
+                }}
+                className="h-48 md:h-64"
+              >
+                <BarChart data={machineryData} barCategoryGap="20%" layout="vertical">
+                  <defs>
+                    <linearGradient id="machineryGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(25, 95%, 53%)" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="hsl(25, 95%, 53%)" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    horizontal={false}
+                    className="stroke-muted/50" 
+                  />
+                  <XAxis 
+                    type="number"
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                  />
+                  <YAxis 
+                    type="category"
+                    dataKey="category"
+                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={90}
+                  />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.3 }}
+                  />
+                  <Bar 
+                    dataKey="count" 
+                    fill="url(#machineryGradient)" 
+                    radius={[0, 8, 8, 0]}
+                    maxBarSize={30}
+                  />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <div className="h-48 md:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl border border-dashed border-border">
+                <div className="text-center">
+                  <div className="p-3 rounded-full bg-muted/50 w-fit mx-auto mb-3">
+                    <Truck className="h-8 w-8 md:h-10 md:w-10 opacity-50" />
+                  </div>
+                  <p className="text-sm font-medium">No hay maquinaria registrada</p>
+                  <p className="text-xs text-muted-foreground mt-1">Agrega equipos desde la sección Maquinaria</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-none shadow-lg overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-cyan-500/10 via-cyan-500/5 to-transparent rounded-t-xl p-4 md:p-6 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-cyan-500/10">
+                    <Car className="h-4 w-4 md:h-5 md:w-5 text-cyan-500" />
+                  </div>
+                  Vehículos por Categoría
+                </CardTitle>
+                <CardDescription className="text-xs md:text-sm mt-1">Distribución de flota</CardDescription>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">{stats.vehicles}</p>
+                <p className="text-xs text-muted-foreground">Total vehículos</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6 p-4 md:p-6">
+            {isLoading ? (
+              <div className="h-48 md:h-64 bg-muted animate-pulse rounded-lg" />
+            ) : vehiclesData.length > 0 ? (
+              <ChartContainer
+                config={{
+                  count: { label: "Vehículos", color: "hsl(187, 85%, 43%)" },
+                }}
+                className="h-48 md:h-64"
+              >
+                <BarChart data={vehiclesData} barCategoryGap="20%" layout="vertical">
+                  <defs>
+                    <linearGradient id="vehiclesGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(187, 85%, 43%)" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="hsl(187, 85%, 43%)" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    horizontal={false}
+                    className="stroke-muted/50" 
+                  />
+                  <XAxis 
+                    type="number"
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                  />
+                  <YAxis 
+                    type="category"
+                    dataKey="category"
+                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={90}
+                  />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.3 }}
+                  />
+                  <Bar 
+                    dataKey="count" 
+                    fill="url(#vehiclesGradient)" 
+                    radius={[0, 8, 8, 0]}
+                    maxBarSize={30}
+                  />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <div className="h-48 md:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl border border-dashed border-border">
+                <div className="text-center">
+                  <div className="p-3 rounded-full bg-muted/50 w-fit mx-auto mb-3">
+                    <Car className="h-8 w-8 md:h-10 md:w-10 opacity-50" />
+                  </div>
+                  <p className="text-sm font-medium">No hay vehículos registrados</p>
+                  <p className="text-xs text-muted-foreground mt-1">Agrega vehículos desde la sección Vehículos</p>
                 </div>
               </div>
             )}
