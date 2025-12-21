@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Mail, Eye } from "lucide-react";
+import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -23,6 +26,9 @@ const AdminMessages = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [activeTab, setActiveTab] = useState<"all" | "quotes" | "contact">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "read" | "responded">("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,17 +49,42 @@ const AdminMessages = () => {
     setIsLoading(false);
   };
 
-  const handleMarkAsRead = async (id: string) => {
+  const isQuoteRequest = (message: Message) => {
+    return message.message.includes("[COTIZACIÓN DE ALQUILER]");
+  };
+
+  const parseQuoteDetails = (message: Message) => {
+    if (!isQuoteRequest(message)) return null;
+    
+    const lines = message.message.split("\n");
+    const details: Record<string, string> = {};
+    
+    lines.forEach((line) => {
+      if (line.startsWith("Tipo:")) details.tipo = line.replace("Tipo:", "").trim();
+      if (line.startsWith("Equipo:")) details.equipo = line.replace("Equipo:", "").trim();
+      if (line.startsWith("- Fecha inicio:")) details.fechaInicio = line.replace("- Fecha inicio:", "").trim();
+      if (line.startsWith("- Fecha fin:")) details.fechaFin = line.replace("- Fecha fin:", "").trim();
+      if (line.startsWith("- Duración:")) details.duracion = line.replace("- Duración:", "").trim();
+      if (line.startsWith("- Empresa:")) details.empresa = line.replace("- Empresa:", "").trim();
+      if (line.startsWith("- Ubicación del proyecto:")) details.ubicacion = line.replace("- Ubicación del proyecto:", "").trim();
+    });
+    
+    return details;
+  };
+
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
     try {
       const { error } = await supabase
         .from("contact_messages")
-        .update({ status: "read" })
+        .update({ status: newStatus })
         .eq("id", id);
 
       if (error) throw error;
+      toast({ title: "Actualizado", description: `Estado cambiado a ${newStatus}` });
       fetchMessages();
     } catch (error) {
       console.error("Error updating message:", error);
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
     }
   };
 
@@ -71,6 +102,44 @@ const AdminMessages = () => {
     }
   };
 
+  const filteredMessages = messages.filter((msg) => {
+    // Filter by type
+    if (activeTab === "quotes" && !isQuoteRequest(msg)) return false;
+    if (activeTab === "contact" && isQuoteRequest(msg)) return false;
+    
+    // Filter by status
+    if (statusFilter !== "all" && msg.status !== statusFilter) return false;
+    
+    // Filter by search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      return (
+        msg.name.toLowerCase().includes(term) ||
+        msg.email.toLowerCase().includes(term) ||
+        msg.message.toLowerCase().includes(term)
+      );
+    }
+    
+    return true;
+  });
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Badge variant="default" className="bg-amber-500"><Clock className="h-3 w-3 mr-1" />Pendiente</Badge>;
+      case "read":
+        return <Badge variant="secondary"><Eye className="h-3 w-3 mr-1" />Leído</Badge>;
+      case "responded":
+        return <Badge variant="default" className="bg-green-600"><Check className="h-3 w-3 mr-1" />Respondido</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const pendingCount = messages.filter((m) => m.status === "pending").length;
+  const quotesCount = messages.filter((m) => isQuoteRequest(m)).length;
+  const contactCount = messages.filter((m) => !isQuoteRequest(m)).length;
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -82,83 +151,373 @@ const AdminMessages = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-heading font-bold">Mensajes de Contacto</h2>
-        <p className="text-muted-foreground">Mensajes recibidos desde el formulario de contacto</p>
+        <h2 className="text-2xl font-heading font-bold">Mensajes y Cotizaciones</h2>
+        <p className="text-muted-foreground">Gestiona los mensajes de contacto y solicitudes de cotización</p>
       </div>
 
-      {messages.length === 0 ? (
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
+                <Clock className="h-5 w-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{pendingCount}</p>
+                <p className="text-xs text-muted-foreground">Pendientes</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                <Calculator className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{quotesCount}</p>
+                <p className="text-xs text-muted-foreground">Cotizaciones</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                <MessageSquare className="h-5 w-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{contactCount}</p>
+                <p className="text-xs text-muted-foreground">Contactos</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
+                <Mail className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{messages.length}</p>
+                <p className="text-xs text-muted-foreground">Total</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} className="flex-1">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="all" className="flex-1 sm:flex-none">
+              Todos ({messages.length})
+            </TabsTrigger>
+            <TabsTrigger value="quotes" className="flex-1 sm:flex-none">
+              <Calculator className="h-4 w-4 mr-1" />
+              Cotizaciones ({quotesCount})
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="flex-1 sm:flex-none">
+              <MessageSquare className="h-4 w-4 mr-1" />
+              Contacto ({contactCount})
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        
+        <div className="flex gap-2">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Estado" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="pending">Pendientes</SelectItem>
+              <SelectItem value="read">Leídos</SelectItem>
+              <SelectItem value="responded">Respondidos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Messages List */}
+      {filteredMessages.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Mail className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">No hay mensajes aún</p>
+            <p className="text-muted-foreground">No hay mensajes que coincidan con los filtros</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
-          {messages.map((message) => (
-            <Card key={message.id} className={message.status === "pending" ? "border-primary/50" : ""}>
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg">{message.name}</CardTitle>
-                    {message.status === "pending" && (
-                      <Badge variant="default">Nuevo</Badge>
-                    )}
+          {filteredMessages.map((message) => {
+            const isQuote = isQuoteRequest(message);
+            const quoteDetails = parseQuoteDetails(message);
+            
+            return (
+              <Card 
+                key={message.id} 
+                className={`transition-all ${
+                  message.status === "pending" 
+                    ? "border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10" 
+                    : ""
+                }`}
+              >
+                <CardHeader className="pb-2">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className={`p-2 rounded-lg shrink-0 ${
+                        isQuote 
+                          ? "bg-blue-100 dark:bg-blue-900/30" 
+                          : "bg-purple-100 dark:bg-purple-900/30"
+                      }`}>
+                        {isQuote 
+                          ? <Calculator className="h-5 w-5 text-blue-600" /> 
+                          : <MessageSquare className="h-5 w-5 text-purple-600" />
+                        }
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <CardTitle className="text-lg">{message.name}</CardTitle>
+                          {getStatusBadge(message.status)}
+                          {isQuote && (
+                            <Badge variant="outline" className="text-blue-600 border-blue-300">
+                              Cotización
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                          <span className="flex items-center gap-1">
+                            <Mail className="h-3 w-3" />
+                            {message.email}
+                          </span>
+                          {message.phone && (
+                            <span className="flex items-center gap-1">
+                              <Phone className="h-3 w-3" />
+                              {message.phone}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedMessage(message);
+                          if (message.status === "pending") {
+                            handleUpdateStatus(message.id, "read");
+                          }
+                        }}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(message.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedMessage(message);
-                        handleMarkAsRead(message.id);
-                      }}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(message.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                </CardHeader>
+                <CardContent>
+                  {isQuote && quoteDetails ? (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-muted/50 rounded-lg text-sm">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Equipo</p>
+                        <p className="font-medium truncate">{quoteDetails.equipo}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Tipo</p>
+                        <p className="font-medium">{quoteDetails.tipo}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Duración</p>
+                        <p className="font-medium">{quoteDetails.duracion}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Empresa</p>
+                        <p className="font-medium truncate">{quoteDetails.empresa || "N/A"}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm line-clamp-2">{message.message}</p>
+                  )}
+                  <div className="flex items-center justify-between mt-3">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {format(new Date(message.created_at), "PPp", { locale: es })}
+                    </p>
+                    <div className="flex gap-1">
+                      {message.status !== "responded" && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleUpdateStatus(message.id, "responded")}
+                        >
+                          <Check className="h-3 w-3 mr-1" />
+                          Marcar respondido
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{message.email}</p>
-                <p className="text-sm mt-2 line-clamp-2">{message.message}</p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {format(new Date(message.created_at), "PPp", { locale: es })}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
 
+      {/* Message Detail Dialog */}
       <Dialog open={!!selectedMessage} onOpenChange={() => setSelectedMessage(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Mensaje de {selectedMessage?.name}</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              {selectedMessage && isQuoteRequest(selectedMessage) ? (
+                <>
+                  <Calculator className="h-5 w-5 text-blue-600" />
+                  Solicitud de Cotización
+                </>
+              ) : (
+                <>
+                  <MessageSquare className="h-5 w-5 text-purple-600" />
+                  Mensaje de Contacto
+                </>
+              )}
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Email</label>
-              <p>{selectedMessage?.email}</p>
-            </div>
-            {selectedMessage?.phone && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Teléfono</label>
-                <p>{selectedMessage.phone}</p>
+          
+          {selectedMessage && (
+            <div className="space-y-6 py-4">
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Nombre</label>
+                  <p className="font-medium">{selectedMessage.name}</p>
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Email</label>
+                  <a href={`mailto:${selectedMessage.email}`} className="text-primary hover:underline block">
+                    {selectedMessage.email}
+                  </a>
+                </div>
+                {selectedMessage.phone && (
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Teléfono</label>
+                    <a href={`tel:${selectedMessage.phone}`} className="text-primary hover:underline block">
+                      {selectedMessage.phone}
+                    </a>
+                  </div>
+                )}
               </div>
-            )}
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Mensaje</label>
-              <p className="whitespace-pre-wrap">{selectedMessage?.message}</p>
+
+              {/* Quote Details */}
+              {isQuoteRequest(selectedMessage) && (
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
+                    Detalles de la Cotización
+                  </label>
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    {(() => {
+                      const details = parseQuoteDetails(selectedMessage);
+                      return details ? (
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p className="text-muted-foreground">Tipo de equipo</p>
+                            <p className="font-medium">{details.tipo}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Equipo</p>
+                            <p className="font-medium">{details.equipo}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Fecha inicio</p>
+                            <p className="font-medium">{details.fechaInicio}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Fecha fin</p>
+                            <p className="font-medium">{details.fechaFin}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Duración</p>
+                            <p className="font-medium">{details.duracion}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Empresa</p>
+                            <p className="font-medium">{details.empresa || "N/A"}</p>
+                          </div>
+                          <div className="col-span-2">
+                            <p className="text-muted-foreground">Ubicación del proyecto</p>
+                            <p className="font-medium">{details.ubicacion || "N/A"}</p>
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* Full Message */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
+                  Mensaje Completo
+                </label>
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <p className="whitespace-pre-wrap text-sm">{selectedMessage.message}</p>
+                </div>
+              </div>
+
+              {/* Metadata */}
+              <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <label className="text-xs text-muted-foreground">Fecha</label>
+                    <p className="text-sm">{format(new Date(selectedMessage.created_at), "PPpp", { locale: es })}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground">Estado</label>
+                    <div className="mt-1">{getStatusBadge(selectedMessage.status)}</div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  {selectedMessage.status !== "responded" && (
+                    <Button 
+                      variant="default"
+                      onClick={() => {
+                        handleUpdateStatus(selectedMessage.id, "responded");
+                        setSelectedMessage({ ...selectedMessage, status: "responded" });
+                      }}
+                    >
+                      <Check className="h-4 w-4 mr-2" />
+                      Marcar como respondido
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    asChild
+                  >
+                    <a href={`mailto:${selectedMessage.email}?subject=Re: ${isQuoteRequest(selectedMessage) ? "Solicitud de Cotización" : "Mensaje de Contacto"} - Aleksey`}>
+                      <Mail className="h-4 w-4 mr-2" />
+                      Responder
+                    </a>
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Fecha</label>
-              <p>{selectedMessage && format(new Date(selectedMessage.created_at), "PPpp", { locale: es })}</p>
-            </div>
-          </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
