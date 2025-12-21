@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import { Award, Users, Clock, CheckCircle, Target, Eye, Heart, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase } from "lucide-react";
+import { Award, Users, Clock, CheckCircle, Target, Eye, Heart, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase, Shield } from "lucide-react";
 import { useAboutContent, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -19,6 +19,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Target,
   Eye,
   Heart,
+  Shield,
 };
 
 const AboutPage = () => {
@@ -31,6 +32,7 @@ const AboutPage = () => {
   const stats = [
     { icon: Award, value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia" },
     { icon: Users, value: `${heroData?.projects_count || 500}+`, label: "Proyectos Completados" },
+    { icon: Shield, value: `${(heroData?.accident_free_hours || 10000).toLocaleString()}+`, label: "Horas Sin Accidentes" },
     { icon: Clock, value: "100%", label: "Entregas a Tiempo" },
     { icon: CheckCircle, value: `${heroData?.clients_percentage || 98}%`, label: "Clientes Satisfechos" },
   ];
@@ -109,13 +111,13 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              {[1, 2, 3, 4, 5].map((i) => (
                 <Skeleton key={i} className="h-32 w-full rounded-xl" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               {stats.map((stat, index) => (
                 <div
                   key={index}
