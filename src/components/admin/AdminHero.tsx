@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Play, Check, Upload, X, Video, Trash2, Image, Eye } from "lucide-react";
+import { Save, Loader2, Play, Check, Upload, X, Video, Trash2, Image, Eye, Palette } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   AlertDialog,
@@ -72,6 +72,7 @@ interface HeroContent {
   background_type: string | null;
   background_image_url: string | null;
   overlay_opacity: number | null;
+  overlay_color: string | null;
 }
 
 const AdminHero = () => {
@@ -309,6 +310,7 @@ const AdminHero = () => {
         background_type: "video",
         background_image_url: "",
         overlay_opacity: 0.7,
+        overlay_color: "#1a1a2e",
       });
     }
     setIsLoading(false);
@@ -335,6 +337,7 @@ const AdminHero = () => {
             background_type: content.background_type,
             background_image_url: content.background_image_url,
             overlay_opacity: content.overlay_opacity,
+            overlay_color: content.overlay_color,
           })
           .eq("id", content.id);
 
@@ -354,6 +357,7 @@ const AdminHero = () => {
             background_type: content.background_type,
             background_image_url: content.background_image_url,
             overlay_opacity: content.overlay_opacity,
+            overlay_color: content.overlay_color,
           })
           .select()
           .single();
@@ -546,6 +550,41 @@ const AdminHero = () => {
               <p className="text-xs text-muted-foreground">
                 Menor valor = más visible el video/imagen. Mayor valor = más oscuro.
               </p>
+            </div>
+
+            {/* Color Control */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Palette className="h-4 w-4" />
+                Color del overlay
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={content?.overlay_color || "#1a1a2e"}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, overlay_color: e.target.value } : null)}
+                  className="w-12 h-10 rounded-lg border border-border cursor-pointer"
+                />
+                <Input
+                  value={content?.overlay_color || "#1a1a2e"}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, overlay_color: e.target.value } : null)}
+                  placeholder="#1a1a2e"
+                  className="flex-1 font-mono"
+                />
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {["#1a1a2e", "#0f172a", "#18181b", "#1e3a5f", "#1e293b", "#0c4a6e"].map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setContent(prev => prev ? { ...prev, overlay_color: color } : null)}
+                    className={`w-8 h-8 rounded-lg border-2 transition-all ${
+                      content?.overlay_color === color ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"
+                    }`}
+                    style={{ backgroundColor: color }}
+                    title={color}
+                  />
+                ))}
+              </div>
             </div>
             <Tabs 
               value={content?.background_type || "video"} 

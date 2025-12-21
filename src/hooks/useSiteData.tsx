@@ -15,6 +15,7 @@ export interface HeroContent {
   background_type: string | null;
   background_image_url: string | null;
   overlay_opacity: number | null;
+  overlay_color: string | null;
 }
 
 export interface Service {
