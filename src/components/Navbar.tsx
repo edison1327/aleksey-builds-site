@@ -1,4 +1,4 @@
-import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban, Sparkles } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Menu, X, ChevronDown, Users, FolderKanban, Sparkles, Calculator } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -33,6 +33,7 @@ const Navbar = () => {
 
   const bottomMenuItems = [
     { id: "proyectos", label: "PROYECTOS", icon: FolderKanban, path: "/proyectos", section: "PROYECTOS" },
+    { id: "cotizar", label: "COTIZAR", icon: Calculator, path: "/cotizar", section: "COTIZAR" },
     { id: "contacto", label: "CONTACTO", icon: Phone, path: "/#contact", section: "CONTACTO" },
   ];
 
@@ -40,7 +41,7 @@ const Navbar = () => {
     setIsOpen(false);
     setIsServicesOpen(false);
     
-    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria", "/nosotros", "/proyectos", "/convocatoria"].includes(path)) {
+    if (["/construccion", "/ingenieria", "/vehiculos", "/maquinaria", "/nosotros", "/proyectos", "/convocatoria", "/cotizar"].includes(path)) {
       navigate(path);
       setActiveSection(label);
       return;
@@ -122,6 +123,7 @@ const Navbar = () => {
         "/nosotros": "SOBRE NOSOTROS",
         "/proyectos": "PROYECTOS",
         "/convocatoria": "CONVOCATORIA",
+        "/cotizar": "COTIZAR",
       };
       if (routeMap[location.pathname]) {
         setActiveSection(routeMap[location.pathname]);
@@ -256,6 +258,19 @@ const Navbar = () => {
                 />
                 <FolderKanban className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
                 <span className="relative z-10">PROYECTOS</span>
+              </button>
+
+              {/* COTIZAR */}
+              <button
+                onClick={() => handleNavClick("/cotizar", "COTIZAR")}
+                className="group relative flex items-center gap-2 px-4 py-2 text-base font-heading tracking-wide transition-all duration-300 text-secondary-foreground/80 hover:text-primary-foreground"
+              >
+                <span 
+                  className="absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
+                  style={{ zIndex: -1 }}
+                />
+                <Calculator className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                <span className="relative z-10">COTIZAR</span>
               </button>
 
               {/* CONTACTO */}
