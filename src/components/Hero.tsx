@@ -74,16 +74,19 @@ const Hero = () => {
         style={{ transform: `translateY(${parallaxOffset}px)` }}
       >
         {/* Video Background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster={heroImage}
-        >
-          <source src={videoUrl} type="video/mp4" />
-        </video>
+        {videoUrl && (
+          <video
+            key={videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            poster={heroImage}
+          >
+            <source src={videoUrl} type="video/mp4" />
+          </video>
+        )}
         {/* Fallback Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
