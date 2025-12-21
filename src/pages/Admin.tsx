@@ -322,10 +322,17 @@ const DashboardOverview = () => {
     services: 0,
     projects: 0,
     pendingMessages: 0,
+    respondedMessages: 0,
+    totalMessages: 0,
     pendingApplications: 0,
+    reviewedApplications: 0,
+    totalApplications: 0,
     machinery: 0,
     vehicles: 0,
+    testimonials: 0,
   });
+  const [recentMessages, setRecentMessages] = useState<{ id: string; name: string; email: string; status: string; created_at: string }[]>([]);
+  const [recentApplications, setRecentApplications] = useState<{ id: string; name: string; position: string; status: string; created_at: string }[]>([]);
   const [messagesData, setMessagesData] = useState<{ month: string; count: number }[]>([]);
   const [quotesData, setQuotesData] = useState<{ month: string; count: number }[]>([]);
   const [quotesByTypeData, setQuotesByTypeData] = useState<{ type: string; count: number; fill: string }[]>([]);
@@ -337,23 +344,53 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [servicesRes, projectsRes, messagesRes, applicationsRes, machineryRes, vehiclesRes] = await Promise.all([
+        // Fetch all counts in parallel
+        const [
+          servicesRes, 
+          projectsRes, 
+          pendingMessagesRes, 
+          respondedMessagesRes,
+          totalMessagesRes,
+          pendingAppsRes, 
+          reviewedAppsRes,
+          totalAppsRes,
+          machineryRes, 
+          vehiclesRes,
+          testimonialsRes,
+          recentMessagesRes,
+          recentAppsRes,
+        ] = await Promise.all([
           supabase.from("services").select("id", { count: "exact", head: true }).eq("is_active", true),
           supabase.from("projects").select("id", { count: "exact", head: true }).eq("is_active", true),
           supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "pending"),
+          supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "responded"),
+          supabase.from("contact_messages").select("id", { count: "exact", head: true }),
           supabase.from("job_applications").select("id", { count: "exact", head: true }).eq("status", "pending"),
+          supabase.from("job_applications").select("id", { count: "exact", head: true }).neq("status", "pending"),
+          supabase.from("job_applications").select("id", { count: "exact", head: true }),
           supabase.from("machinery").select("id, category", { count: "exact" }).eq("is_active", true),
           supabase.from("vehicles").select("id, category", { count: "exact" }).eq("is_active", true),
+          supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("is_active", true),
+          supabase.from("contact_messages").select("id, name, email, status, created_at").order("created_at", { ascending: false }).limit(5),
+          supabase.from("job_applications").select("id, name, position, status, created_at").order("created_at", { ascending: false }).limit(5),
         ]);
 
         setStats({
           services: servicesRes.count || 0,
           projects: projectsRes.count || 0,
-          pendingMessages: messagesRes.count || 0,
-          pendingApplications: applicationsRes.count || 0,
+          pendingMessages: pendingMessagesRes.count || 0,
+          respondedMessages: respondedMessagesRes.count || 0,
+          totalMessages: totalMessagesRes.count || 0,
+          pendingApplications: pendingAppsRes.count || 0,
+          reviewedApplications: reviewedAppsRes.count || 0,
+          totalApplications: totalAppsRes.count || 0,
           machinery: machineryRes.count || 0,
           vehicles: vehiclesRes.count || 0,
+          testimonials: testimonialsRes.count || 0,
         });
+
+        setRecentMessages(recentMessagesRes.data || []);
+        setRecentApplications(recentAppsRes.data || []);
 
         // Group machinery by category
         const machineryByCategory: Record<string, number> = {};
@@ -484,9 +521,25 @@ const DashboardOverview = () => {
     { label: "Proyectos", value: stats.projects, description: "Proyectos publicados", icon: FolderOpen, color: "from-emerald-500 to-emerald-600" },
     { label: "Maquinaria", value: stats.machinery, description: "Equipos disponibles", icon: Truck, color: "from-orange-500 to-orange-600" },
     { label: "Vehículos", value: stats.vehicles, description: "Vehículos disponibles", icon: Car, color: "from-cyan-500 to-cyan-600" },
-    { label: "Mensajes", value: stats.pendingMessages, description: "Mensajes pendientes", icon: Mail, color: "from-amber-500 to-amber-600" },
-    { label: "Postulaciones", value: stats.pendingApplications, description: "Postulaciones nuevas", icon: Users, color: "from-purple-500 to-purple-600" },
+    { label: "Testimonios", value: stats.testimonials, description: "Testimonios activos", icon: Quote, color: "from-pink-500 to-pink-600" },
   ];
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { label: string; className: string }> = {
+      pending: { label: "Pendiente", className: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400" },
+      responded: { label: "Respondido", className: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" },
+      reviewed: { label: "Revisado", className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
+      accepted: { label: "Aceptado", className: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" },
+      rejected: { label: "Rechazado", className: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" },
+    };
+    const config = statusConfig[status] || { label: status, className: "bg-gray-100 text-gray-800" };
+    return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${config.className}`}>{config.label}</span>;
+  };
 
   return (
     <div className="space-y-6">
@@ -525,6 +578,107 @@ const DashboardOverview = () => {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Messages & Applications Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* Messages Summary */}
+        <Card className="border-none shadow-lg overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 md:p-6 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-amber-500/10">
+                  <Mail className="h-4 w-4 md:h-5 md:w-5 text-amber-500" />
+                </div>
+                Mensajes de Contacto
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-4 md:p-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="text-center p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+                <p className="text-2xl md:text-3xl font-bold text-amber-600">{stats.pendingMessages}</p>
+                <p className="text-xs text-muted-foreground">Pendientes</p>
+              </div>
+              <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                <p className="text-2xl md:text-3xl font-bold text-green-600">{stats.respondedMessages}</p>
+                <p className="text-xs text-muted-foreground">Respondidos</p>
+              </div>
+              <div className="text-center p-3 bg-muted/50 rounded-xl">
+                <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalMessages}</p>
+                <p className="text-xs text-muted-foreground">Total</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground mb-3">Últimos mensajes</p>
+              {recentMessages.length > 0 ? (
+                recentMessages.slice(0, 4).map((msg) => (
+                  <div key={msg.id} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm truncate">{msg.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{msg.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-2">
+                      {getStatusBadge(msg.status || 'pending')}
+                      <span className="text-xs text-muted-foreground hidden md:inline">{formatDate(msg.created_at)}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">No hay mensajes recientes</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Applications Summary */}
+        <Card className="border-none shadow-lg overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent p-4 md:p-6 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base md:text-lg flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-purple-500/10">
+                  <Users className="h-4 w-4 md:h-5 md:w-5 text-purple-500" />
+                </div>
+                Postulaciones de Empleo
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-4 md:p-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="text-center p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+                <p className="text-2xl md:text-3xl font-bold text-amber-600">{stats.pendingApplications}</p>
+                <p className="text-xs text-muted-foreground">Pendientes</p>
+              </div>
+              <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <p className="text-2xl md:text-3xl font-bold text-blue-600">{stats.reviewedApplications}</p>
+                <p className="text-xs text-muted-foreground">Revisadas</p>
+              </div>
+              <div className="text-center p-3 bg-muted/50 rounded-xl">
+                <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalApplications}</p>
+                <p className="text-xs text-muted-foreground">Total</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground mb-3">Últimas postulaciones</p>
+              {recentApplications.length > 0 ? (
+                recentApplications.slice(0, 4).map((app) => (
+                  <div key={app.id} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm truncate">{app.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{app.position}</p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-2">
+                      {getStatusBadge(app.status || 'pending')}
+                      <span className="text-xs text-muted-foreground hidden md:inline">{formatDate(app.created_at)}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">No hay postulaciones recientes</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts */}
