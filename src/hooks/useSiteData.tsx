@@ -1,6 +1,37 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Navigation Links
+export interface NavigationLink {
+  id: string;
+  label: string;
+  path: string;
+  icon: string;
+  location: string;
+  sort_order: number;
+  is_active: boolean;
+}
+
+// Team Stats
+export interface TeamStat {
+  id: string;
+  label: string;
+  value: string;
+  icon: string;
+  sort_order: number;
+  is_active: boolean;
+}
+
+// Social Links
+export interface SocialLink {
+  id: string;
+  platform: string;
+  url: string;
+  icon: string | null;
+  sort_order: number | null;
+  is_active: boolean | null;
+}
+
 // Types
 export interface HeroContent {
   id: string;
@@ -284,6 +315,77 @@ export const useTestimonials = () => {
         .order("sort_order", { ascending: true });
       
       setData(testimonials || []);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  return { data, isLoading };
+};
+
+// Hook for Navigation Links
+export const useNavigationLinks = (location?: string) => {
+  const [data, setData] = useState<NavigationLink[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let query = supabase
+        .from("navigation_links")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      
+      if (location) {
+        query = query.eq("location", location);
+      }
+      
+      const { data: links } = await query;
+      setData(links || []);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [location]);
+
+  return { data, isLoading };
+};
+
+// Hook for Team Stats
+export const useTeamStats = () => {
+  const [data, setData] = useState<TeamStat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: stats } = await supabase
+        .from("team_stats")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      
+      setData(stats || []);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  return { data, isLoading };
+};
+
+// Hook for Social Links
+export const useSocialLinks = () => {
+  const [data, setData] = useState<SocialLink[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: links } = await supabase
+        .from("social_links")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      
+      setData(links || []);
       setIsLoading(false);
     };
     fetchData();

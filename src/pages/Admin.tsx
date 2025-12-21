@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
-  Menu, ChevronLeft, ChevronRight, X, Quote
+  Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -26,6 +26,9 @@ import AdminBenefits from "@/components/admin/AdminBenefits";
 import AdminAbout from "@/components/admin/AdminAbout";
 import AdminSiteSettings from "@/components/admin/AdminSiteSettings";
 import AdminTestimonials from "@/components/admin/AdminTestimonials";
+import AdminNavigation from "@/components/admin/AdminNavigation";
+import AdminTeamStats from "@/components/admin/AdminTeamStats";
+import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { cn } from "@/lib/utils";
 
@@ -66,8 +69,11 @@ const Admin = () => {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
+    { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
+    { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
     { id: "hero", label: "Hero", icon: Home, category: "contenido" },
     { id: "about", label: "About", icon: Info, category: "contenido" },
+    { id: "teamstats", label: "Estadísticas", icon: BarChart3, category: "contenido" },
     { id: "services", label: "Servicios", icon: Building2, category: "contenido" },
     { id: "projects", label: "Proyectos", icon: FolderOpen, category: "contenido" },
     { id: "testimonials", label: "Testimonios", icon: Quote, category: "contenido" },
@@ -202,8 +208,11 @@ const Admin = () => {
     switch (activeTab) {
       case "dashboard": return <DashboardOverview />;
       case "site": return <AdminSiteSettings />;
+      case "navigation": return <AdminNavigation />;
+      case "social": return <AdminSocialLinks />;
       case "hero": return <AdminHero />;
       case "about": return <AdminAbout />;
+      case "teamstats": return <AdminTeamStats />;
       case "services": return <AdminServices />;
       case "projects": return <AdminProjects />;
       case "testimonials": return <AdminTestimonials />;
