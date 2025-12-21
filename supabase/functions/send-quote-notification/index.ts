@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
@@ -14,6 +15,26 @@ interface QuoteNotificationRequest {
   message: string;
   itemName: string;
   itemType: string;
+}
+
+async function getAdminEmail(): Promise<string> {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const { data, error } = await supabase
+    .from("contact_info")
+    .select("email")
+    .limit(1)
+    .single();
+
+  if (error || !data?.email) {
+    console.log("No admin email found in contact_info, using fallback");
+    return "edisone13.eer@gmail.com";
+  }
+
+  console.log("Using admin email from CMS:", data.email);
+  return data.email;
 }
 
 async function sendEmail(to: string[], subject: string, html: string) {
@@ -52,13 +73,12 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Processing quote notification for: ${name} - ${email}`);
     console.log(`Item: ${itemType} - ${itemName}`);
 
-    // IMPORTANT: In Resend test mode, we can only send to the verified email
-    // Change this to your verified email address, or verify a domain at resend.com/domains
-    const ADMIN_EMAIL = "edisone13.eer@gmail.com";
+    // Get admin email from CMS (contact_info table)
+    const adminEmail = await getAdminEmail();
 
     // Send notification to admin
     const adminEmailResponse = await sendEmail(
-      [ADMIN_EMAIL],
+      [adminEmail],
       `Nueva Solicitud de Cotización: ${itemType} - ${itemName}`,
       `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -90,23 +110,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Admin notification sent:", adminEmailResponse);
 
-    // Note: Customer confirmation email is disabled in test mode
-    // To enable it, verify a domain at resend.com/domains and update the 'from' address
-    // Then uncomment the code below:
-    /*
-    const customerEmailResponse = await sendEmail(
-      [email],
-      "Hemos recibido tu solicitud de cotización - Aleksey",
-      `...customer email template...`
-    );
-    console.log("Customer confirmation sent:", customerEmailResponse);
-    */
-
     return new Response(
       JSON.stringify({ 
         success: true, 
         adminEmail: adminEmailResponse,
-        note: "Customer email disabled in test mode - verify domain at resend.com/domains to enable"
+        note: "Email sent to admin configured in CMS"
       }), 
       {
         status: 200,
