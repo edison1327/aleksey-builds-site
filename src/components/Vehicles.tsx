@@ -1,8 +1,8 @@
-import { Truck } from "lucide-react";
+import { Truck, Calculator } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
 import { useVehicles } from "@/hooks/useSiteData";
 
@@ -39,6 +39,7 @@ const Vehicles = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
   const { data: dbVehicles } = useVehicles(3);
+  const navigate = useNavigate();
   
   // Use database vehicles if available, otherwise use defaults
   const vehicles = dbVehicles.length > 0 ? dbVehicles : defaultVehicles;
@@ -86,11 +87,23 @@ const Vehicles = () => {
                 {(vehicle as any).price && (
                   <p className="text-lg font-bold text-primary mb-2">$ {(vehicle as any).price}</p>
                 )}
-                {vehicle.is_available !== undefined && (
-                  <span className={`text-sm ${vehicle.is_available ? "text-green-600 font-bold" : "text-red-600"}`}>
-                    {vehicle.is_available ? "Disponible" : "No disponible"}
-                  </span>
-                )}
+                <div className="flex items-center justify-between">
+                  {vehicle.is_available !== undefined && (
+                    <span className={`text-sm ${vehicle.is_available ? "text-green-600 font-bold" : "text-red-600"}`}>
+                      {vehicle.is_available ? "Disponible" : "No disponible"}
+                    </span>
+                  )}
+                  {vehicle.is_available && (
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(`/cotizar?tipo=vehiculo&id=${vehicle.id}`)}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading text-xs"
+                    >
+                      <Calculator className="h-3 w-3 mr-1" />
+                      Cotizar
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}

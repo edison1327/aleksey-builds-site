@@ -1,8 +1,8 @@
-import { Settings } from "lucide-react";
+import { Settings, Calculator } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
 import { useMachinery } from "@/hooks/useSiteData";
 
@@ -39,6 +39,7 @@ const Machinery = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
   const { data: dbMachinery } = useMachinery(3);
+  const navigate = useNavigate();
   
   // Use database machinery if available, otherwise use defaults
   const machinery = dbMachinery.length > 0 ? dbMachinery : defaultMachinery;
@@ -86,11 +87,23 @@ const Machinery = () => {
                 {(item as any).price && (
                   <p className="text-lg font-bold text-primary mb-2">$ {(item as any).price}</p>
                 )}
-                {item.is_available !== undefined && (
-                  <span className={`text-sm ${item.is_available ? "text-green-400 font-bold" : "text-red-400"}`}>
-                    {item.is_available ? "Disponible" : "No disponible"}
-                  </span>
-                )}
+                <div className="flex items-center justify-between">
+                  {item.is_available !== undefined && (
+                    <span className={`text-sm ${item.is_available ? "text-green-400 font-bold" : "text-red-400"}`}>
+                      {item.is_available ? "Disponible" : "No disponible"}
+                    </span>
+                  )}
+                  {item.is_available && (
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(`/cotizar?tipo=maquinaria&id=${item.id}`)}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading text-xs"
+                    >
+                      <Calculator className="h-3 w-3 mr-1" />
+                      Cotizar
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
