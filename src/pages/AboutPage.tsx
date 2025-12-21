@@ -71,11 +71,21 @@ const AboutPage = () => {
     },
   ];
 
-  const description = aboutData?.description || `ALEKSEY nació hace más de una década con la visión de transformar el sector de la construcción e ingeniería en nuestra región. Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una empresa líder, reconocida por nuestra dedicación a la excelencia y nuestro compromiso inquebrantable con la calidad.
+  const yearsCount = heroData?.years_count || 10;
+  const projectsCount = heroData?.projects_count || 500;
+  
+  const defaultDescription = `ALEKSEY nació hace ${yearsCount} años con la visión de transformar el sector de la construcción e ingeniería en nuestra región. Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una empresa líder, reconocida por nuestra dedicación a la excelencia y nuestro compromiso inquebrantable con la calidad.
 
 Nuestro equipo está conformado por profesionales altamente capacitados y apasionados por su trabajo. Ingenieros, arquitectos, técnicos y personal de obra trabajan en conjunto para garantizar que cada proyecto se ejecute con los más altos estándares de calidad y seguridad.
 
-A lo largo de los años, hemos completado más de 500 proyectos exitosos, desde construcciones residenciales hasta grandes obras de infraestructura.`;
+A lo largo de los años, hemos completado más de ${projectsCount} proyectos exitosos, desde construcciones residenciales hasta grandes obras de infraestructura.`;
+
+  // Replace placeholders in custom description if it exists
+  const description = aboutData?.description 
+    ? aboutData.description
+        .replace(/\{years\}/g, String(yearsCount))
+        .replace(/\{projects\}/g, String(projectsCount))
+    : defaultDescription;
 
   const paragraphs = description.split('\n\n').filter(p => p.trim());
 
