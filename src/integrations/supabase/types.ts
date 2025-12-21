@@ -154,6 +154,8 @@ export type Database = {
       }
       hero_content: {
         Row: {
+          background_image_url: string | null
+          background_type: string | null
           badge_text: string | null
           clients_percentage: number | null
           created_at: string
@@ -167,6 +169,8 @@ export type Database = {
           years_count: number | null
         }
         Insert: {
+          background_image_url?: string | null
+          background_type?: string | null
           badge_text?: string | null
           clients_percentage?: number | null
           created_at?: string
@@ -180,6 +184,8 @@ export type Database = {
           years_count?: number | null
         }
         Update: {
+          background_image_url?: string | null
+          background_type?: string | null
           badge_text?: string | null
           clients_percentage?: number | null
           created_at?: string
