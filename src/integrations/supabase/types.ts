@@ -161,6 +161,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          overlay_color: string | null
           overlay_opacity: number | null
           projects_count: number | null
           subtitle: string
@@ -177,6 +178,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          overlay_color?: string | null
           overlay_opacity?: number | null
           projects_count?: number | null
           subtitle?: string
@@ -193,6 +195,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          overlay_color?: string | null
           overlay_opacity?: number | null
           projects_count?: number | null
           subtitle?: string
