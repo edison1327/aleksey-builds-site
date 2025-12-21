@@ -31,6 +31,7 @@ const Hero = () => {
   const clientsValue = heroContent?.clients_percentage || 98;
   const employeesValue = heroContent?.employees_count || 50;
   const activeProjectsValue = heroContent?.active_projects_count || 5;
+  const accidentFreeHoursValue = (heroContent as any)?.accident_free_hours || 10000;
   
   const badgeTextRaw = heroContent?.badge_text || "MÁS DE {years} AÑOS DE EXPERIENCIA";
   const badgeText = badgeTextRaw
@@ -38,7 +39,8 @@ const Hero = () => {
     .replace(/\{projects\}/g, String(projectsValue))
     .replace(/\{clients\}/g, String(clientsValue))
     .replace(/\{employees\}/g, String(employeesValue))
-    .replace(/\{active_projects\}/g, String(activeProjectsValue));
+    .replace(/\{active_projects\}/g, String(activeProjectsValue))
+    .replace(/\{hours\}/g, accidentFreeHoursValue.toLocaleString());
   const videoUrl = heroContent?.video_url || DEFAULT_VIDEO_URL;
   const backgroundType = heroContent?.background_type || "video";
   const backgroundImageUrl = heroContent?.background_image_url;
