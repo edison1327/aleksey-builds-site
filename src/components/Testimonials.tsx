@@ -3,7 +3,7 @@ import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useTestimonials, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
+import { useTestimonials, useHeroContent } from "@/hooks/useSiteData";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -67,21 +67,15 @@ const getAvatarColor = (name: string) => {
 
 const TestimonialsStats = () => {
   const { data: heroData } = useHeroContent();
-  const { data: teamStats } = useTeamStats();
 
-  const defaultStats = [
+  const stats = [
     { value: `${heroData?.clients_percentage || 98}%`, label: "Clientes Satisfechos" },
     { value: `${heroData?.projects_count || 150}+`, label: "Proyectos Completados" },
     { value: `${heroData?.years_count || 10}+`, label: "Años de Experiencia" },
-    { value: "50+", label: "Empresas Confían en Nosotros" },
   ];
 
-  const stats = teamStats.length > 0 
-    ? teamStats.slice(0, 4).map(stat => ({ value: stat.value, label: stat.label }))
-    : defaultStats;
-
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+    <div className="grid grid-cols-3 gap-6 mt-16">
       {stats.map((stat, index) => (
         <div 
           key={index} 
