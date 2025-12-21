@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar } from "lucide-react";
+import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -29,13 +29,10 @@ const AdminMessages = () => {
   const [activeTab, setActiveTab] = useState<"all" | "quotes" | "contact">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "read" | "responded">("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [newMessageAlert, setNewMessageAlert] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     const { data, error } = await supabase
       .from("contact_messages")
       .select("*")
@@ -47,7 +44,88 @@ const AdminMessages = () => {
       setMessages(data || []);
     }
     setIsLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
+
+  // Setup realtime subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel('contact-messages-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'contact_messages'
+        },
+        (payload) => {
+          console.log('New message received:', payload);
+          const newMessage = payload.new as Message;
+          
+          // Add to messages list
+          setMessages((prev) => [newMessage, ...prev]);
+          
+          // Show notification
+          setNewMessageAlert(true);
+          
+          const isQuote = newMessage.message.includes("[COTIZACIÓN DE ALQUILER]");
+          
+          toast({
+            title: isQuote ? "🧾 Nueva Cotización" : "📧 Nuevo Mensaje",
+            description: `${newMessage.name} - ${isQuote ? "Solicitud de cotización" : newMessage.message.substring(0, 50)}...`,
+            duration: 10000,
+          });
+
+          // Play notification sound
+          try {
+            const audio = new Audio("data:audio/wav;base64,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");
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+          } catch (e) {
+            // Audio not supported
+          }
+
+          // Clear alert after 3 seconds
+          setTimeout(() => setNewMessageAlert(false), 3000);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'contact_messages'
+        },
+        (payload) => {
+          console.log('Message updated:', payload);
+          const updatedMessage = payload.new as Message;
+          setMessages((prev) => 
+            prev.map((msg) => msg.id === updatedMessage.id ? updatedMessage : msg)
+          );
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'contact_messages'
+        },
+        (payload) => {
+          console.log('Message deleted:', payload);
+          const deletedId = (payload.old as { id: string }).id;
+          setMessages((prev) => prev.filter((msg) => msg.id !== deletedId));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [toast]);
 
   const isQuoteRequest = (message: Message) => {
     return message.message.includes("[COTIZACIÓN DE ALQUILER]");
@@ -150,9 +228,25 @@ const AdminMessages = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-heading font-bold">Mensajes y Cotizaciones</h2>
-        <p className="text-muted-foreground">Gestiona los mensajes de contacto y solicitudes de cotización</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-heading font-bold">Mensajes y Cotizaciones</h2>
+          <p className="text-muted-foreground">Gestiona los mensajes de contacto y solicitudes de cotización</p>
+        </div>
+        {newMessageAlert && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full animate-pulse">
+            <BellRing className="h-5 w-5 text-primary animate-bounce" />
+            <span className="text-sm font-medium text-primary">¡Nuevo mensaje!</span>
+          </div>
+        )}
+        {!newMessageAlert && pendingCount > 0 && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-full">
+            <Bell className="h-5 w-5 text-amber-600" />
+            <span className="text-sm font-medium text-amber-700 dark:text-amber-400">
+              {pendingCount} pendiente{pendingCount > 1 ? "s" : ""}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Stats Cards */}
