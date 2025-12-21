@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Compass, Check, Clock, Award, Users } from "lucide-react";
+import { Compass, Check, Clock, Award, Users, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase, CheckCircle, Target, Eye, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/Footer";
-import { useServices, useHeroContent, Service } from "@/hooks/useSiteData";
+import { useServices, useHeroContent, useTeamStats, Service } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -20,6 +20,10 @@ import ingenieriaGeotecnica from "@/assets/ingenieria-geotecnica.jpg";
 import ingenieriaVial from "@/assets/ingenieria-vial.jpg";
 
 const defaultImages = [disenoEstructural, ingenieriaGeotecnica, ingenieriaVial];
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Award, Users, Clock, CheckCircle, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase, Target, Eye, Heart,
+};
 
 // Keywords to identify engineering services (normalized without accents)
 const ingenieriaKeywords = ["ingenieria", "diseno", "estructural", "geotecnica", "consultoria", "analisis"];
@@ -39,6 +43,7 @@ const Engineering = () => {
   
   const { data: allServices, isLoading } = useServices();
   const { data: heroData } = useHeroContent();
+  const { data: teamStats } = useTeamStats();
 
   // Filter engineering services
   const services = allServices.filter(s => {
@@ -46,11 +51,19 @@ const Engineering = () => {
     return ingenieriaKeywords.some(k => normalized.includes(k));
   });
 
-  const stats = [
-    { value: "50+", label: "Ingenieros Especializados", desc: "Equipo multidisciplinario de profesionales", icon: Users },
-    { value: `${heroData?.projects_count ? Math.floor(heroData.projects_count * 0.6) : 200}+`, label: "Proyectos de Ingeniería", desc: "Proyectos diseñados y supervisados", icon: Award },
-    { value: "100%", label: "Cumplimiento Normativo", desc: "Todos nuestros diseños cumplen las normas", icon: Clock },
-  ];
+  // Use dynamic team stats or fallback
+  const stats = teamStats.length > 0 
+    ? teamStats.slice(0, 3).map(stat => ({
+        value: stat.value,
+        label: stat.label,
+        desc: `Estadística del equipo`,
+        icon: iconMap[stat.icon] || Users,
+      }))
+    : [
+        { value: "50+", label: "Ingenieros Especializados", desc: "Equipo multidisciplinario de profesionales", icon: Users },
+        { value: `${heroData?.projects_count ? Math.floor(heroData.projects_count * 0.6) : 200}+`, label: "Proyectos de Ingeniería", desc: "Proyectos diseñados y supervisados", icon: Award },
+        { value: "100%", label: "Cumplimiento Normativo", desc: "Todos nuestros diseños cumplen las normas", icon: Clock },
+      ];
 
   const scrollToContact = () => {
     navigate("/");
