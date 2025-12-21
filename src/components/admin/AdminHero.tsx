@@ -402,9 +402,26 @@ const AdminHero = () => {
             </div>
 
             {content?.video_url && (
-              <div>
-                <label className="text-sm font-medium mb-2 block">Vista previa</label>
-                <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Vista previa</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setContent(prev => prev ? { ...prev, video_url: VIDEO_OPTIONS[0].url } : null);
+                      toast({
+                        title: "Video restablecido",
+                        description: "Se ha restaurado el video predeterminado.",
+                      });
+                    }}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
+                  >
+                    <X className="h-4 w-4" />
+                    Restablecer predeterminado
+                  </Button>
+                </div>
+                <div className="aspect-video rounded-lg overflow-hidden bg-muted relative group">
                   <video
                     key={content.video_url}
                     autoPlay
@@ -416,6 +433,12 @@ const AdminHero = () => {
                     <source src={content.video_url} type="video/mp4" />
                   </video>
                 </div>
+                {content.video_url === VIDEO_OPTIONS[0].url && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Check className="h-3 w-3 text-primary" />
+                    Usando video predeterminado
+                  </p>
+                )}
               </div>
             )}
           </CardContent>
