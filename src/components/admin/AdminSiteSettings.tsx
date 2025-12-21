@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSiteSettings, useUpdateSiteSettings } from "@/hooks/useSiteSettings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2, Save, Image as ImageIcon } from "lucide-react";
@@ -16,6 +17,7 @@ const AdminSiteSettings = () => {
     company_name: "",
     tagline: "",
     logo_url: "",
+    footer_description: "",
   });
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const AdminSiteSettings = () => {
         company_name: settings.company_name || "",
         tagline: settings.tagline || "",
         logo_url: settings.logo_url || "",
+        footer_description: settings.footer_description || "",
       });
     }
   }, [settings]);
@@ -137,6 +140,21 @@ const AdminSiteSettings = () => {
                 onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
                 placeholder="Ingeniería y Construcción"
               />
+            </div>
+
+            {/* Footer Description */}
+            <div className="space-y-2">
+              <Label htmlFor="footer_description">Descripción del Footer</Label>
+              <Textarea
+                id="footer_description"
+                value={formData.footer_description}
+                onChange={(e) => setFormData({ ...formData, footer_description: e.target.value })}
+                placeholder="Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada."
+                rows={3}
+              />
+              <p className="text-sm text-muted-foreground">
+                Este texto aparece debajo del logo en el footer del sitio.
+              </p>
             </div>
 
             <Button 
