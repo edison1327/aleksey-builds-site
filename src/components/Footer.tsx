@@ -30,6 +30,7 @@ const Footer = () => {
   
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
+  const footerDescription = siteSettings?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
   
   const address = contactInfo?.address || defaultContact.address;
   const city = contactInfo?.city || defaultContact.city;
@@ -55,7 +56,7 @@ const Footer = () => {
               <img src={logoUrl} alt={`${companyName} - Ingeniería y Construcción`} className="h-10 brightness-0 invert" />
             </div>
             <p className="text-secondary-foreground/80 leading-relaxed mb-6">
-              Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.
+              {footerDescription}
             </p>
             {/* Redes sociales */}
             <div className="flex gap-3">

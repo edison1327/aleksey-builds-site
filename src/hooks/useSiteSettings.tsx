@@ -6,6 +6,7 @@ interface SiteSettings {
   logo_url: string | null;
   company_name: string;
   tagline: string;
+  footer_description: string | null;
   created_at: string;
   updated_at: string;
 }
