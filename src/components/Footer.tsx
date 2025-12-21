@@ -31,6 +31,7 @@ const Footer = () => {
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
   const footerDescription = siteSettings?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
+  const footerCopyright = siteSettings?.footer_copyright || "Todos los derechos reservados.";
   
   const address = contactInfo?.address || defaultContact.address;
   const city = contactInfo?.city || defaultContact.city;
@@ -189,7 +190,7 @@ const Footer = () => {
 
         <div className="border-t border-secondary-foreground/20 pt-8 text-center text-secondary-foreground/60">
           <p>
-            © {new Date().getFullYear()} {companyName}. Todos los derechos reservados.
+            © {new Date().getFullYear()} {companyName}. {footerCopyright}
           </p>
         </div>
       </div>
