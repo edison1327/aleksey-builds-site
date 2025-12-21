@@ -163,11 +163,14 @@ export type Database = {
           created_at: string
           description: string | null
           employees_count: number | null
+          engineers_count: number | null
+          helpers_count: number | null
           id: string
           overlay_color: string | null
           overlay_opacity: number | null
           projects_count: number | null
           subtitle: string
+          technicians_count: number | null
           title: string
           updated_at: string
           video_url: string | null
@@ -183,11 +186,14 @@ export type Database = {
           created_at?: string
           description?: string | null
           employees_count?: number | null
+          engineers_count?: number | null
+          helpers_count?: number | null
           id?: string
           overlay_color?: string | null
           overlay_opacity?: number | null
           projects_count?: number | null
           subtitle?: string
+          technicians_count?: number | null
           title?: string
           updated_at?: string
           video_url?: string | null
@@ -203,11 +209,14 @@ export type Database = {
           created_at?: string
           description?: string | null
           employees_count?: number | null
+          engineers_count?: number | null
+          helpers_count?: number | null
           id?: string
           overlay_color?: string | null
           overlay_opacity?: number | null
           projects_count?: number | null
           subtitle?: string
+          technicians_count?: number | null
           title?: string
           updated_at?: string
           video_url?: string | null

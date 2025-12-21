@@ -173,7 +173,7 @@ const AdminTeamStats = () => {
                       placeholder="Ej: 25+ o {hours}+"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Placeholders: {"{hours}"}, {"{projects}"}, {"{years}"}, {"{clients}"}, {"{employees}"}, {"{active_projects}"}
+                      Placeholders: {"{engineers}"}, {"{technicians}"}, {"{helpers}"}, {"{employees}"}, {"{hours}"}, {"{projects}"}, {"{years}"}, {"{clients}"}, {"{active_projects}"}
                     </p>
                   </div>
                   
