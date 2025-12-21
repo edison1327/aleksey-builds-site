@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Play, Check } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Save, Loader2, Play, Check, Upload, X, Video } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 const VIDEO_OPTIONS = [
   {
@@ -64,6 +63,9 @@ const AdminHero = () => {
   const [content, setContent] = useState<HeroContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -152,6 +154,82 @@ const AdminHero = () => {
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleVideoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('video/')) {
+      toast({
+        title: "Error",
+        description: "Por favor selecciona un archivo de video válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 100MB)
+    const maxSize = 100 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({
+        title: "Error",
+        description: "El video no puede superar los 100MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `hero-video-${Date.now()}.${fileExt}`;
+
+      // Simulate progress (Supabase doesn't provide upload progress natively)
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => Math.min(prev + 10, 90));
+      }, 200);
+
+      const { data, error } = await supabase.storage
+        .from('hero-videos')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('hero-videos')
+        .getPublicUrl(data.path);
+
+      setContent(prev => prev ? { ...prev, video_url: urlData.publicUrl } : null);
+
+      toast({
+        title: "Video subido",
+        description: "El video se ha subido correctamente.",
+      });
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo subir el video.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -274,8 +352,44 @@ const AdminHero = () => {
               })}
             </div>
             
+            {/* Upload Section */}
+            <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                className="hidden"
+                id="video-upload"
+              />
+              
+              {isUploading ? (
+                <div className="space-y-4">
+                  <Video className="h-12 w-12 mx-auto text-primary animate-pulse" />
+                  <p className="text-sm text-muted-foreground">Subiendo video...</p>
+                  <Progress value={uploadProgress} className="w-full max-w-xs mx-auto" />
+                  <p className="text-xs text-muted-foreground">{uploadProgress}%</p>
+                </div>
+              ) : (
+                <label htmlFor="video-upload" className="cursor-pointer block">
+                  <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-sm font-medium">Subir tu propio video</p>
+                  <p className="text-xs text-muted-foreground mt-1">MP4, WebM o MOV (máx. 100MB)</p>
+                </label>
+              )}
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">O usa una URL</span>
+              </div>
+            </div>
+
             <div>
-              <label className="text-sm font-medium">URL del video (personalizada o seleccionada)</label>
+              <label className="text-sm font-medium">URL del video</label>
               <Input
                 value={content?.video_url || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, video_url: e.target.value } : null)}
@@ -283,7 +397,7 @@ const AdminHero = () => {
                 className="mt-1"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Puedes seleccionar un video de arriba o pegar tu propia URL de video MP4
+                Selecciona un video predefinido, sube uno propio o pega una URL
               </p>
             </div>
 
