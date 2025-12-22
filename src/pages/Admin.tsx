@@ -30,6 +30,7 @@ import AdminTestimonials from "@/components/admin/AdminTestimonials";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
+import NotificationCenter from "@/components/admin/NotificationCenter";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { cn } from "@/lib/utils";
 
@@ -249,6 +250,16 @@ const Admin = () => {
         "p-4 border-t border-border/50 space-y-2",
         sidebarCollapsed && !isMobile && "px-2"
       )}>
+        {/* Notification Center in sidebar */}
+        <div className={cn(
+          "flex items-center gap-2 mb-2",
+          sidebarCollapsed && !isMobile ? "justify-center" : "justify-start"
+        )}>
+          <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
+          {(!sidebarCollapsed || isMobile) && (
+            <span className="text-xs text-muted-foreground">Notificaciones</span>
+          )}
+        </div>
         <Link to="/" className="block">
           <Button 
             variant="outline" 
@@ -353,11 +364,14 @@ const Admin = () => {
               )}
             </div>
 
-            <Link to="/">
-              <Button variant="ghost" size="icon" className="shrink-0">
-                <Home className="h-5 w-5" />
-              </Button>
-            </Link>
+            <div className="flex items-center gap-1">
+              <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
+              <Link to="/">
+                <Button variant="ghost" size="icon" className="shrink-0">
+                  <Home className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Current Section Indicator */}
