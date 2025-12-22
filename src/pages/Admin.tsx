@@ -33,12 +33,16 @@ import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { cn } from "@/lib/utils";
 
+import { useToast } from "@/hooks/use-toast";
+
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
   const { data: siteSettings } = useSiteSettings();
 
   useEffect(() => {
@@ -46,6 +50,48 @@ const Admin = () => {
       navigate("/admin/login");
     }
   }, [user, isAdmin, isLoading, navigate]);
+
+  useEffect(() => {
+    // Subscribe to realtime updates for new messages/quotes notification
+    const channel = supabase
+      .channel('admin-notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'contact_messages'
+        },
+        (payload) => {
+          console.log('New message received:', payload);
+          const message = payload.new as { message?: string; name?: string };
+          const isQuote = message.message?.startsWith('[Cotización');
+          
+          setNewMessagesCount(prev => prev + 1);
+          
+          toast({
+            title: isQuote ? "Nueva cotización recibida" : "Nuevo mensaje recibido",
+            description: `De: ${message.name || 'Usuario'}`,
+            duration: 5000,
+          });
+        }
+      )
+      .subscribe();
+
+    // Fetch initial pending count
+    const fetchPendingCount = async () => {
+      const { count } = await supabase
+        .from('contact_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      setNewMessagesCount(count || 0);
+    };
+    fetchPendingCount();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [toast]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -151,9 +197,14 @@ const Admin = () => {
                   .map((item) => (
                     <button
                       key={item.id}
-                      onClick={() => handleMenuClick(item.id)}
+                      onClick={() => {
+                        handleMenuClick(item.id);
+                        if (item.id === 'messages') {
+                          setNewMessagesCount(0);
+                        }
+                      }}
                       className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative",
                         activeTab === item.id
                           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -161,8 +212,27 @@ const Admin = () => {
                       )}
                       title={sidebarCollapsed && !isMobile ? item.label : undefined}
                     >
-                      <item.icon className="h-5 w-5 shrink-0" />
-                      {(!sidebarCollapsed || isMobile) && <span>{item.label}</span>}
+                      <div className="relative">
+                        <item.icon className="h-5 w-5 shrink-0" />
+                        {item.id === 'messages' && newMessagesCount > 0 && (
+                          <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-destructive text-destructive-foreground text-[10px] font-bold items-center justify-center">
+                              {newMessagesCount > 9 ? '9+' : newMessagesCount}
+                            </span>
+                          </span>
+                        )}
+                      </div>
+                      {(!sidebarCollapsed || isMobile) && (
+                        <span className="flex items-center gap-2">
+                          {item.label}
+                          {item.id === 'messages' && newMessagesCount > 0 && (
+                            <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full animate-pulse">
+                              {newMessagesCount} nuevo{newMessagesCount > 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </button>
                   ))}
               </div>
