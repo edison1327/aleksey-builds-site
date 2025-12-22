@@ -291,7 +291,7 @@ const Admin = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "dashboard": return <DashboardOverview />;
+      case "dashboard": return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
       case "site": return <AdminSiteSettings />;
       case "navigation": return <AdminNavigation />;
       case "social": return <AdminSocialLinks />;
@@ -308,7 +308,7 @@ const Admin = () => {
       case "positions": return <AdminJobPositions />;
       case "benefits": return <AdminBenefits />;
       case "applications": return <AdminJobApplications />;
-      default: return <DashboardOverview />;
+      default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
 
@@ -404,7 +404,7 @@ const Admin = () => {
   );
 };
 
-const DashboardOverview = () => {
+const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () => void }) => {
   const [stats, setStats] = useState({
     services: 0,
     projects: 0,
@@ -655,12 +655,17 @@ const DashboardOverview = () => {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-4 md:p-6 border border-primary/20">
-        <h2 className="text-xl md:text-2xl font-heading font-bold text-foreground mb-2">
-          Bienvenido al Panel de Administración
-        </h2>
-        <p className="text-muted-foreground text-sm md:text-base">
-          Gestiona todo el contenido de tu sitio web desde aquí.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl md:text-2xl font-heading font-bold text-foreground mb-2">
+              Bienvenido al Panel de Administración
+            </h2>
+            <p className="text-muted-foreground text-sm md:text-base">
+              Gestiona todo el contenido de tu sitio web desde aquí.
+            </p>
+          </div>
+          <NotificationCenter onNavigateToMessages={onNavigateToMessages} />
+        </div>
       </div>
 
       {/* Stats Cards */}
