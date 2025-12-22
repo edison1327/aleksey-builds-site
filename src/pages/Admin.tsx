@@ -514,6 +514,27 @@ const DashboardOverview = () => {
     };
 
     fetchStats();
+
+    // Subscribe to realtime updates for contact_messages
+    const channel = supabase
+      .channel('dashboard-quotes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'contact_messages'
+        },
+        () => {
+          console.log('New quote/message received, refreshing stats...');
+          fetchStats();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const statCards = [
