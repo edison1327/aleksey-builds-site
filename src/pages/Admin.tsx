@@ -31,6 +31,7 @@ import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import NotificationCenter from "@/components/admin/NotificationCenter";
+import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { cn } from "@/lib/utils";
 
@@ -695,8 +696,12 @@ const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () 
         ))}
       </div>
 
-      {/* Messages & Applications Summary */}
+      {/* Realtime Notifications & Messages Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* Realtime Notifications List */}
+        <RealtimeNotificationsList onNavigateToMessages={onNavigateToMessages} />
+
+        {/* Messages Summary */}
         {/* Messages Summary */}
         <Card className="border-none shadow-lg overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 md:p-6 border-b border-border/50">
