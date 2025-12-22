@@ -516,20 +516,22 @@ const DashboardOverview = () => {
           const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
           if (messagesByMonth[key] !== undefined) {
             messagesByMonth[key]++;
-            // Check if it's a quote request and extract type
-            if (msg.message?.startsWith("[Cotización")) {
+            // Check if it's a quote request
+            const messageText = msg.message?.toLowerCase() || '';
+            const isQuote = messageText.includes('[cotización') || messageText.includes('[cotizacion');
+            
+            if (isQuote) {
               quotesByMonth[key]++;
-              // Extract type from message format: [Cotización de {tipo}: {nombre}]
-              const typeMatch = msg.message.match(/\[Cotización de (\w+):/);
-              if (typeMatch) {
-                const type = typeMatch[1].toLowerCase();
-                if (type === "maquinaria") {
-                  quotesByType["Maquinaria"]++;
-                } else if (type === "vehículo") {
-                  quotesByType["Vehículos"]++;
-                } else if (type === "servicio") {
-                  quotesByType["Servicios"]++;
-                }
+              // Detect type from message content
+              if (messageText.includes('maquinaria') || messageText.includes('excavadora') || messageText.includes('retroexcavadora') || messageText.includes('cargador')) {
+                quotesByType["Maquinaria"]++;
+              } else if (messageText.includes('vehículo') || messageText.includes('vehiculo') || messageText.includes('camión') || messageText.includes('camion') || messageText.includes('cisterna') || messageText.includes('volquete') || messageText.includes('mixer')) {
+                quotesByType["Vehículos"]++;
+              } else if (messageText.includes('servicio') || messageText.includes('ingeniería') || messageText.includes('ingenieria') || messageText.includes('construcción') || messageText.includes('construccion')) {
+                quotesByType["Servicios"]++;
+              } else {
+                // Default to machinery for general quotes
+                quotesByType["Maquinaria"]++;
               }
             }
           }
