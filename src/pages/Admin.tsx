@@ -12,7 +12,7 @@ import {
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminServices from "@/components/admin/AdminServices";
@@ -1050,7 +1050,7 @@ const DashboardOverview = () => {
                         <Cell key={`cell-${index}`} fill={entry.fill} />
                       ))}
                     </Pie>
-                    <Tooltip 
+                    <RechartsTooltip 
                       formatter={(value, name, props) => [`${value} solicitudes`, props.payload.type]}
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))', 
