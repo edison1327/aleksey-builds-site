@@ -82,15 +82,15 @@ const Admin = () => {
       )
       .subscribe();
 
-    // Fetch initial pending count
-    const fetchPendingCount = async () => {
+    // Fetch initial unread count
+    const fetchUnreadCount = async () => {
       const { count } = await supabase
         .from('contact_messages')
         .select('id', { count: 'exact', head: true })
-        .eq('status', 'pending');
+        .eq('is_read', false);
       setNewMessagesCount(count || 0);
     };
-    fetchPendingCount();
+    fetchUnreadCount();
 
     return () => {
       supabase.removeChannel(channel);
