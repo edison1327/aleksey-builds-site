@@ -35,6 +35,9 @@ import { cn } from "@/lib/utils";
 
 import { useToast } from "@/hooks/use-toast";
 
+// Safety alias: prevents runtime ReferenceError if any code still references Tooltip
+const Tooltip = RechartsTooltip;
+
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
@@ -1050,7 +1053,7 @@ const DashboardOverview = () => {
                         <Cell key={`cell-${index}`} fill={entry.fill} />
                       ))}
                     </Pie>
-                    <RechartsTooltip 
+                    <Tooltip 
                       formatter={(value, name, props) => [`${value} solicitudes`, props.payload.type]}
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))', 
