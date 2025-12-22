@@ -119,9 +119,10 @@ const QuotePage = () => {
       const days = calculateDays();
       const equipmentName = selectedItem ? `${selectedItem.name}${selectedItem.brand ? ` - ${selectedItem.brand}` : ""}${selectedItem.model ? ` ${selectedItem.model}` : ""}` : "";
       
-      const fullMessage = `[COTIZACIÓN DE ALQUILER]
+      const quoteType = equipmentType === "maquinaria" ? "Maquinaria" : "Vehículo";
+      const fullMessage = `[Cotización de ${quoteType}: ${equipmentName}]
 
-Tipo: ${equipmentType === "maquinaria" ? "Maquinaria" : "Vehículo"}
+Tipo: ${quoteType}
 Equipo: ${equipmentName}
 Categoría: ${selectedItem?.category || "N/A"}
 
