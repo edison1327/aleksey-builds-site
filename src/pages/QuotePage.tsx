@@ -61,6 +61,45 @@ const QuotePage = () => {
     message: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Real-time field validation
+  const validateField = (field: string, value: string) => {
+    const fieldSchema = {
+      name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
+      email: z.string().trim().email("Email inválido").max(255, "El email es muy largo"),
+      phone: z.string().trim().min(1, "El teléfono es requerido").max(20, "El teléfono es muy largo"),
+      company: z.string().trim().min(1, "La empresa es requerida").max(100, "El nombre de empresa es muy largo"),
+      projectLocation: z.string().trim().min(1, "La ubicación del proyecto es requerida").max(200, "La ubicación es muy larga"),
+      message: z.string().trim().min(1, "El mensaje es requerido").max(1000, "El mensaje es muy largo"),
+    };
+
+    const schema = fieldSchema[field as keyof typeof fieldSchema];
+    if (!schema) return;
+
+    const result = schema.safeParse(value);
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      if (!result.success) {
+        newErrors[field] = result.error.errors[0]?.message || "Campo inválido";
+      } else {
+        delete newErrors[field];
+      }
+      return newErrors;
+    });
+  };
+
+  const handleFieldChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (touched[field]) {
+      validateField(field, value);
+    }
+  };
+
+  const handleFieldBlur = (field: string, value: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validateField(field, value);
+  };
 
   useEffect(() => {
     fetchEquipment();
@@ -452,22 +491,24 @@ ${formData.message || "Sin mensaje adicional"}`;
                         <Input
                           id="name"
                           value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          onChange={(e) => handleFieldChange("name", e.target.value)}
+                          onBlur={(e) => handleFieldBlur("name", e.target.value)}
                           placeholder="Tu nombre"
-                          className={errors.name ? "border-destructive" : ""}
+                          className={errors.name && touched.name ? "border-destructive" : ""}
                         />
-                        {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+                        {errors.name && touched.name && <p className="text-xs text-destructive">{errors.name}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="company">Empresa *</Label>
                         <Input
                           id="company"
                           value={formData.company}
-                          onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                          onChange={(e) => handleFieldChange("company", e.target.value)}
+                          onBlur={(e) => handleFieldBlur("company", e.target.value)}
                           placeholder="Nombre de tu empresa"
-                          className={errors.company ? "border-destructive" : ""}
+                          className={errors.company && touched.company ? "border-destructive" : ""}
                         />
-                        {errors.company && <p className="text-xs text-destructive">{errors.company}</p>}
+                        {errors.company && touched.company && <p className="text-xs text-destructive">{errors.company}</p>}
                       </div>
                     </div>
 
@@ -478,22 +519,24 @@ ${formData.message || "Sin mensaje adicional"}`;
                           id="email"
                           type="email"
                           value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          onChange={(e) => handleFieldChange("email", e.target.value)}
+                          onBlur={(e) => handleFieldBlur("email", e.target.value)}
                           placeholder="tu@email.com"
-                          className={errors.email ? "border-destructive" : ""}
+                          className={errors.email && touched.email ? "border-destructive" : ""}
                         />
-                        {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                        {errors.email && touched.email && <p className="text-xs text-destructive">{errors.email}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Teléfono *</Label>
                         <Input
                           id="phone"
                           value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          onChange={(e) => handleFieldChange("phone", e.target.value)}
+                          onBlur={(e) => handleFieldBlur("phone", e.target.value)}
                           placeholder="+51 999 999 999"
-                          className={errors.phone ? "border-destructive" : ""}
+                          className={errors.phone && touched.phone ? "border-destructive" : ""}
                         />
-                        {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
+                        {errors.phone && touched.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
                       </div>
                     </div>
 
@@ -502,11 +545,12 @@ ${formData.message || "Sin mensaje adicional"}`;
                       <Input
                         id="projectLocation"
                         value={formData.projectLocation}
-                        onChange={(e) => setFormData({ ...formData, projectLocation: e.target.value })}
+                        onChange={(e) => handleFieldChange("projectLocation", e.target.value)}
+                        onBlur={(e) => handleFieldBlur("projectLocation", e.target.value)}
                         placeholder="Ciudad o dirección del proyecto"
-                        className={errors.projectLocation ? "border-destructive" : ""}
+                        className={errors.projectLocation && touched.projectLocation ? "border-destructive" : ""}
                       />
-                      {errors.projectLocation && <p className="text-xs text-destructive">{errors.projectLocation}</p>}
+                      {errors.projectLocation && touched.projectLocation && <p className="text-xs text-destructive">{errors.projectLocation}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -514,12 +558,13 @@ ${formData.message || "Sin mensaje adicional"}`;
                       <Textarea
                         id="message"
                         value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        onChange={(e) => handleFieldChange("message", e.target.value)}
+                        onBlur={(e) => handleFieldBlur("message", e.target.value)}
                         placeholder="Cuéntanos más sobre tu proyecto o necesidades especiales..."
                         rows={4}
-                        className={errors.message ? "border-destructive" : ""}
+                        className={errors.message && touched.message ? "border-destructive" : ""}
                       />
-                      {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
+                      {errors.message && touched.message && <p className="text-xs text-destructive">{errors.message}</p>}
                     </div>
                   </CardContent>
                 </Card>
