@@ -540,16 +540,13 @@ const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () 
             
             if (isQuote) {
               quotesByMonth[key]++;
-              // Detect type from message content
-              if (messageText.includes('maquinaria') || messageText.includes('excavadora') || messageText.includes('retroexcavadora') || messageText.includes('cargador')) {
+              // Detect type from message content - using exact format from QuickQuoteForm
+              if (messageText.includes('[cotización de maquinaria') || messageText.includes('[cotizacion de maquinaria')) {
                 quotesByType["Maquinaria"]++;
-              } else if (messageText.includes('vehículo') || messageText.includes('vehiculo') || messageText.includes('camión') || messageText.includes('camion') || messageText.includes('cisterna') || messageText.includes('volquete') || messageText.includes('mixer')) {
+              } else if (messageText.includes('[cotización de vehículo') || messageText.includes('[cotizacion de vehiculo')) {
                 quotesByType["Vehículos"]++;
-              } else if (messageText.includes('servicio') || messageText.includes('ingeniería') || messageText.includes('ingenieria') || messageText.includes('construcción') || messageText.includes('construccion')) {
+              } else if (messageText.includes('[cotización de servicio') || messageText.includes('[cotizacion de servicio')) {
                 quotesByType["Servicios"]++;
-              } else {
-                // Default to machinery for general quotes
-                quotesByType["Maquinaria"]++;
               }
             }
           }
