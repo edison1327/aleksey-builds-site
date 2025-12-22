@@ -325,17 +325,21 @@ const AdminMessages = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        {/* Contactos Card - mensajes que NO son cotizaciones */}
+        <Card className="bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-900/20 border-blue-200 dark:border-blue-800">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
                 <MessageSquare className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{contactCount}</p>
+                <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">{contactCount}</p>
                 <p className="text-xs text-muted-foreground">Contactos</p>
               </div>
             </div>
+            <p className="text-[10px] text-muted-foreground mt-2 border-t pt-2">
+              Formulario de contacto general
+            </p>
           </CardContent>
         </Card>
         
