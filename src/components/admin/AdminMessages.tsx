@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing } from "lucide-react";
+import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -128,7 +128,32 @@ const AdminMessages = () => {
   }, [toast]);
 
   const isQuoteRequest = (message: Message) => {
-    return message.message.includes("[COTIZACIÓN DE ALQUILER]");
+    const lowerMessage = message.message.toLowerCase();
+    return (
+      message.message.includes("[COTIZACIÓN DE ALQUILER]") ||
+      lowerMessage.includes("[cotización de maquinaria") ||
+      lowerMessage.includes("[cotizacion de maquinaria") ||
+      lowerMessage.includes("[cotización de vehículo") ||
+      lowerMessage.includes("[cotizacion de vehiculo") ||
+      lowerMessage.includes("[cotización de servicio") ||
+      lowerMessage.includes("[cotizacion de servicio")
+    );
+  };
+
+  const getQuoteType = (message: Message): "machinery" | "vehicle" | "service" | "general" | null => {
+    if (!isQuoteRequest(message)) return null;
+    const lowerMessage = message.message.toLowerCase();
+    
+    if (lowerMessage.includes("[cotización de maquinaria") || lowerMessage.includes("[cotizacion de maquinaria")) {
+      return "machinery";
+    }
+    if (lowerMessage.includes("[cotización de vehículo") || lowerMessage.includes("[cotizacion de vehiculo")) {
+      return "vehicle";
+    }
+    if (lowerMessage.includes("[cotización de servicio") || lowerMessage.includes("[cotizacion de servicio")) {
+      return "service";
+    }
+    return "general";
   };
 
   const parseQuoteDetails = (message: Message) => {
@@ -216,6 +241,9 @@ const AdminMessages = () => {
 
   const pendingCount = messages.filter((m) => m.status === "pending").length;
   const quotesCount = messages.filter((m) => isQuoteRequest(m)).length;
+  const machineryQuotesCount = messages.filter((m) => getQuoteType(m) === "machinery").length;
+  const vehicleQuotesCount = messages.filter((m) => getQuoteType(m) === "vehicle").length;
+  const serviceQuotesCount = messages.filter((m) => getQuoteType(m) === "service").length;
   const contactCount = messages.filter((m) => !isQuoteRequest(m)).length;
 
   if (isLoading) {
@@ -264,24 +292,44 @@ const AdminMessages = () => {
             </div>
           </CardContent>
         </Card>
+        
+        {/* Cotizaciones Card with breakdown */}
+        <Card className="bg-gradient-to-br from-emerald-50 to-transparent dark:from-emerald-900/20 border-emerald-200 dark:border-emerald-800">
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+                <FileText className="h-5 w-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{quotesCount}</p>
+                <p className="text-xs text-muted-foreground">Cotizaciones</p>
+              </div>
+            </div>
+            {/* Quote breakdown */}
+            <div className="flex gap-3 mt-3 text-xs text-muted-foreground border-t pt-2">
+              <span className="flex items-center gap-1">
+                <Cog className="h-3 w-3 text-orange-500" />
+                {machineryQuotesCount}
+              </span>
+              <span className="flex items-center gap-1">
+                <Truck className="h-3 w-3 text-purple-500" />
+                {vehicleQuotesCount}
+              </span>
+              {serviceQuotesCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <Calculator className="h-3 w-3 text-blue-500" />
+                  {serviceQuotesCount}
+                </span>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                <Calculator className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{quotesCount}</p>
-                <p className="text-xs text-muted-foreground">Cotizaciones</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                <MessageSquare className="h-5 w-5 text-purple-600" />
+                <MessageSquare className="h-5 w-5 text-blue-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{contactCount}</p>
@@ -290,11 +338,12 @@ const AdminMessages = () => {
             </div>
           </CardContent>
         </Card>
+        
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                <Mail className="h-5 w-5 text-green-600" />
+              <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                <Mail className="h-5 w-5 text-gray-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{messages.length}</p>
