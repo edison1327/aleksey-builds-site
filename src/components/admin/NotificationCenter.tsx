@@ -21,6 +21,7 @@ interface Notification {
   email: string;
   message: string;
   status: string;
+  is_read: boolean;
   created_at: string;
   isQuote: boolean;
 }
@@ -37,17 +38,18 @@ export const NotificationCenter = ({ onNavigateToMessages }: NotificationCenterP
   const fetchNotifications = async () => {
     const { data, error } = await supabase
       .from("contact_messages")
-      .select("id, name, email, message, status, created_at")
+      .select("id, name, email, message, status, is_read, created_at")
       .order("created_at", { ascending: false })
       .limit(10);
 
     if (!error && data) {
       const formattedNotifications = data.map((msg) => ({
         ...msg,
+        is_read: msg.is_read ?? false,
         isQuote: msg.message?.toLowerCase().includes("[cotización") || msg.message?.toLowerCase().includes("[cotizacion"),
       }));
       setNotifications(formattedNotifications);
-      setUnreadCount(formattedNotifications.filter((n) => n.status === "pending").length);
+      setUnreadCount(formattedNotifications.filter((n) => !n.is_read).length);
     }
   };
 
@@ -78,30 +80,30 @@ export const NotificationCenter = ({ onNavigateToMessages }: NotificationCenterP
   const markAsRead = async (id: string) => {
     const { error } = await supabase
       .from("contact_messages")
-      .update({ status: "responded" })
+      .update({ is_read: true })
       .eq("id", id);
 
     if (!error) {
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, status: "responded" } : n))
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     }
   };
 
   const markAllAsRead = async () => {
-    const pendingIds = notifications.filter((n) => n.status === "pending").map((n) => n.id);
+    const unreadIds = notifications.filter((n) => !n.is_read).map((n) => n.id);
     
-    if (pendingIds.length === 0) return;
+    if (unreadIds.length === 0) return;
 
     const { error } = await supabase
       .from("contact_messages")
-      .update({ status: "responded" })
-      .in("id", pendingIds);
+      .update({ is_read: true })
+      .in("id", unreadIds);
 
     if (!error) {
       setNotifications((prev) =>
-        prev.map((n) => ({ ...n, status: "responded" }))
+        prev.map((n) => ({ ...n, is_read: true }))
       );
       setUnreadCount(0);
     }
@@ -165,7 +167,7 @@ export const NotificationCenter = ({ onNavigateToMessages }: NotificationCenterP
                 key={notification.id}
                 className={cn(
                   "px-3 py-3 border-b border-border/50 last:border-0 hover:bg-muted/50 transition-colors cursor-pointer",
-                  notification.status === "pending" && "bg-primary/5"
+                  !notification.is_read && "bg-primary/5"
                 )}
                 onClick={() => {
                   if (onNavigateToMessages) {
@@ -194,7 +196,7 @@ export const NotificationCenter = ({ onNavigateToMessages }: NotificationCenterP
                       <p className="font-medium text-sm truncate">
                         {notification.name}
                       </p>
-                      {notification.status === "pending" && (
+                      {!notification.is_read && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -222,15 +224,22 @@ export const NotificationCenter = ({ onNavigateToMessages }: NotificationCenterP
                           locale: es,
                         })}
                       </span>
-                      {notification.status === "pending" ? (
-                        <span className="text-[10px] font-medium text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded">
-                          Pendiente
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-medium text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                          Respondido
-                        </span>
-                      )}
+                      <div className="flex items-center gap-1.5">
+                        {!notification.is_read && (
+                          <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded">
+                            Nueva
+                          </span>
+                        )}
+                        {notification.status === "pending" ? (
+                          <span className="text-[10px] font-medium text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                            Pendiente
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-medium text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                            Respondido
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
