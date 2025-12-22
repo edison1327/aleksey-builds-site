@@ -23,8 +23,9 @@ const quoteSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
   email: z.string().trim().email("Email inválido").max(255, "El email es muy largo"),
   phone: z.string().trim().min(1, "El teléfono es requerido").max(20, "El teléfono es muy largo"),
-  company: z.string().trim().max(100, "El nombre de empresa es muy largo").optional(),
-  message: z.string().trim().max(1000, "El mensaje es muy largo").optional(),
+  company: z.string().trim().min(1, "La empresa es requerida").max(100, "El nombre de empresa es muy largo"),
+  projectLocation: z.string().trim().min(1, "La ubicación del proyecto es requerida").max(200, "La ubicación es muy larga"),
+  message: z.string().trim().min(1, "El mensaje es requerido").max(1000, "El mensaje es muy largo"),
 });
 
 interface Equipment {
@@ -458,13 +459,15 @@ ${formData.message || "Sin mensaje adicional"}`;
                         {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="company">Empresa</Label>
+                        <Label htmlFor="company">Empresa *</Label>
                         <Input
                           id="company"
                           value={formData.company}
                           onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                           placeholder="Nombre de tu empresa"
+                          className={errors.company ? "border-destructive" : ""}
                         />
+                        {errors.company && <p className="text-xs text-destructive">{errors.company}</p>}
                       </div>
                     </div>
 
@@ -495,24 +498,28 @@ ${formData.message || "Sin mensaje adicional"}`;
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="projectLocation">Ubicación del proyecto</Label>
+                      <Label htmlFor="projectLocation">Ubicación del proyecto *</Label>
                       <Input
                         id="projectLocation"
                         value={formData.projectLocation}
                         onChange={(e) => setFormData({ ...formData, projectLocation: e.target.value })}
                         placeholder="Ciudad o dirección del proyecto"
+                        className={errors.projectLocation ? "border-destructive" : ""}
                       />
+                      {errors.projectLocation && <p className="text-xs text-destructive">{errors.projectLocation}</p>}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message">Mensaje adicional</Label>
+                      <Label htmlFor="message">Mensaje *</Label>
                       <Textarea
                         id="message"
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         placeholder="Cuéntanos más sobre tu proyecto o necesidades especiales..."
                         rows={4}
+                        className={errors.message ? "border-destructive" : ""}
                       />
+                      {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
                     </div>
                   </CardContent>
                 </Card>
