@@ -25,6 +25,7 @@ interface Notification {
 
 interface QuoteStats {
   total: number;
+  totalQuotes: number; // machinery + vehicles + services
   machinery: number;
   vehicles: number;
   services: number;
@@ -71,6 +72,7 @@ export const RealtimeNotificationsList = ({ onNavigateToMessages }: RealtimeNoti
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [stats, setStats] = useState<QuoteStats>({
     total: 0,
+    totalQuotes: 0,
     machinery: 0,
     vehicles: 0,
     services: 0,
@@ -94,12 +96,18 @@ export const RealtimeNotificationsList = ({ onNavigateToMessages }: RealtimeNoti
       }));
       
       // Calculate stats
+      const machineryCount = formattedNotifications.filter((n) => n.quoteType === "machinery").length;
+      const vehiclesCount = formattedNotifications.filter((n) => n.quoteType === "vehicle").length;
+      const servicesCount = formattedNotifications.filter((n) => n.quoteType === "service").length;
+      const contactCount = formattedNotifications.filter((n) => n.quoteType === "contact").length;
+      
       const newStats: QuoteStats = {
         total: formattedNotifications.length,
-        machinery: formattedNotifications.filter((n) => n.quoteType === "machinery").length,
-        vehicles: formattedNotifications.filter((n) => n.quoteType === "vehicle").length,
-        services: formattedNotifications.filter((n) => n.quoteType === "service").length,
-        contact: formattedNotifications.filter((n) => n.quoteType === "contact").length,
+        totalQuotes: machineryCount + vehiclesCount + servicesCount,
+        machinery: machineryCount,
+        vehicles: vehiclesCount,
+        services: servicesCount,
+        contact: contactCount,
         unread: formattedNotifications.filter((n) => !n.is_read).length,
       };
       
@@ -249,35 +257,41 @@ export const RealtimeNotificationsList = ({ onNavigateToMessages }: RealtimeNoti
           </div>
         </div>
         
-        {/* Quote Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
-          <div className="flex items-center gap-2 bg-orange-500/10 rounded-lg px-3 py-2">
-            <Cog className="h-4 w-4 text-orange-600" />
-            <div>
-              <p className="text-xs text-muted-foreground">Maquinaria</p>
-              <p className="text-lg font-bold text-orange-600">{stats.machinery}</p>
+        {/* Stats Summary */}
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          {/* Cotizaciones Card */}
+          <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 rounded-xl p-4 border border-emerald-500/20">
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="h-5 w-5 text-emerald-600" />
+              <p className="text-sm font-medium text-emerald-700">Cotizaciones</p>
+            </div>
+            <p className="text-3xl font-bold text-emerald-600">{stats.totalQuotes}</p>
+            <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Cog className="h-3 w-3 text-orange-500" />
+                {stats.machinery}
+              </span>
+              <span className="flex items-center gap-1">
+                <Truck className="h-3 w-3 text-purple-500" />
+                {stats.vehicles}
+              </span>
+              {stats.services > 0 && (
+                <span className="flex items-center gap-1">
+                  <FileText className="h-3 w-3 text-amber-500" />
+                  {stats.services}
+                </span>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-purple-500/10 rounded-lg px-3 py-2">
-            <Truck className="h-4 w-4 text-purple-600" />
-            <div>
-              <p className="text-xs text-muted-foreground">Vehículos</p>
-              <p className="text-lg font-bold text-purple-600">{stats.vehicles}</p>
+          
+          {/* Contactos Card */}
+          <div className="bg-gradient-to-br from-blue-500/20 to-blue-500/5 rounded-xl p-4 border border-blue-500/20">
+            <div className="flex items-center gap-2 mb-2">
+              <Mail className="h-5 w-5 text-blue-600" />
+              <p className="text-sm font-medium text-blue-700">Contactos</p>
             </div>
-          </div>
-          <div className="flex items-center gap-2 bg-amber-500/10 rounded-lg px-3 py-2">
-            <FileText className="h-4 w-4 text-amber-600" />
-            <div>
-              <p className="text-xs text-muted-foreground">Servicios</p>
-              <p className="text-lg font-bold text-amber-600">{stats.services}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 bg-blue-500/10 rounded-lg px-3 py-2">
-            <Mail className="h-4 w-4 text-blue-600" />
-            <div>
-              <p className="text-xs text-muted-foreground">Contacto</p>
-              <p className="text-lg font-bold text-blue-600">{stats.contact}</p>
-            </div>
+            <p className="text-3xl font-bold text-blue-600">{stats.contact}</p>
+            <p className="text-xs text-muted-foreground mt-2">Mensajes generales</p>
           </div>
         </div>
       </CardHeader>
