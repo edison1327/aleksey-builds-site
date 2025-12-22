@@ -35,15 +35,31 @@ interface QuoteStats {
 const getQuoteType = (message: string | null): QuoteType => {
   if (!message) return "contact";
   const lowerMessage = message.toLowerCase();
-  if (lowerMessage.includes("[cotización de maquinaria") || lowerMessage.includes("[cotizacion de maquinaria")) {
+  
+  // Check for machinery quotes
+  if (lowerMessage.includes("[cotización de maquinaria") || 
+      lowerMessage.includes("[cotizacion de maquinaria") ||
+      lowerMessage.includes("cotización de maquinaria:") ||
+      lowerMessage.includes("cotizacion de maquinaria:")) {
     return "machinery";
   }
-  if (lowerMessage.includes("[cotización de vehículo") || lowerMessage.includes("[cotizacion de vehiculo")) {
+  
+  // Check for vehicle quotes
+  if (lowerMessage.includes("[cotización de vehículo") || 
+      lowerMessage.includes("[cotizacion de vehiculo") ||
+      lowerMessage.includes("cotización de vehículo:") ||
+      lowerMessage.includes("cotizacion de vehiculo:")) {
     return "vehicle";
   }
-  if (lowerMessage.includes("[cotización de servicio") || lowerMessage.includes("[cotizacion de servicio")) {
+  
+  // Check for service quotes
+  if (lowerMessage.includes("[cotización de servicio") || 
+      lowerMessage.includes("[cotizacion de servicio") ||
+      lowerMessage.includes("cotización de servicio:") ||
+      lowerMessage.includes("cotizacion de servicio:")) {
     return "service";
   }
+  
   return "contact";
 };
 
