@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp
+  FileText, TrendingUp, UserCog
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -30,6 +30,7 @@ import AdminTestimonials from "@/components/admin/AdminTestimonials";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
+import AdminUsers from "@/components/admin/AdminUsers";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
@@ -124,6 +125,7 @@ const Admin = () => {
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
+    { id: "users", label: "Usuarios", icon: UserCog, category: "general" },
     { id: "hero", label: "Hero", icon: Home, category: "contenido" },
     { id: "about", label: "About", icon: Info, category: "contenido" },
     { id: "teamstats", label: "Estadísticas", icon: BarChart3, category: "contenido" },
@@ -288,6 +290,7 @@ const Admin = () => {
       case "site": return <AdminSiteSettings />;
       case "navigation": return <AdminNavigation />;
       case "social": return <AdminSocialLinks />;
+      case "users": return <AdminUsers />;
       case "hero": return <AdminHero />;
       case "about": return <AdminAbout />;
       case "teamstats": return <AdminTeamStats />;
