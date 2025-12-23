@@ -32,6 +32,7 @@ import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
+import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { cn } from "@/lib/utils";
 
@@ -248,12 +249,15 @@ const Admin = () => {
 
       {/* Sidebar Footer */}
       <div className={cn(
-        "p-4 border-t border-border/50 space-y-2",
+        "p-4 border-t border-border/50 space-y-3",
         sidebarCollapsed && !isMobile && "px-2"
       )}>
+        {/* User Menu */}
+        <UserMenu collapsed={sidebarCollapsed && !isMobile} />
+        
         {/* Notification Center in sidebar */}
         <div className={cn(
-          "flex items-center gap-2 mb-2",
+          "flex items-center gap-2",
           sidebarCollapsed && !isMobile ? "justify-center" : "justify-start"
         )}>
           <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
@@ -274,18 +278,6 @@ const Admin = () => {
             {(!sidebarCollapsed || isMobile) && <span>Ver sitio</span>}
           </Button>
         </Link>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={handleSignOut}
-          className={cn(
-            "w-full gap-2 justify-start text-muted-foreground hover:text-destructive",
-            sidebarCollapsed && !isMobile && "justify-center px-2"
-          )}
-        >
-          <LogOut className="h-4 w-4" />
-          {(!sidebarCollapsed || isMobile) && <span>Cerrar sesión</span>}
-        </Button>
       </div>
     </div>
   );
