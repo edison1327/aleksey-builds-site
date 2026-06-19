@@ -1,10 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-// In production, set this to a verified-domain sender, e.g. "Aleksey <no-reply@tudominio.com>"
 const RESEND_FROM = Deno.env.get("RESEND_FROM") ?? "Aleksey <onboarding@resend.dev>";
-// Resend test-mode fallback (Resend only allows sending to the verified account email)
 const RESEND_TEST_EMAIL = Deno.env.get("RESEND_TEST_EMAIL") ?? "edisone13.eer@gmail.com";
 
 const corsHeaders = {
@@ -12,14 +11,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface QuoteNotificationRequest {
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  itemName: string;
-  itemType: string;
-}
+const QuoteSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  phone: z.string().trim().max(50).optional().nullable(),
+  message: z.string().trim().min(1).max(5000),
+  itemName: z.string().trim().min(1).max(255),
+  itemType: z.string().trim().min(1).max(50),
+});
+
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 
 async function getAdminEmail(): Promise<string> {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -73,12 +75,28 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, phone, message, itemName, itemType }: QuoteNotificationRequest = await req.json();
+    let payload: unknown;
+    try {
+      payload = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Cuerpo de la solicitud inválido" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const parsed = QuoteSchema.safeParse(payload);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Datos inválidos", details: parsed.error.flatten().fieldErrors }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    const { name, email, phone, message, itemName, itemType } = parsed.data;
 
     console.log(`Processing quote notification for: ${name} - ${email}`);
     console.log(`Item: ${itemType} - ${itemName}`);
 
-    // Get admin email from CMS (contact_info table)
     const adminEmail = await getAdminEmail();
 
     const subject = `Nueva Solicitud de Cotización: ${itemType} - ${itemName}`;
@@ -89,18 +107,18 @@ const handler = async (req: Request): Promise<Response> => {
         </h1>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h2 style="color: #f59e0b; margin-top: 0;">Detalles del ${itemType}</h2>
-          <p><strong>Nombre:</strong> ${itemName}</p>
-          <p><strong>Tipo:</strong> ${itemType}</p>
+          <h2 style="color: #f59e0b; margin-top: 0;">Detalles del ${escapeHtml(itemType)}</h2>
+          <p><strong>Nombre:</strong> ${escapeHtml(itemName)}</p>
+          <p><strong>Tipo:</strong> ${escapeHtml(itemType)}</p>
         </div>
         
         <div style="background: #fff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
           <h2 style="color: #1a1a1a; margin-top: 0;">Información del Cliente</h2>
-          <p><strong>Nombre:</strong> ${name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-          ${phone ? `<p><strong>Teléfono:</strong> ${phone}</p>` : ''}
+          <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
+          ${phone ? `<p><strong>Teléfono:</strong> ${escapeHtml(phone)}</p>` : ''}
           <p><strong>Mensaje:</strong></p>
-          <p style="background: #f8f9fa; padding: 15px; border-radius: 4px; white-space: pre-wrap;">${message}</p>
+          <p style="background: #f8f9fa; padding: 15px; border-radius: 4px; white-space: pre-wrap;">${escapeHtml(message)}</p>
         </div>
         
         <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
@@ -164,10 +182,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
   } catch (error: any) {
     console.error("Error in send-quote-notification function:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
+    return new Response(
+      JSON.stringify({ error: "No se pudo enviar la notificación. Intenta de nuevo más tarde." }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    );
   }
 };
 

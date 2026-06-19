@@ -7,8 +7,17 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ChatWidget from "@/components/ChatWidget";
 import AnimatedRoutes from "@/components/AnimatedRoutes";
 import Navbar from "@/components/Navbar";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 60_000,
+    },
+  },
+});
 
 const AppShell = () => {
   const { pathname } = useLocation();
@@ -18,24 +27,32 @@ const AppShell = () => {
   return (
     <>
       {!hideNavbar && <Navbar />}
-      <AnimatedRoutes />
-      {!hideChatWidget && <ChatWidget />}
+      <ErrorBoundary>
+        <AnimatedRoutes />
+      </ErrorBoundary>
+      {!hideChatWidget && (
+        <ErrorBoundary fallback={<></>}>
+          <ChatWidget />
+        </ErrorBoundary>
+      )}
     </>
   );
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppShell />
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppShell />
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
