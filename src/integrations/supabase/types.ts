@@ -18,10 +18,12 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          description_en: string | null
           id: string
           image_url: string | null
           mission: string | null
           title: string
+          title_en: string | null
           updated_at: string
           values: string[] | null
           vision: string | null
@@ -29,10 +31,12 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           mission?: string | null
           title: string
+          title_en?: string | null
           updated_at?: string
           values?: string[] | null
           vision?: string | null
@@ -40,10 +44,12 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           mission?: string | null
           title?: string
+          title_en?: string | null
           updated_at?: string
           values?: string[] | null
           vision?: string | null
@@ -87,43 +93,52 @@ export type Database = {
         Row: {
           author: string | null
           content: string
+          content_en: string | null
           cover_image: string | null
           created_at: string
           excerpt: string | null
+          excerpt_en: string | null
           id: string
           published: boolean
           published_at: string | null
           slug: string
           tags: string[]
           title: string
+          title_en: string | null
           updated_at: string
         }
         Insert: {
           author?: string | null
           content: string
+          content_en?: string | null
           cover_image?: string | null
           created_at?: string
           excerpt?: string | null
+          excerpt_en?: string | null
           id?: string
           published?: boolean
           published_at?: string | null
           slug: string
           tags?: string[]
           title: string
+          title_en?: string | null
           updated_at?: string
         }
         Update: {
           author?: string | null
           content?: string
+          content_en?: string | null
           cover_image?: string | null
           created_at?: string
           excerpt?: string | null
+          excerpt_en?: string | null
           id?: string
           published?: boolean
           published_at?: string | null
           slug?: string
           tags?: string[]
           title?: string
+          title_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -243,9 +258,11 @@ export type Database = {
           background_image_url: string | null
           background_type: string | null
           badge_text: string | null
+          badge_text_en: string | null
           clients_percentage: number | null
           created_at: string
           description: string | null
+          description_en: string | null
           employees_count: number | null
           engineers_count: number | null
           helpers_count: number | null
@@ -254,8 +271,10 @@ export type Database = {
           overlay_opacity: number | null
           projects_count: number | null
           subtitle: string
+          subtitle_en: string | null
           technicians_count: number | null
           title: string
+          title_en: string | null
           updated_at: string
           video_url: string | null
           years_count: number | null
@@ -266,9 +285,11 @@ export type Database = {
           background_image_url?: string | null
           background_type?: string | null
           badge_text?: string | null
+          badge_text_en?: string | null
           clients_percentage?: number | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
           employees_count?: number | null
           engineers_count?: number | null
           helpers_count?: number | null
@@ -277,8 +298,10 @@ export type Database = {
           overlay_opacity?: number | null
           projects_count?: number | null
           subtitle?: string
+          subtitle_en?: string | null
           technicians_count?: number | null
           title?: string
+          title_en?: string | null
           updated_at?: string
           video_url?: string | null
           years_count?: number | null
@@ -289,9 +312,11 @@ export type Database = {
           background_image_url?: string | null
           background_type?: string | null
           badge_text?: string | null
+          badge_text_en?: string | null
           clients_percentage?: number | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
           employees_count?: number | null
           engineers_count?: number | null
           helpers_count?: number | null
@@ -300,8 +325,10 @@ export type Database = {
           overlay_opacity?: number | null
           projects_count?: number | null
           subtitle?: string
+          subtitle_en?: string | null
           technicians_count?: number | null
           title?: string
+          title_en?: string | null
           updated_at?: string
           video_url?: string | null
           years_count?: number | null
@@ -396,15 +423,18 @@ export type Database = {
         Row: {
           brand: string | null
           category: string | null
+          category_en: string | null
           created_at: string
           daily_rate: number | null
           description: string | null
+          description_en: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           is_available: boolean | null
           model: string | null
           name: string
+          name_en: string | null
           price: string | null
           sort_order: number | null
           specs: Json | null
@@ -413,15 +443,18 @@ export type Database = {
         Insert: {
           brand?: string | null
           category?: string | null
+          category_en?: string | null
           created_at?: string
           daily_rate?: number | null
           description?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
           model?: string | null
           name: string
+          name_en?: string | null
           price?: string | null
           sort_order?: number | null
           specs?: Json | null
@@ -430,15 +463,18 @@ export type Database = {
         Update: {
           brand?: string | null
           category?: string | null
+          category_en?: string | null
           created_at?: string
           daily_rate?: number | null
           description?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
           model?: string | null
           name?: string
+          name_en?: string | null
           price?: string | null
           sort_order?: number | null
           specs?: Json | null
@@ -588,6 +624,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          description_en: string | null
           features: string[] | null
           icon: string
           id: string
@@ -595,11 +632,13 @@ export type Database = {
           is_active: boolean | null
           sort_order: number | null
           title: string
+          title_en: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
+          description_en?: string | null
           features?: string[] | null
           icon?: string
           id?: string
@@ -607,11 +646,13 @@ export type Database = {
           is_active?: boolean | null
           sort_order?: number | null
           title: string
+          title_en?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
+          description_en?: string | null
           features?: string[] | null
           icon?: string
           id?: string
@@ -619,6 +660,7 @@ export type Database = {
           is_active?: boolean | null
           sort_order?: number | null
           title?: string
+          title_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -786,15 +828,18 @@ export type Database = {
         Row: {
           brand: string | null
           category: string | null
+          category_en: string | null
           created_at: string
           daily_rate: number | null
           description: string | null
+          description_en: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           is_available: boolean | null
           model: string | null
           name: string
+          name_en: string | null
           price: string | null
           sort_order: number | null
           specs: Json | null
@@ -803,15 +848,18 @@ export type Database = {
         Insert: {
           brand?: string | null
           category?: string | null
+          category_en?: string | null
           created_at?: string
           daily_rate?: number | null
           description?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
           model?: string | null
           name: string
+          name_en?: string | null
           price?: string | null
           sort_order?: number | null
           specs?: Json | null
@@ -820,15 +868,18 @@ export type Database = {
         Update: {
           brand?: string | null
           category?: string | null
+          category_en?: string | null
           created_at?: string
           daily_rate?: number | null
           description?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
           model?: string | null
           name?: string
+          name_en?: string | null
           price?: string | null
           sort_order?: number | null
           specs?: Json | null

@@ -11,7 +11,9 @@ import ImageUpload from "./ImageUpload";
 interface AboutContent {
   id: string;
   title: string;
+  title_en: string | null;
   description: string | null;
+  description_en: string | null;
   mission: string | null;
   vision: string | null;
   values: string[] | null;
@@ -43,7 +45,9 @@ const AdminAbout = () => {
       setContent({
         id: "",
         title: "SOBRE ALEKSEY",
+        title_en: "",
         description: "",
+        description_en: "",
         mission: "",
         vision: "",
         values: [],
@@ -64,7 +68,9 @@ const AdminAbout = () => {
           .from("about_content")
           .update({
             title: content.title,
+            title_en: content.title_en,
             description: content.description,
+            description_en: content.description_en,
             mission: content.mission,
             vision: content.vision,
             values: content.values,
@@ -78,7 +84,9 @@ const AdminAbout = () => {
           .from("about_content")
           .insert({
             title: content.title,
+            title_en: content.title_en,
             description: content.description,
+            description_en: content.description_en,
             mission: content.mission,
             vision: content.vision,
             values: content.values,
@@ -151,26 +159,47 @@ const AdminAbout = () => {
             <CardDescription>Título y descripción de la empresa</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">Título</label>
-              <Input
-                value={content?.title || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
-                placeholder="SOBRE ALEKSEY"
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Título (ES)</label>
+                <Input
+                  value={content?.title || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
+                  placeholder="SOBRE ALEKSEY"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Title (EN)</label>
+                <Input
+                  value={content?.title_en || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, title_en: e.target.value } : null)}
+                  placeholder="ABOUT ALEKSEY"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Descripción / Historia</label>
-              <Textarea
-                value={content?.description || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
-                placeholder="Historia de la empresa..."
-                rows={8}
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                Usa doble salto de línea para separar párrafos
-              </p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Descripción / Historia (ES)</label>
+                <Textarea
+                  value={content?.description || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  placeholder="Historia de la empresa..."
+                  rows={8}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description / Story (EN)</label>
+                <Textarea
+                  value={content?.description_en || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, description_en: e.target.value } : null)}
+                  placeholder="Optional English version..."
+                  rows={8}
+                />
+              </div>
             </div>
+            <p className="text-xs text-muted-foreground">
+              Usa doble salto de línea para separar párrafos. Si la versión en inglés está vacía, se muestra la española.
+            </p>
           </CardContent>
         </Card>
 

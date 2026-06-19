@@ -5,6 +5,7 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { useHeroContent } from "@/hooks/useSiteData";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-construction.jpg";
 
 // Default video URL
@@ -21,19 +22,26 @@ const Hero = () => {
   const navigate = useNavigate();
   const parallaxOffset = useParallax(0.1);
   const { data: heroContent } = useHeroContent();
-  
+  const { i18n } = useTranslation();
+  const isEn = (i18n.resolvedLanguage || "es").startsWith("en");
+  const pick = <T,>(en: T | null | undefined, es: T) =>
+    (isEn && en != null && String(en).trim().length > 0 ? en : es) as T;
+
   // Use database values or defaults
-  const title = heroContent?.title || "ALEKSEY";
-  const subtitle = heroContent?.subtitle || "INGENIERÍA Y CONSTRUCCIÓN";
-  const description = heroContent?.description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada.";
+  const title = pick((heroContent as any)?.title_en, heroContent?.title || "ALEKSEY");
+  const subtitle = pick((heroContent as any)?.subtitle_en, heroContent?.subtitle || "INGENIERÍA Y CONSTRUCCIÓN");
+  const description = pick(
+    (heroContent as any)?.description_en,
+    heroContent?.description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada. Transformamos proyectos ambiciosos en realidades sólidas con calidad garantizada."
+  );
   const yearsValue = heroContent?.years_count || 10;
   const projectsValue = heroContent?.projects_count || 150;
   const clientsValue = heroContent?.clients_percentage || 98;
   const employeesValue = heroContent?.employees_count || 50;
   const activeProjectsValue = heroContent?.active_projects_count || 5;
   const accidentFreeHoursValue = (heroContent as any)?.accident_free_hours || 10000;
-  
-  const badgeTextRaw = heroContent?.badge_text || "MÁS DE {years} AÑOS DE EXPERIENCIA";
+
+  const badgeTextRaw = pick((heroContent as any)?.badge_text_en, heroContent?.badge_text || "MÁS DE {years} AÑOS DE EXPERIENCIA");
   const badgeText = badgeTextRaw
     .replace(/\{years\}/g, String(yearsValue))
     .replace(/\{projects\}/g, String(projectsValue))

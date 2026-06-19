@@ -15,8 +15,11 @@ import { logAction } from "@/lib/auditLog";
 interface Machinery {
   id: string;
   name: string;
+  name_en: string | null;
   description: string | null;
+  description_en: string | null;
   category: string | null;
+  category_en: string | null;
   brand: string | null;
   model: string | null;
   price: string | null;
@@ -61,8 +64,11 @@ const AdminMachinery = () => {
           .from("machinery")
           .update({
             name: editingMachine.name,
+            name_en: editingMachine.name_en,
             description: editingMachine.description,
+            description_en: editingMachine.description_en,
             category: editingMachine.category,
+            category_en: editingMachine.category_en,
             brand: editingMachine.brand,
             model: editingMachine.model,
             price: editingMachine.price,
@@ -80,8 +86,11 @@ const AdminMachinery = () => {
           .from("machinery")
           .insert({
             name: editingMachine.name,
+            name_en: editingMachine.name_en,
             description: editingMachine.description,
+            description_en: editingMachine.description_en,
             category: editingMachine.category,
+            category_en: editingMachine.category_en,
             brand: editingMachine.brand,
             model: editingMachine.model,
             price: editingMachine.price,
@@ -141,8 +150,11 @@ const AdminMachinery = () => {
     setEditingMachine({
       id: "",
       name: "",
+      name_en: "",
       description: "",
+      description_en: "",
       category: "",
+      category_en: "",
       brand: "",
       model: "",
       price: "",
@@ -224,20 +236,41 @@ const AdminMachinery = () => {
             <DialogTitle>{editingMachine?.id ? "Editar maquinaria" : "Nueva maquinaria"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium">Nombre</label>
-              <Input
-                value={editingMachine?.name || ""}
-                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, name: e.target.value } : null)}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Nombre (ES)</label>
+                <Input
+                  value={editingMachine?.name || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, name: e.target.value } : null)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Name (EN)</label>
+                <Input
+                  value={editingMachine?.name_en || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, name_en: e.target.value } : null)}
+                  placeholder="Optional"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Descripción</label>
-              <Textarea
-                value={editingMachine?.description || ""}
-                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, description: e.target.value } : null)}
-                rows={3}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Descripción (ES)</label>
+                <Textarea
+                  value={editingMachine?.description || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description (EN)</label>
+                <Textarea
+                  value={editingMachine?.description_en || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, description_en: e.target.value } : null)}
+                  rows={3}
+                  placeholder="Optional"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

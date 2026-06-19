@@ -15,7 +15,9 @@ import { logAction } from "@/lib/auditLog";
 interface Service {
   id: string;
   title: string;
+  title_en: string | null;
   description: string | null;
+  description_en: string | null;
   icon: string;
   image_url: string | null;
   features: string[] | null;
@@ -57,7 +59,9 @@ const AdminServices = () => {
           .from("services")
           .update({
             title: editingService.title,
+            title_en: editingService.title_en,
             description: editingService.description,
+            description_en: editingService.description_en,
             icon: editingService.icon,
             image_url: editingService.image_url,
             features: editingService.features,
@@ -72,7 +76,9 @@ const AdminServices = () => {
           .from("services")
           .insert({
             title: editingService.title,
+            title_en: editingService.title_en,
             description: editingService.description,
+            description_en: editingService.description_en,
             icon: editingService.icon,
             image_url: editingService.image_url,
             features: editingService.features,
@@ -127,7 +133,9 @@ const AdminServices = () => {
     setEditingService({
       id: "",
       title: "",
+      title_en: "",
       description: "",
+      description_en: "",
       icon: "Building2",
       image_url: "",
       features: [],
@@ -207,20 +215,41 @@ const AdminServices = () => {
             <DialogTitle>{editingService?.id ? "Editar servicio" : "Nuevo servicio"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium">Título</label>
-              <Input
-                value={editingService?.title || ""}
-                onChange={(e) => setEditingService(prev => prev ? { ...prev, title: e.target.value } : null)}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Título (ES)</label>
+                <Input
+                  value={editingService?.title || ""}
+                  onChange={(e) => setEditingService(prev => prev ? { ...prev, title: e.target.value } : null)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Title (EN)</label>
+                <Input
+                  value={editingService?.title_en || ""}
+                  onChange={(e) => setEditingService(prev => prev ? { ...prev, title_en: e.target.value } : null)}
+                  placeholder="Optional — falls back to ES"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Descripción</label>
-              <Textarea
-                value={editingService?.description || ""}
-                onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
-                rows={3}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Descripción (ES)</label>
+                <Textarea
+                  value={editingService?.description || ""}
+                  onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description (EN)</label>
+                <Textarea
+                  value={editingService?.description_en || ""}
+                  onChange={(e) => setEditingService(prev => prev ? { ...prev, description_en: e.target.value } : null)}
+                  rows={3}
+                  placeholder="Optional — falls back to ES"
+                />
+              </div>
             </div>
             <div>
               <label className="text-sm font-medium">Icono (nombre de Lucide)</label>

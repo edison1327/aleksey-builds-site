@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
 import { useServices } from "@/hooks/useSiteData";
 import { Skeleton } from "./ui/skeleton";
+import { useLocalizedField } from "@/lib/i18nField";
+import { useTranslation } from "react-i18next";
 
 import construccionResidencial from "@/assets/construccion-residencial.jpg";
 import infraestructuraVial from "@/assets/infraestructura-vial.jpg";
@@ -78,6 +80,9 @@ const Services = () => {
   const { ref: ingenieriaRef, isVisible: ingenieriaVisible } = useScrollAnimation(0.2);
   
   const { data: servicesData, isLoading } = useServices();
+  const tr = useLocalizedField();
+  const { t, i18n } = useTranslation();
+  const isEn = (i18n.resolvedLanguage || "es").startsWith("en");
 
   // Categorize services from DB or use defaults
   const categorizeServices = () => {
@@ -89,8 +94,8 @@ const Services = () => {
       .filter(s => construccionKeywords.some(k => normalizeText(s.title).includes(k)))
       .slice(0, 3)
       .map(s => ({
-        title: s.title,
-        description: s.description || "",
+        title: tr(s as any, "title"),
+        description: tr(s as any, "description"),
         image: s.image_url || imageMap[s.icon] || construccionResidencial,
       }));
 
@@ -98,8 +103,8 @@ const Services = () => {
       .filter(s => ingenieriaKeywords.some(k => normalizeText(s.title).includes(k)))
       .slice(0, 3)
       .map(s => ({
-        title: s.title,
-        description: s.description || "",
+        title: tr(s as any, "title"),
+        description: tr(s as any, "description"),
         image: s.image_url || imageMap[s.icon] || disenoEstructural,
       }));
 
