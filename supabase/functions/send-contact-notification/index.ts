@@ -172,6 +172,32 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log("Admin notification sent:", adminEmailResponse);
 
+      // Customer confirmation (best-effort)
+      try {
+        const customerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #f59e0b; padding: 20px; border-radius: 8px 8px 0 0;">
+              <h1 style="color: #fff; margin: 0;">Recibimos tu mensaje, ${escapeHtml(name)}</h1>
+            </div>
+            <div style="background: #fff; padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+              <p>Gracias por contactar a <strong>ALEKSEY</strong>. Nuestro equipo te responderá en menos de 24 horas hábiles.</p>
+              <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; margin: 16px 0;">
+                <p style="margin: 0 0 8px 0;"><strong>Tu mensaje:</strong></p>
+                <p style="white-space: pre-wrap; margin: 0;">${escapeHtml(message)}</p>
+              </div>
+              <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">ALEKSEY · Ingeniería y Construcción</p>
+            </div>
+          </div>
+        `;
+        await sendEmail({
+          to: [email],
+          subject: "Recibimos tu mensaje · ALEKSEY",
+          html: customerHtml,
+        });
+      } catch (cErr) {
+        console.warn("Customer confirmation email failed (non-blocking):", cErr);
+      }
+
       return new Response(
         JSON.stringify({
           success: true,

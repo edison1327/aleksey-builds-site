@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { logAction } from "@/lib/auditLog";
 import MessageThread from "@/components/MessageThread";
 import { useAuth } from "@/hooks/useAuth";
+import ApproveBookingDialog from "@/components/admin/ApproveBookingDialog";
 
 interface Message {
   id: string;
@@ -799,6 +800,19 @@ const AdminMessages = () => {
                       Responder
                     </a>
                   </Button>
+                  {isQuoteRequest(selectedMessage) && (
+                    <ApproveBookingDialog
+                      messageId={selectedMessage.id}
+                      customerName={selectedMessage.name}
+                      customerEmail={selectedMessage.email}
+                      defaultType={getQuoteType(selectedMessage) === "vehicle" ? "vehicle" : "machinery"}
+                      defaultEquipmentName={parseQuoteDetails(selectedMessage)?.equipo}
+                      onApproved={() => {
+                        setSelectedMessage({ ...selectedMessage, status: "responded" });
+                        fetchMessages();
+                      }}
+                    />
+                  )}
                   <TemplatePicker
                     email={selectedMessage.email}
                     vars={{
