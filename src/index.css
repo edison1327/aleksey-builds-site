@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,7 +20,7 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 20 5% 96%;
-    --muted-foreground: 20 5% 45%;
+    --muted-foreground: 20 8% 38%;
 
     --accent: 4 85% 50%;
     --accent-foreground: 0 0% 100%;
@@ -102,17 +100,48 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading tracking-tight;
+  }
+
+  /* Improved focus visibility for accessibility (WCAG 2.4.7) */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background rounded-sm;
+  }
+
+  /* Smooth scrolling and font rendering */
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: hsl(var(--primary) / 0.25);
+    color: hsl(var(--foreground));
   }
 }
 
 @layer utilities {
-  .font-heading {
-    font-family: 'Oswald', sans-serif;
+  /* Skip to main content link (a11y) */
+  .skip-to-content {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg;
   }
-  
-  .font-body {
-    font-family: 'Open Sans', sans-serif;
+
+  /* Min tap target for mobile (44x44 WCAG) */
+  .tap-target {
+    @apply min-h-11 min-w-11;
   }
 
   /* Staggered entrance animations */
