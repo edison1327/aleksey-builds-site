@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { format, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Loader2, Send, Truck, Car, CheckCircle, Clock } from "lucide-react";
+import { CalendarIcon, Loader2, Send, Truck, Car, CheckCircle, Clock, FileDown } from "lucide-react";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import { downloadQuotePdf } from "@/lib/quotePdf";
 
 const quoteSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -237,11 +238,44 @@ ${formData.message || "Sin mensaje adicional"}`;
                   Hemos recibido tu solicitud de cotización. Nuestro equipo la revisará y te contactará 
                   en las próximas 24 horas hábiles con una propuesta personalizada.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
+                  <Button
+                    onClick={() => {
+                      const days = calculateDays();
+                      const equipmentName = selectedItem
+                        ? `${selectedItem.name}${selectedItem.brand ? ` - ${selectedItem.brand}` : ""}${selectedItem.model ? ` ${selectedItem.model}` : ""}`
+                        : "";
+                      downloadQuotePdf(
+                        {
+                          date: new Date(),
+                          title: `Solicitud de ${equipmentType === "maquinaria" ? "Maquinaria" : "Vehículo"}`,
+                          customer: {
+                            name: formData.name,
+                            email: formData.email,
+                            phone: formData.phone,
+                            company: formData.company,
+                            location: formData.projectLocation,
+                          },
+                          details: [
+                            { label: "Equipo", value: equipmentName },
+                            { label: "Categoría", value: selectedItem?.category || "—" },
+                            { label: "Fecha inicio", value: startDate ? format(startDate, "PPP", { locale: es }) : "—" },
+                            { label: "Fecha fin", value: endDate ? format(endDate, "PPP", { locale: es }) : "—" },
+                            { label: "Duración", value: `${days} día${days > 1 ? "s" : ""}` },
+                            { label: "Período", value: rentalPeriod === "dia" ? "Por día" : rentalPeriod === "semana" ? "Por semana" : "Por mes" },
+                          ],
+                          message: formData.message,
+                        },
+                        `mi-solicitud-${equipmentType}.pdf`,
+                      );
+                    }}
+                  >
+                    <FileDown className="h-4 w-4 mr-2" /> Descargar PDF
+                  </Button>
                   <Button onClick={() => setIsSuccess(false)} variant="outline">
                     Nueva Cotización
                   </Button>
-                  <Button onClick={() => window.location.href = "/"}>
+                  <Button onClick={() => window.location.href = "/"} variant="outline">
                     Volver al Inicio
                   </Button>
                 </div>
