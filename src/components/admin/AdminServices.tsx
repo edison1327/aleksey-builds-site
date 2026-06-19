@@ -133,7 +133,9 @@ const AdminServices = () => {
     setEditingService({
       id: "",
       title: "",
+      title_en: "",
       description: "",
+      description_en: "",
       icon: "Building2",
       image_url: "",
       features: [],
