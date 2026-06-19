@@ -34,6 +34,7 @@ const AdminMessages = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "read" | "responded">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [newMessageAlert, setNewMessageAlert] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const fetchMessages = useCallback(async () => {
