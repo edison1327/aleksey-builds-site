@@ -44,6 +44,7 @@ const Navbar = () => {
   const location = useLocation();
   const { data: siteSettings } = useSiteSettings();
   const { data: navLinks } = useNavigationLinks("navbar");
+  const { user } = useAuth();
 
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
