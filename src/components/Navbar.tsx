@@ -176,38 +176,36 @@ const Navbar = () => {
               </button>
               <LanguageSwitcher className="ml-1" />
             </div>
-            {/* Mobile language switcher (left of hamburger) */}
-            <div className="lg:hidden flex items-center">
+            {/* Mobile: switcher + hamburger grouped */}
+            <div className="lg:hidden flex items-center gap-1">
               <LanguageSwitcher />
+              <button
+                className="relative flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl transition-all duration-300"
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+              >
+                <div className="relative w-6 h-5 flex flex-col justify-between">
+                  <span
+                    className={cn(
+                      "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
+                      isOpen ? "rotate-45 translate-y-2" : ""
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "block h-0.5 w-6 bg-current rounded-full transition-all duration-300",
+                      isOpen ? "opacity-0 scale-0" : "opacity-100"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
+                      isOpen ? "-rotate-45 -translate-y-2" : ""
+                    )}
+                  />
+                </div>
+              </button>
             </div>
-
-            {/* Animated Hamburger Button */}
-            <button
-              className="lg:hidden relative flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl transition-all duration-300"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
-            >
-              <div className="relative w-6 h-5 flex flex-col justify-between">
-                <span
-                  className={cn(
-                    "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
-                    isOpen ? "rotate-45 translate-y-2" : ""
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-0.5 w-6 bg-current rounded-full transition-all duration-300",
-                    isOpen ? "opacity-0 scale-0" : "opacity-100"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
-                    isOpen ? "-rotate-45 -translate-y-2" : ""
-                  )}
-                />
-              </div>
-            </button>
           </div>
         </div>
       </nav>

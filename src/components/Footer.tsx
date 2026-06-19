@@ -22,7 +22,10 @@ const socialIcons: Record<string, React.ComponentType<{ className?: string }>> =
   MessageCircle,
 };
 
+import { useTranslation } from "react-i18next";
+
 const Footer = () => {
+  const { t } = useTranslation();
   const { data: contactInfo } = useContactInfo();
   const { data: siteSettings } = useSiteSettings();
   const { data: footerGroups } = useNavigationGroups("footer_");
@@ -138,21 +141,21 @@ const Footer = () => {
           ) : (
             <>
               <div>
-                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{t("footer.services")}</h3>
                 <ul className="space-y-2 text-secondary-foreground/80">
-                  <li><Link to="/construccion" className="hover:text-primary transition-colors">Construcción</Link></li>
-                  <li><Link to="/ingenieria" className="hover:text-primary transition-colors">Ingeniería</Link></li>
-                  <li><Link to="/vehiculos" className="hover:text-primary transition-colors">Vehículos</Link></li>
-                  <li><Link to="/maquinaria" className="hover:text-primary transition-colors">Maquinaria</Link></li>
+                  <li><Link to="/construccion" className="hover:text-primary transition-colors">{t("nav.construction")}</Link></li>
+                  <li><Link to="/ingenieria" className="hover:text-primary transition-colors">{t("nav.engineering")}</Link></li>
+                  <li><Link to="/vehiculos" className="hover:text-primary transition-colors">{t("nav.vehicles")}</Link></li>
+                  <li><Link to="/maquinaria" className="hover:text-primary transition-colors">{t("nav.machinery")}</Link></li>
                 </ul>
               </div>
               <div>
-                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{t("footer.company")}</h3>
                 <ul className="space-y-2 text-secondary-foreground/80">
-                  <li><Link to="/nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
-                  <li><Link to="/proyectos" className="hover:text-primary transition-colors">Proyectos</Link></li>
-                  <li><a href="/#contact" className="hover:text-primary transition-colors">Contacto</a></li>
-                  <li><Link to="/convocatoria" className="hover:text-primary transition-colors">Trabaja con Nosotros</Link></li>
+                  <li><Link to="/nosotros" className="hover:text-primary transition-colors">{t("nav.about")}</Link></li>
+                  <li><Link to="/proyectos" className="hover:text-primary transition-colors">{t("nav.projects")}</Link></li>
+                  <li><a href="/#contact" className="hover:text-primary transition-colors">{t("nav.contact")}</a></li>
+                  <li><Link to="/convocatoria" className="hover:text-primary transition-colors">{t("nav.careers")}</Link></li>
                 </ul>
               </div>
             </>
@@ -161,7 +164,7 @@ const Footer = () => {
 
           {/* Contacto */}
           <div>
-            <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Contacto</h3>
+            <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{t("footer.contact")}</h3>
             <ul className="space-y-3 text-secondary-foreground/80">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
