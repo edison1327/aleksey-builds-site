@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { translateNavLabel } from "@/i18n/config";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const iconMap: Record<string, LucideIcon> = {
   Home,
@@ -177,9 +178,11 @@ const Navbar = () => {
                 <span className="relative z-10 hidden xl:inline">{user ? t("nav.myAccount") : t("nav.signIn")}</span>
               </button>
               <LanguageSwitcher className="ml-1" />
+              <ThemeToggle />
             </div>
-            {/* Mobile: switcher + hamburger grouped */}
+            {/* Mobile: switcher + theme + hamburger grouped */}
             <div className="lg:hidden flex items-center gap-1">
+              <ThemeToggle />
               <LanguageSwitcher />
               <button
                 className="relative flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl transition-all duration-300"
