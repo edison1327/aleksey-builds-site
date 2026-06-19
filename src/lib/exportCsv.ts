@@ -16,7 +16,7 @@ const escapeCell = (value: unknown): string => {
   return str;
 };
 
-export function exportCsv<T extends Record<string, unknown>>(
+export function exportCsv<T>(
   filename: string,
   rows: T[],
   columns: CsvColumn<T>[],
@@ -26,7 +26,7 @@ export function exportCsv<T extends Record<string, unknown>>(
     .map((row) =>
       columns
         .map((c) => {
-          const raw = (row as Record<string, unknown>)[c.key as string];
+          const raw = (row as unknown as Record<string, unknown>)[c.key as string];
           const v = c.format ? c.format(raw, row) : raw;
           return escapeCell(v);
         })
