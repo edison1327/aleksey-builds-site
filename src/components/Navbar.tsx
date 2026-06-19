@@ -6,6 +6,9 @@ import { useNavigationLinks } from "@/hooks/useSiteData";
 import { useAuth } from "@/hooks/useAuth";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import { translateNavLabel } from "@/i18n/config";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const iconMap: Record<string, LucideIcon> = {
   Home,
@@ -45,6 +48,9 @@ const Navbar = () => {
   const { data: siteSettings } = useSiteSettings();
   const { data: navLinks } = useNavigationLinks("navbar");
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
+  // re-render when language changes
+  const lang = i18n.resolvedLanguage;
 
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
@@ -153,7 +159,7 @@ const Navbar = () => {
                       style={{ zIndex: -1 }}
                     />
                     <Icon className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="relative z-10">{item.label}</span>
+                    <span className="relative z-10">{translateNavLabel(item.label)}</span>
                   </button>
                 );
               })}
@@ -166,8 +172,13 @@ const Navbar = () => {
                 {user
                   ? <UserCircle2 className="h-4 w-4 relative z-10" />
                   : <LogIn className="h-4 w-4 relative z-10" />}
-                <span className="relative z-10 hidden xl:inline">{user ? "MI CUENTA" : "ACCEDER"}</span>
+                <span className="relative z-10 hidden xl:inline">{user ? t("nav.myAccount") : t("nav.signIn")}</span>
               </button>
+              <LanguageSwitcher className="ml-1" />
+            </div>
+            {/* Mobile language switcher (left of hamburger) */}
+            <div className="lg:hidden flex items-center">
+              <LanguageSwitcher />
             </div>
 
             {/* Animated Hamburger Button */}
@@ -278,7 +289,7 @@ const Navbar = () => {
                       )}
                     />
                   </div>
-                  <span className="font-heading tracking-wide text-lg">{item.label}</span>
+                  <span className="font-heading tracking-wide text-lg">{translateNavLabel(item.label)}</span>
                   {isActive && <Sparkles className="h-4 w-4 ml-auto animate-pulse" />}
                 </button>
               );
