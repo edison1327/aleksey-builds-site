@@ -675,6 +675,34 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
                         )}
                       </div>
 
+                      {(() => {
+                        const est = estimatePrice();
+                        if (!est) return null;
+                        return (
+                          <div className="rounded-xl border bg-card p-4 space-y-2 animate-fade-in">
+                            <div className="flex items-center gap-2 text-sm font-semibold">
+                              <Wallet className="h-4 w-4 text-primary" />
+                              Estimación referencial
+                            </div>
+                            <div className="flex justify-between text-xs"><span className="text-muted-foreground">Tarifa/día</span><span>{formatPEN(est.rate)}</span></div>
+                            <div className="flex justify-between text-xs"><span className="text-muted-foreground">Subtotal</span><span>{formatPEN(est.subtotal)}</span></div>
+                            {est.discountPct > 0 && (
+                              <div className="flex justify-between text-xs text-green-700 dark:text-green-400">
+                                <span>Descuento ({(est.discountPct * 100).toFixed(0)}%)</span>
+                                <span>− {formatPEN(est.discount)}</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between font-bold text-primary pt-2 border-t">
+                              <span>Total estimado</span><span>{formatPEN(est.total)}</span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground leading-snug">
+                              Precio referencial sujeto a confirmación según traslado, accesorios y condiciones del proyecto.
+                            </p>
+                          </div>
+                        );
+                      })()}
+
+
                       <Button type="submit" form="quote-form" className="w-full" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? (
                           <>
