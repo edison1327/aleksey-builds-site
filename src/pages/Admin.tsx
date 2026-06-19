@@ -34,6 +34,8 @@ import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
 import AdminBlog from "@/components/admin/AdminBlog";
+import AdminAuditLog from "@/components/admin/AdminAuditLog";
+import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
