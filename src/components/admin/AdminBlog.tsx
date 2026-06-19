@@ -311,7 +311,7 @@ const AdminBlog = () => {
               <ImageUpload
                 value={form.cover_image}
                 onChange={(url) => setForm({ ...form, cover_image: url })}
-                bucket="site-images"
+                folder="blog"
               />
             </div>
             <div className="space-y-1.5">
