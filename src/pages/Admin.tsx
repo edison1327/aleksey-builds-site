@@ -35,6 +35,7 @@ import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { cn } from "@/lib/utils";
 
 import { useToast } from "@/hooks/use-toast";
@@ -392,7 +393,22 @@ const Admin = () => {
         {/* Content */}
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
           <div className="max-w-7xl mx-auto animate-fade-in">
-            {renderContent()}
+            <ErrorBoundary
+              key={activeTab}
+              fallback={
+                <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center">
+                  <h2 className="text-lg font-semibold text-foreground mb-2">
+                    No se pudo cargar esta sección
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Ocurrió un error en este módulo. Cambia de sección o recarga la página.
+                  </p>
+                  <Button onClick={() => window.location.reload()}>Recargar</Button>
+                </div>
+              }
+            >
+              {renderContent()}
+            </ErrorBoundary>
           </div>
         </main>
       </div>
