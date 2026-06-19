@@ -93,6 +93,7 @@ const AdminMachinery = () => {
       }
 
       toast({ title: "Guardado", description: "Maquinaria actualizada correctamente." });
+      logAction(editingMachine.id ? "update" : "create", "machinery", editingMachine.id || undefined, { name: editingMachine.name });
       setIsDialogOpen(false);
       setEditingMachine(null);
       fetchMachinery();
@@ -109,10 +110,27 @@ const AdminMachinery = () => {
       const { error } = await supabase.from("machinery").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Maquinaria eliminada correctamente." });
+      logAction("delete", "machinery", id);
       fetchMachinery();
     } catch (error) {
       console.error("Error deleting machinery:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: typeof machinery) => {
+    setMachinery(newOrder); // optimistic
+    const updates = newOrder.map((m, idx) => ({ id: m.id, sort_order: idx }));
+    try {
+      await Promise.all(
+        updates.map((u) => supabase.from("machinery").update({ sort_order: u.sort_order }).eq("id", u.id)),
+      );
+      logAction("reorder", "machinery", null, { count: updates.length });
+      toast({ title: "Orden actualizado", description: "El nuevo orden se guardó." });
+    } catch (err) {
+      console.error("Error reordering:", err);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchMachinery();
     }
   };
 
