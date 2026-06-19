@@ -203,10 +203,64 @@ const AdminMessages = () => {
       const { error } = await supabase.from("contact_messages").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Mensaje eliminado correctamente." });
+      logAction("delete", "contact_messages", id);
       fetchMessages();
     } catch (error) {
       console.error("Error deleting message:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = (ids: string[]) => {
+    setSelectedIds((prev) => {
+      const allSelected = ids.every((id) => prev.has(id));
+      if (allSelected) {
+        const next = new Set(prev);
+        ids.forEach((id) => next.delete(id));
+        return next;
+      }
+      return new Set([...prev, ...ids]);
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`¿Eliminar ${selectedIds.size} mensaje(s)? Esta acción no se puede deshacer.`)) return;
+    const ids = Array.from(selectedIds);
+    try {
+      const { error } = await supabase.from("contact_messages").delete().in("id", ids);
+      if (error) throw error;
+      toast({ title: "Eliminados", description: `${ids.length} mensaje(s) eliminados.` });
+      logAction("bulk_delete", "contact_messages", null, { count: ids.length });
+      setSelectedIds(new Set());
+      fetchMessages();
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleBulkStatus = async (status: string) => {
+    if (selectedIds.size === 0) return;
+    const ids = Array.from(selectedIds);
+    try {
+      const { error } = await supabase.from("contact_messages").update({ status }).in("id", ids);
+      if (error) throw error;
+      toast({ title: "Actualizados", description: `${ids.length} mensaje(s) marcados como ${status}.` });
+      logAction("bulk_update", "contact_messages", null, { count: ids.length, status });
+      setSelectedIds(new Set());
+      fetchMessages();
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
     }
   };
 
