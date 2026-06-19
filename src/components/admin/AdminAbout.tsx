@@ -200,6 +200,7 @@ const AdminAbout = () => {
             <p className="text-xs text-muted-foreground">
               Usa doble salto de línea para separar párrafos. Si la versión en inglés está vacía, se muestra la española.
             </p>
+          </CardContent>
         </Card>
 
         <Card>
