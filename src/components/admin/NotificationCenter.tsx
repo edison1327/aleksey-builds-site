@@ -57,7 +57,7 @@ export const NotificationCenter = ({ onNavigateToMessages }: NotificationCenterP
 
     // Subscribe to realtime updates
     const channel = supabase
-      .channel("notification-center")
+      .channel(`notification-center-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         {
