@@ -75,12 +75,28 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, phone, message, itemName, itemType }: QuoteNotificationRequest = await req.json();
+    let payload: unknown;
+    try {
+      payload = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Cuerpo de la solicitud inválido" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const parsed = QuoteSchema.safeParse(payload);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Datos inválidos", details: parsed.error.flatten().fieldErrors }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    const { name, email, phone, message, itemName, itemType } = parsed.data;
 
     console.log(`Processing quote notification for: ${name} - ${email}`);
     console.log(`Item: ${itemType} - ${itemName}`);
 
-    // Get admin email from CMS (contact_info table)
     const adminEmail = await getAdminEmail();
 
     const subject = `Nueva Solicitud de Cotización: ${itemType} - ${itemName}`;
@@ -91,18 +107,18 @@ const handler = async (req: Request): Promise<Response> => {
         </h1>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h2 style="color: #f59e0b; margin-top: 0;">Detalles del ${itemType}</h2>
-          <p><strong>Nombre:</strong> ${itemName}</p>
-          <p><strong>Tipo:</strong> ${itemType}</p>
+          <h2 style="color: #f59e0b; margin-top: 0;">Detalles del ${escapeHtml(itemType)}</h2>
+          <p><strong>Nombre:</strong> ${escapeHtml(itemName)}</p>
+          <p><strong>Tipo:</strong> ${escapeHtml(itemType)}</p>
         </div>
         
         <div style="background: #fff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
           <h2 style="color: #1a1a1a; margin-top: 0;">Información del Cliente</h2>
-          <p><strong>Nombre:</strong> ${name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-          ${phone ? `<p><strong>Teléfono:</strong> ${phone}</p>` : ''}
+          <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
+          ${phone ? `<p><strong>Teléfono:</strong> ${escapeHtml(phone)}</p>` : ''}
           <p><strong>Mensaje:</strong></p>
-          <p style="background: #f8f9fa; padding: 15px; border-radius: 4px; white-space: pre-wrap;">${message}</p>
+          <p style="background: #f8f9fa; padding: 15px; border-radius: 4px; white-space: pre-wrap;">${escapeHtml(message)}</p>
         </div>
         
         <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
@@ -166,10 +182,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
   } catch (error: any) {
     console.error("Error in send-quote-notification function:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
+    return new Response(
+      JSON.stringify({ error: "No se pudo enviar la notificación. Intenta de nuevo más tarde." }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    );
   }
 };
 
