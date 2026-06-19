@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Vehicle {
   id: string;
@@ -91,6 +93,7 @@ const AdminVehicles = () => {
       }
 
       toast({ title: "Guardado", description: "Vehículo actualizado correctamente." });
+      logAction(editingVehicle.id ? "update" : "create", "vehicles", editingVehicle.id || undefined, { name: editingVehicle.name });
       setIsDialogOpen(false);
       setEditingVehicle(null);
       fetchVehicles();
@@ -102,15 +105,30 @@ const AdminVehicles = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este vehículo?")) return;
-
     try {
       const { error } = await supabase.from("vehicles").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Vehículo eliminado correctamente." });
+      logAction("delete", "vehicles", id);
       fetchVehicles();
     } catch (error) {
       console.error("Error deleting vehicle:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: Vehicle[]) => {
+    setVehicles(newOrder);
+    try {
+      await Promise.all(
+        newOrder.map((v, idx) => supabase.from("vehicles").update({ sort_order: idx }).eq("id", v.id)),
+      );
+      logAction("reorder", "vehicles", null, { count: newOrder.length });
+      toast({ title: "Orden actualizado" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchVehicles();
     }
   };
 

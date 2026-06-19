@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Star, Images } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Star, Images, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Project {
   id: string;
@@ -92,6 +94,7 @@ const AdminProjects = () => {
       }
 
       toast({ title: "Guardado", description: "Proyecto actualizado correctamente." });
+      logAction(editingProject.id ? "update" : "create", "projects", editingProject.id || undefined, { title: editingProject.title });
       setIsDialogOpen(false);
       setEditingProject(null);
       fetchProjects();
@@ -103,15 +106,30 @@ const AdminProjects = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este proyecto?")) return;
-
     try {
       const { error } = await supabase.from("projects").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Proyecto eliminado correctamente." });
+      logAction("delete", "projects", id);
       fetchProjects();
     } catch (error) {
       console.error("Error deleting project:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: Project[]) => {
+    setProjects(newOrder);
+    try {
+      await Promise.all(
+        newOrder.map((p, idx) => supabase.from("projects").update({ sort_order: idx }).eq("id", p.id)),
+      );
+      logAction("reorder", "projects", null, { count: newOrder.length });
+      toast({ title: "Orden actualizado" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchProjects();
     }
   };
 

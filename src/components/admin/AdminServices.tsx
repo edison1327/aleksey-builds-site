@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, GripVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripVertical, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Service {
   id: string;
@@ -82,6 +84,7 @@ const AdminServices = () => {
       }
 
       toast({ title: "Guardado", description: "Servicio actualizado correctamente." });
+      logAction(editingService.id ? "update" : "create", "services", editingService.id || undefined, { title: editingService.title });
       setIsDialogOpen(false);
       setEditingService(null);
       fetchServices();
@@ -93,15 +96,30 @@ const AdminServices = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este servicio?")) return;
-
     try {
       const { error } = await supabase.from("services").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Servicio eliminado correctamente." });
+      logAction("delete", "services", id);
       fetchServices();
     } catch (error) {
       console.error("Error deleting service:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: Service[]) => {
+    setServices(newOrder);
+    try {
+      await Promise.all(
+        newOrder.map((s, idx) => supabase.from("services").update({ sort_order: idx }).eq("id", s.id)),
+      );
+      logAction("reorder", "services", null, { count: newOrder.length });
+      toast({ title: "Orden actualizado" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchServices();
     }
   };
 
