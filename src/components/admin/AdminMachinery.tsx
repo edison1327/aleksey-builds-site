@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Machinery {
   id: string;
