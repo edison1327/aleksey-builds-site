@@ -171,16 +171,8 @@ serve(async (req) => {
       }
 
       case 'update': {
-        const { userId, email, password, role } = params;
+        const { userId, email, password, role } = validated.data;
 
-        if (!userId) {
-          return new Response(
-            JSON.stringify({ error: 'ID de usuario requerido' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        // Update user email/password if provided
         const updateData: { email?: string; password?: string } = {};
         if (email) updateData.email = email;
         if (password) updateData.password = password;
@@ -193,16 +185,11 @@ serve(async (req) => {
 
           if (updateError) {
             console.error('Error updating user:', updateError);
-            return new Response(
-              JSON.stringify({ error: updateError.message }),
-              { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            );
+            return jsonResponse({ error: updateError.message }, 400);
           }
         }
 
-        // Update role if provided
         if (role) {
-          // Check if user has a role already
           const { data: existingRole } = await supabaseAdmin
             .from('user_roles')
             .select('id')
@@ -215,81 +202,48 @@ serve(async (req) => {
               .update({ role })
               .eq('user_id', userId);
 
-            if (roleUpdateError) {
-              console.error('Error updating role:', roleUpdateError);
-            }
+            if (roleUpdateError) console.error('Error updating role:', roleUpdateError);
           } else {
             const { error: roleInsertError } = await supabaseAdmin
               .from('user_roles')
               .insert({ user_id: userId, role });
 
-            if (roleInsertError) {
-              console.error('Error inserting role:', roleInsertError);
-            }
+            if (roleInsertError) console.error('Error inserting role:', roleInsertError);
           }
         }
 
         console.log('Updated user:', userId);
-        return new Response(
-          JSON.stringify({ message: 'Usuario actualizado correctamente' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ message: 'Usuario actualizado correctamente' });
       }
 
       case 'delete': {
-        const { userId } = params;
+        const { userId } = validated.data;
 
-        if (!userId) {
-          return new Response(
-            JSON.stringify({ error: 'ID de usuario requerido' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        // Prevent self-deletion
         if (userId === user.id) {
-          return new Response(
-            JSON.stringify({ error: 'No puedes eliminar tu propia cuenta' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
+          return jsonResponse({ error: 'No puedes eliminar tu propia cuenta' }, 400);
         }
 
-        // Delete user role first
         await supabaseAdmin
           .from('user_roles')
           .delete()
           .eq('user_id', userId);
 
-        // Delete user
         const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
         if (deleteError) {
           console.error('Error deleting user:', deleteError);
-          return new Response(
-            JSON.stringify({ error: deleteError.message }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
+          return jsonResponse({ error: deleteError.message }, 400);
         }
 
         console.log('Deleted user:', userId);
-        return new Response(
-          JSON.stringify({ message: 'Usuario eliminado correctamente' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ message: 'Usuario eliminado correctamente' });
       }
 
       default:
-        return new Response(
-          JSON.stringify({ error: 'Acción no válida' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ error: 'Acción no válida' }, 400);
     }
   } catch (error) {
     console.error('Error in manage-users function:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ error: 'Error interno del servidor. Intenta de nuevo más tarde.' }, 500);
   }
 });
