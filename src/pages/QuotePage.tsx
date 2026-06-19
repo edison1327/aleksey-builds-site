@@ -198,13 +198,19 @@ Datos del cliente:
 - Ubicación del proyecto: ${formData.projectLocation || "N/A"}
 
 Mensaje adicional:
-${formData.message || "Sin mensaje adicional"}`;
+${formData.message || "Sin mensaje adicional"}${(() => {
+  const est = estimatePrice();
+  return est
+    ? `\n\nEstimación referencial:\n- Tarifa diaria: ${formatPEN(est.rate)}\n- Subtotal (${est.days} días): ${formatPEN(est.subtotal)}\n- Descuento: ${(est.discountPct * 100).toFixed(0)}%\n- Total estimado: ${formatPEN(est.total)}`
+    : "";
+})()}`;
 
       const { error } = await supabase.from("contact_messages").insert({
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         message: fullMessage,
+        user_id: user?.id ?? null,
       });
 
       if (error) throw error;
