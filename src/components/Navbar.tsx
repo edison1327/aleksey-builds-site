@@ -159,26 +159,33 @@ const Navbar = () => {
                 {navItems.map((item) => {
                   const isActive = activeSection === item.label;
                   return (
-                    <li key={item.id}>
+                    <li key={item.id} className="relative">
                       <button
                         onClick={() => handleNavClick(item.path, item.label)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "group relative flex items-center px-3 xl:px-4 py-2 text-[13px] xl:text-sm font-heading font-medium tracking-wide whitespace-nowrap rounded-full transition-all duration-200",
+                          "group relative flex items-center px-3 xl:px-4 py-2 text-[13px] xl:text-sm font-heading tracking-wide whitespace-nowrap rounded-full transition-all duration-300",
                           isActive
-                            ? "text-primary-foreground"
-                            : "text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/5"
+                            ? "text-primary-foreground font-semibold"
+                            : "text-secondary-foreground/70 hover:text-secondary-foreground font-medium hover:bg-secondary-foreground/5"
                         )}
                       >
                         {isActive && (
                           <span
                             aria-hidden="true"
-                            className="absolute inset-0 bg-primary rounded-full shadow-md shadow-primary/30"
+                            className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-lg shadow-primary/40 ring-1 ring-primary-foreground/20"
                             style={{ zIndex: -1 }}
                           />
                         )}
                         <span className="relative z-10 uppercase">{translateNavLabel(item.label)}</span>
                       </button>
+                      {/* Dot indicator outside pill for extra emphasis */}
+                      {isActive && (
+                        <span
+                          aria-hidden="true"
+                          className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]"
+                        />
+                      )}
                     </li>
                   );
                 })}
@@ -268,90 +275,153 @@ const Navbar = () => {
         aria-modal="true"
         aria-label="Menú de navegación"
         className={cn(
-          "lg:hidden fixed top-14 sm:top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-500 ease-out overflow-hidden",
+          "lg:hidden fixed top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-400 ease-out overflow-hidden",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}
       >
+        {/* Background */}
         <div
           className={cn(
-            "absolute inset-0 bg-secondary transition-transform duration-500 ease-out",
+            "absolute inset-0 bg-secondary transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
             isOpen ? "translate-y-0" : "-translate-y-full"
           )}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
-          <div
-            className={cn(
-              "absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl transition-all duration-700",
-              isOpen ? "opacity-100 scale-100" : "opacity-0 scale-50"
-            )}
-          />
-          <div
-            className={cn(
-              "absolute -bottom-20 -left-20 w-60 h-60 bg-primary/5 rounded-full blur-3xl transition-all duration-1000 delay-200",
-              isOpen ? "opacity-100 scale-100" : "opacity-0 scale-50"
-            )}
-          />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
         </div>
 
         <div
           className={cn(
-            "relative h-full overflow-y-auto transition-all duration-500",
-            isOpen ? "translate-y-0" : "-translate-y-8"
+            "relative h-full overflow-y-auto overscroll-contain transition-opacity duration-300",
+            isOpen ? "opacity-100" : "opacity-0"
           )}
         >
-          <div className="container mx-auto px-4 py-6 space-y-3">
-            {items.map((item, index) => {
-              const Icon = getIcon(item.icon);
-              const isActive = activeSection === item.label;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.path, item.label)}
-                  className={cn(
-                    "group flex items-center gap-4 w-full text-left py-4 px-5 rounded-2xl transition-all duration-300 transform",
-                    isOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0",
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                      : "text-secondary-foreground hover:bg-secondary-foreground/10"
-                  )}
-                  style={{ transitionDelay: isOpen ? `${index * 50}ms` : "0ms" }}
-                >
-                  <div
-                    className={cn(
-                      "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300",
-                      isActive
-                        ? "bg-primary-foreground/20"
-                        : "bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110"
-                    )}
-                  >
-                    <Icon
-                      className={cn(
-                        "h-6 w-6 transition-all duration-300",
-                        isActive ? "" : "text-primary group-hover:rotate-12"
-                      )}
-                    />
+          <div className="container mx-auto px-4 py-5 pb-24 flex flex-col gap-4">
+            {/* CTA Cotizar destacado */}
+            {ctaItem && (
+              <button
+                onClick={() => handleNavClick(ctaItem.path, ctaItem.label)}
+                className={cn(
+                  "group relative overflow-hidden flex items-center justify-between w-full p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/85 text-primary-foreground shadow-xl shadow-primary/30 transition-all duration-300",
+                  isOpen ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
+                )}
+                style={{ transitionDelay: isOpen ? "60ms" : "0ms" }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-primary-foreground/15">
+                    <Calculator className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <span className="font-heading tracking-wide text-lg">{translateNavLabel(item.label)}</span>
-                  {isActive && <Sparkles className="h-4 w-4 ml-auto animate-pulse" />}
-                </button>
-              );
-            })}
+                  <div className="text-left">
+                    <p className="font-heading font-bold uppercase tracking-wide text-base leading-tight">
+                      {translateNavLabel(ctaItem.label)}
+                    </p>
+                    <p className="text-[11px] opacity-85">Recibe tu presupuesto rápido</p>
+                  </div>
+                </div>
+                <Sparkles className="h-4 w-4 opacity-75" aria-hidden="true" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" aria-hidden="true" />
+              </button>
+            )}
 
-            {/* Company info */}
+            {/* Sección: Navegación */}
+            <div>
+              <p className="px-2 mb-2 text-[10px] font-heading uppercase tracking-[0.18em] text-secondary-foreground/40">
+                Navegación
+              </p>
+              <ul role="list" className="space-y-1">
+                {navItems.map((item, index) => {
+                  const Icon = getIcon(item.icon);
+                  const isActive = activeSection === item.label;
+                  return (
+                    <li key={item.id}>
+                      <button
+                        onClick={() => handleNavClick(item.path, item.label)}
+                        aria-current={isActive ? "page" : undefined}
+                        className={cn(
+                          "relative group flex items-center gap-3 w-full text-left py-3 px-3 rounded-xl transition-all duration-300 transform tap-target",
+                          isOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
+                          isActive
+                            ? "bg-secondary-foreground/[0.06] text-primary-foreground"
+                            : "text-secondary-foreground/85 hover:bg-secondary-foreground/5 active:bg-secondary-foreground/10"
+                        )}
+                        style={{ transitionDelay: isOpen ? `${120 + index * 40}ms` : "0ms" }}
+                      >
+                        {/* Active rail */}
+                        {isActive && (
+                          <span
+                            aria-hidden="true"
+                            className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-primary shadow-[0_0_12px_hsl(var(--primary))]"
+                          />
+                        )}
+                        <div
+                          className={cn(
+                            "flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-300 shrink-0",
+                            isActive
+                              ? "bg-primary text-primary-foreground shadow-md shadow-primary/40"
+                              : "bg-secondary-foreground/[0.06] text-secondary-foreground/70 group-hover:bg-primary/15 group-hover:text-primary"
+                          )}
+                        >
+                          <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                        </div>
+                        <span className={cn(
+                          "font-heading tracking-wide text-[15px] flex-1",
+                          isActive ? "font-semibold text-secondary-foreground" : "font-medium"
+                        )}>
+                          {translateNavLabel(item.label)}
+                        </span>
+                        {isActive && (
+                          <span className="text-[10px] font-heading uppercase tracking-wider text-primary px-2 py-0.5 rounded-full bg-primary/15">
+                            Actual
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Cuenta */}
             <div
               className={cn(
-                "pt-8 mt-6 border-t border-secondary-foreground/10 transition-all duration-500",
+                "transition-all duration-500",
                 isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
               )}
-              style={{ transitionDelay: isOpen ? "300ms" : "0ms" }}
+              style={{ transitionDelay: isOpen ? "320ms" : "0ms" }}
             >
-              <div className="flex items-center gap-3 px-5">
-                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Building2 className="h-5 w-5 text-primary" />
+              <p className="px-2 mb-2 text-[10px] font-heading uppercase tracking-[0.18em] text-secondary-foreground/40">
+                Cuenta
+              </p>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate(user ? "/mis-solicitudes" : "/portal/login");
+                }}
+                className="flex items-center gap-3 w-full text-left py-3 px-3 rounded-xl bg-secondary-foreground/[0.04] text-secondary-foreground hover:bg-secondary-foreground/10 transition-colors tap-target"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/15 text-primary shrink-0">
+                  {user ? <UserCircle2 className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}
+                </div>
+                <span className="font-heading font-medium text-[15px]">
+                  {user ? t("nav.myAccount") : t("nav.signIn")}
+                </span>
+              </button>
+            </div>
+
+            {/* Company info footer */}
+            <div
+              className={cn(
+                "mt-auto pt-6 border-t border-secondary-foreground/10 transition-all duration-500",
+                isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              )}
+              style={{ transitionDelay: isOpen ? "400ms" : "0ms" }}
+            >
+              <div className="flex items-center gap-3 px-2">
+                <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Building2 className="h-4 w-4 text-primary" aria-hidden="true" />
                 </div>
                 <div>
-                  <p className="font-heading font-bold text-secondary-foreground">{companyName}</p>
-                  <p className="text-xs text-secondary-foreground/60">
+                  <p className="font-heading font-bold text-secondary-foreground text-sm">{companyName}</p>
+                  <p className="text-[11px] text-secondary-foreground/60">
                     {siteSettings?.tagline || "Ingeniería y Construcción"}
                   </p>
                 </div>
