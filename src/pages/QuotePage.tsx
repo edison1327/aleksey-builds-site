@@ -127,6 +127,23 @@ const QuotePage = () => {
     return Math.max(1, differenceInDays(endDate, startDate) + 1);
   };
 
+  /** Discount tiers: 1-6 días 0%, 7-29 días 10%, 30+ días 20% */
+  const estimatePrice = () => {
+    if (!selectedItem?.daily_rate || !startDate || !endDate) return null;
+    const days = calculateDays();
+    const rate = Number(selectedItem.daily_rate);
+    if (!rate) return null;
+    const subtotal = rate * days;
+    const discountPct = days >= 30 ? 0.20 : days >= 7 ? 0.10 : 0;
+    const discount = subtotal * discountPct;
+    const total = subtotal - discount;
+    return { rate, days, subtotal, discountPct, discount, total };
+  };
+
+  const formatPEN = (n: number) =>
+    new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN", maximumFractionDigits: 2 }).format(n);
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
