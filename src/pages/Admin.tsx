@@ -149,6 +149,7 @@ const Admin = () => {
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
+    { id: "audit", label: "Auditoría", icon: History, category: "general" },
   ];
 
   const categories = [
