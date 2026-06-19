@@ -1,10 +1,40 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+function getClientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip") || "unknown";
+}
+
+async function checkRateLimit(bucket: string, identifier: string, max: number, windowSec: number): Promise<boolean> {
+  try {
+    const url = Deno.env.get("SUPABASE_URL");
+    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!url || !key) return true;
+    const client = createClient(url, key);
+    const { data, error } = await client.rpc("check_rate_limit", {
+      _bucket: bucket,
+      _identifier: identifier,
+      _max_requests: max,
+      _window_seconds: windowSec,
+    });
+    if (error) {
+      console.error("Rate limit RPC error:", error);
+      return true;
+    }
+    return data !== false;
+  } catch (e) {
+    console.error("Rate limit exception:", e);
+    return true;
+  }
+}
 
 const MessageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),
@@ -84,6 +114,15 @@ serve(async (req) => {
   }
 
   try {
+    const ip = getClientIp(req);
+    const allowed = await checkRateLimit("chat-assistant", ip, 30, 60);
+    if (!allowed) {
+      return jsonResponse(
+        { error: "Demasiadas solicitudes. Espera un minuto antes de continuar." },
+        429
+      );
+    }
+
     let rawPayload: unknown;
     try {
       rawPayload = await req.json();

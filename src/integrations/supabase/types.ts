@@ -449,6 +449,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          bucket: string
+          created_at: string
+          id: string
+          identifier: string
+        }
+        Insert: {
+          bucket: string
+          created_at?: string
+          id?: string
+          identifier: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          id?: string
+          identifier?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           created_at: string
@@ -703,6 +724,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          _bucket: string
+          _identifier: string
+          _max_requests: number
+          _window_seconds: number
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
