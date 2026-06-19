@@ -8,8 +8,15 @@ export interface NavigationLink {
   path: string;
   icon: string;
   location: string;
+  title: string | null;
   sort_order: number;
   is_active: boolean;
+}
+
+export interface NavigationGroup {
+  location: string;
+  title: string;
+  links: NavigationLink[];
 }
 
 // Team Stats
