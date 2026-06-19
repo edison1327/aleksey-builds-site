@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -32,6 +32,8 @@ import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import AdminUsers from "@/components/admin/AdminUsers";
+import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
+import AdminBlog from "@/components/admin/AdminBlog";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
@@ -139,6 +141,8 @@ const Admin = () => {
     { id: "contact", label: "Contacto", icon: Settings, category: "comunicacion" },
     { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion" },
     { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion" },
+    { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion" },
+    { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
@@ -305,6 +309,8 @@ const Admin = () => {
       case "contact": return <AdminContact />;
       case "messages": return <AdminMessages />;
       case "quotes": return <AdminQuotes />;
+      case "templates": return <AdminResponseTemplates />;
+      case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
       case "benefits": return <AdminBenefits />;
       case "applications": return <AdminJobApplications />;

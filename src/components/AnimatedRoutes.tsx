@@ -10,6 +10,8 @@ import AboutPage from "@/pages/AboutPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import CareersPage from "@/pages/CareersPage";
 import QuotePage from "@/pages/QuotePage";
+import BlogPage from "@/pages/BlogPage";
+import BlogPostPage from "@/pages/BlogPostPage";
 import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
 import NotFound from "@/pages/NotFound";
@@ -43,6 +45,8 @@ const AnimatedRoutes = () => {
           <Route path="/proyectos" element={<ProjectsPage />} />
           <Route path="/convocatoria" element={<CareersPage />} />
           <Route path="/cotizar" element={<QuotePage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
