@@ -51,6 +51,8 @@ const AnimatedRoutes = () => {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/portal/login" element={<PortalLogin />} />
+          <Route path="/mis-solicitudes" element={<MyQuotesPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
