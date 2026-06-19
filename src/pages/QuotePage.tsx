@@ -15,10 +15,11 @@ import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { format, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Loader2, Send, Truck, Car, CheckCircle, Clock, FileDown } from "lucide-react";
+import { CalendarIcon, Loader2, Send, Truck, Car, CheckCircle, Clock, FileDown, Wallet } from "lucide-react";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { downloadQuotePdf } from "@/lib/quotePdf";
+import { useAuth } from "@/hooks/useAuth";
 
 const quoteSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -36,10 +37,12 @@ interface Equipment {
   model: string | null;
   category: string | null;
   image_url: string | null;
+  daily_rate: number | null;
 }
 
 const QuotePage = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const preselectedType = searchParams.get("tipo") as "maquinaria" | "vehiculo" | null;
   const preselectedId = searchParams.get("id");
@@ -108,8 +111,8 @@ const QuotePage = () => {
 
   const fetchEquipment = async () => {
     const [machineryRes, vehiclesRes] = await Promise.all([
-      supabase.from("machinery").select("id, name, brand, model, category, image_url").eq("is_active", true).eq("is_available", true).order("name"),
-      supabase.from("vehicles").select("id, name, brand, model, category, image_url").eq("is_active", true).eq("is_available", true).order("name"),
+      supabase.from("machinery").select("id, name, brand, model, category, image_url, daily_rate").eq("is_active", true).eq("is_available", true).order("name"),
+      supabase.from("vehicles").select("id, name, brand, model, category, image_url, daily_rate").eq("is_active", true).eq("is_available", true).order("name"),
     ]);
 
     if (machineryRes.data) setMachinery(machineryRes.data);
