@@ -30,9 +30,14 @@ import {
   Building,
   MapPin,
   ClipboardList,
+  Download,
+  FileDown,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { exportCsv } from "@/lib/exportCsv";
+import TemplatePicker from "@/components/admin/TemplatePicker";
+import { downloadQuotePdf } from "@/lib/quotePdf";
 
 interface QuoteMessage {
   id: string;
@@ -322,6 +327,27 @@ const AdminQuotes = () => {
               <SelectItem value="responded">Respondidas</SelectItem>
             </SelectContent>
           </Select>
+          <Button
+            variant="outline"
+            onClick={() =>
+              exportCsv(
+                `cotizaciones-${new Date().toISOString().slice(0, 10)}.csv`,
+                filtered,
+                [
+                  { key: "created_at", label: "Fecha", format: (v) => format(new Date(v as string), "yyyy-MM-dd HH:mm") },
+                  { key: "name", label: "Nombre" },
+                  { key: "email", label: "Email" },
+                  { key: "phone", label: "Teléfono" },
+                  { key: "status", label: "Estado" },
+                  { key: "id", label: "Tipo", format: (_v, row) => typeMeta[getQuoteType(row)].label },
+                  { key: "message", label: "Mensaje" },
+                ],
+              )
+            }
+          >
+            <Download className="h-4 w-4 mr-1" />
+            CSV
+          </Button>
         </div>
       </div>
 
@@ -506,6 +532,42 @@ const AdminQuotes = () => {
                         <Mail className="h-4 w-4 mr-1" />
                         Responder por email
                       </a>
+                    </Button>
+                    <TemplatePicker
+                      email={selected.email}
+                      vars={{ name: selected.name, ...details }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        downloadQuotePdf(
+                          {
+                            quoteId: selected.id,
+                            date: new Date(selected.created_at),
+                            title: `Solicitud de ${typeMeta[selectedType!].label}`,
+                            customer: {
+                              name: selected.name,
+                              email: selected.email,
+                              phone: selected.phone || undefined,
+                              company: details["Empresa"] || details["empresa"],
+                              location:
+                                details["Ubicación del proyecto"] ||
+                                details["Ubicación"] ||
+                                details["ubicacion"],
+                            },
+                            details: Object.entries(details).map(([label, value]) => ({
+                              label,
+                              value,
+                            })),
+                            message: selected.message,
+                          },
+                          `cotizacion-${selected.name.replace(/\s+/g, "-").toLowerCase()}.pdf`,
+                        )
+                      }
+                    >
+                      <FileDown className="h-4 w-4 mr-1" />
+                      PDF
                     </Button>
                     {selected.phone && (
                       <Button size="sm" variant="outline" asChild>
