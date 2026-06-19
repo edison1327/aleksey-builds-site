@@ -62,9 +62,13 @@ const VIDEO_OPTIONS = [
 interface HeroContent {
   id: string;
   title: string;
+  title_en: string | null;
   subtitle: string;
+  subtitle_en: string | null;
   description: string | null;
+  description_en: string | null;
   badge_text: string | null;
+  badge_text_en: string | null;
   projects_count: number | null;
   years_count: number | null;
   clients_percentage: number | null;
@@ -306,9 +310,13 @@ const AdminHero = () => {
       setContent({
         id: "",
         title: "ALEKSEY",
+        title_en: "",
         subtitle: "INGENIERÍA Y CONSTRUCCIÓN",
+        subtitle_en: "",
         description: "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.",
+        description_en: "",
         badge_text: "MÁS DE 10 AÑOS DE EXPERIENCIA",
+        badge_text_en: "",
         projects_count: 150,
         years_count: 10,
         clients_percentage: 98,
@@ -339,9 +347,13 @@ const AdminHero = () => {
           .from("hero_content")
           .update({
             title: content.title,
+            title_en: content.title_en,
             subtitle: content.subtitle,
+            subtitle_en: content.subtitle_en,
             description: content.description,
+            description_en: content.description_en,
             badge_text: content.badge_text,
+            badge_text_en: content.badge_text_en,
             projects_count: content.projects_count,
             years_count: content.years_count,
             clients_percentage: content.clients_percentage,
@@ -365,9 +377,13 @@ const AdminHero = () => {
           .from("hero_content")
           .insert({
             title: content.title,
+            title_en: content.title_en,
             subtitle: content.subtitle,
+            subtitle_en: content.subtitle_en,
             description: content.description,
+            description_en: content.description_en,
             badge_text: content.badge_text,
+            badge_text_en: content.badge_text_en,
             projects_count: content.projects_count,
             years_count: content.years_count,
             clients_percentage: content.clients_percentage,
@@ -510,38 +526,79 @@ const AdminHero = () => {
             <CardDescription>Título, subtítulo y descripción</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">Título</label>
-              <Input
-                value={content?.title || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
-                placeholder="ALEKSEY"
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Título (ES)</label>
+                <Input
+                  value={content?.title || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
+                  placeholder="ALEKSEY"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Title (EN)</label>
+                <Input
+                  value={content?.title_en || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, title_en: e.target.value } : null)}
+                  placeholder="Optional"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Subtítulo</label>
-              <Input
-                value={content?.subtitle || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, subtitle: e.target.value } : null)}
-                placeholder="INGENIERÍA Y CONSTRUCCIÓN"
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Subtítulo (ES)</label>
+                <Input
+                  value={content?.subtitle || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, subtitle: e.target.value } : null)}
+                  placeholder="INGENIERÍA Y CONSTRUCCIÓN"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Subtitle (EN)</label>
+                <Input
+                  value={content?.subtitle_en || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, subtitle_en: e.target.value } : null)}
+                  placeholder="ENGINEERING AND CONSTRUCTION"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Badge</label>
-              <Input
-                value={content?.badge_text || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, badge_text: e.target.value } : null)}
-                placeholder="MÁS DE 10 AÑOS DE EXPERIENCIA"
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Badge (ES)</label>
+                <Input
+                  value={content?.badge_text || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, badge_text: e.target.value } : null)}
+                  placeholder="MÁS DE 10 AÑOS DE EXPERIENCIA"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Badge (EN)</label>
+                <Input
+                  value={content?.badge_text_en || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, badge_text_en: e.target.value } : null)}
+                  placeholder="OVER 10 YEARS OF EXPERIENCE"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Descripción</label>
-              <Textarea
-                value={content?.description || ""}
-                onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
-                placeholder="Descripción del negocio..."
-                rows={3}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Descripción (ES)</label>
+                <Textarea
+                  value={content?.description || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  placeholder="Descripción del negocio..."
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description (EN)</label>
+                <Textarea
+                  value={content?.description_en || ""}
+                  onChange={(e) => setContent(prev => prev ? { ...prev, description_en: e.target.value } : null)}
+                  placeholder="Optional English description..."
+                  rows={3}
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
