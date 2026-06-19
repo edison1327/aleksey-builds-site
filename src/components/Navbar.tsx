@@ -30,8 +30,9 @@ const FALLBACK_ITEMS = [
   { id: "fallback-1", label: "INICIO", path: "/", icon: "Home" },
   { id: "fallback-2", label: "SOBRE NOSOTROS", path: "/nosotros", icon: "Users" },
   { id: "fallback-3", label: "PROYECTOS", path: "/proyectos", icon: "FolderKanban" },
-  { id: "fallback-4", label: "COTIZAR", path: "/cotizar", icon: "Calculator" },
-  { id: "fallback-5", label: "CONTACTO", path: "/#contact", icon: "Phone" },
+  { id: "fallback-4", label: "BLOG", path: "/blog", icon: "Award" },
+  { id: "fallback-5", label: "COTIZAR", path: "/cotizar", icon: "Calculator" },
+  { id: "fallback-6", label: "CONTACTO", path: "/#contact", icon: "Phone" },
 ];
 
 const Navbar = () => {
