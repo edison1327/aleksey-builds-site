@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Vehicle {
   id: string;
@@ -91,6 +93,7 @@ const AdminVehicles = () => {
       }
 
       toast({ title: "Guardado", description: "Vehículo actualizado correctamente." });
+      logAction(editingVehicle.id ? "update" : "create", "vehicles", editingVehicle.id || undefined, { name: editingVehicle.name });
       setIsDialogOpen(false);
       setEditingVehicle(null);
       fetchVehicles();
@@ -102,15 +105,30 @@ const AdminVehicles = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este vehículo?")) return;
-
     try {
       const { error } = await supabase.from("vehicles").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Vehículo eliminado correctamente." });
+      logAction("delete", "vehicles", id);
       fetchVehicles();
     } catch (error) {
       console.error("Error deleting vehicle:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: Vehicle[]) => {
+    setVehicles(newOrder);
+    try {
+      await Promise.all(
+        newOrder.map((v, idx) => supabase.from("vehicles").update({ sort_order: idx }).eq("id", v.id)),
+      );
+      logAction("reorder", "vehicles", null, { count: newOrder.length });
+      toast({ title: "Orden actualizado" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchVehicles();
     }
   };
 
@@ -152,21 +170,21 @@ const AdminVehicles = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {vehicles.map((vehicle) => (
-          <Card key={vehicle.id} className={!vehicle.is_active ? "opacity-50" : ""}>
-            <CardHeader className="pb-2">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 px-3 py-2 rounded-md">
+        <GripHorizontal className="h-4 w-4" />
+        Arrastra desde el ícono de la esquina superior izquierda para reordenar.
+      </div>
+
+      <SortableGrid
+        items={vehicles}
+        onReorder={handleReorder}
+        renderItem={(vehicle) => (
+          <Card className={!vehicle.is_active ? "opacity-50" : ""}>
+            <CardHeader className="pb-2 pl-12">
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{vehicle.name}</CardTitle>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setEditingVehicle(vehicle);
-                      setIsDialogOpen(true);
-                    }}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingVehicle(vehicle); setIsDialogOpen(true); }}>
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)}>
@@ -187,8 +205,8 @@ const AdminVehicles = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

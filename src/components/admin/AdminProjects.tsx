@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Star, Images } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Star, Images, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Project {
   id: string;
@@ -92,6 +94,7 @@ const AdminProjects = () => {
       }
 
       toast({ title: "Guardado", description: "Proyecto actualizado correctamente." });
+      logAction(editingProject.id ? "update" : "create", "projects", editingProject.id || undefined, { title: editingProject.title });
       setIsDialogOpen(false);
       setEditingProject(null);
       fetchProjects();
@@ -103,15 +106,30 @@ const AdminProjects = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este proyecto?")) return;
-
     try {
       const { error } = await supabase.from("projects").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Proyecto eliminado correctamente." });
+      logAction("delete", "projects", id);
       fetchProjects();
     } catch (error) {
       console.error("Error deleting project:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: Project[]) => {
+    setProjects(newOrder);
+    try {
+      await Promise.all(
+        newOrder.map((p, idx) => supabase.from("projects").update({ sort_order: idx }).eq("id", p.id)),
+      );
+      logAction("reorder", "projects", null, { count: newOrder.length });
+      toast({ title: "Orden actualizado" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchProjects();
     }
   };
 
@@ -153,24 +171,24 @@ const AdminProjects = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {projects.map((project) => (
-          <Card key={project.id} className={!project.is_active ? "opacity-50" : ""}>
-            <CardHeader className="pb-2">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 px-3 py-2 rounded-md">
+        <GripHorizontal className="h-4 w-4" />
+        Arrastra desde el ícono de la esquina superior izquierda para reordenar.
+      </div>
+
+      <SortableGrid
+        items={projects}
+        onReorder={handleReorder}
+        renderItem={(project) => (
+          <Card className={!project.is_active ? "opacity-50" : ""}>
+            <CardHeader className="pb-2 pl-12">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-lg">{project.title}</CardTitle>
                   {project.is_featured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
                 </div>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setEditingProject(project);
-                      setIsDialogOpen(true);
-                    }}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingProject(project); setIsDialogOpen(true); }}>
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(project.id)}>
@@ -197,8 +215,8 @@ const AdminProjects = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

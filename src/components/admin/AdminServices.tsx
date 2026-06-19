@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, GripVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripVertical, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Service {
   id: string;
@@ -82,6 +84,7 @@ const AdminServices = () => {
       }
 
       toast({ title: "Guardado", description: "Servicio actualizado correctamente." });
+      logAction(editingService.id ? "update" : "create", "services", editingService.id || undefined, { title: editingService.title });
       setIsDialogOpen(false);
       setEditingService(null);
       fetchServices();
@@ -93,15 +96,30 @@ const AdminServices = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este servicio?")) return;
-
     try {
       const { error } = await supabase.from("services").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Servicio eliminado correctamente." });
+      logAction("delete", "services", id);
       fetchServices();
     } catch (error) {
       console.error("Error deleting service:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: Service[]) => {
+    setServices(newOrder);
+    try {
+      await Promise.all(
+        newOrder.map((s, idx) => supabase.from("services").update({ sort_order: idx }).eq("id", s.id)),
+      );
+      logAction("reorder", "services", null, { count: newOrder.length });
+      toast({ title: "Orden actualizado" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchServices();
     }
   };
 
@@ -140,30 +158,26 @@ const AdminServices = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {services.map((service) => (
-          <Card key={service.id} className={`overflow-hidden ${!service.is_active ? "opacity-50" : ""}`}>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 px-3 py-2 rounded-md">
+        <GripHorizontal className="h-4 w-4" />
+        Arrastra desde el ícono de la esquina superior izquierda para reordenar.
+      </div>
+
+      <SortableGrid
+        items={services}
+        onReorder={handleReorder}
+        renderItem={(service) => (
+          <Card className={`overflow-hidden ${!service.is_active ? "opacity-50" : ""}`}>
             {service.image_url && (
               <div className="relative h-32 overflow-hidden">
-                <img 
-                  src={service.image_url} 
-                  alt={service.title}
-                  className="w-full h-full object-cover"
-                />
+                <img src={service.image_url} alt={service.title} className="w-full h-full object-cover" />
               </div>
             )}
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-2 pl-12">
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{service.title}</CardTitle>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setEditingService(service);
-                      setIsDialogOpen(true);
-                    }}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingService(service); setIsDialogOpen(true); }}>
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(service.id)}>
@@ -179,15 +193,13 @@ const AdminServices = () => {
                   {service.is_active ? "Activo" : "Inactivo"}
                 </span>
                 {!service.image_url && (
-                  <span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">
-                    Sin imagen
-                  </span>
+                  <span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">Sin imagen</span>
                 )}
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
