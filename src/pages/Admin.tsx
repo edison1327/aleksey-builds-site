@@ -599,7 +599,7 @@ const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () 
 
     // Subscribe to realtime updates for contact_messages
     const channel = supabase
-      .channel('dashboard-quotes')
+      .channel(`dashboard-quotes-${Math.random().toString(36).slice(2)}`)
       .on(
         'postgres_changes',
         {
