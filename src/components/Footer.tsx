@@ -25,28 +25,28 @@ const socialIcons: Record<string, React.ComponentType<{ className?: string }>> =
 const Footer = () => {
   const { data: contactInfo } = useContactInfo();
   const { data: siteSettings } = useSiteSettings();
-  const { data: footerServices } = useNavigationLinks("footer_services");
-  const { data: footerCompany } = useNavigationLinks("footer_company");
+  const { data: footerGroups } = useNavigationGroups("footer_");
   const { data: socialLinks } = useSocialLinks();
-  
+
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
   const footerDescription = siteSettings?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
   const footerCopyright = siteSettings?.footer_copyright || "Todos los derechos reservados.";
-  
+
   const address = contactInfo?.address || defaultContact.address;
   const city = contactInfo?.city || defaultContact.city;
   const country = contactInfo?.country || "";
   const phone = contactInfo?.phone || defaultContact.phone;
   const email = contactInfo?.email || defaultContact.email;
   const businessHours = contactInfo?.business_hours || defaultContact.business_hours;
-  
+
   const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
 
   const getSocialIcon = (iconName: string | null) => {
     if (!iconName) return Facebook;
     return socialIcons[iconName] || Facebook;
   };
+
 
   return (
     <footer className="bg-secondary text-secondary-foreground py-12">
