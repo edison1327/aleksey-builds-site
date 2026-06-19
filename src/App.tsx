@@ -10,6 +10,8 @@ import AnimatedRoutes from "@/components/AnimatedRoutes";
 import Navbar from "@/components/Navbar";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import ShortcutsHelpDialog from "@/components/ShortcutsHelpDialog";
+import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +27,7 @@ const AppShell = () => {
   const { pathname } = useLocation();
   const hideNavbar = pathname.startsWith("/admin");
   const hideChatWidget = pathname.startsWith("/admin");
+  useGlobalShortcuts();
 
   return (
     <>
@@ -37,6 +40,7 @@ const AppShell = () => {
           <ChatWidget />
         </ErrorBoundary>
       )}
+      <ShortcutsHelpDialog />
     </>
   );
 };
