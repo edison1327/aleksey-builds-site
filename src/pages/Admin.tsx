@@ -56,6 +56,7 @@ const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
 
   useEffect(() => {
