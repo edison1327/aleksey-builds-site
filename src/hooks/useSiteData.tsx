@@ -363,6 +363,51 @@ export const useNavigationLinks = (location?: string) => {
   return { data, isLoading };
 };
 
+// Hook for Navigation Groups (groups links by location and exposes their title)
+export const useNavigationGroups = (locationPrefix?: string) => {
+  const [data, setData] = useState<NavigationGroup[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let query = supabase
+        .from("navigation_links")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+
+      if (locationPrefix) {
+        query = query.like("location", `${locationPrefix}%`);
+      }
+
+      const { data: links } = await query;
+
+      const groupsMap = new Map<string, NavigationGroup>();
+      (links || []).forEach((link) => {
+        const existing = groupsMap.get(link.location);
+        if (existing) {
+          existing.links.push(link);
+          if (!existing.title && link.title) existing.title = link.title;
+        } else {
+          groupsMap.set(link.location, {
+            location: link.location,
+            title: link.title || link.location,
+            links: [link],
+          });
+        }
+      });
+
+      setData(Array.from(groupsMap.values()));
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [locationPrefix]);
+
+  return { data, isLoading };
+};
+
+
+
 // Hook for Team Stats
 export const useTeamStats = () => {
   const [data, setData] = useState<TeamStat[]>([]);
