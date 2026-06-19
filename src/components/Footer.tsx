@@ -1,8 +1,9 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useContactInfo, useNavigationLinks, useSocialLinks } from "@/hooks/useSiteData";
+import { useContactInfo, useNavigationGroups, useSocialLinks } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
+
 
 const defaultContact = {
   address: "Av. Principal 123, Ciudad Capital",
@@ -24,28 +25,28 @@ const socialIcons: Record<string, React.ComponentType<{ className?: string }>> =
 const Footer = () => {
   const { data: contactInfo } = useContactInfo();
   const { data: siteSettings } = useSiteSettings();
-  const { data: footerServices } = useNavigationLinks("footer_services");
-  const { data: footerCompany } = useNavigationLinks("footer_company");
+  const { data: footerGroups } = useNavigationGroups("footer_");
   const { data: socialLinks } = useSocialLinks();
-  
+
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
   const footerDescription = siteSettings?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
   const footerCopyright = siteSettings?.footer_copyright || "Todos los derechos reservados.";
-  
+
   const address = contactInfo?.address || defaultContact.address;
   const city = contactInfo?.city || defaultContact.city;
   const country = contactInfo?.country || "";
   const phone = contactInfo?.phone || defaultContact.phone;
   const email = contactInfo?.email || defaultContact.email;
   const businessHours = contactInfo?.business_hours || defaultContact.business_hours;
-  
+
   const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
 
   const getSocialIcon = (iconName: string | null) => {
     if (!iconName) return Facebook;
     return socialIcons[iconName] || Facebook;
   };
+
 
   return (
     <footer className="bg-secondary text-secondary-foreground py-12">
@@ -112,57 +113,51 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Servicios */}
-          <div>
-            <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
-            <ul className="space-y-2 text-secondary-foreground/80">
-              {footerServices.length > 0 ? (
-                footerServices.map((link) => (
-                  <li key={link.id}>
-                    <Link to={link.path} className="hover:text-primary transition-colors">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <>
+          {/* Grupos de enlaces dinámicos del footer */}
+          {footerGroups.length > 0 ? (
+            footerGroups.map((group) => (
+              <div key={group.location}>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{group.title}</h3>
+                <ul className="space-y-2 text-secondary-foreground/80">
+                  {group.links.map((link) => (
+                    <li key={link.id}>
+                      {link.path.startsWith("/#") ? (
+                        <a href={link.path} className="hover:text-primary transition-colors">
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link to={link.path} className="hover:text-primary transition-colors">
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <>
+              <div>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
+                <ul className="space-y-2 text-secondary-foreground/80">
                   <li><Link to="/construccion" className="hover:text-primary transition-colors">Construcción</Link></li>
                   <li><Link to="/ingenieria" className="hover:text-primary transition-colors">Ingeniería</Link></li>
                   <li><Link to="/vehiculos" className="hover:text-primary transition-colors">Vehículos</Link></li>
                   <li><Link to="/maquinaria" className="hover:text-primary transition-colors">Maquinaria</Link></li>
-                </>
-              )}
-            </ul>
-          </div>
-
-          {/* Empresa */}
-          <div>
-            <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
-            <ul className="space-y-2 text-secondary-foreground/80">
-              {footerCompany.length > 0 ? (
-                footerCompany.map((link) => (
-                  <li key={link.id}>
-                    {link.path.startsWith("/#") ? (
-                      <a href={link.path} className="hover:text-primary transition-colors">
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link to={link.path} className="hover:text-primary transition-colors">
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))
-              ) : (
-                <>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
+                <ul className="space-y-2 text-secondary-foreground/80">
                   <li><Link to="/nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
                   <li><Link to="/proyectos" className="hover:text-primary transition-colors">Proyectos</Link></li>
                   <li><a href="/#contact" className="hover:text-primary transition-colors">Contacto</a></li>
                   <li><Link to="/convocatoria" className="hover:text-primary transition-colors">Trabaja con Nosotros</Link></li>
-                </>
-              )}
-            </ul>
-          </div>
+                </ul>
+              </div>
+            </>
+          )}
+
 
           {/* Contacto */}
           <div>
