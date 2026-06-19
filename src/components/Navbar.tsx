@@ -1,8 +1,9 @@
-import { Building2, Home, Wrench, Truck, Settings, Phone, Users, FolderKanban, Sparkles, Calculator, Mail, MapPin, Award, Briefcase, LucideIcon } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Users, FolderKanban, Sparkles, Calculator, Mail, MapPin, Award, Briefcase, UserCircle2, LogIn, LucideIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
+import { useAuth } from "@/hooks/useAuth";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 import { cn } from "@/lib/utils";
 
