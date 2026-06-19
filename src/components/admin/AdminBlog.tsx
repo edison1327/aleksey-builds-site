@@ -26,8 +26,11 @@ interface Post {
   id: string;
   slug: string;
   title: string;
+  title_en: string | null;
   excerpt: string | null;
+  excerpt_en: string | null;
   content: string;
+  content_en: string | null;
   cover_image: string | null;
   author: string | null;
   published: boolean;
@@ -39,8 +42,11 @@ interface Post {
 const emptyForm = {
   slug: "",
   title: "",
+  title_en: "",
   excerpt: "",
+  excerpt_en: "",
   content: "",
+  content_en: "",
   cover_image: "",
   author: "",
   published: false,
@@ -83,8 +89,11 @@ const AdminBlog = () => {
     setForm({
       slug: p.slug,
       title: p.title,
+      title_en: p.title_en || "",
       excerpt: p.excerpt || "",
+      excerpt_en: p.excerpt_en || "",
       content: p.content,
+      content_en: p.content_en || "",
       cover_image: p.cover_image || "",
       author: p.author || "",
       published: p.published,
@@ -115,8 +124,11 @@ const AdminBlog = () => {
     const payload = {
       slug: slugify(form.slug),
       title: form.title.trim(),
+      title_en: form.title_en.trim() || null,
       excerpt: form.excerpt.trim() || null,
+      excerpt_en: form.excerpt_en.trim() || null,
       content: form.content,
+      content_en: form.content_en.trim() || null,
       cover_image: form.cover_image || null,
       author: form.author.trim() || null,
       published: form.published,
@@ -265,14 +277,25 @@ const AdminBlog = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>Título *</Label>
-              <Input
-                value={form.title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                maxLength={200}
-                placeholder="Cómo elegir la maquinaria adecuada para tu obra"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label>Título (ES) *</Label>
+                <Input
+                  value={form.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  maxLength={200}
+                  placeholder="Cómo elegir la maquinaria adecuada"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Title (EN)</Label>
+                <Input
+                  value={form.title_en}
+                  onChange={(e) => setForm({ ...form, title_en: e.target.value })}
+                  maxLength={200}
+                  placeholder="Optional English title"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
