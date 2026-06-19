@@ -1,8 +1,9 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useContactInfo, useNavigationLinks, useSocialLinks } from "@/hooks/useSiteData";
+import { useContactInfo, useNavigationGroups, useSocialLinks } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
+
 
 const defaultContact = {
   address: "Av. Principal 123, Ciudad Capital",
