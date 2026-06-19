@@ -388,6 +388,9 @@ const Admin = () => {
             </div>
 
             <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
+                <Command className="h-5 w-5" />
+              </Button>
               <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
               <Link to="/">
                 <Button variant="ghost" size="icon" className="shrink-0">
