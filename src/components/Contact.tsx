@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useContactInfo } from "@/hooks/useSiteData";
 import { supabase } from "@/integrations/supabase/client";
+import { getThrottleWait, markSubmitted } from "@/lib/throttle";
 import { z } from "zod";
 
 // Default contact info
@@ -55,7 +56,17 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    
+
+    const wait = getThrottleWait("contact", 30_000);
+    if (wait > 0) {
+      toast({
+        title: "Espera un momento",
+        description: `Podrás enviar otro mensaje en ${wait}s.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const result = contactSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -67,7 +78,7 @@ const Contact = () => {
       setErrors(fieldErrors);
       return;
     }
-    
+
     setIsSubmitting(true);
     
     try {
@@ -100,7 +111,8 @@ const Contact = () => {
         title: "Mensaje enviado",
         description: "Nos pondremos en contacto contigo pronto.",
       });
-      
+
+      markSubmitted("contact");
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
