@@ -110,6 +110,7 @@ const Navbar = () => {
     <>
       {/* Main Navigation Bar */}
       <nav
+        aria-label="Navegación principal"
         className={cn(
           "fixed top-0 left-0 right-0 bg-secondary z-[100] transition-all duration-300",
           scrolled
@@ -144,6 +145,7 @@ const Navbar = () => {
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.path, item.label)}
+                    aria-current={isActive ? "page" : undefined}
                     className={cn(
                       "group relative flex items-center gap-2 px-3 xl:px-4 py-2 text-sm xl:text-base font-heading tracking-wide transition-all duration-300",
                       isActive
@@ -183,6 +185,8 @@ const Navbar = () => {
                 className="relative flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl transition-all duration-300"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+                aria-expanded={isOpen}
+                aria-controls="mobile-menu"
               >
                 <div className="relative w-6 h-5 flex flex-col justify-between">
                   <span
@@ -223,6 +227,10 @@ const Navbar = () => {
 
       {/* Mobile Menu Panel */}
       <div
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú de navegación"
         className={cn(
           "lg:hidden fixed top-14 sm:top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-500 ease-out overflow-hidden",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
