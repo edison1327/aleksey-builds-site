@@ -1,10 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-// In production, set this to a verified-domain sender, e.g. "Aleksey <no-reply@tudominio.com>"
 const RESEND_FROM = Deno.env.get("RESEND_FROM") ?? "Aleksey <onboarding@resend.dev>";
-// Resend test-mode fallback (Resend only allows sending to the verified account email)
 const RESEND_TEST_EMAIL = Deno.env.get("RESEND_TEST_EMAIL") ?? "edisone13.eer@gmail.com";
 
 const corsHeaders = {
@@ -12,14 +11,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface QuoteNotificationRequest {
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  itemName: string;
-  itemType: string;
-}
+const QuoteSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  phone: z.string().trim().max(50).optional().nullable(),
+  message: z.string().trim().min(1).max(5000),
+  itemName: z.string().trim().min(1).max(255),
+  itemType: z.string().trim().min(1).max(50),
+});
+
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 
 async function getAdminEmail(): Promise<string> {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
