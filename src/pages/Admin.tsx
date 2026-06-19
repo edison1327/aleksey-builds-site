@@ -291,6 +291,18 @@ const Admin = () => {
             {(!sidebarCollapsed || isMobile) && <span>Ver sitio</span>}
           </Button>
         </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setPaletteOpen(true)}
+          className={cn(
+            "w-full gap-2 justify-start text-xs text-muted-foreground",
+            sidebarCollapsed && !isMobile && "justify-center px-2"
+          )}
+        >
+          <Command className="h-4 w-4" />
+          {(!sidebarCollapsed || isMobile) && <span>Buscar (Ctrl+K)</span>}
+        </Button>
       </div>
     </div>
   );
