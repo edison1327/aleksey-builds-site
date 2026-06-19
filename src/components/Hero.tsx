@@ -5,6 +5,7 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { useHeroContent } from "@/hooks/useSiteData";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-construction.jpg";
 
 // Default video URL
@@ -21,7 +22,6 @@ const Hero = () => {
   const navigate = useNavigate();
   const parallaxOffset = useParallax(0.1);
   const { data: heroContent } = useHeroContent();
-  const { useTranslation } = require("react-i18next");
   const { i18n } = useTranslation();
   const isEn = (i18n.resolvedLanguage || "es").startsWith("en");
   const pick = <T,>(en: T | null | undefined, es: T) =>
