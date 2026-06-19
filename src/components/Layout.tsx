@@ -10,9 +10,12 @@ interface LayoutProps {
 
 const Layout = ({ children, showFooter = true, showScrollToTop = true }: LayoutProps) => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-dvh flex flex-col bg-background text-foreground">
+      <a href="#main-content" className="skip-to-content">
+        Saltar al contenido principal
+      </a>
       <Navbar />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
         {children}
       </main>
       {showFooter && <Footer />}
