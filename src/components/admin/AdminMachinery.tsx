@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripHorizontal } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableGrid } from "./SortableGrid";
+import { logAction } from "@/lib/auditLog";
 
 interface Machinery {
   id: string;
@@ -91,6 +93,7 @@ const AdminMachinery = () => {
       }
 
       toast({ title: "Guardado", description: "Maquinaria actualizada correctamente." });
+      logAction(editingMachine.id ? "update" : "create", "machinery", editingMachine.id || undefined, { name: editingMachine.name });
       setIsDialogOpen(false);
       setEditingMachine(null);
       fetchMachinery();
@@ -107,10 +110,27 @@ const AdminMachinery = () => {
       const { error } = await supabase.from("machinery").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Maquinaria eliminada correctamente." });
+      logAction("delete", "machinery", id);
       fetchMachinery();
     } catch (error) {
       console.error("Error deleting machinery:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleReorder = async (newOrder: typeof machinery) => {
+    setMachinery(newOrder); // optimistic
+    const updates = newOrder.map((m, idx) => ({ id: m.id, sort_order: idx }));
+    try {
+      await Promise.all(
+        updates.map((u) => supabase.from("machinery").update({ sort_order: u.sort_order }).eq("id", u.id)),
+      );
+      logAction("reorder", "machinery", null, { count: updates.length });
+      toast({ title: "Orden actualizado", description: "El nuevo orden se guardó." });
+    } catch (err) {
+      console.error("Error reordering:", err);
+      toast({ title: "Error", description: "No se pudo guardar el orden.", variant: "destructive" });
+      fetchMachinery();
     }
   };
 
@@ -152,20 +172,24 @@ const AdminMachinery = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {machinery.map((machine) => (
-          <Card key={machine.id} className={!machine.is_active ? "opacity-50" : ""}>
-            <CardHeader className="pb-2">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 px-3 py-2 rounded-md">
+        <GripHorizontal className="h-4 w-4" />
+        Arrastra desde el ícono de la esquina superior izquierda para reordenar las tarjetas.
+      </div>
+
+      <SortableGrid
+        items={machinery}
+        onReorder={handleReorder}
+        renderItem={(machine) => (
+          <Card className={!machine.is_active ? "opacity-50" : ""}>
+            <CardHeader className="pb-2 pl-12">
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{machine.name}</CardTitle>
                 <div className="flex gap-1">
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => {
-                      setEditingMachine(machine);
-                      setIsDialogOpen(true);
-                    }}
+                    onClick={() => { setEditingMachine(machine); setIsDialogOpen(true); }}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -187,8 +211,8 @@ const AdminMachinery = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

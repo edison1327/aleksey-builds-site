@@ -8,11 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText, Download } from "lucide-react";
+import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText, Download, CheckSquare, XSquare } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { exportCsv } from "@/lib/exportCsv";
 import TemplatePicker from "@/components/admin/TemplatePicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { logAction } from "@/lib/auditLog";
 
 interface Message {
   id: string;
@@ -32,6 +34,7 @@ const AdminMessages = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "read" | "responded">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [newMessageAlert, setNewMessageAlert] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const fetchMessages = useCallback(async () => {
@@ -200,10 +203,64 @@ const AdminMessages = () => {
       const { error } = await supabase.from("contact_messages").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Eliminado", description: "Mensaje eliminado correctamente." });
+      logAction("delete", "contact_messages", id);
       fetchMessages();
     } catch (error) {
       console.error("Error deleting message:", error);
       toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = (ids: string[]) => {
+    setSelectedIds((prev) => {
+      const allSelected = ids.every((id) => prev.has(id));
+      if (allSelected) {
+        const next = new Set(prev);
+        ids.forEach((id) => next.delete(id));
+        return next;
+      }
+      return new Set([...prev, ...ids]);
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`¿Eliminar ${selectedIds.size} mensaje(s)? Esta acción no se puede deshacer.`)) return;
+    const ids = Array.from(selectedIds);
+    try {
+      const { error } = await supabase.from("contact_messages").delete().in("id", ids);
+      if (error) throw error;
+      toast({ title: "Eliminados", description: `${ids.length} mensaje(s) eliminados.` });
+      logAction("bulk_delete", "contact_messages", null, { count: ids.length });
+      setSelectedIds(new Set());
+      fetchMessages();
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo eliminar.", variant: "destructive" });
+    }
+  };
+
+  const handleBulkStatus = async (status: string) => {
+    if (selectedIds.size === 0) return;
+    const ids = Array.from(selectedIds);
+    try {
+      const { error } = await supabase.from("contact_messages").update({ status }).in("id", ids);
+      if (error) throw error;
+      toast({ title: "Actualizados", description: `${ids.length} mensaje(s) marcados como ${status}.` });
+      logAction("bulk_update", "contact_messages", null, { count: ids.length, status });
+      setSelectedIds(new Set());
+      fetchMessages();
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
     }
   };
 
@@ -425,6 +482,36 @@ const AdminMessages = () => {
         </div>
       </div>
 
+      {/* Bulk Actions Bar */}
+      {filteredMessages.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 p-3 rounded-lg border bg-card">
+          <Checkbox
+            checked={filteredMessages.length > 0 && filteredMessages.every((m) => selectedIds.has(m.id))}
+            onCheckedChange={() => toggleSelectAll(filteredMessages.map((m) => m.id))}
+            aria-label="Seleccionar todos"
+          />
+          <span className="text-sm text-muted-foreground">
+            {selectedIds.size > 0 ? `${selectedIds.size} seleccionado(s)` : "Seleccionar todos"}
+          </span>
+          {selectedIds.size > 0 && (
+            <div className="flex flex-wrap items-center gap-2 ml-auto">
+              <Button size="sm" variant="outline" onClick={() => handleBulkStatus("read")}>
+                <CheckSquare className="h-4 w-4 mr-1" /> Marcar leídos
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => handleBulkStatus("responded")}>
+                <Check className="h-4 w-4 mr-1" /> Marcar respondidos
+              </Button>
+              <Button size="sm" variant="destructive" onClick={handleBulkDelete}>
+                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+                <XSquare className="h-4 w-4 mr-1" /> Limpiar
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Messages List */}
       {filteredMessages.length === 0 ? (
         <Card>
@@ -438,11 +525,14 @@ const AdminMessages = () => {
           {filteredMessages.map((message) => {
             const isQuote = isQuoteRequest(message);
             const quoteDetails = parseQuoteDetails(message);
+            const isSelected = selectedIds.has(message.id);
             
             return (
               <Card 
                 key={message.id} 
                 className={`transition-all ${
+                  isSelected ? "ring-2 ring-primary" : ""
+                } ${
                   message.status === "pending" 
                     ? "border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10" 
                     : ""
@@ -451,6 +541,12 @@ const AdminMessages = () => {
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3 min-w-0">
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={() => toggleSelect(message.id)}
+                        className="mt-2"
+                        aria-label={`Seleccionar mensaje de ${message.name}`}
+                      />
                       <div className={`p-2 rounded-lg shrink-0 ${
                         isQuote 
                           ? "bg-blue-100 dark:bg-blue-900/30" 

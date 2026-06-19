@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -34,6 +34,8 @@ import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
 import AdminBlog from "@/components/admin/AdminBlog";
+import AdminAuditLog from "@/components/admin/AdminAuditLog";
+import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
@@ -54,6 +56,7 @@ const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
 
   useEffect(() => {
@@ -146,6 +149,7 @@ const Admin = () => {
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
+    { id: "audit", label: "Auditoría", icon: History, category: "general" },
   ];
 
   const categories = [
@@ -287,6 +291,18 @@ const Admin = () => {
             {(!sidebarCollapsed || isMobile) && <span>Ver sitio</span>}
           </Button>
         </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setPaletteOpen(true)}
+          className={cn(
+            "w-full gap-2 justify-start text-xs text-muted-foreground",
+            sidebarCollapsed && !isMobile && "justify-center px-2"
+          )}
+        >
+          <Command className="h-4 w-4" />
+          {(!sidebarCollapsed || isMobile) && <span>Buscar (Ctrl+K)</span>}
+        </Button>
       </div>
     </div>
   );
@@ -314,12 +330,25 @@ const Admin = () => {
       case "positions": return <AdminJobPositions />;
       case "benefits": return <AdminBenefits />;
       case "applications": return <AdminJobApplications />;
+      case "audit": return <AdminAuditLog />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex">
+      <CommandPalette
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+        items={menuItems.map((m) => ({
+          id: m.id,
+          label: m.label,
+          category: categories.find((c) => c.id === m.category)?.label || m.category,
+          icon: m.icon,
+        }))}
+        onSelect={(id) => setActiveTab(id)}
+      />
+
       {/* Desktop Sidebar */}
       <aside className={cn(
         "hidden lg:flex flex-col bg-card/95 backdrop-blur-md border-r border-border/50 transition-all duration-300 sticky top-0 h-screen",
@@ -371,6 +400,9 @@ const Admin = () => {
             </div>
 
             <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
+                <Command className="h-5 w-5" />
+              </Button>
               <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
               <Link to="/">
                 <Button variant="ghost" size="icon" className="shrink-0">
