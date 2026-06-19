@@ -107,107 +107,140 @@ const Navbar = () => {
     else if (location.pathname === "/") setActiveSection("INICIO");
   }, [location.pathname, items]);
 
+  // Separar CTA "COTIZAR" del resto para destacarla
+  const ctaItem = items.find((i) => /cotiz/i.test(i.label) || i.path === "/cotizar");
+  const navItems = items.filter((i) => i !== ctaItem);
+
   return (
     <>
       {/* Main Navigation Bar */}
       <nav
         aria-label="Navegación principal"
         className={cn(
-          "fixed top-0 left-0 right-0 bg-secondary z-[100] transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-[100] transition-all duration-300",
           scrolled
-            ? "shadow-2xl shadow-black/20 backdrop-blur-md bg-secondary/95 border-b border-primary/20"
-            : "backdrop-blur-sm"
+            ? "bg-secondary/85 backdrop-blur-xl shadow-lg shadow-black/10 border-b border-border/40"
+            : "bg-secondary/70 backdrop-blur-md border-b border-transparent"
         )}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-14 sm:h-16">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div
+            className={cn(
+              "flex items-center justify-between gap-3 transition-all duration-300",
+              scrolled ? "h-14" : "h-16 sm:h-[68px]"
+            )}
+          >
             {/* Logo */}
-            <div
-              className="flex items-center cursor-pointer transition-all duration-300 hover:opacity-80 shrink-0"
+            <button
+              type="button"
+              className="flex items-center cursor-pointer transition-opacity duration-200 hover:opacity-80 shrink-0 rounded-md"
               onClick={() => {
                 navigate("/");
                 setActiveSection("INICIO");
                 setIsOpen(false);
               }}
+              aria-label={`${companyName} — ir al inicio`}
             >
               <img
                 src={logoUrl}
                 alt={`${companyName} - Ingeniería y Construcción`}
-                className="h-8 sm:h-10 md:h-12"
+                className={cn(
+                  "transition-all duration-300",
+                  scrolled ? "h-8 sm:h-9" : "h-9 sm:h-10 md:h-11"
+                )}
+                width={180}
+                height={44}
               />
-            </div>
+            </button>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-1 relative">
-              {items.map((item) => {
-                const Icon = getIcon(item.icon);
-                const isActive = activeSection === item.label;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.path, item.label)}
-                    aria-current={isActive ? "page" : undefined}
-                    className={cn(
-                      "group relative flex items-center gap-2 px-3 xl:px-4 py-2 text-sm xl:text-base font-heading tracking-wide transition-all duration-300",
-                      isActive
-                        ? "text-primary-foreground"
-                        : "text-secondary-foreground/80 hover:text-primary-foreground"
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "absolute inset-0 bg-primary rounded-full transition-all duration-400 ease-out",
-                        isActive ? "opacity-100 scale-100" : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
-                      )}
-                      style={{ zIndex: -1 }}
-                    />
-                    <Icon className="h-4 w-4 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="relative z-10">{translateNavLabel(item.label)}</span>
-                  </button>
-                );
-              })}
-              <button
-                onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
-                title={user ? "Mi cuenta" : "Iniciar sesión"}
-                className="group relative flex items-center gap-2 px-3 xl:px-4 py-2 text-sm xl:text-base font-heading tracking-wide text-secondary-foreground/80 hover:text-primary-foreground transition-all duration-300"
-              >
-                <span className="absolute inset-0 bg-primary rounded-full opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-400" style={{ zIndex: -1 }} />
-                {user
-                  ? <UserCircle2 className="h-4 w-4 relative z-10" />
-                  : <LogIn className="h-4 w-4 relative z-10" />}
-                <span className="relative z-10 hidden xl:inline">{user ? t("nav.myAccount") : t("nav.signIn")}</span>
-              </button>
-              <LanguageSwitcher className="ml-1" />
-              <ThemeToggle />
+            <div className="hidden lg:flex items-center flex-1 justify-end gap-1">
+              <ul className="flex items-center gap-0.5" role="list">
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.label;
+                  return (
+                    <li key={item.id}>
+                      <button
+                        onClick={() => handleNavClick(item.path, item.label)}
+                        aria-current={isActive ? "page" : undefined}
+                        className={cn(
+                          "group relative flex items-center px-3 xl:px-4 py-2 text-[13px] xl:text-sm font-heading font-medium tracking-wide whitespace-nowrap rounded-full transition-all duration-200",
+                          isActive
+                            ? "text-primary-foreground"
+                            : "text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/5"
+                        )}
+                      >
+                        {isActive && (
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-0 bg-primary rounded-full shadow-md shadow-primary/30"
+                            style={{ zIndex: -1 }}
+                          />
+                        )}
+                        <span className="relative z-10 uppercase">{translateNavLabel(item.label)}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* CTA Cotizar */}
+              {ctaItem && (
+                <button
+                  onClick={() => handleNavClick(ctaItem.path, ctaItem.label)}
+                  className="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-[13px] xl:text-sm font-heading font-semibold tracking-wide uppercase shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:scale-[1.03] active:scale-100 transition-all duration-200 whitespace-nowrap"
+                >
+                  <Calculator className="h-4 w-4" aria-hidden="true" />
+                  {translateNavLabel(ctaItem.label)}
+                </button>
+              )}
+
+              {/* Divider + utilities */}
+              <div className="ml-2 pl-2 flex items-center gap-1 border-l border-border/40">
+                <button
+                  onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
+                  aria-label={user ? "Mi cuenta" : "Iniciar sesión"}
+                  title={user ? "Mi cuenta" : "Iniciar sesión"}
+                  className="flex items-center justify-center w-10 h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
+                >
+                  {user
+                    ? <UserCircle2 className="h-[18px] w-[18px]" aria-hidden="true" />
+                    : <LogIn className="h-[18px] w-[18px]" aria-hidden="true" />}
+                </button>
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
             </div>
-            {/* Mobile: switcher + theme + hamburger grouped */}
-            <div className="lg:hidden flex items-center gap-1">
+
+            {/* Mobile: utilities + hamburger */}
+            <div className="lg:hidden flex items-center gap-0.5">
               <ThemeToggle />
               <LanguageSwitcher />
               <button
-                className="relative flex items-center justify-center w-12 h-12 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl transition-all duration-300"
+                type="button"
+                className="relative flex items-center justify-center w-11 h-11 text-secondary-foreground hover:bg-secondary-foreground/10 rounded-full transition-all duration-200"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
               >
-                <div className="relative w-6 h-5 flex flex-col justify-between">
+                <div className="relative w-5 h-4 flex flex-col justify-between">
                   <span
                     className={cn(
-                      "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
-                      isOpen ? "rotate-45 translate-y-2" : ""
+                      "block h-0.5 w-5 bg-current rounded-full transition-all duration-300 origin-center",
+                      isOpen ? "rotate-45 translate-y-[7px]" : ""
                     )}
                   />
                   <span
                     className={cn(
-                      "block h-0.5 w-6 bg-current rounded-full transition-all duration-300",
+                      "block h-0.5 w-5 bg-current rounded-full transition-all duration-300",
                       isOpen ? "opacity-0 scale-0" : "opacity-100"
                     )}
                   />
                   <span
                     className={cn(
-                      "block h-0.5 w-6 bg-current rounded-full transition-all duration-300 origin-center",
-                      isOpen ? "-rotate-45 -translate-y-2" : ""
+                      "block h-0.5 w-5 bg-current rounded-full transition-all duration-300 origin-center",
+                      isOpen ? "-rotate-45 -translate-y-[7px]" : ""
                     )}
                   />
                 </div>
