@@ -146,6 +146,7 @@ const AdminMachinery = () => {
       brand: "",
       model: "",
       price: "",
+      daily_rate: null,
       image_url: "",
       is_available: true,
       is_active: true,
