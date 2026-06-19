@@ -170,21 +170,21 @@ const AdminVehicles = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {vehicles.map((vehicle) => (
-          <Card key={vehicle.id} className={!vehicle.is_active ? "opacity-50" : ""}>
-            <CardHeader className="pb-2">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 px-3 py-2 rounded-md">
+        <GripHorizontal className="h-4 w-4" />
+        Arrastra desde el ícono de la esquina superior izquierda para reordenar.
+      </div>
+
+      <SortableGrid
+        items={vehicles}
+        onReorder={handleReorder}
+        renderItem={(vehicle) => (
+          <Card className={!vehicle.is_active ? "opacity-50" : ""}>
+            <CardHeader className="pb-2 pl-12">
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{vehicle.name}</CardTitle>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setEditingVehicle(vehicle);
-                      setIsDialogOpen(true);
-                    }}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingVehicle(vehicle); setIsDialogOpen(true); }}>
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)}>
@@ -205,8 +205,8 @@ const AdminVehicles = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
