@@ -210,6 +210,7 @@ export type Database = {
           name: string
           phone: string | null
           status: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -220,6 +221,7 @@ export type Database = {
           name: string
           phone?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -230,6 +232,7 @@ export type Database = {
           name?: string
           phone?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -394,6 +397,7 @@ export type Database = {
           brand: string | null
           category: string | null
           created_at: string
+          daily_rate: number | null
           description: string | null
           id: string
           image_url: string | null
@@ -410,6 +414,7 @@ export type Database = {
           brand?: string | null
           category?: string | null
           created_at?: string
+          daily_rate?: number | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -426,6 +431,7 @@ export type Database = {
           brand?: string | null
           category?: string | null
           created_at?: string
+          daily_rate?: number | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -781,6 +787,7 @@ export type Database = {
           brand: string | null
           category: string | null
           created_at: string
+          daily_rate: number | null
           description: string | null
           id: string
           image_url: string | null
@@ -797,6 +804,7 @@ export type Database = {
           brand?: string | null
           category?: string | null
           created_at?: string
+          daily_rate?: number | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -813,6 +821,7 @@ export type Database = {
           brand?: string | null
           category?: string | null
           created_at?: string
+          daily_rate?: number | null
           description?: string | null
           id?: string
           image_url?: string | null

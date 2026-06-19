@@ -15,10 +15,11 @@ import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { format, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Loader2, Send, Truck, Car, CheckCircle, Clock, FileDown } from "lucide-react";
+import { CalendarIcon, Loader2, Send, Truck, Car, CheckCircle, Clock, FileDown, Wallet } from "lucide-react";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { downloadQuotePdf } from "@/lib/quotePdf";
+import { useAuth } from "@/hooks/useAuth";
 
 const quoteSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -36,10 +37,12 @@ interface Equipment {
   model: string | null;
   category: string | null;
   image_url: string | null;
+  daily_rate: number | null;
 }
 
 const QuotePage = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const preselectedType = searchParams.get("tipo") as "maquinaria" | "vehiculo" | null;
   const preselectedId = searchParams.get("id");
@@ -108,8 +111,8 @@ const QuotePage = () => {
 
   const fetchEquipment = async () => {
     const [machineryRes, vehiclesRes] = await Promise.all([
-      supabase.from("machinery").select("id, name, brand, model, category, image_url").eq("is_active", true).eq("is_available", true).order("name"),
-      supabase.from("vehicles").select("id, name, brand, model, category, image_url").eq("is_active", true).eq("is_available", true).order("name"),
+      supabase.from("machinery").select("id, name, brand, model, category, image_url, daily_rate").eq("is_active", true).eq("is_available", true).order("name"),
+      supabase.from("vehicles").select("id, name, brand, model, category, image_url, daily_rate").eq("is_active", true).eq("is_available", true).order("name"),
     ]);
 
     if (machineryRes.data) setMachinery(machineryRes.data);
@@ -123,6 +126,23 @@ const QuotePage = () => {
     if (!startDate || !endDate) return 0;
     return Math.max(1, differenceInDays(endDate, startDate) + 1);
   };
+
+  /** Discount tiers: 1-6 días 0%, 7-29 días 10%, 30+ días 20% */
+  const estimatePrice = () => {
+    if (!selectedItem?.daily_rate || !startDate || !endDate) return null;
+    const days = calculateDays();
+    const rate = Number(selectedItem.daily_rate);
+    if (!rate) return null;
+    const subtotal = rate * days;
+    const discountPct = days >= 30 ? 0.20 : days >= 7 ? 0.10 : 0;
+    const discount = subtotal * discountPct;
+    const total = subtotal - discount;
+    return { rate, days, subtotal, discountPct, discount, total };
+  };
+
+  const formatPEN = (n: number) =>
+    new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN", maximumFractionDigits: 2 }).format(n);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,13 +198,19 @@ Datos del cliente:
 - Ubicación del proyecto: ${formData.projectLocation || "N/A"}
 
 Mensaje adicional:
-${formData.message || "Sin mensaje adicional"}`;
+${formData.message || "Sin mensaje adicional"}${(() => {
+  const est = estimatePrice();
+  return est
+    ? `\n\nEstimación referencial:\n- Tarifa diaria: ${formatPEN(est.rate)}\n- Subtotal (${est.days} días): ${formatPEN(est.subtotal)}\n- Descuento: ${(est.discountPct * 100).toFixed(0)}%\n- Total estimado: ${formatPEN(est.total)}`
+    : "";
+})()}`;
 
       const { error } = await supabase.from("contact_messages").insert({
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         message: fullMessage,
+        user_id: user?.id ?? null,
       });
 
       if (error) throw error;
@@ -648,6 +674,34 @@ ${formData.message || "Sin mensaje adicional"}`;
                           </>
                         )}
                       </div>
+
+                      {(() => {
+                        const est = estimatePrice();
+                        if (!est) return null;
+                        return (
+                          <div className="rounded-xl border bg-card p-4 space-y-2 animate-fade-in">
+                            <div className="flex items-center gap-2 text-sm font-semibold">
+                              <Wallet className="h-4 w-4 text-primary" />
+                              Estimación referencial
+                            </div>
+                            <div className="flex justify-between text-xs"><span className="text-muted-foreground">Tarifa/día</span><span>{formatPEN(est.rate)}</span></div>
+                            <div className="flex justify-between text-xs"><span className="text-muted-foreground">Subtotal</span><span>{formatPEN(est.subtotal)}</span></div>
+                            {est.discountPct > 0 && (
+                              <div className="flex justify-between text-xs text-green-700 dark:text-green-400">
+                                <span>Descuento ({(est.discountPct * 100).toFixed(0)}%)</span>
+                                <span>− {formatPEN(est.discount)}</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between font-bold text-primary pt-2 border-t">
+                              <span>Total estimado</span><span>{formatPEN(est.total)}</span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground leading-snug">
+                              Precio referencial sujeto a confirmación según traslado, accesorios y condiciones del proyecto.
+                            </p>
+                          </div>
+                        );
+                      })()}
+
 
                       <Button type="submit" form="quote-form" className="w-full" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? (

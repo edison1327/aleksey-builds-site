@@ -1,8 +1,9 @@
-import { Building2, Home, Wrench, Truck, Settings, Phone, Users, FolderKanban, Sparkles, Calculator, Mail, MapPin, Award, Briefcase, LucideIcon } from "lucide-react";
+import { Building2, Home, Wrench, Truck, Settings, Phone, Users, FolderKanban, Sparkles, Calculator, Mail, MapPin, Award, Briefcase, UserCircle2, LogIn, LucideIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
+import { useAuth } from "@/hooks/useAuth";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +44,7 @@ const Navbar = () => {
   const location = useLocation();
   const { data: siteSettings } = useSiteSettings();
   const { data: navLinks } = useNavigationLinks("navbar");
+  const { user } = useAuth();
 
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
@@ -155,6 +157,17 @@ const Navbar = () => {
                   </button>
                 );
               })}
+              <button
+                onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
+                title={user ? "Mi cuenta" : "Iniciar sesión"}
+                className="group relative flex items-center gap-2 px-3 xl:px-4 py-2 text-sm xl:text-base font-heading tracking-wide text-secondary-foreground/80 hover:text-primary-foreground transition-all duration-300"
+              >
+                <span className="absolute inset-0 bg-primary rounded-full opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-400" style={{ zIndex: -1 }} />
+                {user
+                  ? <UserCircle2 className="h-4 w-4 relative z-10" />
+                  : <LogIn className="h-4 w-4 relative z-10" />}
+                <span className="relative z-10 hidden xl:inline">{user ? "MI CUENTA" : "ACCEDER"}</span>
+              </button>
             </div>
 
             {/* Animated Hamburger Button */}

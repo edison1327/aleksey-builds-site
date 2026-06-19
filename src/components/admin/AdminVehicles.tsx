@@ -20,6 +20,7 @@ interface Vehicle {
   brand: string | null;
   model: string | null;
   price: string | null;
+  daily_rate: number | null;
   image_url: string | null;
   is_available: boolean;
   is_active: boolean;
@@ -65,6 +66,7 @@ const AdminVehicles = () => {
             brand: editingVehicle.brand,
             model: editingVehicle.model,
             price: editingVehicle.price,
+            daily_rate: editingVehicle.daily_rate,
             image_url: editingVehicle.image_url,
             is_available: editingVehicle.is_available,
             is_active: editingVehicle.is_active,
@@ -83,6 +85,7 @@ const AdminVehicles = () => {
             brand: editingVehicle.brand,
             model: editingVehicle.model,
             price: editingVehicle.price,
+            daily_rate: editingVehicle.daily_rate,
             image_url: editingVehicle.image_url,
             is_available: editingVehicle.is_available,
             is_active: editingVehicle.is_active,
@@ -141,6 +144,7 @@ const AdminVehicles = () => {
       brand: "",
       model: "",
       price: "",
+      daily_rate: null,
       image_url: "",
       is_available: true,
       is_active: true,
@@ -252,13 +256,27 @@ const AdminVehicles = () => {
                 onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, category: e.target.value } : null)}
               />
             </div>
-            <div>
-              <label className="text-sm font-medium">Precio (ej: S/ 300/día)</label>
-              <Input
-                value={editingVehicle?.price || ""}
-                onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, price: e.target.value } : null)}
-                placeholder="S/ 300/día"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Precio mostrado (texto)</label>
+                <Input
+                  value={editingVehicle?.price || ""}
+                  onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, price: e.target.value } : null)}
+                  placeholder="S/ 300/día"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Tarifa diaria (PEN)</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editingVehicle?.daily_rate ?? ""}
+                  onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, daily_rate: e.target.value ? Number(e.target.value) : null } : null)}
+                  placeholder="300.00"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">Para la calculadora del cotizador.</p>
+              </div>
             </div>
             <div>
               <label className="text-sm font-medium">Imagen</label>

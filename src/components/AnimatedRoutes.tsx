@@ -14,6 +14,8 @@ import BlogPage from "@/pages/BlogPage";
 import BlogPostPage from "@/pages/BlogPostPage";
 import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
+import PortalLogin from "@/pages/PortalLogin";
+import MyQuotesPage from "@/pages/MyQuotesPage";
 import NotFound from "@/pages/NotFound";
 
 // Component that scrolls to top on route change
@@ -49,6 +51,8 @@ const AnimatedRoutes = () => {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/portal/login" element={<PortalLogin />} />
+          <Route path="/mis-solicitudes" element={<MyQuotesPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
