@@ -113,57 +113,51 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Servicios */}
-          <div>
-            <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
-            <ul className="space-y-2 text-secondary-foreground/80">
-              {footerServices.length > 0 ? (
-                footerServices.map((link) => (
-                  <li key={link.id}>
-                    <Link to={link.path} className="hover:text-primary transition-colors">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <>
+          {/* Grupos de enlaces dinámicos del footer */}
+          {footerGroups.length > 0 ? (
+            footerGroups.map((group) => (
+              <div key={group.location}>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{group.title}</h3>
+                <ul className="space-y-2 text-secondary-foreground/80">
+                  {group.links.map((link) => (
+                    <li key={link.id}>
+                      {link.path.startsWith("/#") ? (
+                        <a href={link.path} className="hover:text-primary transition-colors">
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link to={link.path} className="hover:text-primary transition-colors">
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <>
+              <div>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Servicios</h3>
+                <ul className="space-y-2 text-secondary-foreground/80">
                   <li><Link to="/construccion" className="hover:text-primary transition-colors">Construcción</Link></li>
                   <li><Link to="/ingenieria" className="hover:text-primary transition-colors">Ingeniería</Link></li>
                   <li><Link to="/vehiculos" className="hover:text-primary transition-colors">Vehículos</Link></li>
                   <li><Link to="/maquinaria" className="hover:text-primary transition-colors">Maquinaria</Link></li>
-                </>
-              )}
-            </ul>
-          </div>
-
-          {/* Empresa */}
-          <div>
-            <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
-            <ul className="space-y-2 text-secondary-foreground/80">
-              {footerCompany.length > 0 ? (
-                footerCompany.map((link) => (
-                  <li key={link.id}>
-                    {link.path.startsWith("/#") ? (
-                      <a href={link.path} className="hover:text-primary transition-colors">
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link to={link.path} className="hover:text-primary transition-colors">
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))
-              ) : (
-                <>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">Empresa</h3>
+                <ul className="space-y-2 text-secondary-foreground/80">
                   <li><Link to="/nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
                   <li><Link to="/proyectos" className="hover:text-primary transition-colors">Proyectos</Link></li>
                   <li><a href="/#contact" className="hover:text-primary transition-colors">Contacto</a></li>
                   <li><Link to="/convocatoria" className="hover:text-primary transition-colors">Trabaja con Nosotros</Link></li>
-                </>
-              )}
-            </ul>
-          </div>
+                </ul>
+              </div>
+            </>
+          )}
+
 
           {/* Contacto */}
           <div>
