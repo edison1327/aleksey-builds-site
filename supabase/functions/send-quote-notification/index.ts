@@ -11,6 +11,35 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+function getClientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip") || "unknown";
+}
+
+async function checkRateLimit(bucket: string, identifier: string, max: number, windowSec: number): Promise<boolean> {
+  try {
+    const url = Deno.env.get("SUPABASE_URL");
+    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!url || !key) return true;
+    const client = createClient(url, key);
+    const { data, error } = await client.rpc("check_rate_limit", {
+      _bucket: bucket,
+      _identifier: identifier,
+      _max_requests: max,
+      _window_seconds: windowSec,
+    });
+    if (error) {
+      console.error("Rate limit RPC error:", error);
+      return true;
+    }
+    return data !== false;
+  } catch (e) {
+    console.error("Rate limit exception:", e);
+    return true;
+  }
+}
+
 const QuoteSchema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(255),
@@ -75,6 +104,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const ip = getClientIp(req);
+    const allowed = await checkRateLimit("quote-notification", ip, 5, 3600);
+    if (!allowed) {
+      return new Response(
+        JSON.stringify({ error: "Has enviado demasiadas cotizaciones. Intenta de nuevo en una hora." }),
+        { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     let payload: unknown;
     try {
       payload = await req.json();
