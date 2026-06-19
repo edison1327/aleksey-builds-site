@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getThrottleWait, markSubmitted } from "@/lib/throttle";
 import { z } from "zod";
 import { Loader2, Send } from "lucide-react";
 
@@ -35,6 +36,16 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+
+    const wait = getThrottleWait("quote", 30_000);
+    if (wait > 0) {
+      toast({
+        title: "Espera un momento",
+        description: `Podrás enviar otra solicitud en ${wait}s.`,
+        variant: "destructive",
+      });
+      return;
+    }
 
     const result = quoteSchema.safeParse(formData);
     if (!result.success) {
@@ -84,6 +95,7 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
         description: "Nos pondremos en contacto contigo pronto.",
       });
 
+      markSubmitted("quote");
       setFormData({ name: "", email: "", phone: "", message: "" });
       onSuccess?.();
     } catch (error) {

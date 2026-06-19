@@ -1,10 +1,40 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const RoleEnum = z.enum(['admin', 'user']);
+
+const ActionSchema = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('list') }),
+  z.object({
+    action: z.literal('create'),
+    email: z.string().trim().email('Email inválido').max(255),
+    password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres').max(72),
+    role: RoleEnum.optional(),
+  }),
+  z.object({
+    action: z.literal('update'),
+    userId: z.string().uuid('ID de usuario inválido'),
+    email: z.string().trim().email().max(255).optional(),
+    password: z.string().min(8).max(72).optional(),
+    role: RoleEnum.optional(),
+  }),
+  z.object({
+    action: z.literal('delete'),
+    userId: z.string().uuid('ID de usuario inválido'),
+  }),
+]);
+
+const jsonResponse = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -64,29 +94,41 @@ serve(async (req) => {
       );
     }
 
-    const { action, ...params } = await req.json();
-    console.log('Action:', action, 'Params:', params);
+    let rawPayload: unknown;
+    try {
+      rawPayload = await req.json();
+    } catch {
+      return jsonResponse({ error: 'Cuerpo de la solicitud inválido' }, 400);
+    }
+
+    const validated = ActionSchema.safeParse(rawPayload);
+    if (!validated.success) {
+      console.log('Validation failed:', validated.error.flatten());
+      return jsonResponse(
+        { error: 'Datos inválidos', details: validated.error.flatten().fieldErrors },
+        400
+      );
+    }
+    const action = validated.data.action;
+    console.log('Action:', action);
 
     switch (action) {
       case 'list': {
-        // Get all users with their roles
         const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
         if (listError) {
           console.error('Error listing users:', listError);
           throw listError;
         }
 
-        // Get all roles
         const { data: roles, error: rolesError } = await supabaseAdmin
           .from('user_roles')
           .select('*');
-        
+
         if (rolesError) {
           console.error('Error fetching roles:', rolesError);
           throw rolesError;
         }
 
-        // Combine users with their roles
         const usersWithRoles = users.map((u) => ({
           id: u.id,
           email: u.email,
@@ -96,23 +138,12 @@ serve(async (req) => {
         }));
 
         console.log('Listed users:', usersWithRoles.length);
-        return new Response(
-          JSON.stringify({ users: usersWithRoles }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ users: usersWithRoles });
       }
 
       case 'create': {
-        const { email, password, role } = params;
-        
-        if (!email || !password) {
-          return new Response(
-            JSON.stringify({ error: 'Email y contraseña son requeridos' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
+        const { email, password, role } = validated.data;
 
-        // Create user
         const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
           email,
           password,
@@ -121,13 +152,9 @@ serve(async (req) => {
 
         if (createError) {
           console.error('Error creating user:', createError);
-          return new Response(
-            JSON.stringify({ error: createError.message }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
+          return jsonResponse({ error: createError.message }, 400);
         }
 
-        // Assign role
         const { error: roleInsertError } = await supabaseAdmin
           .from('user_roles')
           .insert({
@@ -137,27 +164,15 @@ serve(async (req) => {
 
         if (roleInsertError) {
           console.error('Error assigning role:', roleInsertError);
-          // User was created but role assignment failed
         }
 
         console.log('Created user:', newUser.user.id);
-        return new Response(
-          JSON.stringify({ user: newUser.user, message: 'Usuario creado correctamente' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ user: newUser.user, message: 'Usuario creado correctamente' });
       }
 
       case 'update': {
-        const { userId, email, password, role } = params;
+        const { userId, email, password, role } = validated.data;
 
-        if (!userId) {
-          return new Response(
-            JSON.stringify({ error: 'ID de usuario requerido' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        // Update user email/password if provided
         const updateData: { email?: string; password?: string } = {};
         if (email) updateData.email = email;
         if (password) updateData.password = password;
@@ -170,16 +185,11 @@ serve(async (req) => {
 
           if (updateError) {
             console.error('Error updating user:', updateError);
-            return new Response(
-              JSON.stringify({ error: updateError.message }),
-              { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            );
+            return jsonResponse({ error: updateError.message }, 400);
           }
         }
 
-        // Update role if provided
         if (role) {
-          // Check if user has a role already
           const { data: existingRole } = await supabaseAdmin
             .from('user_roles')
             .select('id')
@@ -192,81 +202,48 @@ serve(async (req) => {
               .update({ role })
               .eq('user_id', userId);
 
-            if (roleUpdateError) {
-              console.error('Error updating role:', roleUpdateError);
-            }
+            if (roleUpdateError) console.error('Error updating role:', roleUpdateError);
           } else {
             const { error: roleInsertError } = await supabaseAdmin
               .from('user_roles')
               .insert({ user_id: userId, role });
 
-            if (roleInsertError) {
-              console.error('Error inserting role:', roleInsertError);
-            }
+            if (roleInsertError) console.error('Error inserting role:', roleInsertError);
           }
         }
 
         console.log('Updated user:', userId);
-        return new Response(
-          JSON.stringify({ message: 'Usuario actualizado correctamente' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ message: 'Usuario actualizado correctamente' });
       }
 
       case 'delete': {
-        const { userId } = params;
+        const { userId } = validated.data;
 
-        if (!userId) {
-          return new Response(
-            JSON.stringify({ error: 'ID de usuario requerido' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        // Prevent self-deletion
         if (userId === user.id) {
-          return new Response(
-            JSON.stringify({ error: 'No puedes eliminar tu propia cuenta' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
+          return jsonResponse({ error: 'No puedes eliminar tu propia cuenta' }, 400);
         }
 
-        // Delete user role first
         await supabaseAdmin
           .from('user_roles')
           .delete()
           .eq('user_id', userId);
 
-        // Delete user
         const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
         if (deleteError) {
           console.error('Error deleting user:', deleteError);
-          return new Response(
-            JSON.stringify({ error: deleteError.message }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
+          return jsonResponse({ error: deleteError.message }, 400);
         }
 
         console.log('Deleted user:', userId);
-        return new Response(
-          JSON.stringify({ message: 'Usuario eliminado correctamente' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ message: 'Usuario eliminado correctamente' });
       }
 
       default:
-        return new Response(
-          JSON.stringify({ error: 'Acción no válida' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return jsonResponse({ error: 'Acción no válida' }, 400);
     }
   } catch (error) {
     console.error('Error in manage-users function:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ error: 'Error interno del servidor. Intenta de nuevo más tarde.' }, 500);
   }
 });
