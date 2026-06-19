@@ -157,6 +157,17 @@ const Navbar = () => {
                   </button>
                 );
               })}
+              <button
+                onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
+                title={user ? "Mi cuenta" : "Iniciar sesión"}
+                className="group relative flex items-center gap-2 px-3 xl:px-4 py-2 text-sm xl:text-base font-heading tracking-wide text-secondary-foreground/80 hover:text-primary-foreground transition-all duration-300"
+              >
+                <span className="absolute inset-0 bg-primary rounded-full opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-400" style={{ zIndex: -1 }} />
+                {user
+                  ? <UserCircle2 className="h-4 w-4 relative z-10" />
+                  : <LogIn className="h-4 w-4 relative z-10" />}
+                <span className="relative z-10 hidden xl:inline">{user ? "MI CUENTA" : "ACCEDER"}</span>
+              </button>
             </div>
 
             {/* Animated Hamburger Button */}
