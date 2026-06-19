@@ -15,8 +15,11 @@ import { logAction } from "@/lib/auditLog";
 interface Machinery {
   id: string;
   name: string;
+  name_en: string | null;
   description: string | null;
+  description_en: string | null;
   category: string | null;
+  category_en: string | null;
   brand: string | null;
   model: string | null;
   price: string | null;
@@ -61,8 +64,11 @@ const AdminMachinery = () => {
           .from("machinery")
           .update({
             name: editingMachine.name,
+            name_en: editingMachine.name_en,
             description: editingMachine.description,
+            description_en: editingMachine.description_en,
             category: editingMachine.category,
+            category_en: editingMachine.category_en,
             brand: editingMachine.brand,
             model: editingMachine.model,
             price: editingMachine.price,
@@ -80,8 +86,11 @@ const AdminMachinery = () => {
           .from("machinery")
           .insert({
             name: editingMachine.name,
+            name_en: editingMachine.name_en,
             description: editingMachine.description,
+            description_en: editingMachine.description_en,
             category: editingMachine.category,
+            category_en: editingMachine.category_en,
             brand: editingMachine.brand,
             model: editingMachine.model,
             price: editingMachine.price,
