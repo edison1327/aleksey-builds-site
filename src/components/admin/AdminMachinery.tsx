@@ -262,13 +262,27 @@ const AdminMachinery = () => {
                 onChange={(e) => setEditingMachine(prev => prev ? { ...prev, category: e.target.value } : null)}
               />
             </div>
-            <div>
-              <label className="text-sm font-medium">Precio (ej: S/ 500/día)</label>
-              <Input
-                value={editingMachine?.price || ""}
-                onChange={(e) => setEditingMachine(prev => prev ? { ...prev, price: e.target.value } : null)}
-                placeholder="S/ 500/día"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Precio mostrado (texto)</label>
+                <Input
+                  value={editingMachine?.price || ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, price: e.target.value } : null)}
+                  placeholder="S/ 500/día"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Tarifa diaria (PEN)</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editingMachine?.daily_rate ?? ""}
+                  onChange={(e) => setEditingMachine(prev => prev ? { ...prev, daily_rate: e.target.value ? Number(e.target.value) : null } : null)}
+                  placeholder="500.00"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">Para la calculadora del cotizador.</p>
+              </div>
             </div>
             <div>
               <label className="text-sm font-medium">Imagen</label>
