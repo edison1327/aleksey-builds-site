@@ -21,6 +21,7 @@ import AdminMachinery from "@/components/admin/AdminMachinery";
 import AdminVehicles from "@/components/admin/AdminVehicles";
 import AdminContact from "@/components/admin/AdminContact";
 import AdminMessages from "@/components/admin/AdminMessages";
+import AdminQuotes from "@/components/admin/AdminQuotes";
 import AdminJobApplications from "@/components/admin/AdminJobApplications";
 import AdminJobPositions from "@/components/admin/AdminJobPositions";
 import AdminBenefits from "@/components/admin/AdminBenefits";
@@ -137,6 +138,7 @@ const Admin = () => {
     { id: "vehicles", label: "Vehículos", icon: Car, category: "contenido" },
     { id: "contact", label: "Contacto", icon: Settings, category: "comunicacion" },
     { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion" },
+    { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
@@ -302,6 +304,7 @@ const Admin = () => {
       case "vehicles": return <AdminVehicles />;
       case "contact": return <AdminContact />;
       case "messages": return <AdminMessages />;
+      case "quotes": return <AdminQuotes />;
       case "positions": return <AdminJobPositions />;
       case "benefits": return <AdminBenefits />;
       case "applications": return <AdminJobApplications />;
