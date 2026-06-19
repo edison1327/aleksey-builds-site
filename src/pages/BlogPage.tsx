@@ -9,12 +9,16 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { pickLocalized } from "@/lib/i18nField";
 
 interface Post {
   id: string;
   slug: string;
   title: string;
+  title_en: string | null;
   excerpt: string | null;
+  excerpt_en: string | null;
   cover_image: string | null;
   author: string | null;
   published_at: string | null;
@@ -24,11 +28,13 @@ interface Post {
 const BlogPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const { i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || "es").slice(0, 2);
 
   useEffect(() => {
     supabase
       .from("blog_posts")
-      .select("id, slug, title, excerpt, cover_image, author, published_at, tags")
+      .select("id, slug, title, title_en, excerpt, excerpt_en, cover_image, author, published_at, tags")
       .eq("published", true)
       .order("published_at", { ascending: false })
       .then(({ data }) => {
@@ -108,10 +114,10 @@ const BlogPage = () => {
                         </div>
                       )}
                       <h2 className="text-lg font-heading font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                        {p.title}
+                        {pickLocalized(p as any, "title", lang)}
                       </h2>
-                      {p.excerpt && (
-                        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{p.excerpt}</p>
+                      {(pickLocalized(p as any, "excerpt", lang)) && (
+                        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{pickLocalized(p as any, "excerpt", lang)}</p>
                       )}
                       <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t">
                         <div className="flex items-center gap-3">

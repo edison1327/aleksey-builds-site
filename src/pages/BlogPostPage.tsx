@@ -9,13 +9,18 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { pickLocalized } from "@/lib/i18nField";
 
 interface Post {
   id: string;
   slug: string;
   title: string;
+  title_en: string | null;
   excerpt: string | null;
+  excerpt_en: string | null;
   content: string;
+  content_en: string | null;
   cover_image: string | null;
   author: string | null;
   published_at: string | null;
@@ -27,6 +32,11 @@ const BlogPostPage = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
+  const { i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || "es").slice(0, 2);
+  const title = post ? pickLocalized(post as any, "title", lang) : "";
+  const excerpt = post ? pickLocalized(post as any, "excerpt", lang) : "";
+  const content = post ? pickLocalized(post as any, "content", lang) : "";
 
   useEffect(() => {
     if (!slug) return;
