@@ -8,9 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText } from "lucide-react";
+import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText, Download } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { exportCsv } from "@/lib/exportCsv";
+import TemplatePicker from "@/components/admin/TemplatePicker";
 
 interface Message {
   id: string;
@@ -397,6 +399,29 @@ const AdminMessages = () => {
               <SelectItem value="responded">Respondidos</SelectItem>
             </SelectContent>
           </Select>
+          <Button
+            variant="outline"
+            size="default"
+            onClick={() =>
+              exportCsv(
+                `mensajes-${new Date().toISOString().slice(0, 10)}.csv`,
+                filteredMessages,
+                [
+                  { key: "created_at", label: "Fecha", format: (v) => format(new Date(v as string), "yyyy-MM-dd HH:mm") },
+                  { key: "name", label: "Nombre" },
+                  { key: "email", label: "Email" },
+                  { key: "phone", label: "Teléfono" },
+                  { key: "status", label: "Estado" },
+                  { key: "id", label: "Tipo", format: (_v, row) => (isQuoteRequest(row) ? "Cotización" : "Contacto") },
+                  { key: "message", label: "Mensaje" },
+                ],
+              )
+            }
+            title="Exportar visibles a CSV"
+          >
+            <Download className="h-4 w-4 mr-1" />
+            CSV
+          </Button>
         </div>
       </div>
 
@@ -661,6 +686,13 @@ const AdminMessages = () => {
                       Responder
                     </a>
                   </Button>
+                  <TemplatePicker
+                    email={selectedMessage.email}
+                    vars={{
+                      name: selectedMessage.name,
+                      ...(parseQuoteDetails(selectedMessage) || {}),
+                    }}
+                  />
                 </div>
               </div>
             </div>
