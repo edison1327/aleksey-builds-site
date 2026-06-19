@@ -20,6 +20,7 @@ interface Vehicle {
   brand: string | null;
   model: string | null;
   price: string | null;
+  daily_rate: number | null;
   image_url: string | null;
   is_available: boolean;
   is_active: boolean;
