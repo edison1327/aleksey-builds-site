@@ -82,8 +82,8 @@ const BlogPostPage = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: post.title,
-    description: post.excerpt || undefined,
+    headline: title,
+    description: excerpt || undefined,
     image: post.cover_image || undefined,
     author: { "@type": "Person", name: post.author || "ALEKSEY" },
     publisher: {
@@ -99,14 +99,14 @@ const BlogPostPage = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>{post.title} | Blog ALEKSEY</title>
-        {post.excerpt && <meta name="description" content={post.excerpt} />}
+        <title>{title} | Blog ALEKSEY</title>
+        {excerpt && <meta name="description" content={excerpt} />}
         <link rel="canonical" href={canonical} />
-        <meta property="og:title" content={post.title} />
+        <meta property="og:title" content={title} />
         <meta property="og:url" content={canonical} />
         <meta property="og:type" content="article" />
         {post.cover_image && <meta property="og:image" content={post.cover_image} />}
-        {post.excerpt && <meta property="og:description" content={post.excerpt} />}
+        {excerpt && <meta property="og:description" content={excerpt} />}
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
@@ -116,7 +116,7 @@ const BlogPostPage = () => {
             to="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
           >
-            <ArrowLeft className="h-4 w-4 mr-1" /> Volver al blog
+            <ArrowLeft className="h-4 w-4 mr-1" /> {lang === "en" ? "Back to blog" : "Volver al blog"}
           </Link>
 
           {post.tags.length > 0 && (
@@ -130,7 +130,7 @@ const BlogPostPage = () => {
           )}
 
           <h1 className="text-3xl md:text-5xl font-heading font-bold mb-4 leading-tight">
-            {post.title}
+            {title}
           </h1>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
@@ -150,19 +150,19 @@ const BlogPostPage = () => {
           {post.cover_image && (
             <img
               src={post.cover_image}
-              alt={post.title}
+              alt={title}
               className="w-full rounded-2xl mb-8 object-cover max-h-[480px]"
             />
           )}
 
-          {post.excerpt && (
+          {excerpt && (
             <p className="text-lg text-muted-foreground italic mb-6 border-l-4 border-primary pl-4">
-              {post.excerpt}
+              {excerpt}
             </p>
           )}
 
           <div className="prose prose-lg max-w-none dark:prose-invert">
-            {post.content.split(/\n{2,}/).map((para, i) => (
+            {(content || "").split(/\n{2,}/).map((para, i) => (
               <p key={i} className="mb-4 whitespace-pre-wrap leading-relaxed text-foreground/90">
                 {para}
               </p>
