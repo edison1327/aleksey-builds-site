@@ -20,7 +20,7 @@ export const useTypewriter = ({
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     let charIndex = 0;
 
     const startTyping = () => {
