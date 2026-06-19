@@ -1,9 +1,25 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const MessageSchema = z.object({
+  role: z.enum(["system", "user", "assistant"]),
+  content: z.string().min(1).max(4000),
+});
+
+const ChatSchema = z.object({
+  messages: z.array(MessageSchema).min(1).max(50),
+});
+
+const jsonResponse = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 
 const SYSTEM_PROMPT = `Eres el asistente virtual inteligente de **Aleksey**, una empresa líder en ingeniería y construcción en Perú con más de 10 años de experiencia.
 
@@ -68,11 +84,27 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    let rawPayload: unknown;
+    try {
+      rawPayload = await req.json();
+    } catch {
+      return jsonResponse({ error: "Cuerpo de la solicitud inválido" }, 400);
+    }
+
+    const parsed = ChatSchema.safeParse(rawPayload);
+    if (!parsed.success) {
+      console.log("Validation failed:", parsed.error.flatten());
+      return jsonResponse(
+        { error: "Mensajes inválidos", details: parsed.error.flatten().fieldErrors },
+        400
+      );
+    }
+    const { messages } = parsed.data;
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+      console.error("LOVABLE_API_KEY is not configured");
+      return jsonResponse({ error: "Servicio no configurado. Contacta al administrador." }, 500);
     }
 
     console.log("Processing chat request with", messages.length, "messages");
@@ -96,24 +128,18 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
-      
+
       if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Demasiadas solicitudes. Por favor, intenta de nuevo en unos segundos." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        return jsonResponse(
+          { error: "Demasiadas solicitudes. Por favor, intenta de nuevo en unos segundos." },
+          429
         );
       }
       if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Servicio temporalmente no disponible." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: "Servicio temporalmente no disponible." }, 402);
       }
-      
-      return new Response(
-        JSON.stringify({ error: "Error al procesar la solicitud" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+
+      return jsonResponse({ error: "Error al procesar la solicitud" }, 500);
     }
 
     return new Response(response.body, {
@@ -121,9 +147,6 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Chat error:", error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Error desconocido" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ error: "Error interno del servidor. Intenta de nuevo." }, 500);
   }
 });
