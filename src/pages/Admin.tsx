@@ -325,6 +325,18 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex">
+      <CommandPalette
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+        items={menuItems.map((m) => ({
+          id: m.id,
+          label: m.label,
+          category: categories.find((c) => c.id === m.category)?.label || m.category,
+          icon: m.icon,
+        }))}
+        onSelect={(id) => setActiveTab(id)}
+      />
+
       {/* Desktop Sidebar */}
       <aside className={cn(
         "hidden lg:flex flex-col bg-card/95 backdrop-blur-md border-r border-border/50 transition-all duration-300 sticky top-0 h-screen",
