@@ -53,7 +53,7 @@ const AdminMessages = () => {
   // Setup realtime subscription
   useEffect(() => {
     const channel = supabase
-      .channel('contact-messages-changes')
+      .channel(`contact-messages-changes-${Math.random().toString(36).slice(2)}`)
       .on(
         'postgres_changes',
         {
