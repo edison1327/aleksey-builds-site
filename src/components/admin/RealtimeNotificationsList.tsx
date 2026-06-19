@@ -121,7 +121,7 @@ export const RealtimeNotificationsList = ({ onNavigateToMessages }: RealtimeNoti
 
     // Subscribe to realtime updates
     const channel = supabase
-      .channel("realtime-notifications-list")
+      .channel(`realtime-notifications-list-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         {

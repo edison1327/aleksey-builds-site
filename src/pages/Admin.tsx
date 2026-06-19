@@ -61,7 +61,7 @@ const Admin = () => {
   useEffect(() => {
     // Subscribe to realtime updates for new messages/quotes notification
     const channel = supabase
-      .channel('admin-notifications')
+      .channel(`admin-notifications-${Math.random().toString(36).slice(2)}`)
       .on(
         'postgres_changes',
         {
@@ -599,7 +599,7 @@ const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () 
 
     // Subscribe to realtime updates for contact_messages
     const channel = supabase
-      .channel('dashboard-quotes')
+      .channel(`dashboard-quotes-${Math.random().toString(36).slice(2)}`)
       .on(
         'postgres_changes',
         {
