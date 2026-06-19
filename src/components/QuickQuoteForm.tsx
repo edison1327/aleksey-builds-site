@@ -87,9 +87,10 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
       setFormData({ name: "", email: "", phone: "", message: "" });
       onSuccess?.();
     } catch (error) {
+      console.error("Error sending quote:", error);
       toast({
         title: "Error",
-        description: "No se pudo enviar la solicitud. Intente nuevamente.",
+        description: "No se pudo enviar la solicitud. Verifica tu conexión e intenta nuevamente.",
         variant: "destructive",
       });
     } finally {
