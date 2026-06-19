@@ -5,6 +5,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link, useNavigate } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
 import { useVehicles } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 
 import fordTransit from "@/assets/ford-transit.jpg";
 import ram2500 from "@/assets/ram-2500.jpg";
@@ -40,7 +41,8 @@ const Vehicles = () => {
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
   const { data: dbVehicles } = useVehicles(3);
   const navigate = useNavigate();
-  
+  const tr = useLocalizedField();
+
   // Use database vehicles if available, otherwise use defaults
   const vehicles = dbVehicles.length > 0 ? dbVehicles : defaultVehicles;
 
@@ -82,8 +84,8 @@ const Vehicles = () => {
                 />
               </div>
               <CardContent className="p-6">
-                <h3 className="text-xl font-heading font-bold text-foreground mb-3">{vehicle.name}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">{vehicle.description}</p>
+                <h3 className="text-xl font-heading font-bold text-foreground mb-3">{tr(vehicle as any, "name") || vehicle.name}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">{tr(vehicle as any, "description") || vehicle.description}</p>
                 {(vehicle as any).price && (
                   <p className="text-lg font-bold text-primary mb-2">$ {(vehicle as any).price}</p>
                 )}

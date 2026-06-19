@@ -5,6 +5,8 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link, useNavigate } from "react-router-dom";
 import ParallaxImage from "./ParallaxImage";
 import { useMachinery } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
+import { useTranslation } from "react-i18next";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
@@ -40,7 +42,9 @@ const Machinery = () => {
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation(0.2);
   const { data: dbMachinery } = useMachinery(3);
   const navigate = useNavigate();
-  
+  const tr = useLocalizedField();
+  const { t } = useTranslation();
+
   // Use database machinery if available, otherwise use defaults
   const machinery = dbMachinery.length > 0 ? dbMachinery : defaultMachinery;
 
@@ -82,8 +86,8 @@ const Machinery = () => {
                 />
               </div>
               <CardContent className="p-6">
-                <h3 className="text-xl font-heading font-bold mb-3">{item.name}</h3>
-                <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{item.description}</p>
+                <h3 className="text-xl font-heading font-bold mb-3">{tr(item as any, "name") || item.name}</h3>
+                <p className="text-sm text-secondary-foreground/70 leading-relaxed mb-4">{tr(item as any, "description") || item.description}</p>
                 {(item as any).price && (
                   <p className="text-lg font-bold text-primary mb-2">$ {(item as any).price}</p>
                 )}

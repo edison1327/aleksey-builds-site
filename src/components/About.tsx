@@ -1,6 +1,7 @@
 import { Award, Users, Clock, CheckCircle } from "lucide-react";
 import { useAboutContent, useHeroContent } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocalizedField } from "@/lib/i18nField";
 
 const defaultStats = [
   { icon: Award, value: "10+", label: "Años de Experiencia" },
@@ -12,6 +13,7 @@ const defaultStats = [
 const About = () => {
   const { data: aboutData, isLoading: aboutLoading } = useAboutContent();
   const { data: heroData, isLoading: heroLoading } = useHeroContent();
+  const tr = useLocalizedField();
 
   const isLoading = aboutLoading || heroLoading;
 
@@ -43,7 +45,7 @@ const About = () => {
     );
   }
 
-  const description = aboutData?.description || `Somos una empresa constructora con más de una década de experiencia en el sector. Nos especializamos en proyectos residenciales, comerciales e industriales, siempre manteniendo nuestro compromiso con la calidad y la innovación.
+  const description = tr(aboutData as any, "description") || `Somos una empresa constructora con más de una década de experiencia en el sector. Nos especializamos en proyectos residenciales, comerciales e industriales, siempre manteniendo nuestro compromiso con la calidad y la innovación.
 
 Nuestro equipo de profesionales altamente capacitados trabaja con las últimas tecnologías y mejores prácticas de la industria para garantizar resultados excepcionales en cada proyecto.
 
@@ -58,7 +60,7 @@ En ALEKSEY, no solo construimos edificios, construimos relaciones duraderas con 
           {/* Left side - Text or Image + Text */}
           <div>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 tracking-wide">
-              {aboutData?.title || "SOBRE ALEKSEY"}
+              {tr(aboutData as any, "title") || aboutData?.title || "SOBRE ALEKSEY"}
             </h2>
             
             {/* Show image if available */}
