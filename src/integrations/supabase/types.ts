@@ -251,6 +251,51 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment_bookings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string | null
+          end_date: string
+          equipment_id: string
+          equipment_type: string
+          id: string
+          notes: string | null
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          end_date: string
+          equipment_id: string
+          equipment_type: string
+          id?: string
+          notes?: string | null
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          end_date?: string
+          equipment_id?: string
+          equipment_type?: string
+          id?: string
+          notes?: string | null
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hero_content: {
         Row: {
           accident_free_hours: number | null
@@ -481,6 +526,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      message_replies: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          author_role: string
+          body: string
+          created_at: string
+          id: string
+          message_id: string
+          read_by_admin: boolean
+          read_by_customer: boolean
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          author_role: string
+          body: string
+          created_at?: string
+          id?: string
+          message_id: string
+          read_by_admin?: boolean
+          read_by_customer?: boolean
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          author_role?: string
+          body?: string
+          created_at?: string
+          id?: string
+          message_id?: string
+          read_by_admin?: boolean
+          read_by_customer?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_replies_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "contact_messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       navigation_links: {
         Row: {

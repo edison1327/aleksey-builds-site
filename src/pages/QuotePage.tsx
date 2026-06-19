@@ -20,6 +20,7 @@ import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { downloadQuotePdf } from "@/lib/quotePdf";
 import { useAuth } from "@/hooks/useAuth";
+import BookingCalendarView from "@/components/BookingCalendarView";
 
 const quoteSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -425,6 +426,15 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
                           {selectedItem.brand && <p className="text-sm text-muted-foreground">{selectedItem.brand} {selectedItem.model}</p>}
                           {selectedItem.category && <p className="text-xs text-primary">{selectedItem.category}</p>}
                         </div>
+                      </div>
+                    )}
+
+                    {selectedItem && (
+                      <div className="mt-4">
+                        <BookingCalendarView
+                          equipmentType={equipmentType === "maquinaria" ? "machinery" : "vehicle"}
+                          equipmentId={selectedItem.id}
+                        />
                       </div>
                     )}
                   </CardContent>

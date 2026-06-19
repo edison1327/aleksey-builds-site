@@ -15,6 +15,8 @@ import { exportCsv } from "@/lib/exportCsv";
 import TemplatePicker from "@/components/admin/TemplatePicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { logAction } from "@/lib/auditLog";
+import MessageThread from "@/components/MessageThread";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
@@ -36,6 +38,7 @@ const AdminMessages = () => {
   const [newMessageAlert, setNewMessageAlert] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const fetchMessages = useCallback(async () => {
     const { data, error } = await supabase
@@ -746,6 +749,20 @@ const AdminMessages = () => {
                   <p className="whitespace-pre-wrap text-sm">{selectedMessage.message}</p>
                 </div>
               </div>
+
+              {/* Conversation thread */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
+                  Conversación con el cliente
+                </label>
+                <MessageThread
+                  messageId={selectedMessage.id}
+                  currentUserId={user?.id || null}
+                  currentUserName="Equipo Aleksey"
+                  asRole="admin"
+                />
+              </div>
+
 
               {/* Metadata */}
               <div className="flex items-center justify-between pt-4 border-t">
