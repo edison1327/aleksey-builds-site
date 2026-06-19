@@ -20,6 +20,7 @@ interface Machinery {
   brand: string | null;
   model: string | null;
   price: string | null;
+  daily_rate: number | null;
   image_url: string | null;
   is_available: boolean;
   is_active: boolean;
@@ -65,6 +66,7 @@ const AdminMachinery = () => {
             brand: editingMachine.brand,
             model: editingMachine.model,
             price: editingMachine.price,
+            daily_rate: editingMachine.daily_rate,
             image_url: editingMachine.image_url,
             is_available: editingMachine.is_available,
             is_active: editingMachine.is_active,
@@ -83,6 +85,7 @@ const AdminMachinery = () => {
             brand: editingMachine.brand,
             model: editingMachine.model,
             price: editingMachine.price,
+            daily_rate: editingMachine.daily_rate,
             image_url: editingMachine.image_url,
             is_available: editingMachine.is_available,
             is_active: editingMachine.is_active,
