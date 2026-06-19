@@ -175,11 +175,42 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log("Admin notification sent:", adminEmailResponse);
 
+      // Customer confirmation email (best-effort, do not fail the request if this fails)
+      let customerEmailResponse: unknown = null;
+      try {
+        const customerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #f59e0b; padding: 20px; border-radius: 8px 8px 0 0;">
+              <h1 style="color: #fff; margin: 0;">¡Gracias por tu solicitud, ${escapeHtml(name)}!</h1>
+            </div>
+            <div style="background: #fff; padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+              <p>Recibimos tu solicitud de cotización para <strong>${escapeHtml(itemName)}</strong> (${escapeHtml(itemType)}).</p>
+              <p>Nuestro equipo la revisará y se contactará contigo en menos de <strong>24 horas hábiles</strong>.</p>
+              <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; margin: 16px 0;">
+                <p style="margin: 0 0 8px 0;"><strong>Resumen:</strong></p>
+                <pre style="white-space: pre-wrap; font-family: inherit; font-size: 13px; margin: 0;">${escapeHtml(message)}</pre>
+              </div>
+              <p>Puedes consultar el estado de tu solicitud y chatear con nuestro equipo en:</p>
+              <p><a href="https://aleksey.lovable.app/mis-solicitudes" style="background: #f59e0b; color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; display: inline-block;">Ver mis solicitudes</a></p>
+              <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">ALEKSEY · Ingeniería y Construcción</p>
+            </div>
+          </div>
+        `;
+        customerEmailResponse = await sendEmail({
+          to: [email],
+          subject: `Recibimos tu solicitud · ${itemName}`,
+          html: customerHtml,
+        });
+      } catch (customerErr) {
+        console.warn("Customer confirmation email failed (non-blocking):", customerErr);
+      }
+
       return new Response(
         JSON.stringify({
           success: true,
           adminEmail: adminEmailResponse,
           adminRecipient: adminEmail,
+          customerEmail: customerEmailResponse,
         }),
         {
           status: 200,
