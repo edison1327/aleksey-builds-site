@@ -15,8 +15,11 @@ import { logAction } from "@/lib/auditLog";
 interface Vehicle {
   id: string;
   name: string;
+  name_en: string | null;
   description: string | null;
+  description_en: string | null;
   category: string | null;
+  category_en: string | null;
   brand: string | null;
   model: string | null;
   price: string | null;
@@ -61,8 +64,11 @@ const AdminVehicles = () => {
           .from("vehicles")
           .update({
             name: editingVehicle.name,
+            name_en: editingVehicle.name_en,
             description: editingVehicle.description,
+            description_en: editingVehicle.description_en,
             category: editingVehicle.category,
+            category_en: editingVehicle.category_en,
             brand: editingVehicle.brand,
             model: editingVehicle.model,
             price: editingVehicle.price,
@@ -80,8 +86,11 @@ const AdminVehicles = () => {
           .from("vehicles")
           .insert({
             name: editingVehicle.name,
+            name_en: editingVehicle.name_en,
             description: editingVehicle.description,
+            description_en: editingVehicle.description_en,
             category: editingVehicle.category,
+            category_en: editingVehicle.category_en,
             brand: editingVehicle.brand,
             model: editingVehicle.model,
             price: editingVehicle.price,
@@ -139,8 +148,11 @@ const AdminVehicles = () => {
     setEditingVehicle({
       id: "",
       name: "",
+      name_en: "",
       description: "",
+      description_en: "",
       category: "",
+      category_en: "",
       brand: "",
       model: "",
       price: "",
@@ -218,20 +230,41 @@ const AdminVehicles = () => {
             <DialogTitle>{editingVehicle?.id ? "Editar vehículo" : "Nuevo vehículo"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium">Nombre</label>
-              <Input
-                value={editingVehicle?.name || ""}
-                onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, name: e.target.value } : null)}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Nombre (ES)</label>
+                <Input
+                  value={editingVehicle?.name || ""}
+                  onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, name: e.target.value } : null)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Name (EN)</label>
+                <Input
+                  value={editingVehicle?.name_en || ""}
+                  onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, name_en: e.target.value } : null)}
+                  placeholder="Optional"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Descripción</label>
-              <Textarea
-                value={editingVehicle?.description || ""}
-                onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, description: e.target.value } : null)}
-                rows={3}
-              />
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Descripción (ES)</label>
+                <Textarea
+                  value={editingVehicle?.description || ""}
+                  onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description (EN)</label>
+                <Textarea
+                  value={editingVehicle?.description_en || ""}
+                  onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, description_en: e.target.value } : null)}
+                  rows={3}
+                  placeholder="Optional"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
