@@ -8,11 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText, Download } from "lucide-react";
+import { Trash2, Loader2, Mail, Eye, Calculator, MessageSquare, Check, Clock, Search, Phone, Calendar, Bell, BellRing, Cog, Truck, FileText, Download, CheckSquare, XSquare } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { exportCsv } from "@/lib/exportCsv";
 import TemplatePicker from "@/components/admin/TemplatePicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { logAction } from "@/lib/auditLog";
 
 interface Message {
   id: string;
