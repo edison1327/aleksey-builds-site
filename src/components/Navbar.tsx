@@ -248,8 +248,8 @@ const Navbar = () => {
             </button>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center flex-1 justify-end gap-1">
-              <ul className="flex items-center gap-1 xl:gap-2" role="list">
+            <div className="hidden lg:flex items-center flex-1 justify-end gap-0.5 xl:gap-1">
+              <ul className="flex items-center gap-0 xl:gap-1" role="list">
                 {navItems.map((item) => {
                   const isActive = activeSection === item.label;
                   return (
@@ -258,7 +258,7 @@ const Navbar = () => {
                         onClick={() => handleNavClick(item.path, item.label)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "group relative flex items-center px-3 xl:px-4 h-10 text-[12px] xl:text-[13px] font-heading font-semibold tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
+                          "group relative flex items-center px-2 xl:px-4 h-10 text-[11.5px] xl:text-[13px] font-heading font-semibold tracking-[0.06em] xl:tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
                           isActive
                             ? "text-primary"
                             : "text-secondary-foreground/65 hover:text-secondary-foreground"
@@ -277,7 +277,7 @@ const Navbar = () => {
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "absolute left-3 right-3 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
+                            "absolute left-2 right-2 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
                             isActive
                               ? "scale-x-100 shadow-[0_0_10px_hsl(var(--primary)/0.7)]"
                               : "scale-x-0 group-hover:scale-x-100 bg-primary/60"
@@ -293,7 +293,7 @@ const Navbar = () => {
               {ctaItem && (
                 <button
                   onClick={() => handleNavClick(ctaItem.path, ctaItem.label)}
-                  className="ml-3 group relative inline-flex items-center gap-2 px-5 h-10 rounded-md bg-primary text-primary-foreground text-[12px] xl:text-[13px] font-heading font-bold tracking-[0.08em] uppercase shadow-[0_4px_14px_-2px_hsl(var(--primary)/0.5)] hover:shadow-[0_6px_20px_-2px_hsl(var(--primary)/0.65)] hover:-translate-y-px active:translate-y-0 transition-all duration-200 whitespace-nowrap ring-1 ring-inset ring-primary-foreground/15"
+                  className="ml-2 xl:ml-3 group relative inline-flex items-center gap-1.5 px-3 xl:px-5 h-10 rounded-md bg-primary text-primary-foreground text-[11.5px] xl:text-[13px] font-heading font-bold tracking-[0.06em] xl:tracking-[0.08em] uppercase shadow-[0_4px_14px_-2px_hsl(var(--primary)/0.5)] hover:shadow-[0_6px_20px_-2px_hsl(var(--primary)/0.65)] hover:-translate-y-px active:translate-y-0 transition-all duration-200 whitespace-nowrap ring-1 ring-inset ring-primary-foreground/15"
                 >
                   <Calculator className="h-3.5 w-3.5" aria-hidden="true" />
                   {labelOf(ctaItem)}
@@ -301,12 +301,12 @@ const Navbar = () => {
               )}
 
               {/* Divider + utilities */}
-              <div className="ml-2 pl-2 flex items-center gap-1 border-l border-border/40">
+              <div className="ml-1 xl:ml-2 pl-1 xl:pl-2 flex items-center gap-0 xl:gap-1 border-l border-border/40">
                 <button
                   onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
                   aria-label={user ? "Mi cuenta" : "Iniciar sesión"}
                   title={user ? "Mi cuenta" : "Iniciar sesión"}
-                  className="flex items-center justify-center w-10 h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
+                  className="flex items-center justify-center w-9 h-9 xl:w-10 xl:h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
                 >
                   {user
                     ? <UserCircle2 className="h-[18px] w-[18px]" aria-hidden="true" />
