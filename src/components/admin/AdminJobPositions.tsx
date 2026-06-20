@@ -26,27 +26,38 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { I18nField } from "./I18nField";
 
 interface JobPosition {
   id: string;
   title: string;
+  title_en: string | null;
   department: string;
+  department_en: string | null;
   location: string;
+  location_en: string | null;
   type: string;
+  type_en: string | null;
   salary: string | null;
   description: string | null;
+  description_en: string | null;
   is_active: boolean;
   sort_order: number;
 }
 
-const emptyPosition: Omit<JobPosition, "id"> & { id: string } = {
+const emptyPosition: JobPosition = {
   id: "",
   title: "",
+  title_en: "",
   department: "",
+  department_en: "",
   location: "",
+  location_en: "",
   type: "Tiempo completo",
+  type_en: "Full-time",
   salary: "",
   description: "",
+  description_en: "",
   is_active: true,
   sort_order: 0,
 };
