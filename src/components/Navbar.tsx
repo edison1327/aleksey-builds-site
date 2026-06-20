@@ -5,7 +5,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
 import { useAuth } from "@/hooks/useAuth";
 import logoAlekseyFallback from "@/assets/logo-aleksey-light.png";
-import logoMark from "@/assets/logo-mark.png";
+import LogoMark from "@/components/LogoMark";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { translateNavLabel } from "@/i18n/config";
@@ -236,17 +236,13 @@ const Navbar = () => {
               }}
               aria-label={`${companyName} — ir al inicio`}
             >
-              {/* Compact mark — shown when scrolled or on small screens */}
-              <img
-                src={logoMark}
-                alt=""
+              {/* Compact mark (SVG) — shown when scrolled on small screens */}
+              <LogoMark
                 aria-hidden="true"
                 className={cn(
                   "transition-all duration-300 shrink-0",
-                  scrolled ? "h-9 sm:hidden" : "hidden"
+                  scrolled ? "h-9 w-9 sm:hidden" : "hidden"
                 )}
-                width={40}
-                height={40}
               />
               {/* Full wordmark — default state */}
               <img
