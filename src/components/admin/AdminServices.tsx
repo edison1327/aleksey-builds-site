@@ -133,6 +133,18 @@ const AdminServices = () => {
     }
   };
 
+  const handleToggleActive = async (service: Service, next: boolean) => {
+    // optimistic
+    setServices((prev) => prev.map((s) => (s.id === service.id ? { ...s, is_active: next } : s)));
+    const { error } = await supabase.from("services").update({ is_active: next }).eq("id", service.id);
+    if (error) {
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
+      setServices((prev) => prev.map((s) => (s.id === service.id ? { ...s, is_active: !next } : s)));
+      return;
+    }
+    logAction("update", "services", service.id, { is_active: next });
+  };
+
   const handleReorder = async (newOrder: Service[]) => {
     setServices(newOrder);
     try {
@@ -218,12 +230,18 @@ const AdminServices = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground line-clamp-2">{service.description}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <span className={`text-xs px-2 py-1 rounded ${service.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
-                  {service.is_active ? "Activo" : "Inactivo"}
-                </span>
+              <div className="flex items-center justify-between gap-2 mt-3 pt-2 border-t">
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Switch
+                    checked={service.is_active}
+                    onCheckedChange={(v) => handleToggleActive(service, v)}
+                  />
+                  <span className={service.is_active ? "text-emerald-600 font-medium" : "text-muted-foreground"}>
+                    {service.is_active ? "Activo" : "Inactivo"}
+                  </span>
+                </label>
                 {!service.image_url && (
-                  <span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">Sin imagen</span>
+                  <span className="text-xs px-2 py-1 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400">Sin imagen</span>
                 )}
               </div>
             </CardContent>

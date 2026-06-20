@@ -36,6 +36,7 @@ import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
 import AdminBlog from "@/components/admin/AdminBlog";
 import AdminAuditLog from "@/components/admin/AdminAuditLog";
 import AdminBookings from "@/components/admin/AdminBookings";
+import AdminMediaLibrary from "@/components/admin/AdminMediaLibrary";
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -159,6 +160,7 @@ const Admin = () => {
   }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
+    { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
     { id: "users", label: "Usuarios", icon: UserCog, category: "general" },
@@ -371,6 +373,7 @@ const Admin = () => {
       case "benefits": return <AdminBenefits />;
       case "applications": return <AdminJobApplications />;
       case "audit": return <AdminAuditLog />;
+      case "media": return <AdminMediaLibrary />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };

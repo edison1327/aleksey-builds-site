@@ -18,6 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Newspaper, ExternalLink } from "lucide-react";
 import ImageUpload from "@/components/admin/ImageUpload";
+import SEOIndicator from "@/components/admin/SEOIndicator";
 import { slugify } from "@/lib/slugify";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -392,8 +393,14 @@ const AdminBlog = () => {
                     {form.published ? "Visible en el sitio" : "Borrador"}
                   </span>
                 </div>
-              </div>
             </div>
+            <SEOIndicator
+              title={form.title}
+              description={form.excerpt}
+              hasCover={!!form.cover_image}
+              hasSlug={!!form.slug.trim()}
+            />
+          </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
