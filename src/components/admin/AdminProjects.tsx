@@ -150,6 +150,17 @@ const AdminProjects = () => {
     }
   };
 
+  const handleToggle = async (id: string, field: "is_active" | "is_featured", next: boolean) => {
+    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: next } : p)));
+    const { error } = await supabase.from("projects").update({ [field]: next }).eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
+      setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: !next } : p)));
+      return;
+    }
+    logAction("update", "projects", id, { [field]: next });
+  };
+
 
   const handleReorder = async (newOrder: Project[]) => {
     setProjects(newOrder);
