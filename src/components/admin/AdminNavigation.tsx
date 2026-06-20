@@ -176,6 +176,10 @@ const AdminNavigation = () => {
     setLinks(links.map((link) => (link.location === location ? { ...link, title } : link)));
   };
 
+  const updateGroupTitleEn = (location: string, title_en: string) => {
+    setLinks(links.map((link) => (link.location === location ? { ...link, title_en } : link)));
+  };
+
   // Delete an entire group (all its links)
   const deleteGroup = async (location: string) => {
     if (!confirm(`¿Eliminar el grupo "${location}" y todos sus enlaces?`)) return;
