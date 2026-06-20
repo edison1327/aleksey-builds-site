@@ -157,15 +157,25 @@ const AdminTeamStats = () => {
           ) : (
             stats.map((stat) => (
               <div key={stat.id} className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 flex-1">
                   <div>
-                    <Label className="text-xs">Etiqueta</Label>
+                    <Label className="text-xs">Etiqueta (ES)</Label>
                     <Input
                       value={stat.label}
                       onChange={(e) => updateStat(stat.id, "label", e.target.value)}
                       placeholder="Ej: Ingenieros"
                     />
                   </div>
+
+                  <div>
+                    <Label className="text-xs">Label (EN)</Label>
+                    <Input
+                      value={stat.label_en || ""}
+                      onChange={(e) => updateStat(stat.id, "label_en", e.target.value)}
+                      placeholder="Ex: Engineers"
+                    />
+                  </div>
+
                   
                   <div>
                     <Label className="text-xs">Valor</Label>
