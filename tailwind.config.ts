@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['"Space Grotesk"', "system-ui", "sans-serif"],
-        body: ['"DM Sans"', "system-ui", "sans-serif"],
+        heading: ['"Urbanist"', "system-ui", "sans-serif"],
+        body: ['"Epilogue"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
