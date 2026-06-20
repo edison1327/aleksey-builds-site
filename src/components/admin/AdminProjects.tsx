@@ -132,6 +132,25 @@ const AdminProjects = () => {
     }
   };
 
+  const handleDuplicate = async (project: Project) => {
+    try {
+      const copy = await duplicateRow<Project>("projects", project.id, {
+        overrides: {
+          title: `${project.title} (copia)`,
+          featured: false,
+          sort_order: projects.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia." });
+      logAction("duplicate", "projects", copy.id);
+      fetchProjects();
+    } catch (e) {
+      console.error("Error duplicating project:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
+
   const handleReorder = async (newOrder: Project[]) => {
     setProjects(newOrder);
     try {
