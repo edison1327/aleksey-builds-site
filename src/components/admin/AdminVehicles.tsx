@@ -148,6 +148,17 @@ const AdminVehicles = () => {
     }
   };
 
+  const handleToggleActive = async (vehicle: Vehicle, next: boolean) => {
+    setVehicles((prev) => prev.map((v) => (v.id === vehicle.id ? { ...v, is_active: next } : v)));
+    const { error } = await supabase.from("vehicles").update({ is_active: next }).eq("id", vehicle.id);
+    if (error) {
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
+      setVehicles((prev) => prev.map((v) => (v.id === vehicle.id ? { ...v, is_active: !next } : v)));
+      return;
+    }
+    logAction("update", "vehicles", vehicle.id, { is_active: next });
+  };
+
 
   const handleReorder = async (newOrder: Vehicle[]) => {
     setVehicles(newOrder);
