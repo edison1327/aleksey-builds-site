@@ -21,10 +21,12 @@ import { Loader2, Plus, Trash2, Navigation, FolderPlus } from "lucide-react";
 interface NavigationLink {
   id: string;
   label: string;
+  label_en: string | null;
   path: string;
   icon: string;
   location: string;
   title: string | null;
+  title_en: string | null;
   sort_order: number;
   is_active: boolean;
 }
