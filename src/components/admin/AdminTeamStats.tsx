@@ -58,6 +58,7 @@ const AdminTeamStats = () => {
           .upsert({
             id: stat.id,
             label: stat.label,
+            label_en: stat.label_en,
             value: stat.value,
             icon: stat.icon,
             sort_order: stat.sort_order,
