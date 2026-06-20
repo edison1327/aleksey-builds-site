@@ -393,8 +393,14 @@ const AdminBlog = () => {
                     {form.published ? "Visible en el sitio" : "Borrador"}
                   </span>
                 </div>
-              </div>
             </div>
+            <SEOIndicator
+              title={form.title}
+              description={form.excerpt}
+              hasCover={!!form.cover_image}
+              hasSlug={!!form.slug.trim()}
+            />
+          </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
