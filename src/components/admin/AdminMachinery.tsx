@@ -251,9 +251,20 @@ const AdminMachinery = () => {
                 {machine.brand && (
                   <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">{machine.brand}</span>
                 )}
-                <span className={`text-xs px-2 py-1 rounded ${machine.is_available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                <span className={`text-xs px-2 py-1 rounded ${machine.is_available ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" : "bg-destructive/15 text-destructive"}`}>
                   {machine.is_available ? "Disponible" : "No disponible"}
                 </span>
+              </div>
+              <div className="flex items-center justify-between gap-2 mt-3 pt-2 border-t">
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Switch
+                    checked={machine.is_active}
+                    onCheckedChange={(v) => handleToggleActive(machine, v)}
+                  />
+                  <span className={machine.is_active ? "text-emerald-600 font-medium" : "text-muted-foreground"}>
+                    {machine.is_active ? "Activo" : "Inactivo"}
+                  </span>
+                </label>
               </div>
             </CardContent>
           </Card>
