@@ -150,9 +150,13 @@ const AdminProjects = () => {
     setEditingProject({
       id: "",
       title: "",
+      title_en: "",
       description: "",
+      description_en: "",
       category: "",
+      category_en: "",
       location: "",
+      location_en: "",
       year: new Date().getFullYear(),
       image_url: "",
       gallery_images: [],
