@@ -11,12 +11,17 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Star, Quote } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 
+import { I18nField } from "./I18nField";
+
 interface Testimonial {
   id: string;
   name: string;
   role: string;
+  role_en: string | null;
   company: string;
+  company_en: string | null;
   content: string;
+  content_en: string | null;
   rating: number;
   avatar_url: string | null;
   is_active: boolean;
@@ -64,8 +69,11 @@ const AdminTestimonials = () => {
           .update({
             name: editingTestimonial.name,
             role: editingTestimonial.role,
+            role_en: editingTestimonial.role_en,
             company: editingTestimonial.company,
+            company_en: editingTestimonial.company_en,
             content: editingTestimonial.content,
+            content_en: editingTestimonial.content_en,
             rating: editingTestimonial.rating || 5,
             avatar_url: editingTestimonial.avatar_url,
             is_active: editingTestimonial.is_active ?? true,
@@ -79,8 +87,11 @@ const AdminTestimonials = () => {
         const { error } = await supabase.from("testimonials").insert({
           name: editingTestimonial.name,
           role: editingTestimonial.role || "",
+          role_en: editingTestimonial.role_en,
           company: editingTestimonial.company,
+          company_en: editingTestimonial.company_en,
           content: editingTestimonial.content,
+          content_en: editingTestimonial.content_en,
           rating: editingTestimonial.rating || 5,
           avatar_url: editingTestimonial.avatar_url,
           is_active: editingTestimonial.is_active ?? true,
@@ -186,7 +197,7 @@ const AdminTestimonials = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="role">Cargo</Label>
+                    <Label htmlFor="role">Cargo (ES)</Label>
                     <Input
                       id="role"
                       value={editingTestimonial.role || ""}
@@ -199,29 +210,37 @@ const AdminTestimonials = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="company">Empresa *</Label>
+                  <Label htmlFor="role_en">Role (EN)</Label>
                   <Input
-                    id="company"
-                    value={editingTestimonial.company || ""}
+                    id="role_en"
+                    value={editingTestimonial.role_en || ""}
                     onChange={(e) =>
-                      setEditingTestimonial({ ...editingTestimonial, company: e.target.value })
+                      setEditingTestimonial({ ...editingTestimonial, role_en: e.target.value })
                     }
-                    placeholder="Nombre de la empresa"
+                    placeholder="Optional — falls back to ES"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="content">Testimonio *</Label>
-                  <Textarea
-                    id="content"
-                    value={editingTestimonial.content || ""}
-                    onChange={(e) =>
-                      setEditingTestimonial({ ...editingTestimonial, content: e.target.value })
-                    }
-                    placeholder="El testimonio del cliente..."
-                    rows={4}
-                  />
-                </div>
+                <I18nField
+                  label="Empresa"
+                  valueEs={editingTestimonial.company || ""}
+                  valueEn={editingTestimonial.company_en || ""}
+                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, company: v })}
+                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, company_en: v })}
+                  placeholderEs="Nombre de la empresa"
+                />
+
+                <I18nField
+                  label="Testimonio"
+                  valueEs={editingTestimonial.content || ""}
+                  valueEn={editingTestimonial.content_en || ""}
+                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, content: v })}
+                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, content_en: v })}
+                  textarea
+                  rows={4}
+                  placeholderEs="El testimonio del cliente..."
+                />
+
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

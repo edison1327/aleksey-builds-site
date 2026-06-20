@@ -26,27 +26,38 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { I18nField } from "./I18nField";
 
 interface JobPosition {
   id: string;
   title: string;
+  title_en: string | null;
   department: string;
+  department_en: string | null;
   location: string;
+  location_en: string | null;
   type: string;
+  type_en: string | null;
   salary: string | null;
   description: string | null;
+  description_en: string | null;
   is_active: boolean;
   sort_order: number;
 }
 
-const emptyPosition: Omit<JobPosition, "id"> & { id: string } = {
+const emptyPosition: JobPosition = {
   id: "",
   title: "",
+  title_en: "",
   department: "",
+  department_en: "",
   location: "",
+  location_en: "",
   type: "Tiempo completo",
+  type_en: "Full-time",
   salary: "",
   description: "",
+  description_en: "",
   is_active: true,
   sort_order: 0,
 };
@@ -199,11 +210,16 @@ const AdminJobPositions = () => {
           .from("job_positions")
           .update({
             title: editingPosition.title,
+            title_en: editingPosition.title_en,
             department: editingPosition.department,
+            department_en: editingPosition.department_en,
             location: editingPosition.location,
+            location_en: editingPosition.location_en,
             type: editingPosition.type,
+            type_en: editingPosition.type_en,
             salary: editingPosition.salary || null,
             description: editingPosition.description || null,
+            description_en: editingPosition.description_en || null,
             is_active: editingPosition.is_active,
             sort_order: editingPosition.sort_order,
           })
@@ -215,11 +231,16 @@ const AdminJobPositions = () => {
           .from("job_positions")
           .insert({
             title: editingPosition.title,
+            title_en: editingPosition.title_en,
             department: editingPosition.department,
+            department_en: editingPosition.department_en,
             location: editingPosition.location,
+            location_en: editingPosition.location_en,
             type: editingPosition.type,
+            type_en: editingPosition.type_en,
             salary: editingPosition.salary || null,
             description: editingPosition.description || null,
+            description_en: editingPosition.description_en || null,
             is_active: editingPosition.is_active,
             sort_order: positions.length,
           });
@@ -298,71 +319,58 @@ const AdminJobPositions = () => {
             </DialogHeader>
             {editingPosition && (
               <div className="space-y-4 py-4">
+                <I18nField
+                  label="Título del Puesto"
+                  valueEs={editingPosition.title}
+                  valueEn={editingPosition.title_en || ""}
+                  onChangeEs={(v) => setEditingPosition({ ...editingPosition, title: v })}
+                  onChangeEn={(v) => setEditingPosition({ ...editingPosition, title_en: v })}
+                  placeholderEs="Ej: Ingeniero Civil Senior"
+                />
+                <I18nField
+                  label="Departamento"
+                  valueEs={editingPosition.department}
+                  valueEn={editingPosition.department_en || ""}
+                  onChangeEs={(v) => setEditingPosition({ ...editingPosition, department: v })}
+                  onChangeEn={(v) => setEditingPosition({ ...editingPosition, department_en: v })}
+                  placeholderEs="Ej: Ingeniería"
+                />
+                <I18nField
+                  label="Ubicación"
+                  valueEs={editingPosition.location}
+                  valueEn={editingPosition.location_en || ""}
+                  onChangeEs={(v) => setEditingPosition({ ...editingPosition, location: v })}
+                  onChangeEn={(v) => setEditingPosition({ ...editingPosition, location_en: v })}
+                  placeholderEs="Ej: Lima, Perú"
+                />
+                <I18nField
+                  label="Tipo de Empleo"
+                  valueEs={editingPosition.type}
+                  valueEn={editingPosition.type_en || ""}
+                  onChangeEs={(v) => setEditingPosition({ ...editingPosition, type: v })}
+                  onChangeEn={(v) => setEditingPosition({ ...editingPosition, type_en: v })}
+                  placeholderEs="Ej: Tiempo completo"
+                />
                 <div className="space-y-2">
-                  <Label>Título del Puesto *</Label>
+                  <Label>Salario</Label>
                   <Input
-                    value={editingPosition.title}
+                    value={editingPosition.salary || ""}
                     onChange={(e) =>
-                      setEditingPosition({ ...editingPosition, title: e.target.value })
+                      setEditingPosition({ ...editingPosition, salary: e.target.value })
                     }
-                    placeholder="Ej: Ingeniero Civil Senior"
+                    placeholder="Ej: S/. 5,000 - 7,000"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Departamento *</Label>
-                    <Input
-                      value={editingPosition.department}
-                      onChange={(e) =>
-                        setEditingPosition({ ...editingPosition, department: e.target.value })
-                      }
-                      placeholder="Ej: Ingeniería"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Ubicación *</Label>
-                    <Input
-                      value={editingPosition.location}
-                      onChange={(e) =>
-                        setEditingPosition({ ...editingPosition, location: e.target.value })
-                      }
-                      placeholder="Ej: Lima, Perú"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Tipo de Empleo</Label>
-                    <Input
-                      value={editingPosition.type}
-                      onChange={(e) =>
-                        setEditingPosition({ ...editingPosition, type: e.target.value })
-                      }
-                      placeholder="Ej: Tiempo completo"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Salario</Label>
-                    <Input
-                      value={editingPosition.salary || ""}
-                      onChange={(e) =>
-                        setEditingPosition({ ...editingPosition, salary: e.target.value })
-                      }
-                      placeholder="Ej: S/. 5,000 - 7,000"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Descripción</Label>
-                  <Textarea
-                    value={editingPosition.description || ""}
-                    onChange={(e) =>
-                      setEditingPosition({ ...editingPosition, description: e.target.value })
-                    }
-                    placeholder="Descripción del puesto..."
-                    rows={3}
-                  />
-                </div>
+                <I18nField
+                  label="Descripción"
+                  valueEs={editingPosition.description || ""}
+                  valueEn={editingPosition.description_en || ""}
+                  onChangeEs={(v) => setEditingPosition({ ...editingPosition, description: v })}
+                  onChangeEn={(v) => setEditingPosition({ ...editingPosition, description_en: v })}
+                  textarea
+                  rows={3}
+                  placeholderEs="Descripción del puesto..."
+                />
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={editingPosition.is_active}

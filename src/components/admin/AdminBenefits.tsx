@@ -28,20 +28,25 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { I18nField } from "./I18nField";
 
 interface Benefit {
   id: string;
   title: string;
+  title_en: string | null;
   description: string;
+  description_en: string | null;
   icon: string;
   is_active: boolean;
   sort_order: number;
 }
 
-const emptyBenefit: Omit<Benefit, "id"> & { id: string } = {
+const emptyBenefit: Benefit = {
   id: "",
   title: "",
+  title_en: "",
   description: "",
+  description_en: "",
   icon: "Star",
   is_active: true,
   sort_order: 0,
@@ -222,7 +227,9 @@ const AdminBenefits = () => {
           .from("company_benefits")
           .update({
             title: editingBenefit.title,
+            title_en: editingBenefit.title_en,
             description: editingBenefit.description,
+            description_en: editingBenefit.description_en,
             icon: editingBenefit.icon,
             is_active: editingBenefit.is_active,
             sort_order: editingBenefit.sort_order,
@@ -235,7 +242,9 @@ const AdminBenefits = () => {
           .from("company_benefits")
           .insert({
             title: editingBenefit.title,
+            title_en: editingBenefit.title_en,
             description: editingBenefit.description,
+            description_en: editingBenefit.description_en,
             icon: editingBenefit.icon,
             is_active: editingBenefit.is_active,
             sort_order: benefits.length,
@@ -315,27 +324,25 @@ const AdminBenefits = () => {
             </DialogHeader>
             {editingBenefit && (
               <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label>Título *</Label>
-                  <Input
-                    value={editingBenefit.title}
-                    onChange={(e) =>
-                      setEditingBenefit({ ...editingBenefit, title: e.target.value })
-                    }
-                    placeholder="Ej: Salario Competitivo"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Descripción *</Label>
-                  <Textarea
-                    value={editingBenefit.description}
-                    onChange={(e) =>
-                      setEditingBenefit({ ...editingBenefit, description: e.target.value })
-                    }
-                    placeholder="Descripción del beneficio..."
-                    rows={3}
-                  />
-                </div>
+                <I18nField
+                  label="Título"
+                  valueEs={editingBenefit.title}
+                  valueEn={editingBenefit.title_en || ""}
+                  onChangeEs={(v) => setEditingBenefit({ ...editingBenefit, title: v })}
+                  onChangeEn={(v) => setEditingBenefit({ ...editingBenefit, title_en: v })}
+                  placeholderEs="Ej: Salario Competitivo"
+                />
+                <I18nField
+                  label="Descripción"
+                  valueEs={editingBenefit.description}
+                  valueEn={editingBenefit.description_en || ""}
+                  onChangeEs={(v) => setEditingBenefit({ ...editingBenefit, description: v })}
+                  onChangeEn={(v) => setEditingBenefit({ ...editingBenefit, description_en: v })}
+                  textarea
+                  rows={3}
+                  placeholderEs="Descripción del beneficio..."
+                />
+
                 <div className="space-y-2">
                   <Label>Icono</Label>
                   <Select

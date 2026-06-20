@@ -12,13 +12,18 @@ import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
+import { I18nField } from "./I18nField";
 
 interface Project {
   id: string;
   title: string;
+  title_en: string | null;
   description: string | null;
+  description_en: string | null;
   category: string | null;
+  category_en: string | null;
   location: string | null;
+  location_en: string | null;
   year: number | null;
   image_url: string | null;
   gallery_images: string[];
@@ -61,9 +66,13 @@ const AdminProjects = () => {
           .from("projects")
           .update({
             title: editingProject.title,
+            title_en: editingProject.title_en,
             description: editingProject.description,
+            description_en: editingProject.description_en,
             category: editingProject.category,
+            category_en: editingProject.category_en,
             location: editingProject.location,
+            location_en: editingProject.location_en,
             year: editingProject.year,
             image_url: editingProject.image_url,
             gallery_images: editingProject.gallery_images,
@@ -79,9 +88,13 @@ const AdminProjects = () => {
           .from("projects")
           .insert({
             title: editingProject.title,
+            title_en: editingProject.title_en,
             description: editingProject.description,
+            description_en: editingProject.description_en,
             category: editingProject.category,
+            category_en: editingProject.category_en,
             location: editingProject.location,
+            location_en: editingProject.location_en,
             year: editingProject.year,
             image_url: editingProject.image_url,
             gallery_images: editingProject.gallery_images,
@@ -137,9 +150,13 @@ const AdminProjects = () => {
     setEditingProject({
       id: "",
       title: "",
+      title_en: "",
       description: "",
+      description_en: "",
       category: "",
+      category_en: "",
       location: "",
+      location_en: "",
       year: new Date().getFullYear(),
       image_url: "",
       gallery_images: [],
@@ -224,37 +241,37 @@ const AdminProjects = () => {
             <DialogTitle>{editingProject?.id ? "Editar proyecto" : "Nuevo proyecto"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium">Título</label>
-              <Input
-                value={editingProject?.title || ""}
-                onChange={(e) => setEditingProject(prev => prev ? { ...prev, title: e.target.value } : null)}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Descripción</label>
-              <Textarea
-                value={editingProject?.description || ""}
-                onChange={(e) => setEditingProject(prev => prev ? { ...prev, description: e.target.value } : null)}
-                rows={3}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium">Categoría</label>
-                <Input
-                  value={editingProject?.category || ""}
-                  onChange={(e) => setEditingProject(prev => prev ? { ...prev, category: e.target.value } : null)}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Ubicación</label>
-                <Input
-                  value={editingProject?.location || ""}
-                  onChange={(e) => setEditingProject(prev => prev ? { ...prev, location: e.target.value } : null)}
-                />
-              </div>
-            </div>
+            <I18nField
+              label="Título"
+              valueEs={editingProject?.title || ""}
+              valueEn={editingProject?.title_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, title: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, title_en: v } : null)}
+            />
+            <I18nField
+              label="Descripción"
+              valueEs={editingProject?.description || ""}
+              valueEn={editingProject?.description_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, description: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, description_en: v } : null)}
+              textarea
+              rows={3}
+            />
+            <I18nField
+              label="Categoría"
+              valueEs={editingProject?.category || ""}
+              valueEn={editingProject?.category_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, category: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, category_en: v } : null)}
+            />
+            <I18nField
+              label="Ubicación"
+              valueEs={editingProject?.location || ""}
+              valueEn={editingProject?.location_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, location: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, location_en: v } : null)}
+            />
+
             <div>
               <label className="text-sm font-medium">Año</label>
               <Input

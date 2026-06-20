@@ -7,14 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Save, Loader2 } from "lucide-react";
 
+import { I18nField } from "./I18nField";
+
 interface ContactInfo {
   id: string;
   phone: string | null;
   email: string | null;
   address: string | null;
+  address_en: string | null;
   city: string | null;
   country: string | null;
   business_hours: string | null;
+  business_hours_en: string | null;
   google_maps_url: string | null;
 }
 
@@ -44,9 +48,11 @@ const AdminContact = () => {
         phone: "",
         email: "",
         address: "",
+        address_en: "",
         city: "",
         country: "",
         business_hours: "",
+        business_hours_en: "",
         google_maps_url: "",
       });
     }
@@ -66,9 +72,11 @@ const AdminContact = () => {
             phone: contact.phone,
             email: contact.email,
             address: contact.address,
+            address_en: contact.address_en,
             city: contact.city,
             country: contact.country,
             business_hours: contact.business_hours,
+            business_hours_en: contact.business_hours_en,
             google_maps_url: contact.google_maps_url,
           })
           .eq("id", contact.id);
@@ -81,9 +89,11 @@ const AdminContact = () => {
             phone: contact.phone,
             email: contact.email,
             address: contact.address,
+            address_en: contact.address_en,
             city: contact.city,
             country: contact.country,
             business_hours: contact.business_hours,
+            business_hours_en: contact.business_hours_en,
             google_maps_url: contact.google_maps_url,
           })
           .select()
@@ -154,15 +164,16 @@ const AdminContact = () => {
                 placeholder="info@aleksey.com"
               />
             </div>
-            <div>
-              <label className="text-sm font-medium">Dirección</label>
-              <Textarea
-                value={contact?.address || ""}
-                onChange={(e) => setContact(prev => prev ? { ...prev, address: e.target.value } : null)}
-                placeholder="Calle Principal 123"
-                rows={2}
-              />
-            </div>
+            <I18nField
+              label="Dirección"
+              valueEs={contact?.address || ""}
+              valueEn={contact?.address_en || ""}
+              onChangeEs={(v) => setContact(prev => prev ? { ...prev, address: v } : null)}
+              onChangeEn={(v) => setContact(prev => prev ? { ...prev, address_en: v } : null)}
+              textarea
+              rows={2}
+              placeholderEs="Calle Principal 123"
+            />
           </CardContent>
         </Card>
 
@@ -190,14 +201,14 @@ const AdminContact = () => {
                 />
               </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Horario de atención</label>
-              <Input
-                value={contact?.business_hours || ""}
-                onChange={(e) => setContact(prev => prev ? { ...prev, business_hours: e.target.value } : null)}
-                placeholder="Lun - Vie: 8:00 - 18:00"
-              />
-            </div>
+            <I18nField
+              label="Horario de atención"
+              valueEs={contact?.business_hours || ""}
+              valueEn={contact?.business_hours_en || ""}
+              onChangeEs={(v) => setContact(prev => prev ? { ...prev, business_hours: v } : null)}
+              onChangeEn={(v) => setContact(prev => prev ? { ...prev, business_hours_en: v } : null)}
+              placeholderEs="Lun - Vie: 8:00 - 18:00"
+            />
             <div>
               <label className="text-sm font-medium">URL de Google Maps (embed)</label>
               <Input

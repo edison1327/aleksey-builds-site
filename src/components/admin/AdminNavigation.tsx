@@ -21,10 +21,12 @@ import { Loader2, Plus, Trash2, Navigation, FolderPlus } from "lucide-react";
 interface NavigationLink {
   id: string;
   label: string;
+  label_en: string | null;
   path: string;
   icon: string;
   location: string;
   title: string | null;
+  title_en: string | null;
   sort_order: number;
   is_active: boolean;
 }
@@ -110,10 +112,12 @@ const AdminNavigation = () => {
           .upsert({
             id: link.id,
             label: link.label,
+            label_en: link.label_en,
             path: link.path,
             icon: link.icon,
             location: link.location,
             title: link.title,
+            title_en: link.title_en,
             sort_order: link.sort_order,
             is_active: link.is_active,
           });
@@ -170,6 +174,10 @@ const AdminNavigation = () => {
   // Update title for every row of a group (in-memory; persisted on Save)
   const updateGroupTitle = (location: string, title: string) => {
     setLinks(links.map((link) => (link.location === location ? { ...link, title } : link)));
+  };
+
+  const updateGroupTitleEn = (location: string, title_en: string) => {
+    setLinks(links.map((link) => (link.location === location ? { ...link, title_en } : link)));
   };
 
   // Delete an entire group (all its links)
@@ -322,13 +330,21 @@ const AdminNavigation = () => {
           <Card key={group.location}>
             <CardHeader>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <Label className="text-xs">Título del grupo</Label>
+                    <Label className="text-xs">Título del grupo (ES)</Label>
                     <Input
                       value={group.title}
                       onChange={(e) => updateGroupTitle(group.location, e.target.value)}
                       className="font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Title (EN)</Label>
+                    <Input
+                      value={group.links[0]?.title_en || ""}
+                      onChange={(e) => updateGroupTitleEn(group.location, e.target.value)}
+                      placeholder="Optional — falls back to ES"
                     />
                   </div>
                   <div>
@@ -357,12 +373,20 @@ const AdminNavigation = () => {
               ) : (
                 group.links.map((link) => (
                   <div key={link.id} className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 flex-1">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3 flex-1">
                       <div>
-                        <Label className="text-xs">Etiqueta</Label>
+                        <Label className="text-xs">Etiqueta (ES)</Label>
                         <Input
                           value={link.label}
                           onChange={(e) => updateLink(link.id, "label", e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Label (EN)</Label>
+                        <Input
+                          value={link.label_en || ""}
+                          onChange={(e) => updateLink(link.id, "label_en", e.target.value)}
+                          placeholder="Falls back to ES"
                         />
                       </div>
                       <div>
