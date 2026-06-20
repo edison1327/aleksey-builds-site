@@ -131,6 +131,25 @@ const AdminMachinery = () => {
     }
   };
 
+  const handleDuplicate = async (machine: any) => {
+    try {
+      const copy = await duplicateRow<any>("machinery", machine.id, {
+        overrides: {
+          name: `${machine.name} (copia)`,
+          is_active: false,
+          sort_order: machinery.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia (inactiva)." });
+      logAction("duplicate", "machinery", copy.id);
+      fetchMachinery();
+    } catch (e) {
+      console.error("Error duplicating machinery:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
+
   const handleReorder = async (newOrder: typeof machinery) => {
     setMachinery(newOrder); // optimistic
     const updates = newOrder.map((m, idx) => ({ id: m.id, sort_order: idx }));
