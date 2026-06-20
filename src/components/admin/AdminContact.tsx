@@ -201,14 +201,14 @@ const AdminContact = () => {
                 />
               </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Horario de atención</label>
-              <Input
-                value={contact?.business_hours || ""}
-                onChange={(e) => setContact(prev => prev ? { ...prev, business_hours: e.target.value } : null)}
-                placeholder="Lun - Vie: 8:00 - 18:00"
-              />
-            </div>
+            <I18nField
+              label="Horario de atención"
+              valueEs={contact?.business_hours || ""}
+              valueEn={contact?.business_hours_en || ""}
+              onChangeEs={(v) => setContact(prev => prev ? { ...prev, business_hours: v } : null)}
+              onChangeEn={(v) => setContact(prev => prev ? { ...prev, business_hours_en: v } : null)}
+              placeholderEs="Lun - Vie: 8:00 - 18:00"
+            />
             <div>
               <label className="text-sm font-medium">URL de Google Maps (embed)</label>
               <Input
