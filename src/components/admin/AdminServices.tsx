@@ -133,6 +133,18 @@ const AdminServices = () => {
     }
   };
 
+  const handleToggleActive = async (service: Service, next: boolean) => {
+    // optimistic
+    setServices((prev) => prev.map((s) => (s.id === service.id ? { ...s, is_active: next } : s)));
+    const { error } = await supabase.from("services").update({ is_active: next }).eq("id", service.id);
+    if (error) {
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
+      setServices((prev) => prev.map((s) => (s.id === service.id ? { ...s, is_active: !next } : s)));
+      return;
+    }
+    logAction("update", "services", service.id, { is_active: next });
+  };
+
   const handleReorder = async (newOrder: Service[]) => {
     setServices(newOrder);
     try {
