@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, GripVertical, GripHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripVertical, GripHorizontal, Copy } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
+import { duplicateRow } from "@/lib/duplicateRow";
 
 interface Service {
   id: string;
