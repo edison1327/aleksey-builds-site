@@ -271,7 +271,7 @@ const Navbar = () => {
                             style={{ zIndex: -1 }}
                           />
                         )}
-                        <span className="relative z-10 uppercase">{translateNavLabel(item.label)}</span>
+                        <span className="relative z-10 uppercase">{labelOf(item)}</span>
                       </button>
                       {/* Dot indicator outside pill for extra emphasis */}
                       {isActive && (
@@ -292,7 +292,7 @@ const Navbar = () => {
                   className="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-[13px] xl:text-sm font-heading font-semibold tracking-wide uppercase shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:scale-[1.03] active:scale-100 transition-all duration-200 whitespace-nowrap"
                 >
                   <Calculator className="h-4 w-4" aria-hidden="true" />
-                  {translateNavLabel(ctaItem.label)}
+                  {labelOf(ctaItem)}
                 </button>
               )}
 
@@ -415,7 +415,7 @@ const Navbar = () => {
                   </div>
                   <div className="text-left">
                     <p className="font-heading font-bold uppercase tracking-wide text-base leading-tight">
-                      {translateNavLabel(ctaItem.label)}
+                      {labelOf(ctaItem)}
                     </p>
                     <p className="text-[11px] opacity-85">Recibe tu presupuesto rápido</p>
                   </div>
@@ -469,7 +469,7 @@ const Navbar = () => {
                           "font-heading tracking-wide text-[15px] flex-1",
                           isActive ? "font-semibold text-secondary-foreground" : "font-medium"
                         )}>
-                          {translateNavLabel(item.label)}
+                          {labelOf(item)}
                         </span>
                         {isActive && (
                           <span className="text-[10px] font-heading uppercase tracking-wider text-primary px-2 py-0.5 rounded-full bg-primary/15">
