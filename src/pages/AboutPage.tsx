@@ -252,7 +252,7 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
                         delay={index * 150}
                         className="text-3xl font-heading font-bold text-primary mb-2"
                       />
-                      <div className="text-sm text-secondary-foreground/70">{stat.label}</div>
+                      <div className="text-sm text-secondary-foreground/70">{tr(stat as any, "label") || stat.label}</div>
                     </div>
                   );
                 })
