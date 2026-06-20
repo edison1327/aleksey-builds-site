@@ -227,7 +227,9 @@ const AdminBenefits = () => {
           .from("company_benefits")
           .update({
             title: editingBenefit.title,
+            title_en: editingBenefit.title_en,
             description: editingBenefit.description,
+            description_en: editingBenefit.description_en,
             icon: editingBenefit.icon,
             is_active: editingBenefit.is_active,
             sort_order: editingBenefit.sort_order,
@@ -240,7 +242,9 @@ const AdminBenefits = () => {
           .from("company_benefits")
           .insert({
             title: editingBenefit.title,
+            title_en: editingBenefit.title_en,
             description: editingBenefit.description,
+            description_en: editingBenefit.description_en,
             icon: editingBenefit.icon,
             is_active: editingBenefit.is_active,
             sort_order: benefits.length,
