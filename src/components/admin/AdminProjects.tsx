@@ -66,9 +66,13 @@ const AdminProjects = () => {
           .from("projects")
           .update({
             title: editingProject.title,
+            title_en: editingProject.title_en,
             description: editingProject.description,
+            description_en: editingProject.description_en,
             category: editingProject.category,
+            category_en: editingProject.category_en,
             location: editingProject.location,
+            location_en: editingProject.location_en,
             year: editingProject.year,
             image_url: editingProject.image_url,
             gallery_images: editingProject.gallery_images,
@@ -84,9 +88,13 @@ const AdminProjects = () => {
           .from("projects")
           .insert({
             title: editingProject.title,
+            title_en: editingProject.title_en,
             description: editingProject.description,
+            description_en: editingProject.description_en,
             category: editingProject.category,
+            category_en: editingProject.category_en,
             location: editingProject.location,
+            location_en: editingProject.location_en,
             year: editingProject.year,
             image_url: editingProject.image_url,
             gallery_images: editingProject.gallery_images,
