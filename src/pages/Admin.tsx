@@ -42,6 +42,7 @@ import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsL
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useAdminBadges } from "@/hooks/useAdminBadges";
 import { cn } from "@/lib/utils";
 
 import { useToast } from "@/hooks/use-toast";
