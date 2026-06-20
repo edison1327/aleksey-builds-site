@@ -258,28 +258,32 @@ const Navbar = () => {
                         onClick={() => handleNavClick(item.path, item.label)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "group relative flex items-center px-3 xl:px-4 py-2 text-[13px] xl:text-sm font-heading tracking-wide whitespace-nowrap rounded-full transition-all duration-300",
+                          "group relative flex items-center px-3 xl:px-4 h-10 text-[12px] xl:text-[13px] font-heading font-semibold tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
                           isActive
-                            ? "text-primary-foreground font-semibold"
-                            : "text-secondary-foreground/70 hover:text-secondary-foreground font-medium hover:bg-secondary-foreground/5"
+                            ? "text-primary"
+                            : "text-secondary-foreground/65 hover:text-secondary-foreground"
                         )}
                       >
-                        {isActive && (
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-lg shadow-primary/40 ring-1 ring-primary-foreground/20"
-                            style={{ zIndex: -1 }}
-                          />
-                        )}
-                        <span className="relative z-10 uppercase">{labelOf(item)}</span>
-                      </button>
-                      {/* Dot indicator outside pill for extra emphasis */}
-                      {isActive && (
+                        <span className="relative z-10">{labelOf(item)}</span>
+                        {/* Hover background */}
                         <span
                           aria-hidden="true"
-                          className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]"
+                          className={cn(
+                            "absolute inset-x-1 inset-y-1.5 rounded-md bg-secondary-foreground/[0.06] opacity-0 transition-opacity duration-200",
+                            !isActive && "group-hover:opacity-100"
+                          )}
                         />
-                      )}
+                        {/* Active bottom bar */}
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            "absolute left-3 right-3 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
+                            isActive
+                              ? "scale-x-100 shadow-[0_0_10px_hsl(var(--primary)/0.7)]"
+                              : "scale-x-0 group-hover:scale-x-100 bg-primary/60"
+                          )}
+                        />
+                      </button>
                     </li>
                   );
                 })}
@@ -289,9 +293,9 @@ const Navbar = () => {
               {ctaItem && (
                 <button
                   onClick={() => handleNavClick(ctaItem.path, ctaItem.label)}
-                  className="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-[13px] xl:text-sm font-heading font-semibold tracking-wide uppercase shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:scale-[1.03] active:scale-100 transition-all duration-200 whitespace-nowrap"
+                  className="ml-3 group relative inline-flex items-center gap-2 px-5 h-10 rounded-md bg-primary text-primary-foreground text-[12px] xl:text-[13px] font-heading font-bold tracking-[0.08em] uppercase shadow-[0_4px_14px_-2px_hsl(var(--primary)/0.5)] hover:shadow-[0_6px_20px_-2px_hsl(var(--primary)/0.65)] hover:-translate-y-px active:translate-y-0 transition-all duration-200 whitespace-nowrap ring-1 ring-inset ring-primary-foreground/15"
                 >
-                  <Calculator className="h-4 w-4" aria-hidden="true" />
+                  <Calculator className="h-3.5 w-3.5" aria-hidden="true" />
                   {labelOf(ctaItem)}
                 </button>
               )}
