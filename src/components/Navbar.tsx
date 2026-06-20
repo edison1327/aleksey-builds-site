@@ -5,7 +5,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
 import { useAuth } from "@/hooks/useAuth";
 import logoAlekseyFallback from "@/assets/logo-aleksey-light.png";
-import logoMark from "@/assets/logo-mark.png";
+import LogoMark from "@/components/LogoMark";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { translateNavLabel } from "@/i18n/config";
