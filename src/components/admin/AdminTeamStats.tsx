@@ -12,6 +12,7 @@ import { Loader2, Plus, Trash2, BarChart3 } from "lucide-react";
 interface TeamStat {
   id: string;
   label: string;
+  label_en: string | null;
   value: string;
   icon: string;
   sort_order: number;
