@@ -17,7 +17,7 @@ const resources = {
         machinery: "MAQUINARIA",
         construction: "CONSTRUCCIÓN",
         engineering: "INGENIERÍA",
-        careers: "TRABAJA CON NOSOTROS",
+        careers: "CARRERAS",
         myAccount: "MI CUENTA",
         signIn: "ACCEDER",
       },
