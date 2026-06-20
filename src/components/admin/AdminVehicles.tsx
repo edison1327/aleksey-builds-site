@@ -220,10 +220,13 @@ const AdminVehicles = () => {
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{vehicle.name}</CardTitle>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingVehicle(vehicle); setIsDialogOpen(true); }}>
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingVehicle(vehicle); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(vehicle)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
