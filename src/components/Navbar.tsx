@@ -236,17 +236,13 @@ const Navbar = () => {
               }}
               aria-label={`${companyName} — ir al inicio`}
             >
-              {/* Compact mark — shown when scrolled or on small screens */}
-              <img
-                src={logoMark}
-                alt=""
+              {/* Compact mark (SVG) — shown when scrolled on small screens */}
+              <LogoMark
                 aria-hidden="true"
                 className={cn(
                   "transition-all duration-300 shrink-0",
-                  scrolled ? "h-9 sm:hidden" : "hidden"
+                  scrolled ? "h-9 w-9 sm:hidden" : "hidden"
                 )}
-                width={40}
-                height={40}
               />
               {/* Full wordmark — default state */}
               <img
