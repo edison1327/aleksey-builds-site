@@ -248,7 +248,7 @@ const Navbar = () => {
             </button>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center flex-1 justify-end gap-0.5 xl:gap-1">
+            <div className="hidden xl:flex items-center flex-1 justify-end gap-0.5 xl:gap-1">
               <ul className="flex items-center gap-0 xl:gap-1" role="list">
                 {navItems.map((item) => {
                   const isActive = activeSection === item.label;
@@ -318,7 +318,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile: utilities + hamburger */}
-            <div className="lg:hidden flex items-center gap-0.5">
+            <div className="xl:hidden flex items-center gap-0.5">
               <ThemeToggle />
               <LanguageSwitcher />
               <button
@@ -361,7 +361,7 @@ const Navbar = () => {
         tabIndex={-1}
         aria-label="Cerrar menú"
         className={cn(
-          "lg:hidden fixed inset-0 z-[99] transition-all duration-500 cursor-default",
+          "xl:hidden fixed inset-0 z-[99] transition-all duration-500 cursor-default",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}
         onClick={() => setIsOpen(false)}
@@ -378,7 +378,7 @@ const Navbar = () => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         className={cn(
-          "lg:hidden fixed top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-400 ease-out overflow-hidden",
+          "xl:hidden fixed top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-400 ease-out overflow-hidden",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}
       >
