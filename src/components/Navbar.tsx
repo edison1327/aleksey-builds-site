@@ -277,7 +277,7 @@ const Navbar = () => {
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "absolute left-2 right-2 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
+                            "absolute left-1.5 right-1.5 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
                             isActive
                               ? "scale-x-100 shadow-[0_0_10px_hsl(var(--primary)/0.7)]"
                               : "scale-x-0 group-hover:scale-x-100 bg-primary/60"
