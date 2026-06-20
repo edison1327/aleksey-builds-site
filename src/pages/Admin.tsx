@@ -53,12 +53,31 @@ const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const getTabFromHash = () => {
+    if (typeof window === "undefined") return "dashboard";
+    const h = window.location.hash.replace(/^#/, "");
+    return h || "dashboard";
+  };
+  const [activeTab, setActiveTab] = useState<string>(getTabFromHash);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
+
+  // Persist active tab in URL hash so it survives refresh and reflects in back/forward
+  useEffect(() => {
+    const current = window.location.hash.replace(/^#/, "");
+    if (current !== activeTab) {
+      window.history.replaceState(null, "", `#${activeTab}`);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    const onHashChange = () => setActiveTab(getTabFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   useEffect(() => {
     if (!isLoading && (!user || !isAdmin)) {
