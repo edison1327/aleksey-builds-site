@@ -150,7 +150,13 @@ const Admin = () => {
     return null;
   }
 
-  const menuItems = [
+  const menuItems: Array<{
+    id: string;
+    label: string;
+    icon: typeof LayoutDashboard;
+    category: string;
+    badgeKey?: keyof typeof badgeCounts;
+  }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
@@ -165,14 +171,14 @@ const Admin = () => {
     { id: "machinery", label: "Maquinaria", icon: Truck, category: "contenido" },
     { id: "vehicles", label: "Vehículos", icon: Car, category: "contenido" },
     { id: "contact", label: "Contacto", icon: Settings, category: "comunicacion" },
-    { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion" },
-    { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion" },
-    { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion" },
+    { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion", badgeKey: "messages" },
+    { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
+    { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion" },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
-    { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
+    { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh", badgeKey: "applications" },
     { id: "audit", label: "Auditoría", icon: History, category: "general" },
   ];
 
