@@ -80,6 +80,8 @@ const Admin = () => {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
+  const { counts: badgeCounts } = useAdminBadges();
+
   useEffect(() => {
     if (!isLoading && (!user || !isAdmin)) {
       navigate("/admin/login");
