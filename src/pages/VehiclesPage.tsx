@@ -7,6 +7,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { useVehicles, Vehicle } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
 import QuickQuoteForm from "@/components/QuickQuoteForm";
 
@@ -28,6 +29,7 @@ const VehiclesPage = () => {
   const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const tr = useLocalizedField();
   
   const { data: vehicles, isLoading } = useVehicles();
 
@@ -99,7 +101,7 @@ const VehiclesPage = () => {
                   <div className="relative h-48 overflow-hidden">
                     <img 
                       src={vehicle.image_url || getDefaultImage(index)} 
-                      alt={vehicle.name}
+                      alt={tr(vehicle as any, "name") || vehicle.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${
@@ -112,7 +114,7 @@ const VehiclesPage = () => {
                   </div>
                   <CardContent className="p-5">
                     <h3 className="text-lg font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {vehicle.name}
+                      {tr(vehicle as any, "name") || vehicle.name}
                     </h3>
                     {vehicle.brand && (
                       <p className="text-sm text-muted-foreground mb-2">{vehicle.brand} {vehicle.model}</p>
@@ -133,7 +135,7 @@ const VehiclesPage = () => {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-heading font-bold">
-              {selectedVehicle?.name}
+              {tr(selectedVehicle as any, "name") || selectedVehicle?.name}
             </DialogTitle>
           </DialogHeader>
           {selectedVehicle && (
@@ -141,7 +143,7 @@ const VehiclesPage = () => {
               <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
                 <img 
                   src={selectedVehicle.image_url || getDefaultImage(0)} 
-                  alt={selectedVehicle.name}
+                  alt={tr(selectedVehicle as any, "name") || selectedVehicle.name}
                   className="w-full h-full object-cover"
                 />
                 <div className={`absolute top-4 right-4 px-4 py-2 rounded-full font-bold ${
@@ -153,8 +155,8 @@ const VehiclesPage = () => {
                 </div>
               </div>
               
-              {selectedVehicle.description && (
-                <p className="text-muted-foreground">{selectedVehicle.description}</p>
+              {(tr(selectedVehicle as any, "description") || selectedVehicle.description) && (
+                <p className="text-muted-foreground">{tr(selectedVehicle as any, "description") || selectedVehicle.description}</p>
               )}
               
               <div className="grid grid-cols-2 gap-4">
@@ -173,7 +175,7 @@ const VehiclesPage = () => {
                 {selectedVehicle.category && (
                   <div className="bg-muted p-4 rounded-lg">
                     <span className="text-sm text-muted-foreground">Categoría</span>
-                    <p className="font-bold text-foreground">{selectedVehicle.category}</p>
+                    <p className="font-bold text-foreground">{tr(selectedVehicle as any, "category") || selectedVehicle.category}</p>
                   </div>
                 )}
                 {(selectedVehicle as any).price && (
