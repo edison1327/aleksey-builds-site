@@ -70,6 +70,7 @@ const resources = {
 const NAV_LABEL_MAP: Record<string, string> = {
   "INICIO": "nav.home",
   "SOBRE NOSOTROS": "nav.about",
+  "NOSOTROS": "nav.about",
   "PROYECTOS": "nav.projects",
   "BLOG": "nav.blog",
   "COTIZAR": "nav.quote",
@@ -80,6 +81,7 @@ const NAV_LABEL_MAP: Record<string, string> = {
   "CONSTRUCCIÓN": "nav.construction",
   "INGENIERÍA": "nav.engineering",
   "TRABAJA CON NOSOTROS": "nav.careers",
+  "CARRERAS": "nav.careers",
 };
 
 export const translateNavLabel = (label: string): string => {
