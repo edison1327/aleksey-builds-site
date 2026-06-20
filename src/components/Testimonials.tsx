@@ -158,20 +158,22 @@ const Testimonials = () => {
             variant="outline"
             size="icon"
             onClick={scrollPrev}
+            aria-label="Testimonio anterior"
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all duration-300 -translate-x-4 md:translate-x-0 shadow-lg"
             disabled={!canScrollPrev}
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
           </Button>
           
           <Button
             variant="outline"
             size="icon"
             onClick={scrollNext}
+            aria-label="Siguiente testimonio"
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all duration-300 translate-x-4 md:translate-x-0 shadow-lg"
             disabled={!canScrollNext}
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-5 w-5" aria-hidden="true" />
           </Button>
 
           {/* Carousel Container */}

@@ -1,5 +1,5 @@
 import { Building2, Home, Wrench, Truck, Settings, Phone, Users, FolderKanban, Sparkles, Calculator, Mail, MapPin, Award, Briefcase, UserCircle2, LogIn, LucideIcon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
@@ -44,6 +44,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("INICIO");
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const { data: siteSettings } = useSiteSettings();
@@ -80,11 +81,27 @@ const Navbar = () => {
     navigate(path);
   };
 
-  // Track scroll for shadow effect
+  // Track scroll: shadow state + progress bar (rAF throttled)
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    let raf = 0;
+    const handle = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        setScrolled(y > 10);
+        setScrollProgress(max > 0 ? Math.min(100, (y / max) * 100) : 0);
+        raf = 0;
+      });
+    };
+    handle();
+    window.addEventListener("scroll", handle, { passive: true });
+    window.addEventListener("resize", handle);
+    return () => {
+      window.removeEventListener("scroll", handle);
+      window.removeEventListener("resize", handle);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   // Close mobile menu on route change
@@ -92,20 +109,74 @@ const Navbar = () => {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // Prevent body scroll when mobile menu is open
+  // Prevent body scroll when mobile menu is open + Esc to close
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
   }, [isOpen]);
 
-  // Sync activeSection with current route
+  // Sync activeSection with current route + hash-section detection on home
   useEffect(() => {
     const match = items.find((i) => i.path === location.pathname);
-    if (match) setActiveSection(match.label);
-    else if (location.pathname === "/") setActiveSection("INICIO");
+    if (match) {
+      setActiveSection(match.label);
+      return;
+    }
+    if (location.pathname === "/") setActiveSection("INICIO");
   }, [location.pathname, items]);
+
+  // IntersectionObserver for hash-anchored sections on home page
+  useEffect(() => {
+    if (location.pathname !== "/") return;
+    const hashItems = items.filter((i) => i.path.startsWith("/#"));
+    if (hashItems.length === 0) return;
+
+    const targets: { el: Element; label: string }[] = [];
+    hashItems.forEach((item) => {
+      const id = item.path.slice(2);
+      const el = document.getElementById(id);
+      if (el) targets.push({ el, label: item.label });
+    });
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) {
+          const match = targets.find((t) => t.el === visible.target);
+          if (match) setActiveSection(match.label);
+        } else if (window.scrollY < 200) {
+          setActiveSection("INICIO");
+        }
+      },
+      { rootMargin: "-25% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    targets.forEach((t) => observer.observe(t.el));
+    return () => observer.disconnect();
+  }, [location.pathname, items]);
+
+  // Swipe-up to close mobile menu
+  const touchStartY = useRef<number | null>(null);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY.current === null) return;
+    const delta = touchStartY.current - e.touches[0].clientY;
+    if (delta > 60) {
+      setIsOpen(false);
+      touchStartY.current = null;
+    }
+  };
 
   // Separar CTA "COTIZAR" del resto para destacarla
   const ctaItem = items.find((i) => /cotiz/i.test(i.label) || i.path === "/cotizar");
@@ -123,6 +194,21 @@ const Navbar = () => {
             : "bg-secondary/70 backdrop-blur-md border-b border-transparent"
         )}
       >
+        {/* Scroll progress indicator */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-transparent overflow-hidden pointer-events-none"
+          aria-hidden="true"
+        >
+          <div
+            className="h-full bg-gradient-to-r from-primary via-primary to-primary/70 shadow-[0_0_8px_hsl(var(--primary))] transition-[width] duration-150 ease-out"
+            style={{ width: `${scrollProgress}%` }}
+            role="progressbar"
+            aria-valuenow={Math.round(scrollProgress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Progreso de lectura de la página"
+          />
+        </div>
         <div className="container mx-auto px-3 sm:px-4">
           <div
             className={cn(
@@ -257,16 +343,19 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      <div
+      {/* Mobile Menu Overlay (click to close) */}
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="Cerrar menú"
         className={cn(
-          "lg:hidden fixed inset-0 z-[99] transition-all duration-500",
+          "lg:hidden fixed inset-0 z-[99] transition-all duration-500 cursor-default",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}
         onClick={() => setIsOpen(false)}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 backdrop-blur-sm" />
-      </div>
+      </button>
 
       {/* Mobile Menu Panel */}
       <div
@@ -274,6 +363,8 @@ const Navbar = () => {
         role="dialog"
         aria-modal="true"
         aria-label="Menú de navegación"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         className={cn(
           "lg:hidden fixed top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-400 ease-out overflow-hidden",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
@@ -295,7 +386,11 @@ const Navbar = () => {
             isOpen ? "opacity-100" : "opacity-0"
           )}
         >
-          <div className="container mx-auto px-4 py-5 pb-24 flex flex-col gap-4">
+          <div className="container mx-auto px-4 pt-3 pb-24 flex flex-col gap-4">
+            {/* Swipe-up affordance */}
+            <div className="flex justify-center mb-1" aria-hidden="true">
+              <span className="w-10 h-1 rounded-full bg-secondary-foreground/20" />
+            </div>
             {/* CTA Cotizar destacado */}
             {ctaItem && (
               <button

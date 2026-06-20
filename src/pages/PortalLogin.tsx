@@ -42,7 +42,7 @@ const PortalLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <Helmet>
         <title>Portal del cliente | Acceso</title>
         <meta name="description" content="Inicia sesión o crea tu cuenta para hacer seguimiento de tus solicitudes de cotización." />

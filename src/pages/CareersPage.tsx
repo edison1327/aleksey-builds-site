@@ -194,7 +194,7 @@ const CareersPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
@@ -204,7 +204,7 @@ const CareersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-secondary">
         <div className="container mx-auto px-4">

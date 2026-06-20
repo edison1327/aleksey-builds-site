@@ -44,7 +44,7 @@ const BlogPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <Helmet>
         <title>Blog | ALEKSEY — Noticias y artículos del sector construcción</title>
         <meta

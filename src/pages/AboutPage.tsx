@@ -111,7 +111,7 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
   const paragraphs = description.split('\n\n').filter(p => p.trim());
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-secondary">
         <div className="container mx-auto px-4">
