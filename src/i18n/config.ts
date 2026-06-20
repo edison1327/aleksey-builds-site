@@ -7,7 +7,7 @@ const resources = {
     translation: {
       nav: {
         home: "INICIO",
-        about: "SOBRE NOSOTROS",
+        about: "NOSOTROS",
         projects: "PROYECTOS",
         blog: "BLOG",
         quote: "COTIZAR",
