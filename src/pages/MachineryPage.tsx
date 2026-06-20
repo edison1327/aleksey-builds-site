@@ -404,7 +404,7 @@ const MachineryPage = () => {
                 {selectedMachine.category && (
                   <div className="bg-muted p-4 rounded-lg">
                     <span className="text-sm text-muted-foreground">Categoría</span>
-                    <p className="font-bold text-foreground">{selectedMachine.category}</p>
+                    <p className="font-bold text-foreground">{tr(selectedMachine as any, "category") || selectedMachine.category}</p>
                   </div>
                 )}
               </div>
