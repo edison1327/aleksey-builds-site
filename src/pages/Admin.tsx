@@ -160,6 +160,7 @@ const Admin = () => {
   }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
+    { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
     { id: "users", label: "Usuarios", icon: UserCog, category: "general" },
