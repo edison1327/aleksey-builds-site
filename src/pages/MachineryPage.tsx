@@ -21,6 +21,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { useMachinery, Machinery } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
 import QuickQuoteForm from "@/components/QuickQuoteForm";
 
@@ -44,6 +45,7 @@ const MachineryPage = () => {
   const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation(0.2);
   const navigate = useNavigate();
   const [selectedMachine, setSelectedMachine] = useState<Machinery | null>(null);
+  const tr = useLocalizedField();
 
   // Filters
   const [search, setSearch] = useState("");
@@ -237,7 +239,7 @@ const MachineryPage = () => {
                       <div className="relative h-48 overflow-hidden">
                         <img
                           src={item.image_url || getDefaultImage(index)}
-                          alt={item.name}
+                          alt={tr(item as any, "name") || item.name}
                           loading="lazy"
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
@@ -251,7 +253,7 @@ const MachineryPage = () => {
                       </div>
                       <CardContent className="p-5">
                         <h3 className="text-lg font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                          {item.name}
+                          {tr(item as any, "name") || item.name}
                         </h3>
                         {item.brand && (
                           <p className="text-sm text-muted-foreground mb-2">
@@ -260,7 +262,7 @@ const MachineryPage = () => {
                         )}
                         {item.category && (
                           <Badge variant="secondary" className="text-xs">
-                            {item.category}
+                            {tr(item as any, "category") || item.category}
                           </Badge>
                         )}
                       </CardContent>
@@ -305,10 +307,10 @@ const MachineryPage = () => {
                       <div className="space-y-2">
                         <img
                           src={m.image_url || getDefaultImage(0)}
-                          alt={m.name}
+                          alt={tr(m as any, "name") || m.name}
                           className="w-full h-32 object-cover rounded-lg"
                         />
-                        <p className="font-heading font-bold">{m.name}</p>
+                        <p className="font-heading font-bold">{tr(m as any, "name") || m.name}</p>
                       </div>
                     </th>
                   ))}
@@ -318,12 +320,12 @@ const MachineryPage = () => {
                 {[
                   { label: "Marca", get: (m: Machinery) => m.brand || "—" },
                   { label: "Modelo", get: (m: Machinery) => m.model || "—" },
-                  { label: "Categoría", get: (m: Machinery) => m.category || "—" },
+                  { label: "Categoría", get: (m: Machinery) => tr(m as any, "category") || m.category || "—" },
                   {
                     label: "Disponibilidad",
                     get: (m: Machinery) => (m.is_available ? "Disponible" : "No disponible"),
                   },
-                  { label: "Descripción", get: (m: Machinery) => m.description || "—" },
+                  { label: "Descripción", get: (m: Machinery) => tr(m as any, "description") || m.description || "—" },
                 ].map((row) => (
                   <tr key={row.label}>
                     <td className="p-2 text-muted-foreground font-medium align-top">{row.label}</td>
@@ -362,7 +364,7 @@ const MachineryPage = () => {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-heading font-bold">
-              {selectedMachine?.name}
+              {tr(selectedMachine as any, "name") || selectedMachine?.name}
             </DialogTitle>
           </DialogHeader>
           {selectedMachine && (
@@ -370,7 +372,7 @@ const MachineryPage = () => {
               <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
                 <img
                   src={selectedMachine.image_url || getDefaultImage(0)}
-                  alt={selectedMachine.name}
+                  alt={tr(selectedMachine as any, "name") || selectedMachine.name}
                   className="w-full h-full object-cover"
                 />
                 <div
@@ -382,8 +384,8 @@ const MachineryPage = () => {
                 </div>
               </div>
 
-              {selectedMachine.description && (
-                <p className="text-muted-foreground">{selectedMachine.description}</p>
+              {(tr(selectedMachine as any, "description") || selectedMachine.description) && (
+                <p className="text-muted-foreground">{tr(selectedMachine as any, "description") || selectedMachine.description}</p>
               )}
 
               <div className="grid grid-cols-2 gap-4">
