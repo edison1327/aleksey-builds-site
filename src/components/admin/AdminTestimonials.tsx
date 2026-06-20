@@ -11,12 +11,17 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Star, Quote } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 
+import { I18nField } from "./I18nField";
+
 interface Testimonial {
   id: string;
   name: string;
   role: string;
+  role_en: string | null;
   company: string;
+  company_en: string | null;
   content: string;
+  content_en: string | null;
   rating: number;
   avatar_url: string | null;
   is_active: boolean;
