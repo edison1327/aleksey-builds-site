@@ -112,10 +112,12 @@ const AdminNavigation = () => {
           .upsert({
             id: link.id,
             label: link.label,
+            label_en: link.label_en,
             path: link.path,
             icon: link.icon,
             location: link.location,
             title: link.title,
+            title_en: link.title_en,
             sort_order: link.sort_order,
             is_active: link.is_active,
           });
