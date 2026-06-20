@@ -227,7 +227,7 @@ const Navbar = () => {
             {/* Logo */}
             <button
               type="button"
-              className="flex items-center cursor-pointer transition-opacity duration-200 hover:opacity-80 shrink-0 rounded-md"
+              className="flex items-center cursor-pointer transition-opacity duration-200 hover:opacity-80 shrink-0 rounded-md lg:-ml-2 xl:-ml-4"
               onClick={() => {
                 navigate("/");
                 setActiveSection("INICIO");
