@@ -386,7 +386,11 @@ const Navbar = () => {
             isOpen ? "opacity-100" : "opacity-0"
           )}
         >
-          <div className="container mx-auto px-4 py-5 pb-24 flex flex-col gap-4">
+          <div className="container mx-auto px-4 pt-3 pb-24 flex flex-col gap-4">
+            {/* Swipe-up affordance */}
+            <div className="flex justify-center mb-1" aria-hidden="true">
+              <span className="w-10 h-1 rounded-full bg-secondary-foreground/20" />
+            </div>
             {/* CTA Cotizar destacado */}
             {ctaItem && (
               <button
