@@ -265,6 +265,26 @@ const AdminProjects = () => {
                   </span>
                 )}
               </div>
+              <div className="flex items-center justify-between gap-3 mt-3 pt-2 border-t">
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Switch
+                    checked={project.is_active}
+                    onCheckedChange={(v) => handleToggle(project.id, "is_active", v)}
+                  />
+                  <span className={project.is_active ? "text-emerald-600 font-medium" : "text-muted-foreground"}>
+                    {project.is_active ? "Activo" : "Inactivo"}
+                  </span>
+                </label>
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Switch
+                    checked={project.is_featured}
+                    onCheckedChange={(v) => handleToggle(project.id, "is_featured", v)}
+                  />
+                  <span className={project.is_featured ? "text-amber-600 font-medium" : "text-muted-foreground"}>
+                    Destacado
+                  </span>
+                </label>
+              </div>
             </CardContent>
           </Card>
         )}
