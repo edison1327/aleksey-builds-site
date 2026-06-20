@@ -115,6 +115,24 @@ const AdminServices = () => {
     }
   };
 
+  const handleDuplicate = async (service: Service) => {
+    try {
+      const copy = await duplicateRow<Service>("services", service.id, {
+        overrides: {
+          title: `${service.title} (copia)`,
+          is_active: false,
+          sort_order: services.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia (inactiva)." });
+      logAction("duplicate", "services", copy.id);
+      fetchServices();
+    } catch (e) {
+      console.error("Error duplicating service:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
   const handleReorder = async (newOrder: Service[]) => {
     setServices(newOrder);
     try {
