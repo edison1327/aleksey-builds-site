@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Trash2, Loader2, Users, Eye, FileText, Download, FileSpreadsheet } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import AssigneeSelect from "@/components/admin/AssigneeSelect";
 
 interface JobApplication {
   id: string;
@@ -20,6 +21,7 @@ interface JobApplication {
   status: string;
   resume_url: string | null;
   created_at: string;
+  assigned_to?: string | null;
 }
 
 const statusColors: Record<string, string> = {
@@ -313,6 +315,19 @@ const AdminJobApplications = () => {
                   <SelectItem value="rejected">Rechazado</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Asignado a</label>
+              {selectedApplication && (
+                <div className="mt-1">
+                  <AssigneeSelect
+                    table="job_applications"
+                    rowId={selectedApplication.id}
+                    value={selectedApplication.assigned_to || null}
+                    onChange={(v) => setSelectedApplication({ ...selectedApplication, assigned_to: v })}
+                  />
+                </div>
+              )}
             </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">Fecha</label>
