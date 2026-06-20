@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Save, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "./ImageUpload";
+import { I18nField } from "./I18nField";
 
 const AdminSiteSettings = () => {
   const { data: settings, isLoading } = useSiteSettings();
@@ -16,9 +17,12 @@ const AdminSiteSettings = () => {
   const [formData, setFormData] = useState({
     company_name: "",
     tagline: "",
+    tagline_en: "",
     logo_url: "",
     footer_description: "",
+    footer_description_en: "",
     footer_copyright: "",
+    footer_copyright_en: "",
   });
 
   useEffect(() => {
@@ -26,9 +30,12 @@ const AdminSiteSettings = () => {
       setFormData({
         company_name: settings.company_name || "",
         tagline: settings.tagline || "",
+        tagline_en: settings.tagline_en || "",
         logo_url: settings.logo_url || "",
         footer_description: settings.footer_description || "",
+        footer_description_en: settings.footer_description_en || "",
         footer_copyright: settings.footer_copyright || "",
+        footer_copyright_en: settings.footer_copyright_en || "",
       });
     }
   }, [settings]);
