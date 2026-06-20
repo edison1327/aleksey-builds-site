@@ -70,7 +70,7 @@ const Engineering = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       {/* Hero Section */}
       <section className="relative pt-24 bg-secondary">
         <div 

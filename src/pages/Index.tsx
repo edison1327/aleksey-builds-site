@@ -24,7 +24,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SkipToContent />
       {showSplash && (
         <SplashScreen onComplete={handleSplashComplete} duration={1500} />

@@ -140,7 +140,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary via-secondary/95 to-secondary/90 flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-gradient-to-br from-secondary via-secondary/95 to-secondary/90 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Link 
           to="/" 

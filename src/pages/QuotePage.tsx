@@ -252,7 +252,7 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <section className="pt-32 pb-20">
           <div className="container mx-auto px-4">
             <Card className="max-w-2xl mx-auto text-center border-none shadow-xl">
@@ -316,7 +316,7 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Hero Section */}
       <section className="pt-32 pb-12 bg-secondary">
         <div className="container mx-auto px-4">

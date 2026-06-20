@@ -54,7 +54,7 @@ const BlogPostPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-32 container mx-auto px-4 max-w-3xl">
+      <div className="min-h-dvh pt-32 container mx-auto px-4 max-w-3xl">
         <Skeleton className="h-12 w-3/4 mb-4" />
         <Skeleton className="h-6 w-1/3 mb-8" />
         <Skeleton className="h-64 w-full mb-8" />
@@ -67,7 +67,7 @@ const BlogPostPage = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen pt-32 pb-20 container mx-auto px-4 text-center">
+      <div className="min-h-dvh pt-32 pb-20 container mx-auto px-4 text-center">
         <Newspaper className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
         <h1 className="text-2xl font-heading font-bold mb-2">Artículo no encontrado</h1>
         <p className="text-muted-foreground mb-6">El artículo que buscas no existe o fue retirado.</p>
@@ -97,7 +97,7 @@ const BlogPostPage = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <Helmet>
         <title>{title} | Blog ALEKSEY</title>
         {excerpt && <meta name="description" content={excerpt} />}

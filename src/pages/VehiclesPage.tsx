@@ -44,7 +44,7 @@ const VehiclesPage = () => {
   const getDefaultImage = (index: number) => defaultImages[index % defaultImages.length];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       {/* Hero Section */}
       <section className="relative pt-24 bg-secondary">
         <div 

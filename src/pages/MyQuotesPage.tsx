@@ -89,7 +89,7 @@ const MyQuotesPage = () => {
   };
 
   if (authLoading || loading) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    return <div className="min-h-dvh flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
   const quotes = messages.filter(isQuote);
@@ -97,7 +97,7 @@ const MyQuotesPage = () => {
   const pending = messages.filter((m) => m.status === "pending").length;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <Helmet>
         <title>Mis solicitudes | Portal del cliente</title>
         <meta name="description" content="Consulta, descarga y chatea sobre tus solicitudes de cotización." />
