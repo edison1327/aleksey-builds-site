@@ -7,14 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Save, Loader2 } from "lucide-react";
 
+import { I18nField } from "./I18nField";
+
 interface ContactInfo {
   id: string;
   phone: string | null;
   email: string | null;
   address: string | null;
+  address_en: string | null;
   city: string | null;
   country: string | null;
   business_hours: string | null;
+  business_hours_en: string | null;
   google_maps_url: string | null;
 }
 
