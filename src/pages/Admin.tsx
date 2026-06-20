@@ -372,6 +372,7 @@ const Admin = () => {
       case "benefits": return <AdminBenefits />;
       case "applications": return <AdminJobApplications />;
       case "audit": return <AdminAuditLog />;
+      case "media": return <AdminMediaLibrary />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
