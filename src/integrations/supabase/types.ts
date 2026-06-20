@@ -22,11 +22,14 @@ export type Database = {
           id: string
           image_url: string | null
           mission: string | null
+          mission_en: string | null
           title: string
           title_en: string | null
           updated_at: string
           values: string[] | null
+          values_en: string[] | null
           vision: string | null
+          vision_en: string | null
         }
         Insert: {
           created_at?: string
@@ -35,11 +38,14 @@ export type Database = {
           id?: string
           image_url?: string | null
           mission?: string | null
+          mission_en?: string | null
           title: string
           title_en?: string | null
           updated_at?: string
           values?: string[] | null
+          values_en?: string[] | null
           vision?: string | null
+          vision_en?: string | null
         }
         Update: {
           created_at?: string
@@ -48,11 +54,14 @@ export type Database = {
           id?: string
           image_url?: string | null
           mission?: string | null
+          mission_en?: string | null
           title?: string
           title_en?: string | null
           updated_at?: string
           values?: string[] | null
+          values_en?: string[] | null
           vision?: string | null
+          vision_en?: string | null
         }
         Relationships: []
       }
@@ -147,31 +156,37 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          description_en: string | null
           icon: string
           id: string
           is_active: boolean | null
           sort_order: number | null
           title: string
+          title_en: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           description: string
+          description_en?: string | null
           icon?: string
           id?: string
           is_active?: boolean | null
           sort_order?: number | null
           title: string
+          title_en?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string
+          description_en?: string | null
           icon?: string
           id?: string
           is_active?: boolean | null
           sort_order?: number | null
           title?: string
+          title_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -179,7 +194,9 @@ export type Database = {
       contact_info: {
         Row: {
           address: string | null
+          address_en: string | null
           business_hours: string | null
+          business_hours_en: string | null
           city: string | null
           country: string | null
           created_at: string
@@ -191,7 +208,9 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          address_en?: string | null
           business_hours?: string | null
+          business_hours_en?: string | null
           city?: string | null
           country?: string | null
           created_at?: string
@@ -203,7 +222,9 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          address_en?: string | null
           business_hours?: string | null
+          business_hours_en?: string | null
           city?: string | null
           country?: string | null
           created_at?: string
@@ -423,43 +444,61 @@ export type Database = {
         Row: {
           created_at: string
           department: string
+          department_en: string | null
           description: string | null
+          description_en: string | null
           id: string
           is_active: boolean | null
           location: string
+          location_en: string | null
           requirements: Json | null
+          requirements_en: Json | null
           salary: string | null
           sort_order: number | null
           title: string
+          title_en: string | null
           type: string
+          type_en: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           department: string
+          department_en?: string | null
           description?: string | null
+          description_en?: string | null
           id?: string
           is_active?: boolean | null
           location: string
+          location_en?: string | null
           requirements?: Json | null
+          requirements_en?: Json | null
           salary?: string | null
           sort_order?: number | null
           title: string
+          title_en?: string | null
           type?: string
+          type_en?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           department?: string
+          department_en?: string | null
           description?: string | null
+          description_en?: string | null
           id?: string
           is_active?: boolean | null
           location?: string
+          location_en?: string | null
           requirements?: Json | null
+          requirements_en?: Json | null
           salary?: string | null
           sort_order?: number | null
           title?: string
+          title_en?: string | null
           type?: string
+          type_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -578,10 +617,12 @@ export type Database = {
           id: string
           is_active: boolean | null
           label: string
+          label_en: string | null
           location: string
           path: string
           sort_order: number | null
           title: string | null
+          title_en: string | null
           updated_at: string
         }
         Insert: {
@@ -590,10 +631,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label: string
+          label_en?: string | null
           location?: string
           path: string
           sort_order?: number | null
           title?: string | null
+          title_en?: string | null
           updated_at?: string
         }
         Update: {
@@ -602,10 +645,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label?: string
+          label_en?: string | null
           location?: string
           path?: string
           sort_order?: number | null
           title?: string | null
+          title_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -613,46 +658,58 @@ export type Database = {
       projects: {
         Row: {
           category: string | null
+          category_en: string | null
           created_at: string
           description: string | null
+          description_en: string | null
           gallery_images: string[] | null
           id: string
           image_url: string | null
           is_active: boolean | null
           is_featured: boolean | null
           location: string | null
+          location_en: string | null
           sort_order: number | null
           title: string
+          title_en: string | null
           updated_at: string
           year: number | null
         }
         Insert: {
           category?: string | null
+          category_en?: string | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
           gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_featured?: boolean | null
           location?: string | null
+          location_en?: string | null
           sort_order?: number | null
           title: string
+          title_en?: string | null
           updated_at?: string
           year?: number | null
         }
         Update: {
           category?: string | null
+          category_en?: string | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
           gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_featured?: boolean | null
           location?: string | null
+          location_en?: string | null
           sort_order?: number | null
           title?: string
+          title_en?: string | null
           updated_at?: string
           year?: number | null
         }
@@ -715,6 +772,7 @@ export type Database = {
           description: string | null
           description_en: string | null
           features: string[] | null
+          features_en: string[] | null
           icon: string
           id: string
           image_url: string | null
@@ -729,6 +787,7 @@ export type Database = {
           description?: string | null
           description_en?: string | null
           features?: string[] | null
+          features_en?: string[] | null
           icon?: string
           id?: string
           image_url?: string | null
@@ -743,6 +802,7 @@ export type Database = {
           description?: string | null
           description_en?: string | null
           features?: string[] | null
+          features_en?: string[] | null
           icon?: string
           id?: string
           image_url?: string | null
@@ -759,30 +819,39 @@ export type Database = {
           company_name: string | null
           created_at: string
           footer_copyright: string | null
+          footer_copyright_en: string | null
           footer_description: string | null
+          footer_description_en: string | null
           id: string
           logo_url: string | null
           tagline: string | null
+          tagline_en: string | null
           updated_at: string
         }
         Insert: {
           company_name?: string | null
           created_at?: string
           footer_copyright?: string | null
+          footer_copyright_en?: string | null
           footer_description?: string | null
+          footer_description_en?: string | null
           id?: string
           logo_url?: string | null
           tagline?: string | null
+          tagline_en?: string | null
           updated_at?: string
         }
         Update: {
           company_name?: string | null
           created_at?: string
           footer_copyright?: string | null
+          footer_copyright_en?: string | null
           footer_description?: string | null
+          footer_description_en?: string | null
           id?: string
           logo_url?: string | null
           tagline?: string | null
+          tagline_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -824,6 +893,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           label: string
+          label_en: string | null
           sort_order: number | null
           updated_at: string
           value: string
@@ -834,6 +904,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label: string
+          label_en?: string | null
           sort_order?: number | null
           updated_at?: string
           value: string
@@ -844,6 +915,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label?: string
+          label_en?: string | null
           sort_order?: number | null
           updated_at?: string
           value?: string
@@ -854,39 +926,48 @@ export type Database = {
         Row: {
           avatar_url: string | null
           company: string
+          company_en: string | null
           content: string
+          content_en: string | null
           created_at: string
           id: string
           is_active: boolean | null
           name: string
           rating: number
           role: string
+          role_en: string | null
           sort_order: number | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           company: string
+          company_en?: string | null
           content: string
+          content_en?: string | null
           created_at?: string
           id?: string
           is_active?: boolean | null
           name: string
           rating?: number
           role: string
+          role_en?: string | null
           sort_order?: number | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           company?: string
+          company_en?: string | null
           content?: string
+          content_en?: string | null
           created_at?: string
           id?: string
           is_active?: boolean | null
           name?: string
           rating?: number
           role?: string
+          role_en?: string | null
           sort_order?: number | null
           updated_at?: string
         }
