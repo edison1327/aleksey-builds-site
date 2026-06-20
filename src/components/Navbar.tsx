@@ -258,7 +258,7 @@ const Navbar = () => {
                         onClick={() => handleNavClick(item.path, item.label)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "group relative flex items-center px-2 xl:px-4 h-10 text-[11.5px] xl:text-[13px] font-heading font-semibold tracking-[0.06em] xl:tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
+                          "group relative flex items-center px-1.5 xl:px-4 h-10 text-[11px] xl:text-[13px] font-heading font-semibold tracking-[0.04em] xl:tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
                           isActive
                             ? "text-primary"
                             : "text-secondary-foreground/65 hover:text-secondary-foreground"
@@ -277,7 +277,7 @@ const Navbar = () => {
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "absolute left-2 right-2 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
+                            "absolute left-1.5 right-1.5 xl:left-4 xl:right-4 -bottom-px h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 ease-out",
                             isActive
                               ? "scale-x-100 shadow-[0_0_10px_hsl(var(--primary)/0.7)]"
                               : "scale-x-0 group-hover:scale-x-100 bg-primary/60"
@@ -306,7 +306,7 @@ const Navbar = () => {
                   onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
                   aria-label={user ? "Mi cuenta" : "Iniciar sesión"}
                   title={user ? "Mi cuenta" : "Iniciar sesión"}
-                  className="flex items-center justify-center w-9 h-9 xl:w-10 xl:h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
+                  className="hidden xl:flex items-center justify-center w-9 h-9 xl:w-10 xl:h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
                 >
                   {user
                     ? <UserCircle2 className="h-[18px] w-[18px]" aria-hidden="true" />
