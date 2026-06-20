@@ -241,37 +241,37 @@ const AdminProjects = () => {
             <DialogTitle>{editingProject?.id ? "Editar proyecto" : "Nuevo proyecto"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium">Título</label>
-              <Input
-                value={editingProject?.title || ""}
-                onChange={(e) => setEditingProject(prev => prev ? { ...prev, title: e.target.value } : null)}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Descripción</label>
-              <Textarea
-                value={editingProject?.description || ""}
-                onChange={(e) => setEditingProject(prev => prev ? { ...prev, description: e.target.value } : null)}
-                rows={3}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium">Categoría</label>
-                <Input
-                  value={editingProject?.category || ""}
-                  onChange={(e) => setEditingProject(prev => prev ? { ...prev, category: e.target.value } : null)}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Ubicación</label>
-                <Input
-                  value={editingProject?.location || ""}
-                  onChange={(e) => setEditingProject(prev => prev ? { ...prev, location: e.target.value } : null)}
-                />
-              </div>
-            </div>
+            <I18nField
+              label="Título"
+              valueEs={editingProject?.title || ""}
+              valueEn={editingProject?.title_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, title: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, title_en: v } : null)}
+            />
+            <I18nField
+              label="Descripción"
+              valueEs={editingProject?.description || ""}
+              valueEn={editingProject?.description_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, description: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, description_en: v } : null)}
+              textarea
+              rows={3}
+            />
+            <I18nField
+              label="Categoría"
+              valueEs={editingProject?.category || ""}
+              valueEn={editingProject?.category_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, category: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, category_en: v } : null)}
+            />
+            <I18nField
+              label="Ubicación"
+              valueEs={editingProject?.location || ""}
+              valueEn={editingProject?.location_en || ""}
+              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, location: v } : null)}
+              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, location_en: v } : null)}
+            />
+
             <div>
               <label className="text-sm font-medium">Año</label>
               <Input
