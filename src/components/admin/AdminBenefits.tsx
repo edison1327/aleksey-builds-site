@@ -28,20 +28,25 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { I18nField } from "./I18nField";
 
 interface Benefit {
   id: string;
   title: string;
+  title_en: string | null;
   description: string;
+  description_en: string | null;
   icon: string;
   is_active: boolean;
   sort_order: number;
 }
 
-const emptyBenefit: Omit<Benefit, "id"> & { id: string } = {
+const emptyBenefit: Benefit = {
   id: "",
   title: "",
+  title_en: "",
   description: "",
+  description_en: "",
   icon: "Star",
   is_active: true,
   sort_order: 0,
