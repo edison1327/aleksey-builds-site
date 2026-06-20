@@ -149,6 +149,17 @@ const AdminMachinery = () => {
     }
   };
 
+  const handleToggleActive = async (machine: any, next: boolean) => {
+    setMachinery((prev) => prev.map((m: any) => (m.id === machine.id ? { ...m, is_active: next } : m)));
+    const { error } = await supabase.from("machinery").update({ is_active: next }).eq("id", machine.id);
+    if (error) {
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
+      setMachinery((prev) => prev.map((m: any) => (m.id === machine.id ? { ...m, is_active: !next } : m)));
+      return;
+    }
+    logAction("update", "machinery", machine.id, { is_active: next });
+  };
+
 
   const handleReorder = async (newOrder: typeof machinery) => {
     setMachinery(newOrder); // optimistic
