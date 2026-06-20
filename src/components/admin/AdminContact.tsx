@@ -72,9 +72,11 @@ const AdminContact = () => {
             phone: contact.phone,
             email: contact.email,
             address: contact.address,
+            address_en: contact.address_en,
             city: contact.city,
             country: contact.country,
             business_hours: contact.business_hours,
+            business_hours_en: contact.business_hours_en,
             google_maps_url: contact.google_maps_url,
           })
           .eq("id", contact.id);
@@ -87,9 +89,11 @@ const AdminContact = () => {
             phone: contact.phone,
             email: contact.email,
             address: contact.address,
+            address_en: contact.address_en,
             city: contact.city,
             country: contact.country,
             business_hours: contact.business_hours,
+            business_hours_en: contact.business_hours_en,
             google_maps_url: contact.google_maps_url,
           })
           .select()
