@@ -69,8 +69,11 @@ const AdminTestimonials = () => {
           .update({
             name: editingTestimonial.name,
             role: editingTestimonial.role,
+            role_en: editingTestimonial.role_en,
             company: editingTestimonial.company,
+            company_en: editingTestimonial.company_en,
             content: editingTestimonial.content,
+            content_en: editingTestimonial.content_en,
             rating: editingTestimonial.rating || 5,
             avatar_url: editingTestimonial.avatar_url,
             is_active: editingTestimonial.is_active ?? true,
@@ -84,8 +87,11 @@ const AdminTestimonials = () => {
         const { error } = await supabase.from("testimonials").insert({
           name: editingTestimonial.name,
           role: editingTestimonial.role || "",
+          role_en: editingTestimonial.role_en,
           company: editingTestimonial.company,
+          company_en: editingTestimonial.company_en,
           content: editingTestimonial.content,
+          content_en: editingTestimonial.content_en,
           rating: editingTestimonial.rating || 5,
           avatar_url: editingTestimonial.avatar_url,
           is_active: editingTestimonial.is_active ?? true,
