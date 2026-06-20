@@ -130,6 +130,25 @@ const AdminVehicles = () => {
     }
   };
 
+  const handleDuplicate = async (vehicle: Vehicle) => {
+    try {
+      const copy = await duplicateRow<Vehicle>("vehicles", vehicle.id, {
+        overrides: {
+          name: `${vehicle.name} (copia)`,
+          is_active: false,
+          sort_order: vehicles.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia (inactiva)." });
+      logAction("duplicate", "vehicles", copy.id);
+      fetchVehicles();
+    } catch (e) {
+      console.error("Error duplicating vehicle:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
+
   const handleReorder = async (newOrder: Vehicle[]) => {
     setVehicles(newOrder);
     try {
