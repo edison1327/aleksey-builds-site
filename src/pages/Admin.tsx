@@ -42,6 +42,7 @@ import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsL
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useAdminBadges } from "@/hooks/useAdminBadges";
 import { cn } from "@/lib/utils";
 
 import { useToast } from "@/hooks/use-toast";
@@ -78,6 +79,8 @@ const Admin = () => {
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
+
+  const { counts: badgeCounts } = useAdminBadges();
 
   useEffect(() => {
     if (!isLoading && (!user || !isAdmin)) {
@@ -147,7 +150,13 @@ const Admin = () => {
     return null;
   }
 
-  const menuItems = [
+  const menuItems: Array<{
+    id: string;
+    label: string;
+    icon: typeof LayoutDashboard;
+    category: string;
+    badgeKey?: keyof typeof badgeCounts;
+  }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
@@ -162,14 +171,14 @@ const Admin = () => {
     { id: "machinery", label: "Maquinaria", icon: Truck, category: "contenido" },
     { id: "vehicles", label: "Vehículos", icon: Car, category: "contenido" },
     { id: "contact", label: "Contacto", icon: Settings, category: "comunicacion" },
-    { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion" },
-    { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion" },
-    { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion" },
+    { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion", badgeKey: "messages" },
+    { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
+    { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion" },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
-    { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh" },
+    { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh", badgeKey: "applications" },
     { id: "audit", label: "Auditoría", icon: History, category: "general" },
   ];
 
@@ -234,47 +243,56 @@ const Admin = () => {
               <div className="space-y-1">
                 {menuItems
                   .filter((item) => item.category === category.id)
-                  .map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        handleMenuClick(item.id);
-                        if (item.id === 'messages') {
-                          setNewMessagesCount(0);
-                        }
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative",
-                        activeTab === item.id
-                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                        sidebarCollapsed && !isMobile && "justify-center px-2"
-                      )}
-                      title={sidebarCollapsed && !isMobile ? item.label : undefined}
-                    >
-                      <div className="relative">
-                        <item.icon className="h-5 w-5 shrink-0" />
-                        {item.id === 'messages' && newMessagesCount > 0 && (
-                          <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-4 w-4 bg-destructive text-destructive-foreground text-[10px] font-bold items-center justify-center">
-                              {newMessagesCount > 9 ? '9+' : newMessagesCount}
-                            </span>
-                          </span>
+                  .map((item) => {
+                    const badgeCount = item.badgeKey ? badgeCounts[item.badgeKey] : 0;
+                    const showBadge = badgeCount > 0;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          handleMenuClick(item.id);
+                          if (item.id === 'messages') {
+                            setNewMessagesCount(0);
+                          }
+                        }}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative",
+                          activeTab === item.id
+                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                          sidebarCollapsed && !isMobile && "justify-center px-2"
                         )}
-                      </div>
-                      {(!sidebarCollapsed || isMobile) && (
-                        <span className="flex items-center gap-2">
-                          {item.label}
-                          {item.id === 'messages' && newMessagesCount > 0 && (
-                            <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full animate-pulse">
-                              {newMessagesCount} nuevo{newMessagesCount > 1 ? 's' : ''}
+                        title={sidebarCollapsed && !isMobile ? `${item.label}${showBadge ? ` (${badgeCount})` : ''}` : undefined}
+                      >
+                        <div className="relative">
+                          <item.icon className="h-5 w-5 shrink-0" />
+                          {showBadge && (
+                            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-4 min-w-4 px-1 bg-destructive text-destructive-foreground text-[10px] font-bold items-center justify-center">
+                                {badgeCount > 99 ? '99+' : badgeCount}
+                              </span>
                             </span>
                           )}
-                        </span>
-                      )}
-                    </button>
-                  ))}
+                        </div>
+                        {(!sidebarCollapsed || isMobile) && (
+                          <span className="flex items-center gap-2 flex-1 justify-between">
+                            <span>{item.label}</span>
+                            {showBadge && (
+                              <span className={cn(
+                                "text-[10px] font-bold px-1.5 py-0.5 rounded-full",
+                                activeTab === item.id
+                                  ? "bg-primary-foreground/20 text-primary-foreground"
+                                  : "bg-destructive text-destructive-foreground animate-pulse"
+                              )}>
+                                {badgeCount > 99 ? '99+' : badgeCount}
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
               </div>
             </div>
           ))}

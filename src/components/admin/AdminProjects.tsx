@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Star, Images, GripHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Star, Images, GripHorizontal, Copy } from "lucide-react";
+import { duplicateRow } from "@/lib/duplicateRow";
 import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
 import { SortableGrid } from "./SortableGrid";
@@ -131,6 +132,25 @@ const AdminProjects = () => {
     }
   };
 
+  const handleDuplicate = async (project: Project) => {
+    try {
+      const copy = await duplicateRow<Project>("projects", project.id, {
+        overrides: {
+          title: `${project.title} (copia)`,
+          is_featured: false,
+          sort_order: projects.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia." });
+      logAction("duplicate", "projects", copy.id);
+      fetchProjects();
+    } catch (e) {
+      console.error("Error duplicating project:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
+
   const handleReorder = async (newOrder: Project[]) => {
     setProjects(newOrder);
     try {
@@ -205,10 +225,13 @@ const AdminProjects = () => {
                   {project.is_featured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
                 </div>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingProject(project); setIsDialogOpen(true); }}>
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingProject(project); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(project.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(project)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(project.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>

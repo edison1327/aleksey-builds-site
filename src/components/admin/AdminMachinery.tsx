@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, GripHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripHorizontal, Copy } from "lucide-react";
+import { duplicateRow } from "@/lib/duplicateRow";
 import ImageUpload from "./ImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
@@ -130,6 +131,25 @@ const AdminMachinery = () => {
     }
   };
 
+  const handleDuplicate = async (machine: any) => {
+    try {
+      const copy = await duplicateRow<any>("machinery", machine.id, {
+        overrides: {
+          name: `${machine.name} (copia)`,
+          is_active: false,
+          sort_order: machinery.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia (inactiva)." });
+      logAction("duplicate", "machinery", copy.id);
+      fetchMachinery();
+    } catch (e) {
+      console.error("Error duplicating machinery:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
+
   const handleReorder = async (newOrder: typeof machinery) => {
     setMachinery(newOrder); // optimistic
     const updates = newOrder.map((m, idx) => ({ id: m.id, sort_order: idx }));
@@ -202,14 +222,13 @@ const AdminMachinery = () => {
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{machine.name}</CardTitle>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => { setEditingMachine(machine); setIsDialogOpen(true); }}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingMachine(machine); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(machine.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(machine)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(machine.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>

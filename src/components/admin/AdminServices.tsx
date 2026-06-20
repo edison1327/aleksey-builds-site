@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, GripVertical, GripHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripVertical, GripHorizontal, Copy } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
+import { duplicateRow } from "@/lib/duplicateRow";
 
 interface Service {
   id: string;
@@ -114,6 +115,24 @@ const AdminServices = () => {
     }
   };
 
+  const handleDuplicate = async (service: Service) => {
+    try {
+      const copy = await duplicateRow<Service>("services", service.id, {
+        overrides: {
+          title: `${service.title} (copia)`,
+          is_active: false,
+          sort_order: services.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia (inactiva)." });
+      logAction("duplicate", "services", copy.id);
+      fetchServices();
+    } catch (e) {
+      console.error("Error duplicating service:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
   const handleReorder = async (newOrder: Service[]) => {
     setServices(newOrder);
     try {
@@ -185,10 +204,13 @@ const AdminServices = () => {
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{service.title}</CardTitle>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingService(service); setIsDialogOpen(true); }}>
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingService(service); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(service.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(service)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(service.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>

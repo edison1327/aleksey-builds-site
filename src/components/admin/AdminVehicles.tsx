@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, GripHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, GripHorizontal, Copy } from "lucide-react";
+import { duplicateRow } from "@/lib/duplicateRow";
 import ImageUpload from "./ImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
@@ -129,6 +130,25 @@ const AdminVehicles = () => {
     }
   };
 
+  const handleDuplicate = async (vehicle: Vehicle) => {
+    try {
+      const copy = await duplicateRow<Vehicle>("vehicles", vehicle.id, {
+        overrides: {
+          name: `${vehicle.name} (copia)`,
+          is_active: false,
+          sort_order: vehicles.length,
+        },
+      });
+      toast({ title: "Duplicado", description: "Se creó una copia (inactiva)." });
+      logAction("duplicate", "vehicles", copy.id);
+      fetchVehicles();
+    } catch (e) {
+      console.error("Error duplicating vehicle:", e);
+      toast({ title: "Error", description: "No se pudo duplicar.", variant: "destructive" });
+    }
+  };
+
+
   const handleReorder = async (newOrder: Vehicle[]) => {
     setVehicles(newOrder);
     try {
@@ -200,10 +220,13 @@ const AdminVehicles = () => {
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{vehicle.name}</CardTitle>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingVehicle(vehicle); setIsDialogOpen(true); }}>
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingVehicle(vehicle); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(vehicle)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
