@@ -249,9 +249,20 @@ const AdminVehicles = () => {
                 {vehicle.brand && (
                   <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">{vehicle.brand}</span>
                 )}
-                <span className={`text-xs px-2 py-1 rounded ${vehicle.is_available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                <span className={`text-xs px-2 py-1 rounded ${vehicle.is_available ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" : "bg-destructive/15 text-destructive"}`}>
                   {vehicle.is_available ? "Disponible" : "No disponible"}
                 </span>
+              </div>
+              <div className="flex items-center justify-between gap-2 mt-3 pt-2 border-t">
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Switch
+                    checked={vehicle.is_active}
+                    onCheckedChange={(v) => handleToggleActive(vehicle, v)}
+                  />
+                  <span className={vehicle.is_active ? "text-emerald-600 font-medium" : "text-muted-foreground"}>
+                    {vehicle.is_active ? "Activo" : "Inactivo"}
+                  </span>
+                </label>
               </div>
             </CardContent>
           </Card>
