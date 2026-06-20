@@ -228,7 +228,7 @@ const Navbar = () => {
             {/* Logo */}
             <button
               type="button"
-              className="flex items-center cursor-pointer transition-opacity duration-200 hover:opacity-80 shrink-0 rounded-md lg:-ml-2 xl:-ml-4"
+              className="flex items-center gap-2.5 cursor-pointer transition-opacity duration-200 hover:opacity-85 shrink-0 rounded-md lg:-ml-2 xl:-ml-4 animate-nav-fade-in"
               onClick={() => {
                 navigate("/");
                 setActiveSection("INICIO");
@@ -236,12 +236,25 @@ const Navbar = () => {
               }}
               aria-label={`${companyName} — ir al inicio`}
             >
+              {/* Compact mark — shown when scrolled or on small screens */}
+              <img
+                src={logoMark}
+                alt=""
+                aria-hidden="true"
+                className={cn(
+                  "transition-all duration-300 shrink-0",
+                  scrolled ? "h-9 sm:hidden" : "hidden"
+                )}
+                width={40}
+                height={40}
+              />
+              {/* Full wordmark — default state */}
               <img
                 src={logoUrl}
                 alt={`${companyName} - Ingeniería y Construcción`}
                 className={cn(
                   "transition-all duration-300",
-                  scrolled ? "h-8 sm:h-9" : "h-9 sm:h-10 md:h-11"
+                  scrolled ? "hidden sm:block sm:h-9" : "h-9 sm:h-10 md:h-11"
                 )}
                 width={180}
                 height={44}
