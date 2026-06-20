@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useProjects, Project } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, ZoomIn, Images } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
@@ -32,8 +33,9 @@ const ProjectsPage = () => {
   const { data: projects, isLoading } = useProjects();
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
+  const tr = useLocalizedField();
 
-  // Get unique categories from projects
+  // Get unique categories from projects (keys remain ES for filter logic)
   const categories = ["Todos", ...new Set(projects.map(p => p.category).filter(Boolean))];
 
   // Filter projects by category
@@ -79,19 +81,25 @@ const ProjectsPage = () => {
           {/* Category Filter */}
           {!isLoading && categories.length > 1 && (
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category as string)}
-                  className={`px-6 py-2 rounded-full font-heading text-sm transition-all duration-300 ${
-                    activeCategory === category
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+              {categories.map((category) => {
+                const cat = category as string;
+                const display = cat === "Todos"
+                  ? "Todos"
+                  : (tr(projects.find(p => p.category === cat) as any, "category") || cat);
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-6 py-2 rounded-full font-heading text-sm transition-all duration-300 ${
+                      activeCategory === cat
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                    }`}
+                  >
+                    {display}
+                  </button>
+                );
+              })}
             </div>
           )}
 
@@ -119,7 +127,7 @@ const ProjectsPage = () => {
                   >
                     <img
                       src={project.image_url || defaultImages[index % defaultImages.length]}
-                      alt={project.title}
+                      alt={tr(project as any, "title") || project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
@@ -139,7 +147,7 @@ const ProjectsPage = () => {
                     <div className="flex items-center gap-3 mb-3">
                       {project.category && (
                         <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                          {project.category}
+                          {tr(project as any, "category") || project.category}
                         </span>
                       )}
                       {project.year && (
@@ -147,17 +155,17 @@ const ProjectsPage = () => {
                       )}
                     </div>
                     <h3 className="text-xl font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {project.title}
+                      {tr(project as any, "title") || project.title}
                     </h3>
-                    {project.description && (
+                    {(tr(project as any, "description") || project.description) && (
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                        {project.description}
+                        {tr(project as any, "description") || project.description}
                       </p>
                     )}
                     {project.location && (
                       <div className="flex items-center text-sm text-muted-foreground">
                         <MapPin className="w-4 h-4 mr-2" />
-                        {project.location}
+                        {tr(project as any, "location") || project.location}
                       </div>
                     )}
                   </div>

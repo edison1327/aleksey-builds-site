@@ -9,21 +9,29 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
 import { Briefcase, MapPin, Clock, DollarSign, Send, Loader2, Upload, FileText, X } from "lucide-react";
+import { useLocalizedField } from "@/lib/i18nField";
 
 interface JobPosition {
   id: string;
   title: string;
+  title_en?: string | null;
   department: string;
+  department_en?: string | null;
   location: string;
+  location_en?: string | null;
   type: string;
+  type_en?: string | null;
   salary: string | null;
   description: string | null;
+  description_en?: string | null;
 }
 
 interface Benefit {
   id: string;
   title: string;
+  title_en?: string | null;
   description: string;
+  description_en?: string | null;
   icon: string;
 }
 
@@ -32,6 +40,7 @@ const CareersPage = () => {
   const [positions, setPositions] = useState<JobPosition[]>([]);
   const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const tr = useLocalizedField();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -237,10 +246,10 @@ const CareersPage = () => {
                     <IconComponent className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="text-xl font-heading font-bold mb-2 text-foreground">
-                    {benefit.title}
+                    {tr(benefit as any, "title") || benefit.title}
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    {benefit.description}
+                    {tr(benefit as any, "description") || benefit.description}
                   </p>
                 </div>
               );
@@ -274,20 +283,20 @@ const CareersPage = () => {
                 >
                   <div>
                     <h3 className="text-xl font-heading font-bold text-foreground mb-2">
-                      {position.title}
+                      {tr(position as any, "title") || position.title}
                     </h3>
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Briefcase className="h-4 w-4" />
-                        {position.department}
+                        {tr(position as any, "department") || position.department}
                       </span>
                       <span className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
-                        {position.location}
+                        {tr(position as any, "location") || position.location}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
-                        {position.type}
+                        {tr(position as any, "type") || position.type}
                       </span>
                       {position.salary && (
                         <span className="flex items-center gap-1">

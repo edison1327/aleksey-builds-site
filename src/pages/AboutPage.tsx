@@ -3,6 +3,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import AnimatedStat from "@/components/AnimatedStat";
 import { Award, Users, Clock, CheckCircle, Target, Eye, Heart, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase, Shield } from "lucide-react";
 import { useAboutContent, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -27,6 +28,7 @@ const AboutPage = () => {
   const { data: aboutData, isLoading: aboutLoading } = useAboutContent();
   const { data: heroData, isLoading: heroLoading } = useHeroContent();
   const { data: teamStats, isLoading: teamStatsLoading } = useTeamStats();
+  const tr = useLocalizedField();
 
   const isLoading = aboutLoading || heroLoading || teamStatsLoading;
 
@@ -60,17 +62,23 @@ const AboutPage = () => {
     {
       icon: Target,
       title: "Misión",
-      description: aboutData?.mission || defaultValues[0].description
+      description: tr(aboutData as any, "mission") || aboutData?.mission || defaultValues[0].description
     },
     {
       icon: Eye,
       title: "Visión",
-      description: aboutData?.vision || defaultValues[1].description
+      description: tr(aboutData as any, "vision") || aboutData?.vision || defaultValues[1].description
     },
     {
       icon: Heart,
       title: "Valores",
-      description: aboutData?.values?.join(", ") || defaultValues[2].description
+      description: (() => {
+        const valuesEn = (aboutData as any)?.values_en as string[] | null | undefined;
+        const valuesEs = aboutData?.values as string[] | null | undefined;
+        const isEn = (typeof window !== "undefined" && (localStorage.getItem("i18nextLng") || "es").startsWith("en"));
+        const arr = (isEn && valuesEn && valuesEn.length > 0) ? valuesEn : valuesEs;
+        return arr && arr.length > 0 ? arr.join(", ") : defaultValues[2].description;
+      })()
     },
   ];
 
@@ -104,8 +112,8 @@ Nuestro equipo está conformado por profesionales altamente capacitados y apasio
 
 A lo largo de los años, hemos completado más de ${projectsCount} proyectos exitosos, desde construcciones residenciales hasta grandes obras de infraestructura.`;
 
-  const description = aboutData?.description 
-    ? replacePlaceholders(aboutData.description)
+  const description = (tr(aboutData as any, "description") || aboutData?.description)
+    ? replacePlaceholders(tr(aboutData as any, "description") || aboutData!.description!)
     : defaultDescription;
 
   const paragraphs = description.split('\n\n').filter(p => p.trim());
@@ -244,7 +252,7 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
                         delay={index * 150}
                         className="text-3xl font-heading font-bold text-primary mb-2"
                       />
-                      <div className="text-sm text-secondary-foreground/70">{stat.label}</div>
+                      <div className="text-sm text-secondary-foreground/70">{tr(stat as any, "label") || stat.label}</div>
                     </div>
                   );
                 })

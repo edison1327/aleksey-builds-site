@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useProjects } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
@@ -33,7 +34,8 @@ const defaultProjects = [
 const ProjectsSection = () => {
   const navigate = useNavigate();
   const { data: dbProjects, isLoading } = useProjects(3);
-  
+  const tr = useLocalizedField();
+
   // Use database projects if available, otherwise use defaults
   const projects = dbProjects.length > 0 ? dbProjects : defaultProjects;
 
@@ -65,13 +67,13 @@ const ProjectsSection = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                 <span className="inline-block px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {project.category || "Proyecto"}
+                  {tr(project as any, "category") || project.category || "Proyecto"}
                 </span>
                 <h3 className="text-xl font-heading font-bold text-secondary-foreground mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
-                  {project.title}
+                  {tr(project as any, "title") || project.title}
                 </h3>
                 <p className="text-secondary-foreground/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                  {project.description}
+                  {tr(project as any, "description") || project.description}
                 </p>
               </div>
             </div>
