@@ -222,14 +222,13 @@ const AdminMachinery = () => {
               <div className="flex items-start justify-between">
                 <CardTitle className="text-lg">{machine.name}</CardTitle>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => { setEditingMachine(machine); setIsDialogOpen(true); }}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingMachine(machine); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(machine.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(machine)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(machine.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
