@@ -48,9 +48,11 @@ const AdminContact = () => {
         phone: "",
         email: "",
         address: "",
+        address_en: "",
         city: "",
         country: "",
         business_hours: "",
+        business_hours_en: "",
         google_maps_url: "",
       });
     }
