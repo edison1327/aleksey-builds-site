@@ -4,6 +4,7 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useTestimonials, useHeroContent } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -96,6 +97,7 @@ const TestimonialsStats = () => {
 const Testimonials = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { data: dbTestimonials, isLoading } = useTestimonials();
+  const tr = useLocalizedField();
   
   // Use database testimonials if available, otherwise use defaults
   const testimonials = dbTestimonials.length > 0 ? dbTestimonials : defaultTestimonials;
@@ -196,7 +198,7 @@ const Testimonials = () => {
 
                       {/* Content */}
                       <p className="text-muted-foreground leading-relaxed mb-6 flex-grow text-sm md:text-base">
-                        "{testimonial.content}"
+                        "{tr(testimonial as any, "content") || testimonial.content}"
                       </p>
 
                       {/* Rating */}
@@ -240,10 +242,10 @@ const Testimonials = () => {
                             {testimonial.name}
                           </h4>
                           <p className="text-sm text-muted-foreground truncate">
-                            {testimonial.role}
+                            {tr(testimonial as any, "role") || testimonial.role}
                           </p>
                           <p className="text-xs text-primary font-medium truncate">
-                            {testimonial.company}
+                            {tr(testimonial as any, "company") || testimonial.company}
                           </p>
                         </div>
                       </div>
