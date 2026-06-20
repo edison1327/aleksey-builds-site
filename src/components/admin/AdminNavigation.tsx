@@ -373,12 +373,20 @@ const AdminNavigation = () => {
               ) : (
                 group.links.map((link) => (
                   <div key={link.id} className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 flex-1">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3 flex-1">
                       <div>
-                        <Label className="text-xs">Etiqueta</Label>
+                        <Label className="text-xs">Etiqueta (ES)</Label>
                         <Input
                           value={link.label}
                           onChange={(e) => updateLink(link.id, "label", e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Label (EN)</Label>
+                        <Input
+                          value={link.label_en || ""}
+                          onChange={(e) => updateLink(link.id, "label_en", e.target.value)}
+                          placeholder="Falls back to ES"
                         />
                       </div>
                       <div>
