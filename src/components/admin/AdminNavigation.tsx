@@ -330,13 +330,21 @@ const AdminNavigation = () => {
           <Card key={group.location}>
             <CardHeader>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <Label className="text-xs">Título del grupo</Label>
+                    <Label className="text-xs">Título del grupo (ES)</Label>
                     <Input
                       value={group.title}
                       onChange={(e) => updateGroupTitle(group.location, e.target.value)}
                       className="font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Title (EN)</Label>
+                    <Input
+                      value={group.links[0]?.title_en || ""}
+                      onChange={(e) => updateGroupTitleEn(group.location, e.target.value)}
+                      placeholder="Optional — falls back to ES"
                     />
                   </div>
                   <div>
