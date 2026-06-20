@@ -238,6 +238,7 @@ export type Database = {
       }
       contact_messages: {
         Row: {
+          assigned_to: string | null
           created_at: string
           email: string
           id: string
@@ -249,6 +250,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          assigned_to?: string | null
           created_at?: string
           email: string
           id?: string
@@ -260,6 +262,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          assigned_to?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -403,6 +406,7 @@ export type Database = {
       }
       job_applications: {
         Row: {
+          assigned_to: string | null
           created_at: string
           email: string
           id: string
@@ -415,6 +419,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          assigned_to?: string | null
           created_at?: string
           email: string
           id?: string
@@ -427,6 +432,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          assigned_to?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -574,6 +580,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          is_internal: boolean
           message_id: string
           read_by_admin: boolean
           read_by_customer: boolean
@@ -585,6 +592,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          is_internal?: boolean
           message_id: string
           read_by_admin?: boolean
           read_by_customer?: boolean
@@ -596,6 +604,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          is_internal?: boolean
           message_id?: string
           read_by_admin?: boolean
           read_by_customer?: boolean
