@@ -225,7 +225,21 @@ const AdminResponseTemplates = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Cuerpo *</Label>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <Label>Cuerpo *</Label>
+                <div className="flex flex-wrap gap-1">
+                  {["name", "email", "phone", "equipo", "empresa", "fecha"].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, body: `${f.body}{{${v}}}` }))}
+                      className="text-[10px] uppercase tracking-wide bg-muted hover:bg-muted/70 border border-border px-1.5 py-0.5 rounded transition-colors"
+                    >
+                      + {`{{${v}}}`}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <Textarea
                 value={form.body}
                 onChange={(e) => setForm({ ...form, body: e.target.value })}
@@ -233,6 +247,7 @@ const AdminResponseTemplates = () => {
                 placeholder={"Estimado/a {{name}},\n\nGracias por su interés en {{equipo}}..."}
               />
             </div>
+
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
