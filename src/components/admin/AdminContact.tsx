@@ -164,15 +164,16 @@ const AdminContact = () => {
                 placeholder="info@aleksey.com"
               />
             </div>
-            <div>
-              <label className="text-sm font-medium">Dirección</label>
-              <Textarea
-                value={contact?.address || ""}
-                onChange={(e) => setContact(prev => prev ? { ...prev, address: e.target.value } : null)}
-                placeholder="Calle Principal 123"
-                rows={2}
-              />
-            </div>
+            <I18nField
+              label="Dirección"
+              valueEs={contact?.address || ""}
+              valueEn={contact?.address_en || ""}
+              onChangeEs={(v) => setContact(prev => prev ? { ...prev, address: v } : null)}
+              onChangeEn={(v) => setContact(prev => prev ? { ...prev, address_en: v } : null)}
+              textarea
+              rows={2}
+              placeholderEs="Calle Principal 123"
+            />
           </CardContent>
         </Card>
 
