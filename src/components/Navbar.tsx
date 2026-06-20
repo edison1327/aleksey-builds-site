@@ -248,8 +248,8 @@ const Navbar = () => {
             </button>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center flex-1 justify-end gap-1">
-              <ul className="flex items-center gap-1 xl:gap-2" role="list">
+            <div className="hidden lg:flex items-center flex-1 justify-end gap-0.5 xl:gap-1">
+              <ul className="flex items-center gap-0 xl:gap-1" role="list">
                 {navItems.map((item) => {
                   const isActive = activeSection === item.label;
                   return (
