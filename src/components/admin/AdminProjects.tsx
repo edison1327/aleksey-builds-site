@@ -137,7 +137,7 @@ const AdminProjects = () => {
       const copy = await duplicateRow<Project>("projects", project.id, {
         overrides: {
           title: `${project.title} (copia)`,
-          featured: false,
+          is_featured: false,
           sort_order: projects.length,
         },
       });
