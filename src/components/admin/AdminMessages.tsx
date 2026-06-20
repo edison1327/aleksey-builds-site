@@ -18,6 +18,7 @@ import { logAction } from "@/lib/auditLog";
 import MessageThread from "@/components/MessageThread";
 import { useAuth } from "@/hooks/useAuth";
 import ApproveBookingDialog from "@/components/admin/ApproveBookingDialog";
+import AssigneeSelect from "@/components/admin/AssigneeSelect";
 
 interface Message {
   id: string;
@@ -27,6 +28,7 @@ interface Message {
   message: string;
   status: string;
   created_at: string;
+  assigned_to?: string | null;
 }
 
 const AdminMessages = () => {
@@ -775,6 +777,17 @@ const AdminMessages = () => {
                   <div>
                     <label className="text-xs text-muted-foreground">Estado</label>
                     <div className="mt-1">{getStatusBadge(selectedMessage.status)}</div>
+                  </div>
+                  <div className="min-w-[180px]">
+                    <label className="text-xs text-muted-foreground">Asignado a</label>
+                    <div className="mt-1">
+                      <AssigneeSelect
+                        table="contact_messages"
+                        rowId={selectedMessage.id}
+                        value={selectedMessage.assigned_to || null}
+                        onChange={(v) => setSelectedMessage({ ...selectedMessage, assigned_to: v })}
+                      />
+                    </div>
                   </div>
                 </div>
                 
