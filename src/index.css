@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 @layer base {
-  /* Charcoal & Ember — Industrial premium palette
+  /* Charcoal & Red — Industrial premium palette
      Charcoal:  #1a1a1a / #2d2d2d / #4a4a4a
-     Ember:     #e85d3a (primary accent) */
+     Red:       #e30613 (logo primary accent) */
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;
