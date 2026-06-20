@@ -141,44 +141,43 @@ const AdminSiteSettings = () => {
             </div>
 
             {/* Tagline */}
-            <div className="space-y-2">
-              <Label htmlFor="tagline">Eslogan / Subtítulo</Label>
-              <Input
-                id="tagline"
-                value={formData.tagline}
-                onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                placeholder="Ingeniería y Construcción"
-              />
-            </div>
+            <I18nField
+              label="Eslogan / Subtítulo"
+              valueEs={formData.tagline}
+              valueEn={formData.tagline_en}
+              onChangeEs={(v) => setFormData({ ...formData, tagline: v })}
+              onChangeEn={(v) => setFormData({ ...formData, tagline_en: v })}
+              placeholderEs="Ingeniería y Construcción"
+            />
 
             {/* Footer Description */}
-            <div className="space-y-2">
-              <Label htmlFor="footer_description">Descripción del Footer</Label>
-              <Textarea
-                id="footer_description"
-                value={formData.footer_description}
-                onChange={(e) => setFormData({ ...formData, footer_description: e.target.value })}
-                placeholder="Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada."
-                rows={3}
-              />
-              <p className="text-sm text-muted-foreground">
-                Este texto aparece debajo del logo en el footer del sitio.
-              </p>
-            </div>
+            <I18nField
+              label="Descripción del Footer"
+              valueEs={formData.footer_description}
+              valueEn={formData.footer_description_en}
+              onChangeEs={(v) => setFormData({ ...formData, footer_description: v })}
+              onChangeEn={(v) => setFormData({ ...formData, footer_description_en: v })}
+              textarea
+              rows={3}
+              placeholderEs="Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada."
+            />
+            <p className="text-sm text-muted-foreground -mt-3">
+              Este texto aparece debajo del logo en el footer del sitio.
+            </p>
 
             {/* Footer Copyright */}
-            <div className="space-y-2">
-              <Label htmlFor="footer_copyright">Texto de Copyright</Label>
-              <Input
-                id="footer_copyright"
-                value={formData.footer_copyright}
-                onChange={(e) => setFormData({ ...formData, footer_copyright: e.target.value })}
-                placeholder="Todos los derechos reservados."
-              />
-              <p className="text-sm text-muted-foreground">
-                Aparece al final del footer junto con el año y nombre de la empresa.
-              </p>
-            </div>
+            <I18nField
+              label="Texto de Copyright"
+              valueEs={formData.footer_copyright}
+              valueEn={formData.footer_copyright_en}
+              onChangeEs={(v) => setFormData({ ...formData, footer_copyright: v })}
+              onChangeEn={(v) => setFormData({ ...formData, footer_copyright_en: v })}
+              placeholderEs="Todos los derechos reservados."
+            />
+            <p className="text-sm text-muted-foreground -mt-3">
+              Aparece al final del footer junto con el año y nombre de la empresa.
+            </p>
+
 
             <Button 
               type="submit" 
