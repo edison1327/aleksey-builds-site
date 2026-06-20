@@ -210,11 +210,16 @@ const AdminJobPositions = () => {
           .from("job_positions")
           .update({
             title: editingPosition.title,
+            title_en: editingPosition.title_en,
             department: editingPosition.department,
+            department_en: editingPosition.department_en,
             location: editingPosition.location,
+            location_en: editingPosition.location_en,
             type: editingPosition.type,
+            type_en: editingPosition.type_en,
             salary: editingPosition.salary || null,
             description: editingPosition.description || null,
+            description_en: editingPosition.description_en || null,
             is_active: editingPosition.is_active,
             sort_order: editingPosition.sort_order,
           })
@@ -226,11 +231,16 @@ const AdminJobPositions = () => {
           .from("job_positions")
           .insert({
             title: editingPosition.title,
+            title_en: editingPosition.title_en,
             department: editingPosition.department,
+            department_en: editingPosition.department_en,
             location: editingPosition.location,
+            location_en: editingPosition.location_en,
             type: editingPosition.type,
+            type_en: editingPosition.type_en,
             salary: editingPosition.salary || null,
             description: editingPosition.description || null,
+            description_en: editingPosition.description_en || null,
             is_active: editingPosition.is_active,
             sort_order: positions.length,
           });
