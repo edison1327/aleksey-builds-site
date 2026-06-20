@@ -23,6 +23,7 @@ const socialIcons: Record<string, React.ComponentType<{ className?: string }>> =
 };
 
 import { useTranslation } from "react-i18next";
+import { useLocalizedField } from "@/lib/i18nField";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -30,18 +31,19 @@ const Footer = () => {
   const { data: siteSettings } = useSiteSettings();
   const { data: footerGroups } = useNavigationGroups("footer_");
   const { data: socialLinks } = useSocialLinks();
+  const tr = useLocalizedField();
 
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
-  const footerDescription = siteSettings?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
-  const footerCopyright = siteSettings?.footer_copyright || "Todos los derechos reservados.";
+  const footerDescription = tr(siteSettings as any, "footer_description") || (siteSettings as any)?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
+  const footerCopyright = tr(siteSettings as any, "footer_copyright") || (siteSettings as any)?.footer_copyright || "Todos los derechos reservados.";
 
-  const address = contactInfo?.address || defaultContact.address;
+  const address = tr(contactInfo as any, "address") || contactInfo?.address || defaultContact.address;
   const city = contactInfo?.city || defaultContact.city;
   const country = contactInfo?.country || "";
   const phone = contactInfo?.phone || defaultContact.phone;
   const email = contactInfo?.email || defaultContact.email;
-  const businessHours = contactInfo?.business_hours || defaultContact.business_hours;
+  const businessHours = tr(contactInfo as any, "business_hours") || contactInfo?.business_hours || defaultContact.business_hours;
 
   const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
 
@@ -120,17 +122,17 @@ const Footer = () => {
           {footerGroups.length > 0 ? (
             footerGroups.map((group) => (
               <div key={group.location}>
-                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{group.title}</h3>
+                <h3 className="font-heading font-bold text-lg mb-4 tracking-wide">{tr(group as any, "title") || group.title}</h3>
                 <ul className="space-y-2 text-secondary-foreground/80">
                   {group.links.map((link) => (
                     <li key={link.id}>
                       {link.path.startsWith("/#") ? (
                         <a href={link.path} className="hover:text-primary transition-colors">
-                          {link.label}
+                          {tr(link as any, "label") || link.label}
                         </a>
                       ) : (
                         <Link to={link.path} className="hover:text-primary transition-colors">
-                          {link.label}
+                          {tr(link as any, "label") || link.label}
                         </Link>
                       )}
                     </li>

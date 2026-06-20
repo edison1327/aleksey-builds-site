@@ -7,6 +7,7 @@ import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useContactInfo } from "@/hooks/useSiteData";
+import { useLocalizedField } from "@/lib/i18nField";
 import { supabase } from "@/integrations/supabase/client";
 import { getThrottleWait, markSubmitted } from "@/lib/throttle";
 import { z } from "zod";
@@ -30,6 +31,7 @@ const Contact = () => {
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation(0.1);
   const { data: contactInfo } = useContactInfo();
+  const tr = useLocalizedField();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -43,8 +45,9 @@ const Contact = () => {
   // Use database contact info or defaults
   const phone = contactInfo?.phone || defaultContact.phone;
   const email = contactInfo?.email || defaultContact.email;
-  const address = contactInfo?.address 
-    ? `${contactInfo.address}${contactInfo.city ? `\n${contactInfo.city}` : ""}${contactInfo.country ? `, ${contactInfo.country}` : ""}`
+  const baseAddress = tr(contactInfo as any, "address") || contactInfo?.address;
+  const address = baseAddress
+    ? `${baseAddress}${contactInfo?.city ? `\n${contactInfo.city}` : ""}${contactInfo?.country ? `, ${contactInfo.country}` : ""}`
     : defaultContact.address;
 
   const contactCards = [
