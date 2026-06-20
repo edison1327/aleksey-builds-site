@@ -8,6 +8,7 @@ import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { translateNavLabel } from "@/i18n/config";
+import { getI18nField } from "@/lib/i18n-content";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -58,6 +59,13 @@ const Navbar = () => {
   const companyName = siteSettings?.company_name || "ALEKSEY";
 
   const items = navLinks.length > 0 ? navLinks : FALLBACK_ITEMS;
+
+  // Resuelve label en idioma activo: usa label_en de la DB si existe, si no cae al mapa estático.
+  const labelOf = (item: any): string => {
+    void lang; // re-render dependency
+    const dbLabel = getI18nField<string>(item, "label");
+    return translateNavLabel(dbLabel || item.label);
+  };
 
   const handleNavClick = (path: string, label: string) => {
     setIsOpen(false);
