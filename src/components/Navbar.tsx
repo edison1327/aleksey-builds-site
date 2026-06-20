@@ -306,7 +306,7 @@ const Navbar = () => {
                   onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
                   aria-label={user ? "Mi cuenta" : "Iniciar sesión"}
                   title={user ? "Mi cuenta" : "Iniciar sesión"}
-                  className="flex items-center justify-center w-9 h-9 xl:w-10 xl:h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
+                  className="hidden xl:flex items-center justify-center w-9 h-9 xl:w-10 xl:h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
                 >
                   {user
                     ? <UserCircle2 className="h-[18px] w-[18px]" aria-hidden="true" />
