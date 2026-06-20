@@ -18,6 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Newspaper, ExternalLink } from "lucide-react";
 import ImageUpload from "@/components/admin/ImageUpload";
+import SEOIndicator from "@/components/admin/SEOIndicator";
 import { slugify } from "@/lib/slugify";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
