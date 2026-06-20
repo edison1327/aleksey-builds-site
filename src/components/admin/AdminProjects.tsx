@@ -225,10 +225,13 @@ const AdminProjects = () => {
                   {project.is_featured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
                 </div>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingProject(project); setIsDialogOpen(true); }}>
+                  <Button variant="ghost" size="icon" onClick={() => { setEditingProject(project); setIsDialogOpen(true); }} title="Editar">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(project.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDuplicate(project)} title="Duplicar">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(project.id)} title="Eliminar">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
