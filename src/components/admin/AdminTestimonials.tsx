@@ -197,7 +197,7 @@ const AdminTestimonials = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="role">Cargo</Label>
+                    <Label htmlFor="role">Cargo (ES)</Label>
                     <Input
                       id="role"
                       value={editingTestimonial.role || ""}
@@ -210,29 +210,37 @@ const AdminTestimonials = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="company">Empresa *</Label>
+                  <Label htmlFor="role_en">Role (EN)</Label>
                   <Input
-                    id="company"
-                    value={editingTestimonial.company || ""}
+                    id="role_en"
+                    value={editingTestimonial.role_en || ""}
                     onChange={(e) =>
-                      setEditingTestimonial({ ...editingTestimonial, company: e.target.value })
+                      setEditingTestimonial({ ...editingTestimonial, role_en: e.target.value })
                     }
-                    placeholder="Nombre de la empresa"
+                    placeholder="Optional — falls back to ES"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="content">Testimonio *</Label>
-                  <Textarea
-                    id="content"
-                    value={editingTestimonial.content || ""}
-                    onChange={(e) =>
-                      setEditingTestimonial({ ...editingTestimonial, content: e.target.value })
-                    }
-                    placeholder="El testimonio del cliente..."
-                    rows={4}
-                  />
-                </div>
+                <I18nField
+                  label="Empresa"
+                  valueEs={editingTestimonial.company || ""}
+                  valueEn={editingTestimonial.company_en || ""}
+                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, company: v })}
+                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, company_en: v })}
+                  placeholderEs="Nombre de la empresa"
+                />
+
+                <I18nField
+                  label="Testimonio"
+                  valueEs={editingTestimonial.content || ""}
+                  valueEn={editingTestimonial.content_en || ""}
+                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, content: v })}
+                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, content_en: v })}
+                  textarea
+                  rows={4}
+                  placeholderEs="El testimonio del cliente..."
+                />
+
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
