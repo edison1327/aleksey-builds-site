@@ -258,7 +258,7 @@ const Navbar = () => {
                         onClick={() => handleNavClick(item.path, item.label)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "group relative flex items-center px-3 xl:px-4 h-10 text-[12px] xl:text-[13px] font-heading font-semibold tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
+                          "group relative flex items-center px-2 xl:px-4 h-10 text-[11.5px] xl:text-[13px] font-heading font-semibold tracking-[0.06em] xl:tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
                           isActive
                             ? "text-primary"
                             : "text-secondary-foreground/65 hover:text-secondary-foreground"
