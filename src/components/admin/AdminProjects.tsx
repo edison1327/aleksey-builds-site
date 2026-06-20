@@ -12,13 +12,18 @@ import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
+import { I18nField } from "./I18nField";
 
 interface Project {
   id: string;
   title: string;
+  title_en: string | null;
   description: string | null;
+  description_en: string | null;
   category: string | null;
+  category_en: string | null;
   location: string | null;
+  location_en: string | null;
   year: number | null;
   image_url: string | null;
   gallery_images: string[];
