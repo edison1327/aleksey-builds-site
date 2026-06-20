@@ -343,16 +343,19 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      <div
+      {/* Mobile Menu Overlay (click to close) */}
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="Cerrar menú"
         className={cn(
-          "lg:hidden fixed inset-0 z-[99] transition-all duration-500",
+          "lg:hidden fixed inset-0 z-[99] transition-all duration-500 cursor-default",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         )}
         onClick={() => setIsOpen(false)}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 backdrop-blur-sm" />
-      </div>
+      </button>
 
       {/* Mobile Menu Panel */}
       <div
@@ -360,6 +363,8 @@ const Navbar = () => {
         role="dialog"
         aria-modal="true"
         aria-label="Menú de navegación"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         className={cn(
           "lg:hidden fixed top-16 left-0 right-0 bottom-0 z-[101] transition-all duration-400 ease-out overflow-hidden",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
