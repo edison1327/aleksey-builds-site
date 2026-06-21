@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, User, ArrowLeft, Newspaper } from "lucide-react";
+import { Calendar, User, ArrowLeft, Newspaper, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Footer from "@/components/Footer";
@@ -23,12 +23,16 @@ interface Post {
   content_en: string | null;
   cover_image: string | null;
   author: string | null;
+  published: boolean;
   published_at: string | null;
   tags: string[];
 }
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const previewToken = searchParams.get("preview");
+  const isPreview = Boolean(previewToken);
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,17 +44,16 @@ const BlogPostPage = () => {
 
   useEffect(() => {
     if (!slug) return;
-    supabase
-      .from("blog_posts")
-      .select("*")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle()
-      .then(({ data }) => {
-        setPost(data as Post | null);
-        setLoading(false);
-      });
-  }, [slug]);
+    const query = supabase.from("blog_posts").select("*").eq("slug", slug);
+    const fetch = isPreview
+      ? query.eq("preview_token", previewToken!).maybeSingle()
+      : query.eq("published", true).maybeSingle();
+    fetch.then(({ data }) => {
+      setPost(data as Post | null);
+      setLoading(false);
+    });
+  }, [slug, isPreview, previewToken]);
+
 
   if (loading) {
     return (
