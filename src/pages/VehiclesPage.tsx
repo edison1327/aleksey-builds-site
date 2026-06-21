@@ -10,6 +10,7 @@ import { useVehicles, Vehicle } from "@/hooks/useSiteData";
 import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
 import QuickQuoteForm from "@/components/QuickQuoteForm";
+import SEO from "@/components/SEO";
 
 import fordTransit from "@/assets/ford-transit.jpg";
 import ram2500 from "@/assets/ram-2500.jpg";
@@ -47,6 +48,11 @@ const VehiclesPage = () => {
 
   return (
     <div className="min-h-dvh">
+      <SEO
+        title="Alquiler de Vehículos — ALEKSEY"
+        description="Camionetas, vans y camiones para tu proyecto. Flota con seguro incluido, mantenimiento preventivo y disponibilidad 24/7 en todo el Perú."
+        path="/vehiculos"
+      />
       {/* Hero Section */}
       <section className="relative pt-24 bg-secondary">
         <div 

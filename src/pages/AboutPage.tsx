@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import AnimatedStat from "@/components/AnimatedStat";
+import SEO from "@/components/SEO";
 import { Award, Users, Clock, CheckCircle, Target, Eye, Heart, Wrench, Building2, HardHat, Truck, Settings, TrendingUp, Briefcase, Shield } from "lucide-react";
 import { useAboutContent, useHeroContent, useTeamStats } from "@/hooks/useSiteData";
 import { useLocalizedField } from "@/lib/i18nField";
@@ -120,6 +121,11 @@ A lo largo de los años, hemos completado más de ${projectsCount} proyectos exi
 
   return (
     <div className="min-h-dvh bg-background">
+      <SEO
+        title="Sobre Nosotros — ALEKSEY Construcción & Ingeniería"
+        description="Conoce a ALEKSEY: más de 10 años construyendo el futuro del Perú con un equipo experto en construcción, ingeniería y alquiler de maquinaria."
+        path="/nosotros"
+      />
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-secondary">
         <div className="container mx-auto px-4">

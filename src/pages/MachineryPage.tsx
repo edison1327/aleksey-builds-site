@@ -24,6 +24,7 @@ import { useMachinery, Machinery } from "@/hooks/useSiteData";
 import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
 import QuickQuoteForm from "@/components/QuickQuoteForm";
+import SEO from "@/components/SEO";
 
 import excavadoraCaterpillar from "@/assets/excavadora-caterpillar.jpg";
 import cargadorVolvo from "@/assets/cargador-volvo.jpg";
@@ -102,6 +103,11 @@ const MachineryPage = () => {
 
   return (
     <div className="min-h-dvh">
+      <SEO
+        title="Alquiler de Maquinaria Pesada — ALEKSEY"
+        description="Excavadoras, cargadores, retroexcavadoras y más. Flota profesional de maquinaria pesada para alquiler en Perú con operador y mantenimiento al día."
+        path="/maquinaria"
+      />
       {/* Hero */}
       <section className="relative pt-24 bg-secondary">
         <div
