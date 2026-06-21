@@ -205,7 +205,12 @@ export const useProjects = (limit?: number) => {
       }
       
       const { data: projects } = await query;
-      setData(projects || []);
+      const normalized = (projects || []).map((p: any) => ({
+        ...p,
+        metrics: Array.isArray(p.metrics) ? (p.metrics as ProjectMetric[]) : [],
+        services_used: Array.isArray(p.services_used) ? p.services_used : [],
+      })) as Project[];
+      setData(normalized);
       setIsLoading(false);
     };
     fetchData();
