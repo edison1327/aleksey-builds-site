@@ -7,7 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const RoleEnum = z.enum(['admin', 'user']);
+const RoleEnum = z.enum(['admin', 'editor', 'viewer', 'user']);
 
 const ActionSchema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('list') }),
