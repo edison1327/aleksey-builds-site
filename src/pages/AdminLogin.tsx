@@ -32,13 +32,13 @@ const AdminLogin = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { user, isAdmin, signIn, signUp } = useAuth();
+  const { user, isStaff, signIn, signUp } = useAuth();
 
   useEffect(() => {
-    if (user && isAdmin) {
+    if (user && isStaff) {
       navigate("/admin");
     }
-  }, [user, isAdmin, navigate]);
+  }, [user, isStaff, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
