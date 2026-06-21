@@ -41,15 +41,26 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Pencil, Users, Shield, User, RefreshCw } from "lucide-react";
+import { Loader2, Plus, Trash2, Pencil, Users, Shield, User, RefreshCw, Edit3, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+
+type Role = "admin" | "editor" | "viewer" | "user";
+
+const ROLE_META: Record<Role, { label: string; icon: typeof Shield; description: string; badgeVariant: "default" | "secondary" | "outline" }> = {
+  admin: { label: "Administrador", icon: Shield, description: "Acceso total", badgeVariant: "default" },
+  editor: { label: "Editor", icon: Edit3, description: "Gestiona contenido del sitio", badgeVariant: "secondary" },
+  viewer: { label: "Visualizador", icon: Eye, description: "Solo lectura de mensajes y reservas", badgeVariant: "outline" },
+  user: { label: "Usuario", icon: User, description: "Sin acceso al panel", badgeVariant: "outline" },
+};
+
+const ROLE_OPTIONS: Role[] = ["user", "viewer", "editor", "admin"];
 
 interface UserData {
   id: string;
   email: string;
   created_at: string;
   last_sign_in_at: string | null;
-  role: "admin" | "user";
+  role: Role;
 }
 
 const AdminUsers = () => {
@@ -64,12 +75,12 @@ const AdminUsers = () => {
   // Form state for create
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [newRole, setNewRole] = useState<"admin" | "user">("user");
+  const [newRole, setNewRole] = useState<Role>("user");
 
   // Form state for edit
   const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
-  const [editRole, setEditRole] = useState<"admin" | "user">("user");
+  const [editRole, setEditRole] = useState<Role>("user");
 
   useEffect(() => {
     fetchUsers();
