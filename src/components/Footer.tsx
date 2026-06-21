@@ -204,7 +204,17 @@ const Footer = () => {
             <ul className="space-y-3 text-secondary-foreground/80">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <span>{fullAddress}</span>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  {fullAddress}
+                  <span className="block text-xs text-secondary-foreground/55 mt-0.5">
+                    Ver en Google Maps →
+                  </span>
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
@@ -222,10 +232,32 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-secondary-foreground/20 pt-8 text-center text-secondary-foreground/60">
+        {/* Certifications strip */}
+        <div className="border-t border-secondary-foreground/15 pt-6 pb-2">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-secondary-foreground/60">
+            <span className="text-xs uppercase tracking-[0.18em] font-semibold">Certificaciones</span>
+            {certifications.map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-1.5 text-xs">
+                <Icon className="h-4 w-4 text-primary/80" />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-secondary-foreground/15 mt-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-secondary-foreground/60 text-sm">
           <p>
             © {new Date().getFullYear()} {companyName}. {footerCopyright}
           </p>
+          <div className="flex items-center gap-4">
+            <Link to="/privacidad" className="hover:text-primary transition-colors">
+              Política de privacidad
+            </Link>
+            <span aria-hidden="true" className="opacity-30">•</span>
+            <Link to="/convocatoria" className="hover:text-primary transition-colors">
+              Trabaja con nosotros
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
