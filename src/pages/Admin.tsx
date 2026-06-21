@@ -53,7 +53,7 @@ import { useToast } from "@/hooks/use-toast";
 const Tooltip = RechartsTooltip;
 
 const Admin = () => {
-  const { user, isAdmin, isLoading, signOut } = useAuth();
+  const { user, isAdmin, isStaff, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const getTabFromHash = () => {
@@ -85,10 +85,10 @@ const Admin = () => {
   const { counts: badgeCounts } = useAdminBadges();
 
   useEffect(() => {
-    if (!isLoading && (!user || !isAdmin)) {
+    if (!isLoading && (!user || !isStaff)) {
       navigate("/admin/login");
     }
-  }, [user, isAdmin, isLoading, navigate]);
+  }, [user, isStaff, isLoading, navigate]);
 
   useEffect(() => {
     // Subscribe to realtime updates for new messages/quotes notification
@@ -148,7 +148,7 @@ const Admin = () => {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user || !isStaff) {
     return null;
   }
 
