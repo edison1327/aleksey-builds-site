@@ -671,18 +671,30 @@ export type Database = {
         Row: {
           category: string | null
           category_en: string | null
+          challenge: string | null
+          challenge_en: string | null
+          client: string | null
           created_at: string
           description: string | null
           description_en: string | null
+          duration: string | null
+          duration_en: string | null
           gallery_images: string[] | null
           id: string
           image_url: string | null
           is_active: boolean | null
+          is_case_study: boolean
           is_featured: boolean | null
           location: string | null
           location_en: string | null
+          metrics: Json
+          outcome: string | null
+          outcome_en: string | null
           preview_token: string | null
+          services_used: string[]
           slug: string | null
+          solution: string | null
+          solution_en: string | null
           sort_order: number | null
           title: string
           title_en: string | null
@@ -692,18 +704,30 @@ export type Database = {
         Insert: {
           category?: string | null
           category_en?: string | null
+          challenge?: string | null
+          challenge_en?: string | null
+          client?: string | null
           created_at?: string
           description?: string | null
           description_en?: string | null
+          duration?: string | null
+          duration_en?: string | null
           gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_case_study?: boolean
           is_featured?: boolean | null
           location?: string | null
           location_en?: string | null
+          metrics?: Json
+          outcome?: string | null
+          outcome_en?: string | null
           preview_token?: string | null
+          services_used?: string[]
           slug?: string | null
+          solution?: string | null
+          solution_en?: string | null
           sort_order?: number | null
           title: string
           title_en?: string | null
@@ -713,18 +737,30 @@ export type Database = {
         Update: {
           category?: string | null
           category_en?: string | null
+          challenge?: string | null
+          challenge_en?: string | null
+          client?: string | null
           created_at?: string
           description?: string | null
           description_en?: string | null
+          duration?: string | null
+          duration_en?: string | null
           gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_case_study?: boolean
           is_featured?: boolean | null
           location?: string | null
           location_en?: string | null
+          metrics?: Json
+          outcome?: string | null
+          outcome_en?: string | null
           preview_token?: string | null
+          services_used?: string[]
           slug?: string | null
+          solution?: string | null
+          solution_en?: string | null
           sort_order?: number | null
           title?: string
           title_en?: string | null
