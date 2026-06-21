@@ -46,7 +46,7 @@ const AdminAnalytics = () => {
         const [msgsRes, bookingsRes, appsRes, repliesRes] = await Promise.all([
           supabase
             .from("contact_messages")
-            .select("id, status, message, created_at, responded_at")
+            .select("id, status, message, created_at")
             .gte("created_at", since.toISOString()),
           supabase
             .from("equipment_bookings")
@@ -138,7 +138,7 @@ const AdminAnalytics = () => {
         }
         const deltas: number[] = [];
         for (const m of messages) {
-          const replyAt = firstReplyByMsg[m.id] || m.responded_at;
+          const replyAt = firstReplyByMsg[m.id];
           if (!replyAt) continue;
           const ms = new Date(replyAt).getTime() - new Date(m.created_at).getTime();
           if (ms > 0) deltas.push(ms / 36e5);
