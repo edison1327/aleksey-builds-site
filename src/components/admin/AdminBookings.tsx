@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, CalendarRange } from "lucide-react";
+import { Loader2, Plus, Trash2, CalendarRange, Download } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { exportCsv } from "@/lib/exportCsv";
 
 interface Booking {
   id: string;
@@ -107,7 +108,27 @@ const AdminBookings = () => {
           <h2 className="text-2xl font-bold flex items-center gap-2"><CalendarRange className="h-6 w-6" /> Reservas / Calendario</h2>
           <p className="text-sm text-muted-foreground">Bloquea fechas de maquinaria y vehículos para que se muestren ocupadas en el sitio.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!filtered.length}
+            onClick={() =>
+              exportCsv(`reservas-${new Date().toISOString().slice(0,10)}.csv`, filtered, [
+                { key: "equipment_type", label: "Tipo" },
+                { key: "equipment_id", label: "Equipo", format: (_v, row) => nameOf(row as Booking) },
+                { key: "start_date", label: "Inicio", format: (v) => format(new Date(v as string), "yyyy-MM-dd") },
+                { key: "end_date", label: "Fin", format: (v) => format(new Date(v as string), "yyyy-MM-dd") },
+                { key: "status", label: "Estado" },
+                { key: "customer_name", label: "Cliente" },
+                { key: "customer_email", label: "Email" },
+                { key: "notes", label: "Notas" },
+                { key: "created_at", label: "Creada", format: (v) => format(new Date(v as string), "yyyy-MM-dd HH:mm") },
+              ])
+            }
+          >
+            <Download className="h-4 w-4 mr-1" /> CSV
+          </Button>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
