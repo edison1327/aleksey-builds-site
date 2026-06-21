@@ -40,36 +40,36 @@ const AdminSiteHealth = () => {
     if (!site) {
       results.push({ id: "site-missing", label: "Configuración del sitio", severity: "error", description: "No hay registro en site_settings.", icon: FileText });
     } else {
+      const s = site as Record<string, unknown>;
       const missing: string[] = [];
-      if (isEmpty(site.company_name)) missing.push("nombre");
-      if (isEmpty(site.logo_url)) missing.push("logo");
-      if (isEmpty((site as Record<string, unknown>).favicon_url)) missing.push("favicon");
+      if (isEmpty(s.company_name)) missing.push("nombre");
+      if (isEmpty(s.logo_url)) missing.push("logo");
       results.push({
         id: "site",
         label: "Identidad del sitio",
         severity: missing.length ? "warn" : "ok",
-        description: missing.length ? `Falta: ${missing.join(", ")}` : "Logo, nombre y favicon configurados.",
+        description: missing.length ? `Falta: ${missing.join(", ")}` : "Logo y nombre configurados.",
         icon: ImageIcon,
         hint: "Logo & Sitio",
       });
     }
 
-    // Blog SEO
+    // Blog
     const { data: posts } = await supabase
       .from("blog_posts")
-      .select("id, title, meta_title, meta_description, cover_image_url, is_published");
+      .select("id, title, excerpt, cover_image, published");
     if (posts) {
-      const pub = posts.filter((p) => p.is_published);
-      const missingMeta = pub.filter((p) => isEmpty(p.meta_title) || isEmpty(p.meta_description));
-      const missingCover = pub.filter((p) => isEmpty(p.cover_image_url));
+      const pub = posts.filter((p) => p.published);
+      const missingExcerpt = pub.filter((p) => isEmpty(p.excerpt));
+      const missingCover = pub.filter((p) => isEmpty(p.cover_image));
       results.push({
         id: "blog-seo",
-        label: "SEO del blog",
-        severity: missingMeta.length ? "warn" : "ok",
-        description: missingMeta.length
-          ? `${missingMeta.length} de ${pub.length} entradas publicadas sin meta title/description.`
-          : `Las ${pub.length} entradas publicadas tienen SEO completo.`,
-        count: missingMeta.length,
+        label: "Resúmenes del blog",
+        severity: missingExcerpt.length ? "warn" : "ok",
+        description: missingExcerpt.length
+          ? `${missingExcerpt.length} de ${pub.length} entradas publicadas sin resumen.`
+          : `Las ${pub.length} entradas publicadas tienen resumen.`,
+        count: missingExcerpt.length,
         icon: Search,
         hint: "Blog",
       });
@@ -87,19 +87,18 @@ const AdminSiteHealth = () => {
     }
 
     // Services / Machinery / Vehicles / Projects images
-    const tables = [
-      { name: "services" as const, label: "Servicios", img: "image_url" },
-      { name: "machinery" as const, label: "Maquinaria", img: "image_url" },
-      { name: "vehicles" as const, label: "Vehículos", img: "image_url" },
-      { name: "projects" as const, label: "Proyectos", img: "image_url" },
+    const imgChecks: Array<{ rows: Array<Record<string, unknown>> | null; label: string }> = [
+      { rows: (await supabase.from("services").select("id, image_url, is_active")).data, label: "Servicios" },
+      { rows: (await supabase.from("machinery").select("id, image_url, is_active")).data, label: "Maquinaria" },
+      { rows: (await supabase.from("vehicles").select("id, image_url, is_active")).data, label: "Vehículos" },
+      { rows: (await supabase.from("projects").select("id, image_url, is_active")).data, label: "Proyectos" },
     ];
-    for (const t of tables) {
-      const { data } = await supabase.from(t.name).select(`id, ${t.img}, is_active`);
-      if (!data) continue;
-      const active = data.filter((r: Record<string, unknown>) => r.is_active !== false);
-      const missing = active.filter((r: Record<string, unknown>) => isEmpty(r[t.img]));
+    for (const t of imgChecks) {
+      if (!t.rows) continue;
+      const active = t.rows.filter((r) => r.is_active !== false);
+      const missing = active.filter((r) => isEmpty(r.image_url));
       results.push({
-        id: `${t.name}-img`,
+        id: `${t.label}-img`,
         label: `${t.label} sin imagen`,
         severity: missing.length ? "warn" : "ok",
         description: missing.length
