@@ -13,6 +13,7 @@ import { translateNavLabel } from "@/i18n/config";
 import { useLocalizedField } from "@/lib/i18nField";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
+import { getPrefetchHandlers } from "@/lib/routePrefetch";
 
 const iconMap: Record<string, LucideIcon> = {
   Home,
@@ -267,6 +268,7 @@ const Navbar = () => {
                     <li key={item.id} className="relative">
                       <button
                         onClick={() => handleNavClick(item.path, item.label)}
+                        {...getPrefetchHandlers(item.path)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
                           "group relative flex items-center px-1.5 xl:px-4 h-10 text-[11px] xl:text-[13px] font-heading font-semibold tracking-[0.04em] xl:tracking-[0.08em] uppercase whitespace-nowrap rounded-md transition-colors duration-200",
@@ -304,6 +306,7 @@ const Navbar = () => {
               {ctaItem && (
                 <button
                   onClick={() => handleNavClick(ctaItem.path, ctaItem.label)}
+                  {...getPrefetchHandlers(ctaItem.path)}
                   className="ml-2 xl:ml-3 group relative inline-flex items-center gap-1.5 px-3 xl:px-5 h-10 rounded-md bg-primary text-primary-foreground text-[11.5px] xl:text-[13px] font-heading font-bold tracking-[0.06em] xl:tracking-[0.08em] uppercase shadow-[0_4px_14px_-2px_hsl(var(--primary)/0.5)] hover:shadow-[0_6px_20px_-2px_hsl(var(--primary)/0.65)] hover:-translate-y-px active:translate-y-0 transition-all duration-200 whitespace-nowrap ring-1 ring-inset ring-primary-foreground/15"
                 >
                   <Calculator className="h-3.5 w-3.5" aria-hidden="true" />
