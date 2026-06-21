@@ -84,50 +84,47 @@ const AdminProjects = () => {
   const handleSave = async () => {
     if (!editingProject) return;
 
+    const payload = {
+      title: editingProject.title,
+      title_en: editingProject.title_en,
+      description: editingProject.description,
+      description_en: editingProject.description_en,
+      category: editingProject.category,
+      category_en: editingProject.category_en,
+      location: editingProject.location,
+      location_en: editingProject.location_en,
+      year: editingProject.year,
+      image_url: editingProject.image_url,
+      gallery_images: editingProject.gallery_images,
+      is_featured: editingProject.is_featured,
+      is_active: editingProject.is_active,
+      client: editingProject.client,
+      duration: editingProject.duration,
+      duration_en: editingProject.duration_en,
+      challenge: editingProject.challenge,
+      challenge_en: editingProject.challenge_en,
+      solution: editingProject.solution,
+      solution_en: editingProject.solution_en,
+      outcome: editingProject.outcome,
+      outcome_en: editingProject.outcome_en,
+      services_used: editingProject.services_used,
+      metrics: editingProject.metrics as any,
+      is_case_study: editingProject.is_case_study,
+    };
+
     try {
       if (editingProject.id) {
         const { error } = await supabase
           .from("projects")
-          .update({
-            title: editingProject.title,
-            title_en: editingProject.title_en,
-            description: editingProject.description,
-            description_en: editingProject.description_en,
-            category: editingProject.category,
-            category_en: editingProject.category_en,
-            location: editingProject.location,
-            location_en: editingProject.location_en,
-            year: editingProject.year,
-            image_url: editingProject.image_url,
-            gallery_images: editingProject.gallery_images,
-            is_featured: editingProject.is_featured,
-            is_active: editingProject.is_active,
-            sort_order: editingProject.sort_order,
-          })
+          .update({ ...payload, sort_order: editingProject.sort_order })
           .eq("id", editingProject.id);
-
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("projects")
-          .insert({
-            title: editingProject.title,
-            title_en: editingProject.title_en,
-            description: editingProject.description,
-            description_en: editingProject.description_en,
-            category: editingProject.category,
-            category_en: editingProject.category_en,
-            location: editingProject.location,
-            location_en: editingProject.location_en,
-            year: editingProject.year,
-            image_url: editingProject.image_url,
-            gallery_images: editingProject.gallery_images,
-            is_featured: editingProject.is_featured,
-            is_active: editingProject.is_active,
-            sort_order: projects.length,
-          });
-
+          .insert({ ...payload, sort_order: projects.length });
         if (error) throw error;
+      }
       }
 
       toast({ title: "Guardado", description: "Proyecto actualizado correctamente." });
@@ -218,6 +215,18 @@ const AdminProjects = () => {
       is_featured: false,
       is_active: true,
       sort_order: projects.length,
+      client: "",
+      duration: "",
+      duration_en: "",
+      challenge: "",
+      challenge_en: "",
+      solution: "",
+      solution_en: "",
+      outcome: "",
+      outcome_en: "",
+      services_used: [],
+      metrics: [],
+      is_case_study: false,
     });
     setIsDialogOpen(true);
   };
