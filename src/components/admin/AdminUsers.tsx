@@ -272,23 +272,22 @@ const AdminUsers = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="role">Rol</Label>
-                  <Select value={newRole} onValueChange={(value: "admin" | "user") => setNewRole(value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                  <Select value={newRole} onValueChange={(value) => setNewRole(value as Role)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="user">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          Usuario
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="admin">
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          Administrador
-                        </div>
-                      </SelectItem>
+                      {ROLE_OPTIONS.map((r) => {
+                        const m = ROLE_META[r];
+                        const Icon = m.icon;
+                        return (
+                          <SelectItem key={r} value={r}>
+                            <div className="flex items-center gap-2">
+                              <Icon className="h-4 w-4" />
+                              <span>{m.label}</span>
+                              <span className="text-xs text-muted-foreground">— {m.description}</span>
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
