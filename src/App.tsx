@@ -12,6 +12,7 @@ import Navbar from "@/components/Navbar";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ShortcutsHelpDialog from "@/components/ShortcutsHelpDialog";
+import InstallAppBanner from "@/components/InstallAppBanner";
 import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
 
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ const AppShell = () => {
         </ErrorBoundary>
       )}
       {!hideChatWidget && <CookieBanner />}
+      {!hideChatWidget && <InstallAppBanner />}
       <ShortcutsHelpDialog />
     </>
   );
