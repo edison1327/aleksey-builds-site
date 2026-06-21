@@ -32,45 +32,54 @@ const actionColors: Record<string, string> = {
   export: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
 };
 
+const PAGE_SIZE = 50;
+
 const AdminAuditLog = () => {
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [actionFilter, setActionFilter] = useState<string>("all");
   const [entityFilter, setEntityFilter] = useState<string>("all");
+  const [page, setPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const fetchEntries = async () => {
-      const { data, error } = await supabase
+      setIsLoading(true);
+      let query = supabase
         .from("audit_log")
-        .select("*")
+        .select("*", { count: "exact" })
         .order("created_at", { ascending: false })
-        .limit(500);
-      if (!error && data) setEntries(data as AuditEntry[]);
+        .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
+
+      if (actionFilter !== "all") query = query.eq("action", actionFilter);
+      if (entityFilter !== "all") query = query.eq("entity_type", entityFilter);
+      if (search.trim()) {
+        const term = `%${search.trim()}%`;
+        query = query.or(`user_email.ilike.${term},entity_type.ilike.${term},entity_id.ilike.${term},action.ilike.${term}`);
+      }
+
+      const { data, error, count } = await query;
+      if (!error && data) {
+        setEntries(data as AuditEntry[]);
+        setTotalCount(count || 0);
+      }
       setIsLoading(false);
     };
-    fetchEntries();
-  }, []);
+    const t = setTimeout(fetchEntries, search ? 300 : 0);
+    return () => clearTimeout(t);
+  }, [page, actionFilter, entityFilter, search]);
+
+  // Reset to page 0 on filter change
+  useEffect(() => { setPage(0); }, [actionFilter, entityFilter, search]);
 
   const uniqueEntities = Array.from(new Set(entries.map((e) => e.entity_type)));
   const uniqueActions = Array.from(new Set(entries.map((e) => e.action)));
 
-  const filtered = entries.filter((e) => {
-    if (actionFilter !== "all" && e.action !== actionFilter) return false;
-    if (entityFilter !== "all" && e.entity_type !== entityFilter) return false;
-    if (search) {
-      const term = search.toLowerCase();
-      return (
-        e.user_email?.toLowerCase().includes(term) ||
-        e.entity_type.toLowerCase().includes(term) ||
-        e.entity_id?.toLowerCase().includes(term) ||
-        e.action.toLowerCase().includes(term)
-      );
-    }
-    return true;
-  });
+  const filtered = entries;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
-  if (isLoading) {
+  if (isLoading && entries.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
