@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, History, Search, Download, User, Activity } from "lucide-react";
 import { format } from "date-fns";
@@ -35,11 +38,13 @@ const actionColors: Record<string, string> = {
 const PAGE_SIZE = 50;
 
 const AdminAuditLog = () => {
+  const { user } = useAuth();
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [actionFilter, setActionFilter] = useState<string>("all");
   const [entityFilter, setEntityFilter] = useState<string>("all");
+  const [onlyMine, setOnlyMine] = useState(false);
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -54,6 +59,7 @@ const AdminAuditLog = () => {
 
       if (actionFilter !== "all") query = query.eq("action", actionFilter);
       if (entityFilter !== "all") query = query.eq("entity_type", entityFilter);
+      if (onlyMine && user?.id) query = query.eq("user_id", user.id);
       if (search.trim()) {
         const term = `%${search.trim()}%`;
         query = query.or(`user_email.ilike.${term},entity_type.ilike.${term},entity_id.ilike.${term},action.ilike.${term}`);
@@ -68,10 +74,10 @@ const AdminAuditLog = () => {
     };
     const t = setTimeout(fetchEntries, search ? 300 : 0);
     return () => clearTimeout(t);
-  }, [page, actionFilter, entityFilter, search]);
+  }, [page, actionFilter, entityFilter, search, onlyMine, user?.id]);
 
   // Reset to page 0 on filter change
-  useEffect(() => { setPage(0); }, [actionFilter, entityFilter, search]);
+  useEffect(() => { setPage(0); }, [actionFilter, entityFilter, search, onlyMine]);
 
   const uniqueEntities = Array.from(new Set(entries.map((e) => e.entity_type)));
   const uniqueActions = Array.from(new Set(entries.map((e) => e.action)));
@@ -169,6 +175,17 @@ const AdminAuditLog = () => {
             {uniqueEntities.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
           </SelectContent>
         </Select>
+        <div className="flex items-center gap-2 px-3 rounded-md border bg-card">
+          <Switch
+            id="only-mine"
+            checked={onlyMine}
+            onCheckedChange={setOnlyMine}
+            aria-label="Mostrar solo mis acciones"
+          />
+          <Label htmlFor="only-mine" className="text-sm cursor-pointer whitespace-nowrap">
+            Solo mis acciones
+          </Label>
+        </div>
       </div>
 
       <Card>
