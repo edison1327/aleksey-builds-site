@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Newspaper, ExternalLink } from "lucide-react";
 import ImageUpload from "@/components/admin/ImageUpload";
 import SEOIndicator from "@/components/admin/SEOIndicator";
+import PreviewTokenControl from "@/components/admin/PreviewTokenControl";
 import { slugify } from "@/lib/slugify";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -37,6 +38,7 @@ interface Post {
   published: boolean;
   published_at: string | null;
   tags: string[];
+  preview_token: string | null;
   updated_at: string;
 }
 
@@ -260,6 +262,19 @@ const AdminBlog = () => {
                     </div>
                     <div className="flex items-center gap-1 text-xs justify-end">
                       <Switch checked={p.published} onCheckedChange={() => togglePublish(p)} />
+                    </div>
+                    <div className="flex justify-end mt-1">
+                      <PreviewTokenControl
+                        table="blog_posts"
+                        id={p.id}
+                        slug={p.slug}
+                        currentToken={p.preview_token}
+                        onChange={(token) =>
+                          setPosts((prev) =>
+                            prev.map((x) => (x.id === p.id ? { ...x, preview_token: token } : x))
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
