@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, User, ArrowLeft, Newspaper } from "lucide-react";
+import { Calendar, User, ArrowLeft, Newspaper, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Footer from "@/components/Footer";
@@ -23,12 +23,16 @@ interface Post {
   content_en: string | null;
   cover_image: string | null;
   author: string | null;
+  published: boolean;
   published_at: string | null;
   tags: string[];
 }
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const previewToken = searchParams.get("preview");
+  const isPreview = Boolean(previewToken);
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,17 +44,16 @@ const BlogPostPage = () => {
 
   useEffect(() => {
     if (!slug) return;
-    supabase
-      .from("blog_posts")
-      .select("*")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle()
-      .then(({ data }) => {
-        setPost(data as Post | null);
-        setLoading(false);
-      });
-  }, [slug]);
+    const query = supabase.from("blog_posts").select("*").eq("slug", slug);
+    const fetch = isPreview
+      ? query.eq("preview_token", previewToken!).maybeSingle()
+      : query.eq("published", true).maybeSingle();
+    fetch.then(({ data }) => {
+      setPost(data as Post | null);
+      setLoading(false);
+    });
+  }, [slug, isPreview, previewToken]);
+
 
   if (loading) {
     return (
@@ -107,8 +110,21 @@ const BlogPostPage = () => {
         <meta property="og:type" content="article" />
         {post.cover_image && <meta property="og:image" content={post.cover_image} />}
         {excerpt && <meta property="og:description" content={excerpt} />}
+        {isPreview && <meta name="robots" content="noindex, nofollow" />}
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
+
+      {isPreview && (
+        <div
+          role="status"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/95 text-amber-950 text-sm font-medium shadow-lg backdrop-blur"
+        >
+          <Eye className="h-4 w-4" />
+          {post.published
+            ? "Vista previa (artículo ya publicado)"
+            : "Vista previa de borrador · no indexado"}
+        </div>
+      )}
 
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
@@ -118,6 +134,7 @@ const BlogPostPage = () => {
           >
             <ArrowLeft className="h-4 w-4 mr-1" /> {lang === "en" ? "Back to blog" : "Volver al blog"}
           </Link>
+
 
           {post.tags.length > 0 && (
             <div className="flex gap-2 flex-wrap mb-3">

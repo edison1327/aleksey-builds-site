@@ -108,6 +108,7 @@ export type Database = {
           excerpt: string | null
           excerpt_en: string | null
           id: string
+          preview_token: string | null
           published: boolean
           published_at: string | null
           slug: string
@@ -125,6 +126,7 @@ export type Database = {
           excerpt?: string | null
           excerpt_en?: string | null
           id?: string
+          preview_token?: string | null
           published?: boolean
           published_at?: string | null
           slug: string
@@ -142,6 +144,7 @@ export type Database = {
           excerpt?: string | null
           excerpt_en?: string | null
           id?: string
+          preview_token?: string | null
           published?: boolean
           published_at?: string | null
           slug?: string
@@ -678,6 +681,7 @@ export type Database = {
           is_featured: boolean | null
           location: string | null
           location_en: string | null
+          preview_token: string | null
           sort_order: number | null
           title: string
           title_en: string | null
@@ -697,6 +701,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           location_en?: string | null
+          preview_token?: string | null
           sort_order?: number | null
           title: string
           title_en?: string | null
@@ -716,6 +721,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           location_en?: string | null
+          preview_token?: string | null
           sort_order?: number | null
           title?: string
           title_en?: string | null
