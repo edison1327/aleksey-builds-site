@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useHashScroll } from "@/hooks/useHashScroll";
 import { Settings, Clock, Shield, Wrench, Search, X, GitCompare, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ const MachineryPage = () => {
   const [compareOpen, setCompareOpen] = useState(false);
 
   const { data: machinery, isLoading } = useMachinery();
+  useHashScroll([machinery.length]);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -215,7 +217,8 @@ const MachineryPage = () => {
                 return (
                   <Card
                     key={item.id}
-                    className={`group relative cursor-pointer overflow-hidden border-2 bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${
+                    id={`card-${item.id}`}
+                    className={`group relative cursor-pointer overflow-hidden border-2 bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-2 scroll-mt-28 ${
                       isSelected ? "border-primary" : "border-transparent"
                     } ${machineryVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                     style={{ transitionDelay: `${(index % 6) * 100}ms` }}
