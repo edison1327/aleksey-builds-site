@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useHashScroll } from "@/hooks/useHashScroll";
 import { Settings, Clock, Shield, Wrench, Search, X, GitCompare, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

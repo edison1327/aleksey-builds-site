@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useHashScroll } from "@/hooks/useHashScroll";
 import { Truck, Clock, Shield, Wrench } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
