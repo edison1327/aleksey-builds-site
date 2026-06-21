@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -38,6 +38,7 @@ import AdminAuditLog from "@/components/admin/AdminAuditLog";
 import AdminSiteHealth from "@/components/admin/AdminSiteHealth";
 import AdminBookings from "@/components/admin/AdminBookings";
 import AdminMediaLibrary from "@/components/admin/AdminMediaLibrary";
+import AdminBackup from "@/components/admin/AdminBackup";
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -185,6 +186,7 @@ const Admin = () => {
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh", badgeKey: "applications" },
     { id: "audit", label: "Auditoría", icon: History, category: "general", adminOnly: true },
     { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
+    { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -380,12 +382,20 @@ const Admin = () => {
       case "audit": return <AdminAuditLog />;
       case "media": return <AdminMediaLibrary />;
       case "health": return <AdminSiteHealth />;
+      case "backup": return <AdminBackup />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex">
+      {/* Skip to main content link for keyboard users */}
+      <a
+        href="#admin-main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-md focus:bg-primary focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Saltar al contenido principal
+      </a>
       <CommandPalette
         open={paletteOpen}
         onOpenChange={setPaletteOpen}
@@ -481,7 +491,7 @@ const Admin = () => {
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+        <main id="admin-main" tabIndex={-1} className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto focus:outline-none">
           <div className="max-w-7xl mx-auto animate-fade-in">
             <ErrorBoundary
               key={activeTab}
