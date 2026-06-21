@@ -6,6 +6,7 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import ChatWidget from "@/components/ChatWidget";
+import CookieBanner from "@/components/CookieBanner";
 import AnimatedRoutes from "@/components/AnimatedRoutes";
 import Navbar from "@/components/Navbar";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -40,6 +41,7 @@ const AppShell = () => {
           <ChatWidget />
         </ErrorBoundary>
       )}
+      {!hideChatWidget && <CookieBanner />}
       <ShortcutsHelpDialog />
     </>
   );
