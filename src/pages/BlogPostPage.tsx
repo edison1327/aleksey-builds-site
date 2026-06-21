@@ -186,7 +186,7 @@ const BlogPostPage = () => {
             </blockquote>
           )}
 
-          <article className="editorial-content max-w-none">
+          <div className="editorial-content max-w-none">
             {(content || "").split(/\n{2,}/).map((para, i) => {
               const trimmed = para.trim();
               // Blockquote: lines starting with ">"
@@ -221,7 +221,7 @@ const BlogPostPage = () => {
                 </p>
               );
             })}
-          </article>
+          </div>
 
           {/* Ornamental closing separator */}
           <div className="mt-16 flex items-center justify-center gap-3" aria-hidden="true">
