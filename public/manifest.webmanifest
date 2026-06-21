@@ -1,0 +1,23 @@
+{
+  "name": "ALEKSEY | Ingeniería y Construcción",
+  "short_name": "ALEKSEY",
+  "description": "Ingeniería, construcción y alquiler de maquinaria pesada en Perú.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "lang": "es-PE",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Cotizar", "url": "/cotizar", "description": "Solicita una cotización" },
+    { "name": "Proyectos", "url": "/proyectos", "description": "Ver proyectos" },
+    { "name": "Maquinaria", "url": "/maquinaria", "description": "Alquiler de maquinaria" }
+  ]
+}
