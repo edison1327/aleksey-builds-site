@@ -2,10 +2,17 @@ import { useState, useEffect, createContext, useContext, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
+export type AppRole = 'admin' | 'editor' | 'viewer' | 'user';
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
+  role: AppRole;
   isAdmin: boolean;
+  isEditor: boolean;
+  isViewer: boolean;
+  /** Has access to the CMS (admin OR editor OR viewer). */
+  isStaff: boolean;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -14,45 +21,42 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const ROLE_PRIORITY: AppRole[] = ['admin', 'editor', 'viewer', 'user'];
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState<AppRole>('user');
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkAdminRole = (userId: string) => {
+  const loadRole = (userId: string) => {
     setTimeout(async () => {
       try {
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', userId)
-          .eq('role', 'admin')
-          .maybeSingle();
-        
-        if (!error && data) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
+          .eq('user_id', userId);
+        if (error || !data?.length) {
+          setRole('user');
+          return;
         }
+        const roles = data.map((r) => (r.role as AppRole));
+        // Pick highest-priority role
+        const best = ROLE_PRIORITY.find((r) => roles.includes(r)) || 'user';
+        setRole(best);
       } catch {
-        setIsAdmin(false);
+        setRole('user');
       }
     }, 0);
   };
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          checkAdminRole(session.user.id);
-        } else {
-          setIsAdmin(false);
-        }
-        
+        if (session?.user) loadRole(session.user.id);
+        else setRole('user');
         setIsLoading(false);
       }
     );
@@ -60,11 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkAdminRole(session.user.id);
-      }
-      
+      if (session?.user) loadRole(session.user.id);
       setIsLoading(false);
     });
 
@@ -88,11 +88,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    setIsAdmin(false);
+    setRole('user');
   };
 
+  const isAdmin = role === 'admin';
+  const isEditor = role === 'editor';
+  const isViewer = role === 'viewer';
+  const isStaff = isAdmin || isEditor || isViewer;
+
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, role, isAdmin, isEditor, isViewer, isStaff, isLoading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
