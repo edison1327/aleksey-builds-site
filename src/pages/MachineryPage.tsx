@@ -59,6 +59,7 @@ const MachineryPage = () => {
   const [compareOpen, setCompareOpen] = useState(false);
 
   const { data: machinery, isLoading } = useMachinery();
+  useHashScroll([machinery.length]);
 
   const categories = useMemo(() => {
     const set = new Set<string>();

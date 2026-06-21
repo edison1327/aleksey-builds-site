@@ -34,6 +34,7 @@ const VehiclesPage = () => {
   const tr = useLocalizedField();
   
   const { data: vehicles, isLoading } = useVehicles();
+  useHashScroll([vehicles.length]);
 
   const scrollToContact = () => {
     navigate("/");
