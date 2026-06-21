@@ -15,6 +15,12 @@ import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
 import { I18nField } from "./I18nField";
 
+interface ProjectMetric {
+  label: string;
+  value: string;
+  unit?: string;
+}
+
 interface Project {
   id: string;
   title: string;
@@ -31,6 +37,18 @@ interface Project {
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
+  client: string | null;
+  duration: string | null;
+  duration_en: string | null;
+  challenge: string | null;
+  challenge_en: string | null;
+  solution: string | null;
+  solution_en: string | null;
+  outcome: string | null;
+  outcome_en: string | null;
+  services_used: string[];
+  metrics: ProjectMetric[];
+  is_case_study: boolean;
 }
 
 const AdminProjects = () => {
@@ -53,7 +71,12 @@ const AdminProjects = () => {
     if (error) {
       console.error("Error fetching projects:", error);
     } else {
-      setProjects(data || []);
+      const normalized = ((data as any[]) || []).map((p) => ({
+        ...p,
+        metrics: Array.isArray(p.metrics) ? p.metrics : [],
+        services_used: Array.isArray(p.services_used) ? p.services_used : [],
+      })) as Project[];
+      setProjects(normalized);
     }
     setIsLoading(false);
   };
