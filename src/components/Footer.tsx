@@ -56,10 +56,10 @@ const Footer = () => {
 
   // Live metrics from hero_content (CMS-driven, with sane fallbacks)
   const metrics = [
-    { label: "Proyectos entregados", value: hero?.projects_count ?? 120 },
-    { label: "Años de experiencia", value: hero?.years_count ?? 15 },
-    { label: "Profesionales en obra", value: hero?.employees_count ?? 80 },
-    { label: "Proyectos activos", value: hero?.active_projects_count ?? 12 },
+    { label: t("footer.metrics.projects"), value: hero?.projects_count ?? 120 },
+    { label: t("footer.metrics.years"), value: hero?.years_count ?? 15 },
+    { label: t("footer.metrics.employees"), value: hero?.employees_count ?? 80 },
+    { label: t("footer.metrics.active"), value: hero?.active_projects_count ?? 12 },
   ];
 
   const certifications = [
@@ -212,7 +212,7 @@ const Footer = () => {
                 >
                   {fullAddress}
                   <span className="block text-xs text-secondary-foreground/55 mt-0.5">
-                    Ver en Google Maps →
+                    {t("footer.viewOnMaps")}
                   </span>
                 </a>
               </li>
@@ -235,7 +235,7 @@ const Footer = () => {
         {/* Certifications strip */}
         <div className="border-t border-secondary-foreground/15 pt-6 pb-2">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-secondary-foreground/60">
-            <span className="text-xs uppercase tracking-[0.18em] font-semibold">Certificaciones</span>
+            <span className="text-xs uppercase tracking-[0.18em] font-semibold">{t("footer.certifications")}</span>
             {certifications.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-1.5 text-xs">
                 <Icon className="h-4 w-4 text-primary/80" />
@@ -251,11 +251,11 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-4">
             <Link to="/privacidad" className="hover:text-primary transition-colors">
-              Política de privacidad
+              {t("footer.privacy")}
             </Link>
             <span aria-hidden="true" className="opacity-30">•</span>
             <Link to="/convocatoria" className="hover:text-primary transition-colors">
-              Trabaja con nosotros
+              {t("footer.careersLink")}
             </Link>
           </div>
         </div>
