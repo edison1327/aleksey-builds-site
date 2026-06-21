@@ -329,19 +329,16 @@ const AdminUsers = () => {
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">{user.email}</TableCell>
                     <TableCell>
-                      <Badge variant={user.role === "admin" ? "default" : "secondary"} className="gap-1">
-                        {user.role === "admin" ? (
-                          <>
-                            <Shield className="h-3 w-3" />
-                            Admin
-                          </>
-                        ) : (
-                          <>
-                            <User className="h-3 w-3" />
-                            Usuario
-                          </>
-                        )}
-                      </Badge>
+                      {(() => {
+                        const m = ROLE_META[user.role] || ROLE_META.user;
+                        const Icon = m.icon;
+                        return (
+                          <Badge variant={m.badgeVariant} className="gap-1">
+                            <Icon className="h-3 w-3" />
+                            {m.label}
+                          </Badge>
+                        );
+                      })()}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
                       {formatDate(user.created_at)}
