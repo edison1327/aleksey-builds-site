@@ -1,6 +1,6 @@
-import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock, ShieldCheck, Award, HardHat, Leaf } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useContactInfo, useNavigationGroups, useSocialLinks } from "@/hooks/useSiteData";
+import { useContactInfo, useNavigationGroups, useSocialLinks, useHeroContent } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 
@@ -31,6 +31,7 @@ const Footer = () => {
   const { data: siteSettings } = useSiteSettings();
   const { data: footerGroups } = useNavigationGroups("footer_");
   const { data: socialLinks } = useSocialLinks();
+  const { data: hero } = useHeroContent();
   const tr = useLocalizedField();
 
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
@@ -46,16 +47,49 @@ const Footer = () => {
   const businessHours = tr(contactInfo as any, "business_hours") || contactInfo?.business_hours || defaultContact.business_hours;
 
   const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
   const getSocialIcon = (iconName: string | null) => {
     if (!iconName) return Facebook;
     return socialIcons[iconName] || Facebook;
   };
 
+  // Live metrics from hero_content (CMS-driven, with sane fallbacks)
+  const metrics = [
+    { label: "Proyectos entregados", value: hero?.projects_count ?? 120 },
+    { label: "Años de experiencia", value: hero?.years_count ?? 15 },
+    { label: "Profesionales en obra", value: hero?.employees_count ?? 80 },
+    { label: "Proyectos activos", value: hero?.active_projects_count ?? 12 },
+  ];
+
+  const certifications = [
+    { icon: ShieldCheck, label: "ISO 9001" },
+    { icon: HardHat, label: "ISO 45001" },
+    { icon: Leaf, label: "ISO 14001" },
+    { icon: Award, label: "OHSAS 18001" },
+  ];
 
   return (
-    <footer className="bg-secondary text-secondary-foreground py-12">
-      <div className="container mx-auto px-4">
+    <footer className="bg-secondary text-secondary-foreground">
+      {/* Metrics band */}
+      <div className="border-b border-secondary-foreground/10 bg-gradient-to-r from-secondary via-secondary to-primary/5">
+        <div className="container mx-auto px-4 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+            {metrics.map((m) => (
+              <div key={m.label} className="text-center md:text-left">
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary leading-none mb-2">
+                  +{m.value}
+                </div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 uppercase tracking-[0.12em]">
+                  {m.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Logo y descripción */}
           <div className="lg:col-span-2">
@@ -170,7 +204,17 @@ const Footer = () => {
             <ul className="space-y-3 text-secondary-foreground/80">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <span>{fullAddress}</span>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  {fullAddress}
+                  <span className="block text-xs text-secondary-foreground/55 mt-0.5">
+                    Ver en Google Maps →
+                  </span>
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
@@ -188,10 +232,32 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-secondary-foreground/20 pt-8 text-center text-secondary-foreground/60">
+        {/* Certifications strip */}
+        <div className="border-t border-secondary-foreground/15 pt-6 pb-2">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-secondary-foreground/60">
+            <span className="text-xs uppercase tracking-[0.18em] font-semibold">Certificaciones</span>
+            {certifications.map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-1.5 text-xs">
+                <Icon className="h-4 w-4 text-primary/80" />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-secondary-foreground/15 mt-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-secondary-foreground/60 text-sm">
           <p>
             © {new Date().getFullYear()} {companyName}. {footerCopyright}
           </p>
+          <div className="flex items-center gap-4">
+            <Link to="/privacidad" className="hover:text-primary transition-colors">
+              Política de privacidad
+            </Link>
+            <span aria-hidden="true" className="opacity-30">•</span>
+            <Link to="/convocatoria" className="hover:text-primary transition-colors">
+              Trabaja con nosotros
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
