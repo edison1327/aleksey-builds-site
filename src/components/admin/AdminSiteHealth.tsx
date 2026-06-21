@@ -143,9 +143,9 @@ const AdminSiteHealth = () => {
     });
 
     // Navigation links
-    const { data: navLinks } = await supabase.from("navigation_links").select("id, url, is_active");
+    const { data: navLinks } = await supabase.from("navigation_links").select("id, path, is_active");
     if (navLinks) {
-      const broken = navLinks.filter((l) => l.is_active && (isEmpty(l.url) || l.url === "#"));
+      const broken = navLinks.filter((l) => l.is_active && (isEmpty(l.path) || l.path === "#"));
       results.push({
         id: "nav",
         label: "Enlaces de navegación",
