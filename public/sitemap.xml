@@ -1,53 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://aleksey.lovable.app/</loc>
+    <loc>https://aleksey.pe/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/nosotros</loc>
+    <loc>https://aleksey.pe/nosotros</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/proyectos</loc>
+    <loc>https://aleksey.pe/proyectos</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/construccion</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://aleksey.lovable.app/ingenieria</loc>
+    <loc>https://aleksey.pe/construccion</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/maquinaria</loc>
+    <loc>https://aleksey.pe/ingenieria</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aleksey.pe/maquinaria</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/vehiculos</loc>
+    <loc>https://aleksey.pe/vehiculos</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/cotizar</loc>
+    <loc>https://aleksey.pe/cotizar</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/convocatoria</loc>
+    <loc>https://aleksey.pe/convocatoria</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://aleksey.lovable.app/blog</loc>
+    <loc>https://aleksey.pe/blog</loc>
     <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aleksey.pe/proyectos/carretera-interoceanica-tramo-iii</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aleksey.pe/proyectos/centro-empresarial-lima-norte</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aleksey.pe/proyectos/hospital-regional-del-sur</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aleksey.pe/proyectos/puente-vehicular-rio-santa</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aleksey.pe/proyectos/residencial-los-clamos</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 </urlset>

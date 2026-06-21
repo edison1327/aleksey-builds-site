@@ -92,9 +92,9 @@ const ProjectDetailPage = () => {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Inicio", item: "https://aleksey.lovable.app/" },
-        { "@type": "ListItem", position: 2, name: "Proyectos", item: "https://aleksey.lovable.app/proyectos" },
-        { "@type": "ListItem", position: 3, name: title, item: `https://aleksey.lovable.app/proyectos/${project.slug}` },
+        { "@type": "ListItem", position: 1, name: "Inicio", item: "https://aleksey.pe/" },
+        { "@type": "ListItem", position: 2, name: "Proyectos", item: "https://aleksey.pe/proyectos" },
+        { "@type": "ListItem", position: 3, name: title, item: `https://aleksey.pe/proyectos/${project.slug}` },
       ],
     },
   ];

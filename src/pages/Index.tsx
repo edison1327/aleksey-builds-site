@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import SplashScreen from "@/components/SplashScreen";
 import ScrollToTop from "@/components/ScrollToTop";
 import SkipToContent from "@/components/SkipToContent";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   const [showSplash, setShowSplash] = useState(() => {
@@ -26,6 +27,11 @@ const Index = () => {
   return (
     <div className="min-h-dvh">
       <SkipToContent />
+      <SEO
+        title="ALEKSEY | Ingeniería y Construcción en Perú"
+        description="Empresa líder en construcción e ingeniería en Perú. Proyectos residenciales, comerciales e infraestructura vial. Alquiler de maquinaria pesada y vehículos."
+        path="/"
+      />
       {showSplash && (
         <SplashScreen onComplete={handleSplashComplete} duration={1500} />
       )}
