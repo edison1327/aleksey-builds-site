@@ -172,16 +172,33 @@ const AdminAuditLog = () => {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Últimos eventos ({filtered.length})</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle className="text-base">
+            Eventos ({totalCount.toLocaleString()})
+          </CardTitle>
+          <div className="flex items-center gap-2 text-sm">
+            <Button size="sm" variant="outline" disabled={page === 0 || isLoading} onClick={() => setPage((p) => Math.max(0, p - 1))}>
+              Anterior
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              Página {page + 1} / {totalPages}
+            </span>
+            <Button size="sm" variant="outline" disabled={page + 1 >= totalPages || isLoading} onClick={() => setPage((p) => p + 1)}>
+              Siguiente
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          {filtered.length === 0 ? (
+          {isLoading ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          ) : filtered.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
               No hay eventos que coincidan con los filtros.
             </p>
           ) : (
-            <div className="space-y-2 max-h-[600px] overflow-y-auto">
+            <div className="space-y-2">
               {filtered.map((e) => (
                 <div key={e.id} className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-muted/30 transition-colors">
                   <Badge className={actionColors[e.action] || "bg-gray-100 text-gray-700"}>{e.action}</Badge>
