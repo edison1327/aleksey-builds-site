@@ -53,7 +53,7 @@ import { useToast } from "@/hooks/use-toast";
 const Tooltip = RechartsTooltip;
 
 const Admin = () => {
-  const { user, isAdmin, isLoading, signOut } = useAuth();
+  const { user, isAdmin, isStaff, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const getTabFromHash = () => {
@@ -85,10 +85,10 @@ const Admin = () => {
   const { counts: badgeCounts } = useAdminBadges();
 
   useEffect(() => {
-    if (!isLoading && (!user || !isAdmin)) {
+    if (!isLoading && (!user || !isStaff)) {
       navigate("/admin/login");
     }
-  }, [user, isAdmin, isLoading, navigate]);
+  }, [user, isStaff, isLoading, navigate]);
 
   useEffect(() => {
     // Subscribe to realtime updates for new messages/quotes notification
@@ -148,23 +148,24 @@ const Admin = () => {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user || !isStaff) {
     return null;
   }
 
-  const menuItems: Array<{
+  const allMenuItems: Array<{
     id: string;
     label: string;
     icon: typeof LayoutDashboard;
     category: string;
     badgeKey?: keyof typeof badgeCounts;
+    adminOnly?: boolean;
   }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
-    { id: "site", label: "Logo & Sitio", icon: Image, category: "general" },
+    { id: "site", label: "Logo & Sitio", icon: Image, category: "general", adminOnly: true },
     { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
-    { id: "users", label: "Usuarios", icon: UserCog, category: "general" },
+    { id: "users", label: "Usuarios", icon: UserCog, category: "general", adminOnly: true },
     { id: "hero", label: "Hero", icon: Home, category: "contenido" },
     { id: "about", label: "About", icon: Info, category: "contenido" },
     { id: "teamstats", label: "Estadísticas", icon: BarChart3, category: "contenido" },
@@ -177,14 +178,16 @@ const Admin = () => {
     { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion", badgeKey: "messages" },
     { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
     { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
-    { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion" },
+    { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh", badgeKey: "applications" },
-    { id: "audit", label: "Auditoría", icon: History, category: "general" },
+    { id: "audit", label: "Auditoría", icon: History, category: "general", adminOnly: true },
     { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
   ];
+
+  const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
 
   const categories = [
     { id: "general", label: "General" },

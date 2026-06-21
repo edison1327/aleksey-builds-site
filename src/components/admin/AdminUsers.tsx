@@ -41,15 +41,26 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Pencil, Users, Shield, User, RefreshCw } from "lucide-react";
+import { Loader2, Plus, Trash2, Pencil, Users, Shield, User, RefreshCw, Edit3, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+
+type Role = "admin" | "editor" | "viewer" | "user";
+
+const ROLE_META: Record<Role, { label: string; icon: typeof Shield; description: string; badgeVariant: "default" | "secondary" | "outline" }> = {
+  admin: { label: "Administrador", icon: Shield, description: "Acceso total", badgeVariant: "default" },
+  editor: { label: "Editor", icon: Edit3, description: "Gestiona contenido del sitio", badgeVariant: "secondary" },
+  viewer: { label: "Visualizador", icon: Eye, description: "Solo lectura de mensajes y reservas", badgeVariant: "outline" },
+  user: { label: "Usuario", icon: User, description: "Sin acceso al panel", badgeVariant: "outline" },
+};
+
+const ROLE_OPTIONS: Role[] = ["user", "viewer", "editor", "admin"];
 
 interface UserData {
   id: string;
   email: string;
   created_at: string;
   last_sign_in_at: string | null;
-  role: "admin" | "user";
+  role: Role;
 }
 
 const AdminUsers = () => {
@@ -64,12 +75,12 @@ const AdminUsers = () => {
   // Form state for create
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [newRole, setNewRole] = useState<"admin" | "user">("user");
+  const [newRole, setNewRole] = useState<Role>("user");
 
   // Form state for edit
   const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
-  const [editRole, setEditRole] = useState<"admin" | "user">("user");
+  const [editRole, setEditRole] = useState<Role>("user");
 
   useEffect(() => {
     fetchUsers();
@@ -261,23 +272,22 @@ const AdminUsers = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="role">Rol</Label>
-                  <Select value={newRole} onValueChange={(value: "admin" | "user") => setNewRole(value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                  <Select value={newRole} onValueChange={(value) => setNewRole(value as Role)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="user">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          Usuario
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="admin">
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          Administrador
-                        </div>
-                      </SelectItem>
+                      {ROLE_OPTIONS.map((r) => {
+                        const m = ROLE_META[r];
+                        const Icon = m.icon;
+                        return (
+                          <SelectItem key={r} value={r}>
+                            <div className="flex items-center gap-2">
+                              <Icon className="h-4 w-4" />
+                              <span>{m.label}</span>
+                              <span className="text-xs text-muted-foreground">— {m.description}</span>
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -319,19 +329,16 @@ const AdminUsers = () => {
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">{user.email}</TableCell>
                     <TableCell>
-                      <Badge variant={user.role === "admin" ? "default" : "secondary"} className="gap-1">
-                        {user.role === "admin" ? (
-                          <>
-                            <Shield className="h-3 w-3" />
-                            Admin
-                          </>
-                        ) : (
-                          <>
-                            <User className="h-3 w-3" />
-                            Usuario
-                          </>
-                        )}
-                      </Badge>
+                      {(() => {
+                        const m = ROLE_META[user.role] || ROLE_META.user;
+                        const Icon = m.icon;
+                        return (
+                          <Badge variant={m.badgeVariant} className="gap-1">
+                            <Icon className="h-3 w-3" />
+                            {m.label}
+                          </Badge>
+                        );
+                      })()}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
                       {formatDate(user.created_at)}
@@ -421,23 +428,22 @@ const AdminUsers = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-role">Rol</Label>
-              <Select value={editRole} onValueChange={(value: "admin" | "user") => setEditRole(value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+              <Select value={editRole} onValueChange={(value) => setEditRole(value as Role)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="user">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Usuario
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="admin">
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      Administrador
-                    </div>
-                  </SelectItem>
+                  {ROLE_OPTIONS.map((r) => {
+                    const m = ROLE_META[r];
+                    const Icon = m.icon;
+                    return (
+                      <SelectItem key={r} value={r}>
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-4 w-4" />
+                          <span>{m.label}</span>
+                          <span className="text-xs text-muted-foreground">— {m.description}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
