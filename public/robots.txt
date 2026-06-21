@@ -16,4 +16,4 @@ Allow: /
 Disallow: /admin
 Disallow: /portal/
 
-Sitemap: https://aleksey.lovable.app/sitemap.xml
+Sitemap: https://aleksey.pe/sitemap.xml
