@@ -383,7 +383,7 @@ const AdminProjects = () => {
                 maxImages={10}
               />
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={editingProject?.is_featured || false}
@@ -398,7 +398,148 @@ const AdminProjects = () => {
                 />
                 <label className="text-sm font-medium">Activo</label>
               </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={editingProject?.is_case_study || false}
+                  onCheckedChange={(checked) => setEditingProject(prev => prev ? { ...prev, is_case_study: checked } : null)}
+                />
+                <label className="text-sm font-medium">Caso de estudio</label>
+              </div>
             </div>
+
+            {/* Case study fields — only shown when enabled */}
+            {editingProject?.is_case_study && (
+              <div className="space-y-4 p-4 rounded-lg border border-primary/30 bg-primary/5">
+                <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">
+                  Campos del caso de estudio
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-sm font-medium">Cliente</label>
+                    <Input
+                      value={editingProject?.client || ""}
+                      onChange={(e) => setEditingProject(prev => prev ? { ...prev, client: e.target.value } : null)}
+                      placeholder="Empresa o entidad"
+                    />
+                  </div>
+                  <I18nField
+                    label="Duración"
+                    valueEs={editingProject?.duration || ""}
+                    valueEn={editingProject?.duration_en || ""}
+                    onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, duration: v } : null)}
+                    onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, duration_en: v } : null)}
+                  />
+                </div>
+
+                <I18nField
+                  label="El reto"
+                  valueEs={editingProject?.challenge || ""}
+                  valueEn={editingProject?.challenge_en || ""}
+                  onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, challenge: v } : null)}
+                  onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, challenge_en: v } : null)}
+                  textarea
+                  rows={4}
+                />
+                <I18nField
+                  label="La solución"
+                  valueEs={editingProject?.solution || ""}
+                  valueEn={editingProject?.solution_en || ""}
+                  onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, solution: v } : null)}
+                  onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, solution_en: v } : null)}
+                  textarea
+                  rows={4}
+                />
+                <I18nField
+                  label="El resultado"
+                  valueEs={editingProject?.outcome || ""}
+                  valueEn={editingProject?.outcome_en || ""}
+                  onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, outcome: v } : null)}
+                  onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, outcome_en: v } : null)}
+                  textarea
+                  rows={4}
+                />
+
+                <div>
+                  <label className="text-sm font-medium">Servicios aplicados (separados por coma)</label>
+                  <Input
+                    value={(editingProject?.services_used || []).join(", ")}
+                    onChange={(e) => {
+                      const arr = e.target.value.split(",").map((s) => s.trim()).filter(Boolean);
+                      setEditingProject(prev => prev ? { ...prev, services_used: arr } : null);
+                    }}
+                    placeholder="Excavación, Cimentación, Estructura..."
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium">Métricas clave (KPIs)</label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingProject(prev => prev ? {
+                        ...prev,
+                        metrics: [...(prev.metrics || []), { label: "", value: "", unit: "" }],
+                      } : null)}
+                    >
+                      <Plus className="h-3.5 w-3.5 mr-1" /> Añadir métrica
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {(editingProject?.metrics || []).map((m, idx) => (
+                      <div key={idx} className="grid grid-cols-[1fr_1fr_80px_auto] gap-2 items-center">
+                        <Input
+                          placeholder="Etiqueta (ej: Área construida)"
+                          value={m.label}
+                          onChange={(e) => {
+                            const next = [...(editingProject?.metrics || [])];
+                            next[idx] = { ...next[idx], label: e.target.value };
+                            setEditingProject(prev => prev ? { ...prev, metrics: next } : null);
+                          }}
+                        />
+                        <Input
+                          placeholder="Valor (ej: 2,500)"
+                          value={m.value}
+                          onChange={(e) => {
+                            const next = [...(editingProject?.metrics || [])];
+                            next[idx] = { ...next[idx], value: e.target.value };
+                            setEditingProject(prev => prev ? { ...prev, metrics: next } : null);
+                          }}
+                        />
+                        <Input
+                          placeholder="m²"
+                          value={m.unit || ""}
+                          onChange={(e) => {
+                            const next = [...(editingProject?.metrics || [])];
+                            next[idx] = { ...next[idx], unit: e.target.value };
+                            setEditingProject(prev => prev ? { ...prev, metrics: next } : null);
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            const next = (editingProject?.metrics || []).filter((_, i) => i !== idx);
+                            setEditingProject(prev => prev ? { ...prev, metrics: next } : null);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                    {(editingProject?.metrics || []).length === 0 && (
+                      <p className="text-xs text-muted-foreground italic">
+                        Añade 2 a 4 métricas para mostrarlas en la banda superior del caso de estudio.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <Button onClick={handleSave} className="w-full">
               Guardar
             </Button>
