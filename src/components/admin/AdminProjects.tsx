@@ -125,7 +125,6 @@ const AdminProjects = () => {
           .insert({ ...payload, sort_order: projects.length });
         if (error) throw error;
       }
-      }
 
       toast({ title: "Guardado", description: "Proyecto actualizado correctamente." });
       logAction(editingProject.id ? "update" : "create", "projects", editingProject.id || undefined, { title: editingProject.title });
