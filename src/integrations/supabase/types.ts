@@ -682,6 +682,7 @@ export type Database = {
           location: string | null
           location_en: string | null
           preview_token: string | null
+          slug: string | null
           sort_order: number | null
           title: string
           title_en: string | null
@@ -702,6 +703,7 @@ export type Database = {
           location?: string | null
           location_en?: string | null
           preview_token?: string | null
+          slug?: string | null
           sort_order?: number | null
           title: string
           title_en?: string | null
@@ -722,6 +724,7 @@ export type Database = {
           location?: string | null
           location_en?: string | null
           preview_token?: string | null
+          slug?: string | null
           sort_order?: number | null
           title?: string
           title_en?: string | null
@@ -1097,6 +1100,7 @@ export type Database = {
         Args: { _role: string; _user_id: string }
         Returns: boolean
       }
+      slugify: { Args: { input: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user" | "editor" | "viewer"
