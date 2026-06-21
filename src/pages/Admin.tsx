@@ -39,6 +39,7 @@ import AdminSiteHealth from "@/components/admin/AdminSiteHealth";
 import AdminBookings from "@/components/admin/AdminBookings";
 import AdminMediaLibrary from "@/components/admin/AdminMediaLibrary";
 import AdminBackup from "@/components/admin/AdminBackup";
+import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -162,6 +163,7 @@ const Admin = () => {
     adminOnly?: boolean;
   }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
+    { id: "analytics", label: "Analítica", icon: TrendingUp, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general", adminOnly: true },
     { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
@@ -358,6 +360,7 @@ const Admin = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard": return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
+      case "analytics": return <AdminAnalytics />;
       case "site": return <AdminSiteSettings />;
       case "navigation": return <AdminNavigation />;
       case "social": return <AdminSocialLinks />;
