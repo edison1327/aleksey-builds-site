@@ -1,6 +1,6 @@
-import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock, ShieldCheck, Award, HardHat, Leaf } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useContactInfo, useNavigationGroups, useSocialLinks } from "@/hooks/useSiteData";
+import { useContactInfo, useNavigationGroups, useSocialLinks, useHeroContent } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
 
@@ -31,6 +31,7 @@ const Footer = () => {
   const { data: siteSettings } = useSiteSettings();
   const { data: footerGroups } = useNavigationGroups("footer_");
   const { data: socialLinks } = useSocialLinks();
+  const { data: hero } = useHeroContent();
   const tr = useLocalizedField();
 
   const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
@@ -46,16 +47,49 @@ const Footer = () => {
   const businessHours = tr(contactInfo as any, "business_hours") || contactInfo?.business_hours || defaultContact.business_hours;
 
   const fullAddress = country ? `${address}, ${city}, ${country}` : `${address}, ${city}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
   const getSocialIcon = (iconName: string | null) => {
     if (!iconName) return Facebook;
     return socialIcons[iconName] || Facebook;
   };
 
+  // Live metrics from hero_content (CMS-driven, with sane fallbacks)
+  const metrics = [
+    { label: "Proyectos entregados", value: hero?.projects_count ?? 120 },
+    { label: "Años de experiencia", value: hero?.years_count ?? 15 },
+    { label: "Profesionales en obra", value: hero?.employees_count ?? 80 },
+    { label: "Proyectos activos", value: hero?.active_projects_count ?? 12 },
+  ];
+
+  const certifications = [
+    { icon: ShieldCheck, label: "ISO 9001" },
+    { icon: HardHat, label: "ISO 45001" },
+    { icon: Leaf, label: "ISO 14001" },
+    { icon: Award, label: "OHSAS 18001" },
+  ];
 
   return (
-    <footer className="bg-secondary text-secondary-foreground py-12">
-      <div className="container mx-auto px-4">
+    <footer className="bg-secondary text-secondary-foreground">
+      {/* Metrics band */}
+      <div className="border-b border-secondary-foreground/10 bg-gradient-to-r from-secondary via-secondary to-primary/5">
+        <div className="container mx-auto px-4 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+            {metrics.map((m) => (
+              <div key={m.label} className="text-center md:text-left">
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary leading-none mb-2">
+                  +{m.value}
+                </div>
+                <div className="text-xs md:text-sm text-secondary-foreground/70 uppercase tracking-[0.12em]">
+                  {m.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Logo y descripción */}
           <div className="lg:col-span-2">
