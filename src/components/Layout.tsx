@@ -1,6 +1,7 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
+import GlobalSearch from "./GlobalSearch";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ const Layout = ({ children, showFooter = true, showScrollToTop = true }: LayoutP
       </main>
       {showFooter && <Footer />}
       {showScrollToTop && <ScrollToTop />}
+      <GlobalSearch />
     </div>
   );
 };
