@@ -73,6 +73,12 @@ export interface Service {
   sort_order: number;
 }
 
+export interface ProjectMetric {
+  label: string;
+  value: string;
+  unit?: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -86,6 +92,19 @@ export interface Project {
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
+  // Case study fields
+  client: string | null;
+  duration: string | null;
+  duration_en: string | null;
+  challenge: string | null;
+  challenge_en: string | null;
+  solution: string | null;
+  solution_en: string | null;
+  outcome: string | null;
+  outcome_en: string | null;
+  services_used: string[];
+  metrics: ProjectMetric[];
+  is_case_study: boolean;
 }
 
 export interface Machinery {
@@ -186,7 +205,12 @@ export const useProjects = (limit?: number) => {
       }
       
       const { data: projects } = await query;
-      setData(projects || []);
+      const normalized = (projects || []).map((p: any) => ({
+        ...p,
+        metrics: Array.isArray(p.metrics) ? (p.metrics as ProjectMetric[]) : [],
+        services_used: Array.isArray(p.services_used) ? p.services_used : [],
+      })) as Project[];
+      setData(normalized);
       setIsLoading(false);
     };
     fetchData();
