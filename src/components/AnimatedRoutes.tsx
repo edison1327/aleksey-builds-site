@@ -11,6 +11,7 @@ const VehiclesPage = lazy(() => import("@/pages/VehiclesPage"));
 const MachineryPage = lazy(() => import("@/pages/MachineryPage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const ProjectsPage = lazy(() => import("@/pages/ProjectsPage"));
+const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
 const CareersPage = lazy(() => import("@/pages/CareersPage"));
 const QuotePage = lazy(() => import("@/pages/QuotePage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
@@ -49,6 +50,7 @@ const AnimatedRoutes = () => {
             <Route path="/maquinaria" element={<MachineryPage />} />
             <Route path="/nosotros" element={<AboutPage />} />
             <Route path="/proyectos" element={<ProjectsPage />} />
+            <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
             <Route path="/convocatoria" element={<CareersPage />} />
             <Route path="/cotizar" element={<QuotePage />} />
             <Route path="/blog" element={<BlogPage />} />
