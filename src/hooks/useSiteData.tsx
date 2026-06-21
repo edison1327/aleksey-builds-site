@@ -76,6 +76,7 @@ export interface Service {
 export interface Project {
   id: string;
   title: string;
+  slug: string | null;
   description: string | null;
   category: string | null;
   location: string | null;

@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import SEO from "@/components/SEO";
 import { useProjects, Project } from "@/hooks/useSiteData";
 import { useLocalizedField } from "@/lib/i18nField";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -61,6 +63,11 @@ const ProjectsPage = () => {
 
   return (
     <div className="min-h-dvh bg-background">
+      <SEO
+        title="Proyectos — ALEKSEY Construcción & Ingeniería"
+        description="Conoce los proyectos que nos han convertido en líderes del sector de la construcción e ingeniería en Perú."
+        path="/proyectos"
+      />
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-secondary">
         <div className="container mx-auto px-4">
@@ -121,20 +128,35 @@ const ProjectsPage = () => {
                   key={project.id}
                   className="group bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
                 >
-                  <div 
-                    className="aspect-[4/3] overflow-hidden relative cursor-pointer"
-                    onClick={() => handleOpenLightbox(index)}
-                  >
-                    <img
-                      src={project.image_url || defaultImages[index % defaultImages.length]}
-                      alt={tr(project as any, "title") || project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 rounded-full bg-primary text-primary-foreground">
-                        <ZoomIn className="w-6 h-6" />
-                      </div>
-                    </div>
+                  <div className="aspect-[4/3] overflow-hidden relative">
+                    {project.slug ? (
+                      <Link
+                        to={`/proyectos/${project.slug}`}
+                        className="block w-full h-full"
+                        aria-label={`Ver detalle de ${project.title}`}
+                      >
+                        <img
+                          src={project.image_url || defaultImages[index % defaultImages.length]}
+                          alt={tr(project as any, "title") || project.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </Link>
+                    ) : (
+                      <img
+                        src={project.image_url || defaultImages[index % defaultImages.length]}
+                        alt={tr(project as any, "title") || project.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    )}
+                    {/* Quick gallery action */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); handleOpenLightbox(index); }}
+                      className="absolute top-2 right-2 p-2 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary"
+                      aria-label="Ver galería"
+                    >
+                      <ZoomIn className="w-4 h-4" />
+                    </button>
                     {/* Image count badge */}
                     {project.gallery_images && project.gallery_images.length > 0 && (
                       <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
@@ -154,9 +176,17 @@ const ProjectsPage = () => {
                         <span className="text-xs text-muted-foreground">{project.year}</span>
                       )}
                     </div>
-                    <h3 className="text-xl font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {tr(project as any, "title") || project.title}
-                    </h3>
+                    {project.slug ? (
+                      <Link to={`/proyectos/${project.slug}`}>
+                        <h3 className="text-xl font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          {tr(project as any, "title") || project.title}
+                        </h3>
+                      </Link>
+                    ) : (
+                      <h3 className="text-xl font-heading font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {tr(project as any, "title") || project.title}
+                      </h3>
+                    )}
                     {(tr(project as any, "description") || project.description) && (
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                         {tr(project as any, "description") || project.description}
