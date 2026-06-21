@@ -73,6 +73,12 @@ export interface Service {
   sort_order: number;
 }
 
+export interface ProjectMetric {
+  label: string;
+  value: string;
+  unit?: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -86,6 +92,19 @@ export interface Project {
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
+  // Case study fields
+  client: string | null;
+  duration: string | null;
+  duration_en: string | null;
+  challenge: string | null;
+  challenge_en: string | null;
+  solution: string | null;
+  solution_en: string | null;
+  outcome: string | null;
+  outcome_en: string | null;
+  services_used: string[];
+  metrics: ProjectMetric[];
+  is_case_study: boolean;
 }
 
 export interface Machinery {
