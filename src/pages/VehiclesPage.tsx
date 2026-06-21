@@ -98,8 +98,9 @@ const VehiclesPage = () => {
               {vehicles.map((vehicle, index) => (
                 <Card 
                   key={vehicle.id}
+                  id={`card-${vehicle.id}`}
                   onClick={() => setSelectedVehicle(vehicle)}
-                  className={`group cursor-pointer overflow-hidden border-0 bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${
+                  className={`group cursor-pointer overflow-hidden border-0 bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-2 scroll-mt-28 ${
                     vehiclesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
                   style={{ transitionDelay: `${index * 100}ms` }}
