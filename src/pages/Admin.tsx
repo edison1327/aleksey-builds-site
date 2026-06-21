@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -35,6 +35,7 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
 import AdminBlog from "@/components/admin/AdminBlog";
 import AdminAuditLog from "@/components/admin/AdminAuditLog";
+import AdminSiteHealth from "@/components/admin/AdminSiteHealth";
 import AdminBookings from "@/components/admin/AdminBookings";
 import AdminMediaLibrary from "@/components/admin/AdminMediaLibrary";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -182,6 +183,7 @@ const Admin = () => {
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh", badgeKey: "applications" },
     { id: "audit", label: "Auditoría", icon: History, category: "general" },
+    { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
   ];
 
   const categories = [
@@ -374,6 +376,7 @@ const Admin = () => {
       case "applications": return <AdminJobApplications />;
       case "audit": return <AdminAuditLog />;
       case "media": return <AdminMediaLibrary />;
+      case "health": return <AdminSiteHealth />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
