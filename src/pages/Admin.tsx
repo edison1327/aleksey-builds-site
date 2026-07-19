@@ -248,6 +248,7 @@ const Admin = () => {
     { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion", badgeKey: "messages" },
     { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
     { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
+    { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "comunicacion" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
