@@ -243,7 +243,6 @@ const AdminMessages = () => {
 
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
-    if (!confirm(`¿Eliminar ${selectedIds.size} mensaje(s)? Esta acción no se puede deshacer.`)) return;
     if (!confirm(`¿Mover ${selectedIds.size} mensaje(s) a la papelera?`)) return;
     const ids = Array.from(selectedIds);
     try {
