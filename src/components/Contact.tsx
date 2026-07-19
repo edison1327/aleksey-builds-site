@@ -94,6 +94,8 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
+      const { getAttribution } = await import("@/lib/utmTracker");
+      const attr = getAttribution();
       const { error } = await supabase
         .from("contact_messages")
         .insert({
@@ -101,6 +103,7 @@ const Contact = () => {
           email: formData.email.trim(),
           phone: formData.phone.trim() || null,
           message: formData.message.trim(),
+          ...attr,
         });
       
       if (error) throw error;
