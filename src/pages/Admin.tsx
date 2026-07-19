@@ -59,6 +59,7 @@ import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
