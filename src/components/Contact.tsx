@@ -61,6 +61,14 @@ const Contact = () => {
     e.preventDefault();
     setErrors({});
 
+    // Honeypot: silently drop bot submissions
+    if (website) {
+      toast({ title: "Mensaje enviado", description: "Nos pondremos en contacto contigo pronto." });
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      return;
+    }
+
+
     const wait = getThrottleWait("contact", 30_000);
     if (wait > 0) {
       toast({
