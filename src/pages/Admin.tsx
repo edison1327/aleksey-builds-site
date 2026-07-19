@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -49,6 +49,7 @@ const AdminLocations = lazy(() => import("@/components/admin/AdminLocations"));
 const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
 const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
+const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -261,6 +262,7 @@ const Admin = () => {
     { id: "webhooks", label: "Webhooks", icon: Webhook, category: "general", adminOnly: true },
     { id: "inbox", label: "Bandeja notificaciones", icon: Bell, category: "comunicacion" },
     { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
+    { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -472,6 +474,7 @@ const Admin = () => {
       case "webhooks": return <AdminWebhooks />;
       case "inbox": return <AdminNotificationsInbox />;
       case "reminders": return <AdminReminderTemplates />;
+      case "trash": return <AdminTrash />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };

@@ -66,6 +66,7 @@ const AdminProjects = () => {
     const { data, error } = await supabase
       .from("projects")
       .select("*")
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true });
 
     if (error) {
@@ -138,12 +139,15 @@ const AdminProjects = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de eliminar este proyecto?")) return;
+    if (!confirm("¿Mover este proyecto a la papelera?")) return;
     try {
-      const { error } = await supabase.from("projects").delete().eq("id", id);
+      const { error } = await supabase
+        .from("projects")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", id);
       if (error) throw error;
-      toast({ title: "Eliminado", description: "Proyecto eliminado correctamente." });
-      logAction("delete", "projects", id);
+      toast({ title: "Movido a papelera", description: "Puedes restaurarlo desde la Papelera." });
+      logAction("soft_delete", "projects", id);
       fetchProjects();
     } catch (error) {
       console.error("Error deleting project:", error);

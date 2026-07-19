@@ -36,6 +36,7 @@ const BlogPage = () => {
       .from("blog_posts")
       .select("id, slug, title, title_en, excerpt, excerpt_en, cover_image, author, published_at, tags")
       .eq("published", true)
+      .is("deleted_at", null)
       .order("published_at", { ascending: false })
       .then(({ data }) => {
         setPosts((data as Post[]) || []);

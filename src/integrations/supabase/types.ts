@@ -105,6 +105,7 @@ export type Database = {
           content_en: string | null
           cover_image: string | null
           created_at: string
+          deleted_at: string | null
           excerpt: string | null
           excerpt_en: string | null
           id: string
@@ -123,6 +124,7 @@ export type Database = {
           content_en?: string | null
           cover_image?: string | null
           created_at?: string
+          deleted_at?: string | null
           excerpt?: string | null
           excerpt_en?: string | null
           id?: string
@@ -141,6 +143,7 @@ export type Database = {
           content_en?: string | null
           cover_image?: string | null
           created_at?: string
+          deleted_at?: string | null
           excerpt?: string | null
           excerpt_en?: string | null
           id?: string
@@ -289,6 +292,7 @@ export type Database = {
           crm_stage: Database["public"]["Enums"]["crm_stage"]
           crm_stage_updated_at: string | null
           crm_value_pen: number | null
+          deleted_at: string | null
           email: string
           id: string
           is_read: boolean
@@ -310,6 +314,7 @@ export type Database = {
           crm_stage?: Database["public"]["Enums"]["crm_stage"]
           crm_stage_updated_at?: string | null
           crm_value_pen?: number | null
+          deleted_at?: string | null
           email: string
           id?: string
           is_read?: boolean
@@ -331,6 +336,7 @@ export type Database = {
           crm_stage?: Database["public"]["Enums"]["crm_stage"]
           crm_stage_updated_at?: string | null
           crm_value_pen?: number | null
+          deleted_at?: string | null
           email?: string
           id?: string
           is_read?: boolean
@@ -911,6 +917,7 @@ export type Database = {
           challenge_en: string | null
           client: string | null
           created_at: string
+          deleted_at: string | null
           description: string | null
           description_en: string | null
           duration: string | null
@@ -944,6 +951,7 @@ export type Database = {
           challenge_en?: string | null
           client?: string | null
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           description_en?: string | null
           duration?: string | null
@@ -977,6 +985,7 @@ export type Database = {
           challenge_en?: string | null
           client?: string | null
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           description_en?: string | null
           duration?: string | null

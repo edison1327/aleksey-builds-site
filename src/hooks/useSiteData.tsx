@@ -198,6 +198,7 @@ export const useProjects = (limit?: number) => {
         .from("projects")
         .select("*")
         .eq("is_active", true)
+        .is("deleted_at", null)
         .order("sort_order", { ascending: true });
       
       if (limit) {

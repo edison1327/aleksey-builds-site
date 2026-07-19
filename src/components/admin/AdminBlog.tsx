@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -71,6 +72,7 @@ const AdminBlog = () => {
     const { data, error } = await supabase
       .from("blog_posts")
       .select("*")
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
     if (!error) setPosts((data as Post[]) || []);
     setLoading(false);
@@ -175,13 +177,16 @@ const AdminBlog = () => {
   };
 
   const remove = async (p: Post) => {
-    if (!confirm(`¿Eliminar "${p.title}"?`)) return;
-    const { error } = await supabase.from("blog_posts").delete().eq("id", p.id);
+    if (!confirm(`¿Mover "${p.title}" a la papelera?`)) return;
+    const { error } = await supabase
+      .from("blog_posts")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", p.id);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;
     }
-    toast({ title: "Eliminado" });
+    toast({ title: "Movido a papelera" });
     load();
   };
 
@@ -367,25 +372,23 @@ const AdminBlog = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Contenido (ES) *</Label>
-              <Textarea
+              <RichTextEditor
                 value={form.content}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
-                rows={12}
-                placeholder={"Escribe aquí el artículo. Usa dos saltos para separar párrafos."}
-                className="font-mono text-sm"
+                onChange={(html) => setForm({ ...form, content: html })}
+                placeholder="Escribe aquí el artículo..."
+                minHeight={280}
               />
             </div>
             <div className="space-y-1.5">
               <Label>Content (EN)</Label>
-              <Textarea
+              <RichTextEditor
                 value={form.content_en}
-                onChange={(e) => setForm({ ...form, content_en: e.target.value })}
-                rows={12}
+                onChange={(html) => setForm({ ...form, content_en: html })}
                 placeholder="Optional English version. Falls back to Spanish if empty."
-                className="font-mono text-sm"
+                minHeight={280}
               />
               <p className="text-xs text-muted-foreground">
-                Se renderiza como texto con saltos de línea respetados.
+                Editor con formato enriquecido. Se guarda como HTML.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
