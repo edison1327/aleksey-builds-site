@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, FileText, Download, CreditCard } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { downloadInvoicePdf } from "@/lib/pdfExport";
+import { exportInvoicePdf } from "@/lib/pdfExport";
 
 interface Invoice {
   id: string;
