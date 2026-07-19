@@ -13,8 +13,10 @@ import App from "./App.tsx";
 import "./index.css";
 import "./i18n/config";
 import { installGlobalErrorHandlers } from "./lib/errorLog";
+import { captureReferralFromUrl } from "./lib/referral";
 
 installGlobalErrorHandlers();
+captureReferralFromUrl();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
