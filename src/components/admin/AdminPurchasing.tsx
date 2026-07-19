@@ -93,7 +93,7 @@ export default function AdminPurchasing() {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: s }, { data: p }, { data: pi }, { data: r }, { data: rq }, { data: ri }, { data: pay }, { data: st }, { data: mv }] = await Promise.all([
+    const [{ data: s }, { data: p }, { data: pi }, { data: r }, { data: rq }, { data: ri }, { data: pay }, { data: st }, { data: mv }, { data: fa }, { data: fai }] = await Promise.all([
       supabase.from("suppliers" as any).select("id,name").order("name"),
       supabase.from("purchase_orders" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("purchase_order_items" as any).select("*"),
@@ -103,6 +103,8 @@ export default function AdminPurchasing() {
       supabase.from("po_payments" as any).select("*").order("paid_at", { ascending: false }),
       supabase.from("stock_items" as any).select("*").order("name"),
       supabase.from("stock_movements" as any).select("*").order("created_at", { ascending: false }).limit(200),
+      supabase.from("framework_agreements" as any).select("id,code,title,supplier_id,currency,status,end_date,payment_terms").eq("status", "active"),
+      supabase.from("framework_agreement_items" as any).select("id,agreement_id,description,sku,unit,unit_price,max_quantity,consumed_quantity"),
     ]);
     setSuppliers((s as any) || []);
     setPos((p as any) || []);
@@ -113,6 +115,8 @@ export default function AdminPurchasing() {
     setPayments((pay as any) || []);
     setStock((st as any) || []);
     setMoves((mv as any) || []);
+    setAgreements((fa as any) || []);
+    setAgreementItems((fai as any) || []);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
