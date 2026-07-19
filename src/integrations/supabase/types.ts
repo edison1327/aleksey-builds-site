@@ -2571,6 +2571,7 @@ export type Database = {
           currency: string
           delivered_at: string | null
           expected_at: string | null
+          framework_agreement_id: string | null
           id: string
           notes: string | null
           payment_status: string
@@ -2597,6 +2598,7 @@ export type Database = {
           currency?: string
           delivered_at?: string | null
           expected_at?: string | null
+          framework_agreement_id?: string | null
           id?: string
           notes?: string | null
           payment_status?: string
@@ -2623,6 +2625,7 @@ export type Database = {
           currency?: string
           delivered_at?: string | null
           expected_at?: string | null
+          framework_agreement_id?: string | null
           id?: string
           notes?: string | null
           payment_status?: string
@@ -2643,6 +2646,13 @@ export type Database = {
             columns: ["branch_id"]
             isOneToOne: false
             referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_framework_agreement_id_fkey"
+            columns: ["framework_agreement_id"]
+            isOneToOne: false
+            referencedRelation: "framework_agreements"
             referencedColumns: ["id"]
           },
           {
