@@ -127,7 +127,7 @@ export default function OperatorWorkOrders() {
       patch.completion_lng = lng;
     }
     if (!navigator.onLine) {
-      enqueue({ table: "work_orders", action: "update", payload: patch, match: { id: wo.id }, label: `Estado OT ${wo.code}: ${status}` });
+      enqueue({ table: "work_orders", action: "update", payload: patch, match: { id: wo.id }, label: `Estado OT ${wo.code}: ${status}`, expectedUpdatedAt: wo.updated_at });
       setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, ...patch } : w));
       toast.info("Sin conexión: cambio en cola");
       return;
