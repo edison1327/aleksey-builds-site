@@ -1097,6 +1097,42 @@ export type Database = {
           },
         ]
       }
+      reminder_templates: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          key: string
+          message: string
+          name: string
+          offset_hours: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          key: string
+          message: string
+          name: string
+          offset_hours?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          key?: string
+          message?: string
+          name?: string
+          offset_hours?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       response_templates: {
         Row: {
           body: string

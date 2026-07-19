@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -47,6 +47,8 @@ const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
 const AdminLocations = lazy(() => import("@/components/admin/AdminLocations"));
 const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
+const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
+const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
@@ -203,6 +205,8 @@ const Admin = () => {
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
     { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
     { id: "webhooks", label: "Webhooks", icon: Webhook, category: "general", adminOnly: true },
+    { id: "inbox", label: "Bandeja notificaciones", icon: Bell, category: "comunicacion" },
+    { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -412,6 +416,8 @@ const Admin = () => {
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
+      case "inbox": return <AdminNotificationsInbox />;
+      case "reminders": return <AdminReminderTemplates />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
