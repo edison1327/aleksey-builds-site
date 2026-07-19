@@ -65,6 +65,8 @@ export default function AdminPurchasing() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [stock, setStock] = useState<StockItem[]>([]);
   const [moves, setMoves] = useState<StockMove[]>([]);
+  const [agreements, setAgreements] = useState<FrameworkAgreement[]>([]);
+  const [agreementItems, setAgreementItems] = useState<FrameworkAgreementItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [editPo, setEditPo] = useState<PO | null>(null);
