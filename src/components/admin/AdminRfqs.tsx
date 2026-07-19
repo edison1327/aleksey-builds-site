@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Send, Trash2, Copy, Trophy, Eye } from "lucide-react";
+import { Loader2, Plus, Send, Trash2, Copy, Trophy, Eye, Sparkles } from "lucide-react";
 
 interface Rfq {
   id: string; code: string; title: string; description: string | null;
@@ -105,6 +105,21 @@ const AdminRfqs = () => {
     });
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     setInvitePick("");
+    loadDetail(detail);
+  };
+
+  const autoInviteTop = async () => {
+    if (!detail) return;
+    const { data, error } = await (supabase as any).rpc("auto_invite_top_suppliers", {
+      _rfq_id: detail.id, _limit: 5,
+    });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({
+      title: data > 0 ? `${data} proveedores invitados` : "Sin nuevos proveedores",
+      description: data > 0
+        ? `Se invitó automáticamente al top ${data} de la categoría "${detail.category || "general"}".`
+        : "Todos los top-rated ya estaban invitados o no hay proveedores en esa categoría.",
+    });
     loadDetail(detail);
   };
 
@@ -272,14 +287,20 @@ const AdminRfqs = () => {
                   <CardHeader className="pb-2"><CardTitle className="text-sm">Proveedores invitados ({detailInvites.length})</CardTitle></CardHeader>
                   <CardContent className="space-y-2">
                     {detail.status === "draft" && (
-                      <div className="flex gap-2">
-                        <Select value={invitePick} onValueChange={setInvitePick}>
-                          <SelectTrigger className="flex-1"><SelectValue placeholder="Selecciona proveedor" /></SelectTrigger>
-                          <SelectContent>
-                            {availableSuppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <Button onClick={inviteSupplier} disabled={!invitePick}>Invitar</Button>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Select value={invitePick} onValueChange={setInvitePick}>
+                            <SelectTrigger className="flex-1"><SelectValue placeholder="Selecciona proveedor" /></SelectTrigger>
+                            <SelectContent>
+                              {availableSuppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <Button onClick={inviteSupplier} disabled={!invitePick}>Invitar</Button>
+                        </div>
+                        <Button variant="outline" size="sm" className="w-full gap-2" onClick={autoInviteTop}>
+                          <Sparkles className="h-3.5 w-3.5" />
+                          Invitar top 5 proveedores{detail.category ? ` de "${detail.category}"` : " por rating"}
+                        </Button>
                       </div>
                     )}
                     {detailInvites.map((inv: any) => (

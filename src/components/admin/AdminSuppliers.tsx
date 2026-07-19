@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History } from "lucide-react";
+import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History, Trophy } from "lucide-react";
 import { format, differenceInDays, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -40,7 +40,10 @@ const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista 
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
 
 export default function AdminSuppliers() {
-  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations">("suppliers");
+  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking">("suppliers");
+  const [ranking, setRanking] = useState<any[]>([]);
+  const [rankingCategory, setRankingCategory] = useState("");
+  const [rankingLoading, setRankingLoading] = useState(false);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
@@ -178,6 +181,17 @@ export default function AdminSuppliers() {
     certs: certs.filter(c => c.supplier_id === sid),
   });
 
+  const loadRanking = async () => {
+    setRankingLoading(true);
+    const { data } = await (supabase as any).rpc("get_top_suppliers", {
+      _category: rankingCategory || null, _limit: 20,
+    });
+    setRanking(data || []);
+    setRankingLoading(false);
+  };
+
+
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -190,6 +204,7 @@ export default function AdminSuppliers() {
           <Button variant={tab==="certs"?"default":"outline"} onClick={() => setTab("certs")}><ShieldCheck className="h-4 w-4 mr-1"/>Certificaciones</Button>
           <Button variant={tab==="subcontracts"?"default":"outline"} onClick={() => setTab("subcontracts")}><Handshake className="h-4 w-4 mr-1"/>Subcontratos</Button>
           <Button variant={tab==="evaluations"?"default":"outline"} onClick={() => setTab("evaluations")}><Star className="h-4 w-4 mr-1"/>Evaluaciones</Button>
+          <Button variant={tab==="ranking"?"default":"outline"} onClick={() => { setTab("ranking"); loadRanking(); }}><Trophy className="h-4 w-4 mr-1"/>Ranking</Button>
         </div>
       </div>
 
@@ -349,6 +364,58 @@ export default function AdminSuppliers() {
         </>
       )}
 
+      {tab === "ranking" && (
+        <>
+          <div className="flex gap-2 items-center flex-wrap">
+            <Input
+              placeholder="Filtrar por categoría (opcional)"
+              value={rankingCategory}
+              onChange={(e)=>setRankingCategory(e.target.value)}
+              className="max-w-xs"
+            />
+            <Button onClick={loadRanking} disabled={rankingLoading}>
+              <Trophy className="h-4 w-4 mr-1"/>Actualizar ranking
+            </Button>
+            <p className="text-xs text-muted-foreground ml-auto">
+              Top proveedores por rating promedio de evaluaciones. Se usa para invitación automática en RFQs.
+            </p>
+          </div>
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3 w-12">#</th>
+                  <th className="p-3">Proveedor</th>
+                  <th className="p-3">Categoría</th>
+                  <th className="p-3">Rating</th>
+                  <th className="p-3">Evaluaciones</th>
+                  <th className="p-3">Recontrataría</th>
+                  <th className="p-3">Última evaluación</th>
+                </tr></thead>
+                <tbody>
+                  {ranking.length === 0 ? (
+                    <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">
+                      {rankingLoading ? "Cargando…" : "Sin datos. Añade evaluaciones para generar el ranking."}
+                    </td></tr>
+                  ) : ranking.map((r, i) => (
+                    <tr key={r.supplier_id} className="border-t">
+                      <td className="p-3 font-bold text-muted-foreground">
+                        {i < 3 ? <Trophy className={`h-4 w-4 ${i===0?"text-amber-500":i===1?"text-slate-400":"text-orange-700"}`}/> : i+1}
+                      </td>
+                      <td className="p-3 font-medium">{r.name}</td>
+                      <td className="p-3">{r.category || "—"}</td>
+                      <td className="p-3 font-bold">⭐ {Number(r.rating ?? 0).toFixed(2)}</td>
+                      <td className="p-3">{r.evaluations_count}</td>
+                      <td className="p-3">{Number(r.would_rehire_pct ?? 0).toFixed(0)}%</td>
+                      <td className="p-3 text-xs">{r.last_evaluated_at ? format(parseISO(r.last_evaluated_at), "dd/MM/yyyy", { locale: es }) : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
 
 
       {/* Supplier Dialog */}
