@@ -392,6 +392,7 @@ const Admin = () => {
       case "health": return <AdminSiteHealth />;
       case "backup": return <AdminBackup />;
       case "errors": return <AdminErrorLog />;
+      case "client-docs": return <AdminClientDocuments />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
