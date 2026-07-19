@@ -14,6 +14,9 @@ import { Helmet } from "react-helmet-async";
 import { downloadQuotePdf } from "@/lib/quotePdf";
 import MessageThread from "@/components/MessageThread";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ClientBookings from "@/components/portal/ClientBookings";
+import ClientDocuments from "@/components/portal/ClientDocuments";
 
 interface MyMessage {
   id: string;
