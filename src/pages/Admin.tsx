@@ -44,6 +44,7 @@ const AdminAnalytics = lazy(() => import("@/components/admin/AdminAnalytics"));
 const AdminErrorLog = lazy(() => import("@/components/admin/AdminErrorLog"));
 const AdminClientDocuments = lazy(() => import("@/components/admin/AdminClientDocuments"));
 const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
+const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
