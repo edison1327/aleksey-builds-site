@@ -276,6 +276,7 @@ const Admin = () => {
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
     { id: "bi", label: "BI & Presupuestos", icon: TrendingUp, category: "operaciones", adminOnly: true },
     { id: "predictive", label: "Inteligencia Predictiva", icon: Brain, category: "operaciones", adminOnly: true },
+    { id: "documents", label: "Centro de Documentos", icon: FolderLock, category: "operaciones" },
     { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
     { id: "contracts", label: "Contratos", icon: FileSignature, category: "operaciones", adminOnly: true },
     { id: "suppliers", label: "Proveedores", icon: Handshake, category: "operaciones", adminOnly: true },
