@@ -45,6 +45,7 @@ export default function AdminSuppliers() {
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
   const [evals, setEvals] = useState<Evaluation[]>([]);
+  const [projects, setProjects] = useState<ProjectLite[]>([]);
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
 
