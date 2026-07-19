@@ -329,7 +329,7 @@ export default function AdminSuppliers() {
                       <tr key={e.id} className="border-t">
                         <td className="p-3 text-xs">{format(parseISO(e.evaluated_at), "dd/MM/yyyy", { locale: es })}</td>
                         <td className="p-3 font-medium">{supplierName(e.supplier_id)}</td>
-                        <td className="p-3">{e.project_name || (e.subcontract_id ? subs.find(s=>s.id===e.subcontract_id)?.code : "—")}</td>
+                        <td className="p-3">{(e.project_id && projects.find(p=>p.id===e.project_id)?.title) || e.project_name || (e.subcontract_id ? subs.find(s=>s.id===e.subcontract_id)?.code : "—")}</td>
                         <td className="p-3">{e.quality_score}</td>
                         <td className="p-3">{e.punctuality_score}</td>
                         <td className="p-3">{e.safety_score}</td>
