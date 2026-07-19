@@ -35,6 +35,7 @@ const AppShell = () => {
   return (
     <>
       {!hideNavbar && <Navbar />}
+      {!hideNavbar && <StructuredData />}
       <ErrorBoundary>
         <AnimatedRoutes />
       </ErrorBoundary>
