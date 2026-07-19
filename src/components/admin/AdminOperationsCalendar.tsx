@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Wrench, CalendarCheck, Plus, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Wrench, CalendarCheck, Plus, AlertTriangle, FileDown, CalendarPlus } from "lucide-react";
 import {
   addDays, addMonths, addWeeks, endOfMonth, endOfWeek, format, isSameDay,
   isWithinInterval, parseISO, startOfMonth, startOfWeek, subMonths, subWeeks,
@@ -16,6 +16,7 @@ import {
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { exportCalendarPdf, type CalendarPdfItem } from "@/lib/pdfExport";
 
 type Booking = {
   id: string;
@@ -61,6 +62,19 @@ export default function AdminOperationsCalendar() {
     end_date: format(new Date(), "yyyy-MM-dd"),
     title: "",
     notes: "",
+  });
+
+  // booking dialog
+  const [bOpen, setBOpen] = useState(false);
+  const [bForm, setBForm] = useState({
+    equipment_type: "machinery" as "machinery" | "vehicle",
+    equipment_id: "",
+    start_date: format(new Date(), "yyyy-MM-dd"),
+    end_date: format(new Date(), "yyyy-MM-dd"),
+    customer_name: "",
+    customer_email: "",
+    notes: "",
+    status: "reserved",
   });
 
   const load = async () => {
