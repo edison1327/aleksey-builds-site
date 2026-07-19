@@ -496,6 +496,7 @@ const Admin = () => {
         }))}
         onSelect={(id) => setActiveTab(id)}
       />
+      <ShortcutsHelp open={helpOpen} onOpenChange={setHelpOpen} />
 
       {/* Desktop Sidebar */}
       <aside className={cn(
