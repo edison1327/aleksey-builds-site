@@ -267,9 +267,11 @@ export default function OperatorWorkOrders() {
           <h1 className="font-heading font-bold">Mis OT</h1>
         </div>
         <div className="flex items-center gap-3 text-xs">
+          <OfflineIndicator />
           {online ? <Wifi className="h-4 w-4 text-emerald-600" /> : <WifiOff className="h-4 w-4 text-amber-600" />}
           <Link to="/" className="text-muted-foreground">Salir</Link>
         </div>
+
       </header>
 
       <main className="max-w-2xl mx-auto p-4 space-y-4">
