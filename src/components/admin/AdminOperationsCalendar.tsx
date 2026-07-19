@@ -478,6 +478,79 @@ export default function AdminOperationsCalendar() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* New booking dialog */}
+      <Dialog open={bOpen} onOpenChange={setBOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nueva reserva</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Tipo</Label>
+                <Select value={bForm.equipment_type} onValueChange={(v: "machinery" | "vehicle") => setBForm({ ...bForm, equipment_type: v, equipment_id: "" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="machinery">Maquinaria</SelectItem>
+                    <SelectItem value="vehicle">Vehículo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Equipo</Label>
+                <Select value={bForm.equipment_id} onValueChange={(v) => setBForm({ ...bForm, equipment_id: v })}>
+                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectContent>
+                    {bookingEquipmentByType.map((e) => (
+                      <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Desde</Label>
+                <Input type="date" value={bForm.start_date} onChange={(e) => setBForm({ ...bForm, start_date: e.target.value })} />
+              </div>
+              <div>
+                <Label>Hasta</Label>
+                <Input type="date" value={bForm.end_date} onChange={(e) => setBForm({ ...bForm, end_date: e.target.value })} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Cliente</Label>
+                <Input value={bForm.customer_name} onChange={(e) => setBForm({ ...bForm, customer_name: e.target.value })} />
+              </div>
+              <div>
+                <Label>Email</Label>
+                <Input type="email" value={bForm.customer_email} onChange={(e) => setBForm({ ...bForm, customer_email: e.target.value })} />
+              </div>
+            </div>
+            <div>
+              <Label>Estado</Label>
+              <Select value={bForm.status} onValueChange={(v) => setBForm({ ...bForm, status: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="reserved">Reservada</SelectItem>
+                  <SelectItem value="blocked">Bloqueada</SelectItem>
+                  <SelectItem value="completed">Completada</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Notas</Label>
+              <Textarea value={bForm.notes} onChange={(e) => setBForm({ ...bForm, notes: e.target.value })} rows={2} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBOpen(false)}>Cancelar</Button>
+            <Button onClick={saveBooking}>Crear reserva</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
