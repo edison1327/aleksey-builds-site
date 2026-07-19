@@ -392,7 +392,12 @@ export default function AdminWorkOrders() {
               <Textarea rows={2} value={form.notes || ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 flex-wrap">
+            {editing && (
+              <Button variant="outline" onClick={() => exportWorkOrderPdf({ ...editing, ...form } as any)}>
+                <FileDown className="h-4 w-4 mr-1" /> PDF
+              </Button>
+            )}
             <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
             <Button onClick={save}>Guardar</Button>
           </DialogFooter>
