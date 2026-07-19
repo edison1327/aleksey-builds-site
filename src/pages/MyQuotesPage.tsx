@@ -47,10 +47,33 @@ const MyQuotesPage = () => {
   const [messages, setMessages] = useState<MyMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [openThread, setOpenThread] = useState<MyMessage | null>(null);
+  const [unread, setUnread] = useState<Record<string, number>>({});
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/portal/login");
   }, [user, authLoading, navigate]);
+
+  const computeUnread = (msgs: MyMessage[]) => {
+    (async () => {
+      const ids = msgs.map((m) => m.id);
+      if (ids.length === 0) return;
+      const { data } = await (supabase as any)
+        .from("message_replies")
+        .select("message_id, created_at, author_role, is_internal")
+        .in("message_id", ids)
+        .eq("author_role", "admin")
+        .eq("is_internal", false);
+      const counts: Record<string, number> = {};
+      (data || []).forEach((r: any) => {
+        const key = `portal_seen_${r.message_id}`;
+        const seen = Number(localStorage.getItem(key) || 0);
+        if (new Date(r.created_at).getTime() > seen) {
+          counts[r.message_id] = (counts[r.message_id] || 0) + 1;
+        }
+      });
+      setUnread(counts);
+    })();
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -60,11 +83,34 @@ const MyQuotesPage = () => {
         .select("id, name, email, phone, message, status, created_at, user_id")
         .or(`user_id.eq.${user.id},email.eq.${user.email}`)
         .order("created_at", { ascending: false });
-      if (!error && data) setMessages(data as MyMessage[]);
+      if (!error && data) {
+        setMessages(data as MyMessage[]);
+        computeUnread(data as MyMessage[]);
+      }
       setLoading(false);
     };
     load();
+
+    const ch = supabase
+      .channel("portal-replies")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "message_replies" },
+        (payload: any) => {
+          const r = payload.new;
+          if (r.author_role !== "admin" || r.is_internal) return;
+          setUnread((prev) => ({ ...prev, [r.message_id]: (prev[r.message_id] || 0) + 1 }));
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
   }, [user]);
+
+  const openChat = (m: MyMessage) => {
+    setOpenThread(m);
+    localStorage.setItem(`portal_seen_${m.id}`, String(Date.now()));
+    setUnread((prev) => { const n = { ...prev }; delete n[m.id]; return n; });
+  };
 
   const handleDownloadPdf = async (m: MyMessage) => {
     try {
