@@ -45,6 +45,7 @@ const AdminErrorLog = lazy(() => import("@/components/admin/AdminErrorLog"));
 const AdminClientDocuments = lazy(() => import("@/components/admin/AdminClientDocuments"));
 const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
+const AdminLocations = lazy(() => import("@/components/admin/AdminLocations"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
@@ -175,6 +176,7 @@ const Admin = () => {
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
     { id: "users", label: "Usuarios", icon: UserCog, category: "general", adminOnly: true },
+    { id: "locations", label: "Sedes", icon: MapPin, category: "general", adminOnly: true },
     { id: "hero", label: "Hero", icon: Home, category: "contenido" },
     { id: "about", label: "About", icon: Info, category: "contenido" },
     { id: "teamstats", label: "Estadísticas", icon: BarChart3, category: "contenido" },
@@ -406,6 +408,7 @@ const Admin = () => {
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
       case "pipeline": return <AdminPipeline />;
+      case "locations": return <AdminLocations />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
