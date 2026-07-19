@@ -112,8 +112,9 @@ const MyQuotesPage = () => {
               <h1 className="text-3xl md:text-4xl font-heading font-bold text-secondary-foreground">Mis solicitudes</h1>
               <p className="text-secondary-foreground/80 mt-1">Hola, {user?.email}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Link to="/cotizar"><Button><Plus className="h-4 w-4 mr-1" /> Nueva cotización</Button></Link>
+              <Link to="/referidos"><Button variant="secondary">🎁 Referidos</Button></Link>
               <Button variant="outline" onClick={async () => { await signOut(); navigate("/"); }}>
                 <LogOut className="h-4 w-4 mr-1" /> Cerrar sesión
               </Button>
