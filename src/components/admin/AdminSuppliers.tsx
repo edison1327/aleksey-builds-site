@@ -192,6 +192,25 @@ export default function AdminSuppliers() {
     setRankingLoading(false);
   };
 
+  const loadPending = async () => {
+    setPendingLoading(true);
+    const { data, error } = await (supabase as any).rpc("get_pending_supplier_evaluations");
+    if (error) toast.error(error.message);
+    setPending(data || []);
+    setPendingLoading(false);
+  };
+
+  const evaluateFromPending = (row: any) => {
+    setEditEv({
+      id: "", supplier_id: row.supplier_id, subcontract_id: row.subcontract_id,
+      project_id: null, project_name: row.subcontract_title || "",
+      quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4,
+      overall_score: null, would_rehire: true, comments: "",
+      evaluated_at: new Date().toISOString().slice(0,10),
+    } as any);
+    setOpenEv(true);
+  };
+
 
 
   return (
