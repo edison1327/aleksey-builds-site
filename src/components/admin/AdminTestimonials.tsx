@@ -165,6 +165,7 @@ const AdminTestimonials = () => {
 
   return (
     <div className="space-y-6">
+      <ModerateReviews />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-heading font-bold">Testimonios</h2>
