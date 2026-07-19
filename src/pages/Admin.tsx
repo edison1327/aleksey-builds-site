@@ -11,8 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake,
-} from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -51,6 +50,7 @@ const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
 const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
+const AdminIntegrations = lazy(() => import("@/components/admin/AdminIntegrations"));
 const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
 const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
@@ -286,6 +286,7 @@ const Admin = () => {
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
     { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
     { id: "webhooks", label: "Webhooks", icon: Webhook, category: "general", adminOnly: true },
+    { id: "integrations", label: "Integraciones", icon: Zap, category: "general", adminOnly: true },
     { id: "inbox", label: "Bandeja notificaciones", icon: Bell, category: "comunicacion" },
     { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
     { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
@@ -514,6 +515,7 @@ const Admin = () => {
       case "inbox": return <AdminNotificationsInbox />;
       case "reminders": return <AdminReminderTemplates />;
       case "trash": return <AdminTrash />;
+      case "integrations": return <AdminIntegrations />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
