@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History, Trophy } from "lucide-react";
+import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History, Trophy, ClipboardCheck } from "lucide-react";
 import { format, differenceInDays, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -40,10 +40,12 @@ const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista 
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
 
 export default function AdminSuppliers() {
-  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking">("suppliers");
+  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking"|"pending">("suppliers");
   const [ranking, setRanking] = useState<any[]>([]);
   const [rankingCategory, setRankingCategory] = useState("");
   const [rankingLoading, setRankingLoading] = useState(false);
+  const [pending, setPending] = useState<any[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
@@ -166,7 +168,7 @@ export default function AdminSuppliers() {
       ? await supabase.from("supplier_evaluations" as any).update(rest).eq("id", id)
       : await supabase.from("supplier_evaluations" as any).insert(rest);
     if (error) return toast.error(error.message);
-    toast.success("Evaluación guardada"); setOpenEv(false); setEditEv(null); load();
+    toast.success("Evaluación guardada"); setOpenEv(false); setEditEv(null); load(); if (tab === "pending") loadPending();
   };
   const delEv = async (id: string) => {
     if (!confirm("¿Eliminar evaluación?")) return;
@@ -190,6 +192,25 @@ export default function AdminSuppliers() {
     setRankingLoading(false);
   };
 
+  const loadPending = async () => {
+    setPendingLoading(true);
+    const { data, error } = await (supabase as any).rpc("get_pending_supplier_evaluations");
+    if (error) toast.error(error.message);
+    setPending(data || []);
+    setPendingLoading(false);
+  };
+
+  const evaluateFromPending = (row: any) => {
+    setEditEv({
+      id: "", supplier_id: row.supplier_id, subcontract_id: row.subcontract_id,
+      project_id: null, project_name: row.subcontract_title || "",
+      quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4,
+      overall_score: null, would_rehire: true, comments: "",
+      evaluated_at: new Date().toISOString().slice(0,10),
+    } as any);
+    setOpenEv(true);
+  };
+
 
 
   return (
@@ -205,6 +226,7 @@ export default function AdminSuppliers() {
           <Button variant={tab==="subcontracts"?"default":"outline"} onClick={() => setTab("subcontracts")}><Handshake className="h-4 w-4 mr-1"/>Subcontratos</Button>
           <Button variant={tab==="evaluations"?"default":"outline"} onClick={() => setTab("evaluations")}><Star className="h-4 w-4 mr-1"/>Evaluaciones</Button>
           <Button variant={tab==="ranking"?"default":"outline"} onClick={() => { setTab("ranking"); loadRanking(); }}><Trophy className="h-4 w-4 mr-1"/>Ranking</Button>
+          <Button variant={tab==="pending"?"default":"outline"} onClick={() => { setTab("pending"); loadPending(); }}><ClipboardCheck className="h-4 w-4 mr-1"/>Pendientes</Button>
         </div>
       </div>
 
@@ -408,6 +430,52 @@ export default function AdminSuppliers() {
                       <td className="p-3">{r.evaluations_count}</td>
                       <td className="p-3">{Number(r.would_rehire_pct ?? 0).toFixed(0)}%</td>
                       <td className="p-3 text-xs">{r.last_evaluated_at ? format(parseISO(r.last_evaluated_at), "dd/MM/yyyy", { locale: es }) : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
+      {tab === "pending" && (
+        <>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <p className="text-sm text-muted-foreground">Subcontratos completados sin evaluación registrada.</p>
+            <Button variant="outline" size="sm" onClick={loadPending} disabled={pendingLoading}>
+              <ClipboardCheck className="h-4 w-4 mr-1"/>{pendingLoading ? "Cargando…" : "Actualizar"}
+            </Button>
+          </div>
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3">Subcontrato</th><th className="p-3">Título</th>
+                  <th className="p-3">Proveedor</th><th className="p-3">Cierre</th>
+                  <th className="p-3">Días</th><th className="p-3 w-1">Acción</th>
+                </tr></thead>
+                <tbody>
+                  {pending.length === 0 ? (
+                    <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">
+                      {pendingLoading ? "Cargando…" : "Sin subcontratos pendientes de evaluar 🎉"}
+                    </td></tr>
+                  ) : pending.map((r) => (
+                    <tr key={r.subcontract_id} className="border-t">
+                      <td className="p-3 font-mono text-xs">{r.subcontract_code}</td>
+                      <td className="p-3">{r.subcontract_title}</td>
+                      <td className="p-3 font-medium">{r.supplier_name || "—"}</td>
+                      <td className="p-3 text-xs">{r.end_date ? format(parseISO(r.end_date), "dd/MM/yyyy", { locale: es }) : "—"}</td>
+                      <td className="p-3">
+                        {r.days_overdue > 3
+                          ? <Badge variant="destructive">{r.days_overdue}d</Badge>
+                          : <Badge variant="outline">{r.days_overdue}d</Badge>}
+                      </td>
+                      <td className="p-3 whitespace-nowrap">
+                        <Button size="sm" onClick={() => evaluateFromPending(r)}>
+                          <Star className="h-4 w-4 mr-1"/>Evaluar
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
