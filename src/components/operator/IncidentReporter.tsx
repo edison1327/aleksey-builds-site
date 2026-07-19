@@ -65,11 +65,14 @@ export function IncidentReporter({ workOrderId, userId }: { workOrderId: string;
       } catch {}
 
       if (photoFile && navigator.onLine) {
-        const ext = photoFile.name.split(".").pop() || "jpg";
-        const path = `${userId}/${workOrderId}/incident/${Date.now()}.${ext}`;
+        let blob: Blob = photoFile;
+        if (photoFile.size > 300 * 1024) {
+          try { blob = (await compressImage(photoFile, { maxDim: 1600, quality: 0.82 })).blob; } catch {}
+        }
+        const path = `${userId}/${workOrderId}/incident/${Date.now()}.jpg`;
         const { error: upErr } = await supabase.storage
           .from("work-order-media")
-          .upload(path, photoFile, { contentType: photoFile.type, upsert: false });
+          .upload(path, blob, { contentType: "image/jpeg", upsert: false });
         if (!upErr) {
           const { data: signed } = await supabase.storage
             .from("work-order-media")
@@ -77,6 +80,7 @@ export function IncidentReporter({ workOrderId, userId }: { workOrderId: string;
           photo_url = signed?.signedUrl || null;
         }
       }
+
 
       const payload = {
         work_order_id: workOrderId,
