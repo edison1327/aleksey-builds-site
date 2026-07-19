@@ -185,6 +185,7 @@ const Admin = () => {
     { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
     { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
+    { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
