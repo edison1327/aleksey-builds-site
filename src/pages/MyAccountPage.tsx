@@ -126,7 +126,7 @@ const MyAccountPage = () => {
             <TabsContent value="contracts"><ClientContracts email={email} /></TabsContent>
             <TabsContent value="workorders"><ClientWorkOrders email={email} /></TabsContent>
             <TabsContent value="bookings"><ClientBookings email={email} /></TabsContent>
-            <TabsContent value="documents"><ClientDocuments email={email} /></TabsContent>
+            <TabsContent value="documents"><ClientDocuments userId={user.id} /></TabsContent>
           </Tabs>
 
           {/* Quick links */}
