@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getStoredReferralCode, trackReferralUse } from "@/lib/referral";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { format, differenceInDays } from "date-fns";
