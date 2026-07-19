@@ -308,6 +308,45 @@ export default function AdminSuppliers() {
         </>
       )}
 
+      {tab === "evaluations" && (
+        <>
+          <div className="flex justify-end"><Button onClick={()=>newEv()}><Plus className="h-4 w-4 mr-1"/>Nueva evaluación</Button></div>
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3">Fecha</th><th className="p-3">Proveedor</th><th className="p-3">Proyecto</th>
+                  <th className="p-3">Calidad</th><th className="p-3">Puntualidad</th><th className="p-3">Seguridad</th><th className="p-3">Comunicación</th>
+                  <th className="p-3">Global</th><th className="p-3">Recontrataría</th><th className="p-3 w-1">Acciones</th>
+                </tr></thead>
+                <tbody>
+                  {evals.length === 0 ? <tr><td colSpan={10} className="p-6 text-center text-muted-foreground">Sin evaluaciones</td></tr> :
+                    evals.map(e => (
+                      <tr key={e.id} className="border-t">
+                        <td className="p-3 text-xs">{format(parseISO(e.evaluated_at), "dd/MM/yyyy", { locale: es })}</td>
+                        <td className="p-3 font-medium">{supplierName(e.supplier_id)}</td>
+                        <td className="p-3">{e.project_name || (e.subcontract_id ? subs.find(s=>s.id===e.subcontract_id)?.code : "—")}</td>
+                        <td className="p-3">{e.quality_score}</td>
+                        <td className="p-3">{e.punctuality_score}</td>
+                        <td className="p-3">{e.safety_score}</td>
+                        <td className="p-3">{e.communication_score}</td>
+                        <td className="p-3 font-bold">⭐ {Number(e.overall_score ?? 0).toFixed(2)}</td>
+                        <td className="p-3">{e.would_rehire ? <Badge>Sí</Badge> : <Badge variant="destructive">No</Badge>}</td>
+                        <td className="p-3 whitespace-nowrap">
+                          <Button size="icon" variant="ghost" onClick={()=>{setEditEv(e);setOpenEv(true);}}><Pencil className="h-4 w-4"/></Button>
+                          <Button size="icon" variant="ghost" onClick={()=>delEv(e.id)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
+
+
       {/* Supplier Dialog */}
       <Dialog open={openS} onOpenChange={(v)=>{setOpenS(v); if(!v) setEditS(null);}}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
