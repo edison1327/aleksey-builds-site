@@ -70,6 +70,7 @@ const AdminDocuments = lazy(() => import("@/components/admin/AdminDocuments"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
 const AdminBranches = lazy(() => import("@/components/admin/AdminBranches"));
 const AdminApiKeys = lazy(() => import("@/components/admin/AdminApiKeys"));
+const AdminRfqs = lazy(() => import("@/components/admin/AdminRfqs"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
