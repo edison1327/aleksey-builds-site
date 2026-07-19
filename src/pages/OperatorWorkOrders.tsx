@@ -106,7 +106,7 @@ export default function OperatorWorkOrders() {
     const next = (wo.checklist || []).map((t) => t.id === taskId ? { ...t, done: !t.done } : t);
     setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, checklist: next } : w));
     if (!navigator.onLine) {
-      enqueue({ table: "work_orders", action: "update", payload: { checklist: next }, match: { id: wo.id }, label: `Checklist OT ${wo.code}` });
+      enqueue({ table: "work_orders", action: "update", payload: { checklist: next }, match: { id: wo.id }, label: `Checklist OT ${wo.code}`, expectedUpdatedAt: wo.updated_at });
       return;
     }
     const { error } = await supabase.from("work_orders").update({ checklist: next }).eq("id", wo.id);
