@@ -228,9 +228,10 @@ export default function AdminPipeline() {
 
   const saveEdit = async () => {
     if (!editing) return;
-    const patch: Record<string, unknown> = {
-      crm_stage: editForm.crm_stage,
-      crm_value_pen: editForm.crm_value_pen === null || editForm.crm_value_pen === undefined || editForm.crm_value_pen === ("" as any) ? null : Number(editForm.crm_value_pen),
+    const rawVal = editForm.crm_value_pen;
+    const patch = {
+      crm_stage: (editForm.crm_stage ?? editing.crm_stage) as Stage,
+      crm_value_pen: rawVal === null || rawVal === undefined || (rawVal as unknown) === "" ? null : Number(rawVal),
       crm_next_action: editForm.crm_next_action || null,
       crm_next_action_at: editForm.crm_next_action_at || null,
       crm_notes: editForm.crm_notes || null,
