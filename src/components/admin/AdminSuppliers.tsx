@@ -439,6 +439,52 @@ export default function AdminSuppliers() {
         </>
       )}
 
+      {tab === "pending" && (
+        <>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <p className="text-sm text-muted-foreground">Subcontratos completados sin evaluación registrada.</p>
+            <Button variant="outline" size="sm" onClick={loadPending} disabled={pendingLoading}>
+              <ClipboardCheck className="h-4 w-4 mr-1"/>{pendingLoading ? "Cargando…" : "Actualizar"}
+            </Button>
+          </div>
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3">Subcontrato</th><th className="p-3">Título</th>
+                  <th className="p-3">Proveedor</th><th className="p-3">Cierre</th>
+                  <th className="p-3">Días</th><th className="p-3 w-1">Acción</th>
+                </tr></thead>
+                <tbody>
+                  {pending.length === 0 ? (
+                    <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">
+                      {pendingLoading ? "Cargando…" : "Sin subcontratos pendientes de evaluar 🎉"}
+                    </td></tr>
+                  ) : pending.map((r) => (
+                    <tr key={r.subcontract_id} className="border-t">
+                      <td className="p-3 font-mono text-xs">{r.subcontract_code}</td>
+                      <td className="p-3">{r.subcontract_title}</td>
+                      <td className="p-3 font-medium">{r.supplier_name || "—"}</td>
+                      <td className="p-3 text-xs">{r.end_date ? format(parseISO(r.end_date), "dd/MM/yyyy", { locale: es }) : "—"}</td>
+                      <td className="p-3">
+                        {r.days_overdue > 3
+                          ? <Badge variant="destructive">{r.days_overdue}d</Badge>
+                          : <Badge variant="outline">{r.days_overdue}d</Badge>}
+                      </td>
+                      <td className="p-3 whitespace-nowrap">
+                        <Button size="sm" onClick={() => evaluateFromPending(r)}>
+                          <Star className="h-4 w-4 mr-1"/>Evaluar
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
 
       {/* Supplier Dialog */}
       <Dialog open={openS} onOpenChange={(v)=>{setOpenS(v); if(!v) setEditS(null);}}>
