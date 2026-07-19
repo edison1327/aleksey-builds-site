@@ -50,6 +50,7 @@ const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
 const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
+const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -247,6 +248,7 @@ const Admin = () => {
     { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion", badgeKey: "messages" },
     { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
     { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
+    { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "comunicacion" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
@@ -457,6 +459,7 @@ const Admin = () => {
       case "messages": return <AdminMessages />;
       case "quotes": return <AdminQuotes />;
       case "bookings": return <AdminBookings />;
+      case "calendar": return <AdminOperationsCalendar />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
