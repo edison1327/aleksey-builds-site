@@ -117,7 +117,9 @@ export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
           <ImageIcon className="h-3 w-3" /> {label}
         </p>
         <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()} disabled={uploading}>
-          <Camera className="h-4 w-4 mr-1" /> {uploading ? "Subiendo…" : "Cámara"}
+          {uploading ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Camera className="h-4 w-4 mr-1" />}
+          {uploading ? (progress || "Subiendo…") : "Cámara"}
+
         </Button>
         <input
           ref={inputRef} type="file" accept="image/*" capture="environment" hidden
