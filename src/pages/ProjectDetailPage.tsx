@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, Calendar, Tag, ZoomIn, Building2, Clock, Target, Lig
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import SEO from "@/components/SEO";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import Lightbox from "@/components/Lightbox";
 import { useLightbox } from "@/hooks/useLightbox";
 import { Skeleton } from "@/components/ui/skeleton";
