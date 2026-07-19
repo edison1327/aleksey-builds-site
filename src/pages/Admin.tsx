@@ -798,7 +798,7 @@ const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () 
               Gestiona todo el contenido de tu sitio web desde aquí.
             </p>
           </div>
-          <NotificationCenter onNavigateToMessages={onNavigateToMessages} />
+          <NotificationsBell onNavigate={(link) => { const h = link.split("#")[1]; if (h && onNavigateToMessages && h === "messages") onNavigateToMessages(); }} />
         </div>
       </div>
 
