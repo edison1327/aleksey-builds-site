@@ -196,6 +196,10 @@ const MyQuotesPage = () => {
             <TabsContent value="documentos" className="mt-4">
               {user && <ClientDocuments userId={user.id} />}
             </TabsContent>
+
+            <TabsContent value="resenas" className="mt-4">
+              <LeaveReviewForm />
+            </TabsContent>
           </Tabs>
         </div>
       </section>
