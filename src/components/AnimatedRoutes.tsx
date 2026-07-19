@@ -20,6 +20,7 @@ const Admin = lazy(() => import("@/pages/Admin"));
 const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const PortalLogin = lazy(() => import("@/pages/PortalLogin"));
 const MyQuotesPage = lazy(() => import("@/pages/MyQuotesPage"));
+const ReferralsPage = lazy(() => import("@/pages/ReferralsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 
@@ -60,6 +61,7 @@ const AnimatedRoutes = () => {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/portal/login" element={<PortalLogin />} />
             <Route path="/mis-solicitudes" element={<MyQuotesPage />} />
+            <Route path="/referidos" element={<ReferralsPage />} />
             <Route path="/privacidad" element={<PrivacyPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

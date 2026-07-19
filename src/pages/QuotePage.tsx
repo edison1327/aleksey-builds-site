@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getStoredReferralCode, trackReferralUse } from "@/lib/referral";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { format, differenceInDays } from "date-fns";
@@ -206,15 +207,29 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
     : "";
 })()}`;
 
-      const { error } = await supabase.from("contact_messages").insert({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        message: fullMessage,
-        user_id: user?.id ?? null,
-      });
+      const refCode = getStoredReferralCode();
+      const { data: inserted, error } = await supabase
+        .from("contact_messages")
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          message: fullMessage,
+          user_id: user?.id ?? null,
+          referral_code: refCode,
+        })
+        .select("id")
+        .maybeSingle();
 
       if (error) throw error;
+
+      if (refCode) {
+        await trackReferralUse({
+          email: formData.email.trim(),
+          source: `quote:${equipmentType}`,
+          contactMessageId: inserted?.id ?? null,
+        });
+      }
 
       // Send email notification
       try {

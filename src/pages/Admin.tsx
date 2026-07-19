@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -43,6 +43,7 @@ const AdminBackup = lazy(() => import("@/components/admin/AdminBackup"));
 const AdminAnalytics = lazy(() => import("@/components/admin/AdminAnalytics"));
 const AdminErrorLog = lazy(() => import("@/components/admin/AdminErrorLog"));
 const AdminClientDocuments = lazy(() => import("@/components/admin/AdminClientDocuments"));
+const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -186,6 +187,7 @@ const Admin = () => {
     { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
+    { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
@@ -393,6 +395,7 @@ const Admin = () => {
       case "backup": return <AdminBackup />;
       case "errors": return <AdminErrorLog />;
       case "client-docs": return <AdminClientDocuments />;
+      case "referrals": return <AdminReferrals />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
