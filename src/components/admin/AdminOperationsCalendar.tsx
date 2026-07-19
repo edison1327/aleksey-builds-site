@@ -193,7 +193,7 @@ export default function AdminOperationsCalendar() {
     );
     if (conflict && !confirm("Este equipo ya tiene una reserva o mantenimiento en esas fechas. ¿Continuar?")) return;
 
-    const { error } = await supabase.from("equipment_bookings").insert({
+    const payload = {
       equipment_type: bForm.equipment_type,
       equipment_id: bForm.equipment_id,
       start_date: bForm.start_date,
@@ -202,7 +202,16 @@ export default function AdminOperationsCalendar() {
       customer_email: bForm.customer_email || null,
       notes: bForm.notes || null,
       status: bForm.status,
-    });
+    };
+
+    if (!navigator.onLine) {
+      enqueue({ table: "equipment_bookings", action: "insert", payload, label: `Reserva ${bForm.customer_name}` });
+      toast.success("Reserva guardada localmente (se sincronizará al reconectar)");
+      setBOpen(false);
+      return;
+    }
+
+    const { error } = await supabase.from("equipment_bookings").insert(payload);
     if (error) { toast.error(error.message); return; }
     toast.success("Reserva creada");
     setBOpen(false);
