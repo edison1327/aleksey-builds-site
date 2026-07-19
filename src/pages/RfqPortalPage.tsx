@@ -159,6 +159,10 @@ const RfqPortalPage = () => {
           )}
         </Card>
 
+        <AuctionPanel token={token!} />
+
+
+
         <Card>
           <CardHeader><CardTitle className="text-lg">Ítems solicitados</CardTitle></CardHeader>
           <CardContent className="space-y-4">
