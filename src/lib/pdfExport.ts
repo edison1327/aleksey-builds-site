@@ -391,4 +391,113 @@ export async function exportContractPdf(c: ContractPdf) {
   doc.save(`Contrato-${c.code}.pdf`);
 }
 
+export type WorkOrderSummaryPdf = WorkOrderPdf & {
+  hours_total?: number;
+  photos_before?: number;
+  photos_after?: number;
+  incidents?: { title: string; severity: string; status: string; category?: string | null; description?: string | null; created_at: string }[];
+  materials?: { name: string; quantity: number; unit?: string | null; status: string; notes?: string | null }[];
+  client_signature_url?: string | null;
+  client_signature_name?: string | null;
+  client_signature_at?: string | null;
+};
+
+export async function exportWorkOrderSummaryPdf(wo: WorkOrderSummaryPdf) {
+  const s = getCachedPdfSettings();
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  await header(doc, `Resumen OT ${wo.code}`, wo.title, s);
+  let y = 52;
+
+  const row = (label: string, value?: string | null) => {
+    if (!value) return;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(90);
+    doc.text(label, 14, y);
+    doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(10);
+    const lines = doc.splitTextToSize(value, 130);
+    doc.text(lines, 60, y);
+    y += 6 + (lines.length - 1) * 5;
+  };
+
+  row("Estado", wo.status);
+  row("Prioridad", wo.priority);
+  row("Cliente", wo.customer_name);
+  row("Contacto", [wo.customer_phone, wo.customer_email].filter(Boolean).join(" · "));
+  row("Dirección", wo.site_address);
+  row("Programada", [
+    wo.scheduled_start ? format(new Date(wo.scheduled_start), "dd/MM/yyyy HH:mm", { locale: es }) : null,
+    wo.scheduled_end ? "→ " + format(new Date(wo.scheduled_end), "dd/MM/yyyy HH:mm", { locale: es }) : null,
+  ].filter(Boolean).join(" ") || null);
+  if (wo.hours_total != null) row("Horas trabajadas", `${wo.hours_total.toFixed(2)} h`);
+  if (wo.actual_cost != null) row("Costo real", `S/ ${Number(wo.actual_cost).toFixed(2)}`);
+
+  y += 2;
+  doc.setDrawColor(220); doc.line(14, y, 196, y); y += 5;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(10);
+  doc.text(`Evidencia — Antes: ${wo.photos_before ?? 0}  ·  Después: ${wo.photos_after ?? 0}`, 14, y);
+  y += 7;
+
+  if (wo.checklist?.length) {
+    doc.setFont("helvetica", "bold"); doc.text("Checklist", 14, y); y += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+    for (const t of wo.checklist) {
+      if (y > 275) { doc.addPage(); y = 20; }
+      doc.rect(14, y - 3.5, 4, 4);
+      if (t.done) { doc.setLineWidth(0.5); doc.line(14.5, y - 1.5, 17.5, y - 3); }
+      doc.text(doc.splitTextToSize(t.label, 170), 22, y);
+      y += 6;
+    }
+    y += 2;
+  }
+
+  if (wo.materials?.length) {
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFont("helvetica", "bold"); doc.text("Materiales", 14, y); y += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+    for (const m of wo.materials) {
+      if (y > 275) { doc.addPage(); y = 20; }
+      doc.text(`• ${m.name}  —  ${m.quantity}${m.unit ? ' ' + m.unit : ''}  [${m.status}]`, 14, y);
+      y += 5;
+      if (m.notes) { doc.setTextColor(120); doc.text(doc.splitTextToSize(m.notes, 170), 18, y); doc.setTextColor(0); y += 5; }
+    }
+    y += 2;
+  }
+
+  if (wo.incidents?.length) {
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.text("Incidencias", 14, y); y += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+    for (const i of wo.incidents) {
+      if (y > 270) { doc.addPage(); y = 20; }
+      doc.setFont("helvetica","bold");
+      doc.text(`[${i.severity.toUpperCase()}] ${i.title}  (${i.status})`, 14, y); y += 5;
+      doc.setFont("helvetica","normal"); doc.setTextColor(120);
+      doc.text(`${format(new Date(i.created_at), "dd/MM/yyyy HH:mm", { locale: es })}${i.category ? ' · ' + i.category : ''}`, 14, y);
+      doc.setTextColor(0); y += 5;
+      if (i.description) { const lns = doc.splitTextToSize(i.description, 180); doc.text(lns, 14, y); y += lns.length * 4 + 2; }
+    }
+  }
+
+  if (wo.notes) {
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.text("Notas", 14, y); y += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+    const lines = doc.splitTextToSize(wo.notes, 180);
+    doc.text(lines, 14, y); y += lines.length * 5;
+  }
+
+  if (y > 240) { doc.addPage(); y = 30; }
+  y = Math.max(y + 8, 250);
+  doc.setDrawColor(160); doc.line(120, y + 20, 196, y + 20);
+  doc.setFontSize(9); doc.text("Conformidad cliente", 120, y + 25);
+  if (wo.client_signature_url) {
+    try { doc.addImage(wo.client_signature_url, "PNG", 120, y - 5, 60, 25); } catch {}
+    if (wo.client_signature_name) doc.text(wo.client_signature_name, 120, y + 30);
+    if (wo.client_signature_at) doc.text(format(new Date(wo.client_signature_at), "dd/MM/yyyy HH:mm", { locale: es }), 120, y + 35);
+  }
+
+  footer(doc, s);
+  doc.save(`Resumen-OT-${wo.code}.pdf`);
+}
+
+
 
