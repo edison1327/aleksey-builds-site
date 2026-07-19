@@ -146,6 +146,34 @@ export default function AdminSuppliers() {
     load();
   };
 
+  // Evaluation CRUD
+  const newEv = (sid?: string) => { setEditEv({ id: "", supplier_id: sid || suppliers[0]?.id || "", subcontract_id: null, project_name: "", quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4, overall_score: null, would_rehire: true, comments: "", evaluated_at: new Date().toISOString().slice(0,10) } as any); setOpenEv(true); };
+  const saveEv = async () => {
+    if (!editEv) return;
+    if (!editEv.supplier_id) return toast.error("Proveedor requerido");
+    const { id, overall_score, ...rest } = editEv as any;
+    if (!rest.subcontract_id) rest.subcontract_id = null;
+    const { data: userRes } = await supabase.auth.getUser();
+    if (!id) rest.evaluated_by = userRes.user?.id;
+    const { error } = id
+      ? await supabase.from("supplier_evaluations" as any).update(rest).eq("id", id)
+      : await supabase.from("supplier_evaluations" as any).insert(rest);
+    if (error) return toast.error(error.message);
+    toast.success("Evaluación guardada"); setOpenEv(false); setEditEv(null); load();
+  };
+  const delEv = async (id: string) => {
+    if (!confirm("¿Eliminar evaluación?")) return;
+    const { error } = await supabase.from("supplier_evaluations" as any).delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    load();
+  };
+
+  const supplierHistory = (sid: string) => ({
+    subs: subs.filter(s => s.supplier_id === sid),
+    evals: evals.filter(e => e.supplier_id === sid),
+    certs: certs.filter(c => c.supplier_id === sid),
+  });
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2 flex-wrap">
