@@ -23,6 +23,7 @@ const MyQuotesPage = lazy(() => import("@/pages/MyQuotesPage"));
 const ReferralsPage = lazy(() => import("@/pages/ReferralsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
+const OperatorWorkOrders = lazy(() => import("@/pages/OperatorWorkOrders"));
 
 const RouteFallback = () => (
   <div className="min-h-dvh flex items-center justify-center">
@@ -61,6 +62,7 @@ const AnimatedRoutes = () => {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/portal/login" element={<PortalLogin />} />
             <Route path="/mis-solicitudes" element={<MyQuotesPage />} />
+            <Route path="/mis-ot" element={<OperatorWorkOrders />} />
             <Route path="/referidos" element={<ReferralsPage />} />
             <Route path="/privacidad" element={<PrivacyPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

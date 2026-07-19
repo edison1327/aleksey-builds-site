@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -51,6 +51,8 @@ const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotif
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
 const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
+const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
+const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -248,7 +250,9 @@ const Admin = () => {
     { id: "messages", label: "Mensajes", icon: Mail, category: "comunicacion", badgeKey: "messages" },
     { id: "quotes", label: "Solicitudes", icon: FileText, category: "comunicacion", badgeKey: "quotes" },
     { id: "bookings", label: "Reservas", icon: CalendarRange, category: "comunicacion", badgeKey: "bookings" },
-    { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "comunicacion" },
+    { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "operaciones" },
+    { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
+    { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
@@ -273,6 +277,7 @@ const Admin = () => {
     { id: "general", label: "General" },
     { id: "contenido", label: "Contenido" },
     { id: "comunicacion", label: "Comunicación" },
+    { id: "operaciones", label: "Operaciones" },
     { id: "rrhh", label: "Recursos Humanos" },
   ];
 
@@ -460,6 +465,8 @@ const Admin = () => {
       case "quotes": return <AdminQuotes />;
       case "bookings": return <AdminBookings />;
       case "calendar": return <AdminOperationsCalendar />;
+      case "inventory": return <AdminInventory />;
+      case "workorders": return <AdminWorkOrders />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
