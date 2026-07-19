@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getThrottleWait, markSubmitted } from "@/lib/throttle";
+import { getStoredReferralCode, trackReferralUse } from "@/lib/referral";
 import { z } from "zod";
 import { Loader2, Send } from "lucide-react";
 
