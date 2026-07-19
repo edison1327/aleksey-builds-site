@@ -60,6 +60,7 @@ const AdminOfflinePending = lazy(() => import("@/components/admin/AdminOfflinePe
 const AdminInvoices = lazy(() => import("@/components/admin/AdminInvoices"));
 const AdminContracts = lazy(() => import("@/components/admin/AdminContracts"));
 const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
+const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
