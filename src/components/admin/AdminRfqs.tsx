@@ -287,14 +287,20 @@ const AdminRfqs = () => {
                   <CardHeader className="pb-2"><CardTitle className="text-sm">Proveedores invitados ({detailInvites.length})</CardTitle></CardHeader>
                   <CardContent className="space-y-2">
                     {detail.status === "draft" && (
-                      <div className="flex gap-2">
-                        <Select value={invitePick} onValueChange={setInvitePick}>
-                          <SelectTrigger className="flex-1"><SelectValue placeholder="Selecciona proveedor" /></SelectTrigger>
-                          <SelectContent>
-                            {availableSuppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <Button onClick={inviteSupplier} disabled={!invitePick}>Invitar</Button>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Select value={invitePick} onValueChange={setInvitePick}>
+                            <SelectTrigger className="flex-1"><SelectValue placeholder="Selecciona proveedor" /></SelectTrigger>
+                            <SelectContent>
+                              {availableSuppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <Button onClick={inviteSupplier} disabled={!invitePick}>Invitar</Button>
+                        </div>
+                        <Button variant="outline" size="sm" className="w-full gap-2" onClick={autoInviteTop}>
+                          <Sparkles className="h-3.5 w-3.5" />
+                          Invitar top 5 proveedores{detail.category ? ` de "${detail.category}"` : " por rating"}
+                        </Button>
                       </div>
                     )}
                     {detailInvites.map((inv: any) => (
