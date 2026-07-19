@@ -510,6 +510,88 @@ export default function AdminSuppliers() {
         </>
       )}
 
+      {tab === "gamification" && (
+        <>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <p className="text-sm text-muted-foreground">Insignias y niveles de confianza calculados automáticamente.</p>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={loadGamification} disabled={gamiLoading}>
+                <Sparkles className="h-4 w-4 mr-1"/>{gamiLoading ? "Cargando…" : "Refrescar"}
+              </Button>
+              <Button size="sm" onClick={runAutoAward} disabled={awarding}>
+                <Award className="h-4 w-4 mr-1"/>{awarding ? "Otorgando…" : "Otorgar automáticamente"}
+              </Button>
+            </div>
+          </div>
+
+          <Card className="p-4">
+            <p className="text-sm font-semibold mb-3 flex items-center gap-2"><Award className="h-4 w-4"/> Catálogo de insignias</p>
+            <div className="flex flex-wrap gap-2">
+              {badges.length === 0 ? (
+                <span className="text-sm text-muted-foreground">Sin insignias configuradas.</span>
+              ) : badges.map((b:any) => (
+                <div key={b.id} className="flex items-center gap-2 border rounded-md px-3 py-1.5 text-sm" style={{ borderColor: b.color }}>
+                  <span className="font-medium" style={{ color: b.color }}>{b.name}</span>
+                  <Badge variant="secondary">+{b.points} pts</Badge>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3">#</th><th className="p-3">Proveedor</th>
+                  <th className="p-3">Categoría</th><th className="p-3">Rating</th>
+                  <th className="p-3">Evals</th><th className="p-3">Puntos</th>
+                  <th className="p-3">Nivel</th><th className="p-3">Insignias</th>
+                </tr></thead>
+                <tbody>
+                  {gami.length === 0 ? (
+                    <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">
+                      {gamiLoading ? "Cargando…" : "Sin datos. Ejecuta 'Otorgar automáticamente' para calcular insignias."}
+                    </td></tr>
+                  ) : gami.map((r:any) => {
+                    const tierColor = r.tier === "Platino" ? "bg-slate-700 text-white"
+                      : r.tier === "Oro" ? "bg-amber-500 text-white"
+                      : r.tier === "Plata" ? "bg-zinc-400 text-white"
+                      : "bg-orange-700 text-white";
+                    return (
+                      <tr key={r.supplier_id} className="border-t">
+                        <td className="p-3 font-mono text-xs">#{r.rank}</td>
+                        <td className="p-3 font-medium">{r.supplier_name}</td>
+                        <td className="p-3 text-xs text-muted-foreground">{r.category || "—"}</td>
+                        <td className="p-3">{Number(r.rating || 0).toFixed(2)} ★</td>
+                        <td className="p-3">{r.evaluations_count}</td>
+                        <td className="p-3 font-bold">{r.points}</td>
+                        <td className="p-3"><span className={`px-2 py-0.5 rounded text-xs font-semibold ${tierColor}`}>{r.tier}</span></td>
+                        <td className="p-3">
+                          <div className="flex flex-wrap gap-1">
+                            {(r.badge_codes || []).length === 0
+                              ? <span className="text-xs text-muted-foreground">—</span>
+                              : (r.badge_codes || []).map((c:string) => {
+                                  const b = badges.find((x:any) => x.code === c);
+                                  return (
+                                    <span key={c} className="text-xs px-2 py-0.5 rounded border" style={{ borderColor: b?.color, color: b?.color }}>
+                                      {b?.name || c}
+                                    </span>
+                                  );
+                                })}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
+
+
 
       {/* Supplier Dialog */}
       <Dialog open={openS} onOpenChange={(v)=>{setOpenS(v); if(!v) setEditS(null);}}>
