@@ -195,40 +195,49 @@ const BlogPostPage = () => {
           )}
 
           <div className="editorial-content max-w-none">
-            {(content || "").split(/\n{2,}/).map((para, i) => {
-              const trimmed = para.trim();
-              // Blockquote: lines starting with ">"
-              if (trimmed.startsWith(">")) {
+            {/\<[a-z][\s\S]*\>/i.test(content || "") ? (
+              <div
+                className="prose prose-lg max-w-none prose-headings:font-heading prose-a:text-primary prose-blockquote:border-primary/70 prose-blockquote:bg-muted/40 prose-blockquote:not-italic prose-img:rounded-lg text-foreground/90 leading-[1.85]"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(content || "", {
+                    ADD_ATTR: ["target", "rel"],
+                  }),
+                }}
+              />
+            ) : (
+              (content || "").split(/\n{2,}/).map((para, i) => {
+                const trimmed = para.trim();
+                if (trimmed.startsWith(">")) {
+                  return (
+                    <blockquote
+                      key={i}
+                      className="my-8 border-l-4 border-primary/70 bg-muted/40 pl-6 pr-4 py-4 rounded-r-lg italic text-foreground/85 font-heading text-lg leading-relaxed"
+                    >
+                      {trimmed.replace(/^>\s*/, "")}
+                    </blockquote>
+                  );
+                }
+                if (/^-{3,}$/.test(trimmed)) {
+                  return (
+                    <div key={i} className="my-10 flex items-center justify-center gap-3" aria-hidden="true">
+                      <span className="h-px w-12 bg-border" />
+                      <span className="text-primary/70 text-xs tracking-[0.4em]">§</span>
+                      <span className="h-px w-12 bg-border" />
+                    </div>
+                  );
+                }
                 return (
-                  <blockquote
+                  <p
                     key={i}
-                    className="my-8 border-l-4 border-primary/70 bg-muted/40 pl-6 pr-4 py-4 rounded-r-lg italic text-foreground/85 font-heading text-lg leading-relaxed"
+                    className={`mb-5 whitespace-pre-wrap leading-[1.85] text-foreground/90 text-[1.05rem] ${
+                      i === 0 ? "first-letter:font-heading first-letter:font-bold first-letter:text-primary first-letter:text-6xl first-letter:leading-none first-letter:mr-2 first-letter:float-left first-letter:mt-1" : ""
+                    }`}
                   >
-                    {trimmed.replace(/^>\s*/, "")}
-                  </blockquote>
+                    {para}
+                  </p>
                 );
-              }
-              // Ornamental separator: "---"
-              if (/^-{3,}$/.test(trimmed)) {
-                return (
-                  <div key={i} className="my-10 flex items-center justify-center gap-3" aria-hidden="true">
-                    <span className="h-px w-12 bg-border" />
-                    <span className="text-primary/70 text-xs tracking-[0.4em]">§</span>
-                    <span className="h-px w-12 bg-border" />
-                  </div>
-                );
-              }
-              return (
-                <p
-                  key={i}
-                  className={`mb-5 whitespace-pre-wrap leading-[1.85] text-foreground/90 text-[1.05rem] ${
-                    i === 0 ? "first-letter:font-heading first-letter:font-bold first-letter:text-primary first-letter:text-6xl first-letter:leading-none first-letter:mr-2 first-letter:float-left first-letter:mt-1" : ""
-                  }`}
-                >
-                  {para}
-                </p>
-              );
-            })}
+              })
+            )}
           </div>
 
           {/* Ornamental closing separator */}
