@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Star, Quote } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import ModerateReviews from "./ModerateReviews";
 
 import { I18nField } from "./I18nField";
 
