@@ -12,6 +12,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { pickLocalized } from "@/lib/i18nField";
+import DOMPurify from "dompurify";
 
 interface Post {
   id: string;
