@@ -548,7 +548,7 @@ export default function AdminSuppliers() {
                       {h.evals.map(e => (
                         <li key={e.id} className="p-2">
                           <div className="flex justify-between">
-                            <span className="font-medium">{e.project_name || "Proyecto"} — ⭐ {Number(e.overall_score||0).toFixed(2)}</span>
+                            <span className="font-medium">{(e.project_id && projects.find(p=>p.id===e.project_id)?.title) || e.project_name || "Proyecto"} — ⭐ {Number(e.overall_score||0).toFixed(2)}</span>
                             <span className="text-xs text-muted-foreground">{format(parseISO(e.evaluated_at), "dd/MM/yyyy", { locale: es })}</span>
                           </div>
                           {e.comments && <p className="text-xs text-muted-foreground mt-1">{e.comments}</p>}
