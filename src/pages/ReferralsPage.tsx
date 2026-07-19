@@ -95,7 +95,7 @@ export default function ReferralsPage() {
 
   return (
     <>
-      <SEO title="Programa de Referidos — ALEKSEY" description="Comparte ALEKSEY con tu red y obtén beneficios exclusivos." />
+      <SEO title="Programa de Referidos — ALEKSEY" description="Comparte ALEKSEY con tu red y obtén beneficios exclusivos." path="/referidos" />
       <div className="pt-24 pb-16 min-h-screen bg-background">
         <div className="container mx-auto px-4 max-w-5xl space-y-6">
           <Button variant="ghost" size="sm" asChild>
