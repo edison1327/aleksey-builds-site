@@ -277,6 +277,7 @@ const Admin = () => {
     { id: "general", label: "General" },
     { id: "contenido", label: "Contenido" },
     { id: "comunicacion", label: "Comunicación" },
+    { id: "operaciones", label: "Operaciones" },
     { id: "rrhh", label: "Recursos Humanos" },
   ];
 
