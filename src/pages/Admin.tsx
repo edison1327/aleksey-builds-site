@@ -54,6 +54,7 @@ const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOpera
 const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
 const AdminCostsMetrics = lazy(() => import("@/components/admin/AdminCostsMetrics"));
+const AdminPdfSettings = lazy(() => import("@/components/admin/AdminPdfSettings"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
