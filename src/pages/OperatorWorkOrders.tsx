@@ -103,6 +103,10 @@ export default function OperatorWorkOrders() {
   const toggleTask = async (wo: WO, taskId: string) => {
     const next = (wo.checklist || []).map((t) => t.id === taskId ? { ...t, done: !t.done } : t);
     setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, checklist: next } : w));
+    if (!navigator.onLine) {
+      enqueue({ table: "work_orders", action: "update", payload: { checklist: next }, match: { id: wo.id }, label: `Checklist OT ${wo.code}` });
+      return;
+    }
     const { error } = await supabase.from("work_orders").update({ checklist: next }).eq("id", wo.id);
     if (error) { toast.error(error.message); load(); }
   };
@@ -120,11 +124,18 @@ export default function OperatorWorkOrders() {
       patch.completion_lat = lat;
       patch.completion_lng = lng;
     }
+    if (!navigator.onLine) {
+      enqueue({ table: "work_orders", action: "update", payload: patch, match: { id: wo.id }, label: `Estado OT ${wo.code}: ${status}` });
+      setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, ...patch } : w));
+      toast.info("Sin conexión: cambio en cola");
+      return;
+    }
     const { error } = await supabase.from("work_orders").update(patch).eq("id", wo.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Estado actualizado");
     load();
   };
+
 
   const checkIn = async (wo: WO) => {
     if (!employeeId) { toast.error("Tu usuario no tiene ficha de empleado"); return; }
