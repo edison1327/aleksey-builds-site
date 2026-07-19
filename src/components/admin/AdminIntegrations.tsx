@@ -46,32 +46,14 @@ function download(name: string, content: string, mime = "text/csv;charset=utf-8"
   URL.revokeObjectURL(url);
 }
 
-// ---------- WhatsApp templates persistence ----------
-type WaTemplate = { key: string; label: string; body: string };
+// ---------- WhatsApp templates (DB-backed) ----------
+type WaTemplate = { id?: string; key: string; label: string; body: string; sort_order?: number };
 
 const DEFAULT_WA_TEMPLATES: WaTemplate[] = [
   { key: "cobro", label: "Recordatorio de cobro", body: "Hola {nombre}, te recordamos que la factura {codigo} por {monto} vence el {vencimiento}. Puedes pagarla aquí: {enlace}. ¡Gracias!" },
   { key: "reserva", label: "Confirmación de reserva", body: "Hola {nombre}, tu reserva del {fecha} está confirmada. Cualquier duda contáctanos por este medio." },
   { key: "ot", label: "OT en camino", body: "Hola {nombre}, tu OT {codigo} fue asignada y nuestro equipo se comunicará en breve." },
 ];
-
-const WA_STORAGE_KEY = "wa_templates_v1";
-
-function loadWaTemplates(): WaTemplate[] {
-  try {
-    const raw = localStorage.getItem(WA_STORAGE_KEY);
-    if (!raw) return DEFAULT_WA_TEMPLATES;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length) return parsed;
-    return DEFAULT_WA_TEMPLATES;
-  } catch {
-    return DEFAULT_WA_TEMPLATES;
-  }
-}
-
-function saveWaTemplates(list: WaTemplate[]) {
-  localStorage.setItem(WA_STORAGE_KEY, JSON.stringify(list));
-}
 
 // ---------- connector test state ----------
 type TestStatus = "idle" | "running" | "ok" | "fail";
