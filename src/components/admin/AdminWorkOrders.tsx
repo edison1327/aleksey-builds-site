@@ -171,6 +171,8 @@ export default function AdminWorkOrders() {
       scheduled_end: form.scheduled_end ? new Date(form.scheduled_end).toISOString() : null,
       checklist: form.checklist || [],
       notes: form.notes || null,
+      estimated_cost: form.estimated_cost ?? null,
+      actual_cost: form.actual_cost ?? null,
     };
     if (form.status === "in_progress" && !editing?.started_at) payload.started_at = new Date().toISOString();
     if (form.status === "completed") payload.completed_at = new Date().toISOString();
