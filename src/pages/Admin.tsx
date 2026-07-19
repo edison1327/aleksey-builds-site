@@ -57,6 +57,7 @@ const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"))
 const AdminCostsMetrics = lazy(() => import("@/components/admin/AdminCostsMetrics"));
 const AdminPdfSettings = lazy(() => import("@/components/admin/AdminPdfSettings"));
 const AdminOfflinePending = lazy(() => import("@/components/admin/AdminOfflinePending"));
+const AdminInvoices = lazy(() => import("@/components/admin/AdminInvoices"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -261,6 +262,7 @@ const Admin = () => {
     { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
     { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
+    { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
@@ -476,6 +478,7 @@ const Admin = () => {
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
       case "costs": return <AdminCostsMetrics />;
+      case "invoices": return <AdminInvoices />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
       case "templates": return <AdminResponseTemplates />;

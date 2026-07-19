@@ -225,3 +225,106 @@ export async function exportWorkOrderPdf(wo: WorkOrderPdf) {
   footer(doc, s);
   doc.save(`OT-${wo.code}.pdf`);
 }
+
+export type InvoicePdf = {
+  code: string;
+  issue_date: string;
+  due_date: string;
+  currency: string;
+  customer_name: string;
+  customer_email?: string | null;
+  customer_tax_id?: string | null;
+  customer_address?: string | null;
+  items: { description: string; quantity: number; unit_price: number; total: number }[];
+  subtotal: number;
+  tax_rate: number;
+  tax_amount: number;
+  total: number;
+  amount_paid: number;
+  status: string;
+  notes?: string | null;
+  terms?: string | null;
+};
+
+export async function exportInvoicePdf(inv: InvoicePdf) {
+  const s = getCachedPdfSettings();
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  await header(doc, `Factura ${inv.code}`, `Estado: ${inv.status.toUpperCase()}`, s);
+  let y = 52;
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("Facturar a:", 14, y);
+  doc.setFont("helvetica", "normal");
+  y += 5;
+  doc.text(inv.customer_name, 14, y); y += 4;
+  if (inv.customer_tax_id) { doc.text(`RUC/NIF: ${inv.customer_tax_id}`, 14, y); y += 4; }
+  if (inv.customer_email) { doc.text(inv.customer_email, 14, y); y += 4; }
+  if (inv.customer_address) {
+    const lines = doc.splitTextToSize(inv.customer_address, 80);
+    doc.text(lines, 14, y); y += lines.length * 4;
+  }
+
+  let yRight = 52;
+  doc.setFont("helvetica", "bold"); doc.text("Emisión:", 130, yRight);
+  doc.setFont("helvetica", "normal");
+  doc.text(format(new Date(inv.issue_date), "dd/MM/yyyy", { locale: es }), 160, yRight); yRight += 5;
+  doc.setFont("helvetica", "bold"); doc.text("Vencimiento:", 130, yRight);
+  doc.setFont("helvetica", "normal");
+  doc.text(format(new Date(inv.due_date), "dd/MM/yyyy", { locale: es }), 160, yRight); yRight += 5;
+  doc.setFont("helvetica", "bold"); doc.text("Moneda:", 130, yRight);
+  doc.setFont("helvetica", "normal"); doc.text(inv.currency, 160, yRight);
+
+  y = Math.max(y, 80) + 4;
+  const [pr, pg, pb] = hexToRgb(s.primary_color || "#1a1a1a");
+  doc.setFillColor(pr, pg, pb); doc.rect(14, y, 182, 7, "F");
+  doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(9);
+  doc.text("Descripción", 16, y + 5);
+  doc.text("Cant.", 130, y + 5);
+  doc.text("Precio", 148, y + 5);
+  doc.text("Total", 178, y + 5);
+  doc.setTextColor(0); doc.setFont("helvetica", "normal");
+  y += 10;
+
+  for (const it of inv.items) {
+    if (y > 250) { doc.addPage(); y = 20; }
+    const lines = doc.splitTextToSize(it.description, 110);
+    doc.text(lines, 16, y);
+    doc.text(String(it.quantity), 130, y);
+    doc.text(it.unit_price.toFixed(2), 148, y);
+    doc.text(it.total.toFixed(2), 178, y);
+    y += Math.max(6, lines.length * 4 + 2);
+  }
+
+  y += 4;
+  doc.setDrawColor(200); doc.line(120, y, 196, y); y += 5;
+  const totRow = (l: string, v: string, bold = false) => {
+    doc.setFont("helvetica", bold ? "bold" : "normal");
+    doc.text(l, 130, y); doc.text(v, 178, y); y += 5;
+  };
+  totRow("Subtotal", inv.subtotal.toFixed(2));
+  if (inv.tax_amount > 0) totRow(`IGV/IVA (${inv.tax_rate}%)`, inv.tax_amount.toFixed(2));
+  totRow("TOTAL", `${inv.currency} ${inv.total.toFixed(2)}`, true);
+  if (inv.amount_paid > 0) {
+    totRow("Pagado", inv.amount_paid.toFixed(2));
+    totRow("Saldo", (inv.total - inv.amount_paid).toFixed(2), true);
+  }
+
+  y += 6;
+  if (inv.notes) {
+    doc.setFont("helvetica", "bold"); doc.text("Notas", 14, y); y += 5;
+    doc.setFont("helvetica", "normal");
+    const lines = doc.splitTextToSize(inv.notes, 180);
+    doc.text(lines, 14, y); y += lines.length * 4 + 3;
+  }
+  if (inv.terms) {
+    doc.setFont("helvetica", "bold"); doc.text("Términos", 14, y); y += 5;
+    doc.setFont("helvetica", "normal");
+    const lines = doc.splitTextToSize(inv.terms, 180);
+    doc.text(lines, 14, y);
+  }
+
+  footer(doc, s);
+  doc.save(`Factura-${inv.code}.pdf`);
+}
+
