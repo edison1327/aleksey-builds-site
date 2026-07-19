@@ -19,9 +19,11 @@ type PO = {
   status: string; expected_at: string | null; delivered_at: string | null;
   payment_terms: string | null; notes: string | null; created_at: string;
   approved_by: string | null; approved_at: string | null; approval_notes: string | null;
-  amount_paid: number; payment_status: string;
+  amount_paid: number; payment_status: string; framework_agreement_id?: string | null;
 };
-type POItem = { id: string; purchase_order_id: string; description: string; quantity: number; unit: string; unit_price: number; subtotal: number; received_qty: number; };
+type POItem = { id: string; purchase_order_id: string; description: string; quantity: number; unit: string; unit_price: number; subtotal: number; received_qty: number; framework_agreement_item_id?: string | null; };
+type FrameworkAgreement = { id: string; code: string; title: string; supplier_id: string; currency: string; status: string; end_date: string; payment_terms: string | null };
+type FrameworkAgreementItem = { id: string; agreement_id: string; description: string; sku: string | null; unit: string; unit_price: number; max_quantity: number | null; consumed_quantity: number };
 type Reception = { id: string; purchase_order_id: string; received_at: string; delivery_note: string | null; received_by: string | null; notes: string | null; };
 type Req = { id: string; code: string; work_order_id: string | null; requester_name: string | null; status: string; notes: string | null; converted_po_id: string | null; created_at: string; };
 type ReqItem = { id: string; requisition_id: string; description: string; quantity: number; unit: string; notes: string | null };
