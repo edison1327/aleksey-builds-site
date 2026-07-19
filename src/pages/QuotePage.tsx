@@ -207,15 +207,29 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
     : "";
 })()}`;
 
-      const { error } = await supabase.from("contact_messages").insert({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        message: fullMessage,
-        user_id: user?.id ?? null,
-      });
+      const refCode = getStoredReferralCode();
+      const { data: inserted, error } = await supabase
+        .from("contact_messages")
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          message: fullMessage,
+          user_id: user?.id ?? null,
+          referral_code: refCode,
+        })
+        .select("id")
+        .maybeSingle();
 
       if (error) throw error;
+
+      if (refCode) {
+        await trackReferralUse({
+          email: formData.email.trim(),
+          source: `quote:${equipmentType}`,
+          contactMessageId: inserted?.id ?? null,
+        });
+      }
 
       // Send email notification
       try {
