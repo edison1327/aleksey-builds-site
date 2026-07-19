@@ -177,13 +177,16 @@ const AdminBlog = () => {
   };
 
   const remove = async (p: Post) => {
-    if (!confirm(`¿Eliminar "${p.title}"?`)) return;
-    const { error } = await supabase.from("blog_posts").delete().eq("id", p.id);
+    if (!confirm(`¿Mover "${p.title}" a la papelera?`)) return;
+    const { error } = await supabase
+      .from("blog_posts")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", p.id);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;
     }
-    toast({ title: "Eliminado" });
+    toast({ title: "Movido a papelera" });
     load();
   };
 
