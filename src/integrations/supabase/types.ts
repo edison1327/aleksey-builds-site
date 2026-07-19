@@ -288,6 +288,7 @@ export type Database = {
           message: string
           name: string
           phone: string | null
+          referral_code: string | null
           status: string | null
           user_id: string | null
         }
@@ -300,6 +301,7 @@ export type Database = {
           message: string
           name: string
           phone?: string | null
+          referral_code?: string | null
           status?: string | null
           user_id?: string | null
         }
@@ -312,6 +314,7 @@ export type Database = {
           message?: string
           name?: string
           phone?: string | null
+          referral_code?: string | null
           status?: string | null
           user_id?: string | null
         }
@@ -868,6 +871,77 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          code_used: string
+          contact_message_id: string | null
+          converted_at: string | null
+          created_at: string
+          id: string
+          referred_email: string | null
+          referred_user_id: string | null
+          referrer_user_id: string
+          reward_note: string | null
+          source: string | null
+          status: Database["public"]["Enums"]["referral_status"]
+          updated_at: string
+        }
+        Insert: {
+          code_used: string
+          contact_message_id?: string | null
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_user_id: string
+          reward_note?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["referral_status"]
+          updated_at?: string
+        }
+        Update: {
+          code_used?: string
+          contact_message_id?: string | null
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_user_id?: string
+          reward_note?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["referral_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_contact_message_id_fkey"
+            columns: ["contact_message_id"]
+            isOneToOne: false
+            referencedRelation: "contact_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       response_templates: {
         Row: {
           body: string
@@ -1203,6 +1277,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1218,6 +1293,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user" | "editor" | "viewer" | "client"
+      referral_status: "pending" | "registered" | "converted" | "rewarded"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1346,6 +1422,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "editor", "viewer", "client"],
+      referral_status: ["pending", "registered", "converted", "rewarded"],
     },
   },
 } as const
