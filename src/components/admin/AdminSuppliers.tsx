@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History, Trophy, ClipboardCheck } from "lucide-react";
+import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History, Trophy, ClipboardCheck, Award, Sparkles } from "lucide-react";
 import { format, differenceInDays, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -40,12 +40,16 @@ const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista 
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
 
 export default function AdminSuppliers() {
-  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking"|"pending">("suppliers");
+  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking"|"pending"|"gamification">("suppliers");
   const [ranking, setRanking] = useState<any[]>([]);
   const [rankingCategory, setRankingCategory] = useState("");
   const [rankingLoading, setRankingLoading] = useState(false);
   const [pending, setPending] = useState<any[]>([]);
   const [pendingLoading, setPendingLoading] = useState(false);
+  const [gami, setGami] = useState<any[]>([]);
+  const [badges, setBadges] = useState<any[]>([]);
+  const [gamiLoading, setGamiLoading] = useState(false);
+  const [awarding, setAwarding] = useState(false);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
@@ -210,6 +214,26 @@ export default function AdminSuppliers() {
     } as any);
     setOpenEv(true);
   };
+  const loadGamification = async () => {
+    setGamiLoading(true);
+    const [{ data: g }, { data: b }] = await Promise.all([
+      (supabase as any).rpc("get_supplier_gamification", { _supplier_id: null }),
+      supabase.from("supplier_badges" as any).select("*").eq("is_active", true).order("points", { ascending: false }),
+    ]);
+    setGami(g || []);
+    setBadges(b || []);
+    setGamiLoading(false);
+  };
+
+  const runAutoAward = async () => {
+    setAwarding(true);
+    const { data, error } = await (supabase as any).rpc("award_supplier_badges");
+    setAwarding(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Insignias otorgadas: ${data ?? 0}`);
+    loadGamification();
+  };
+
 
 
 
@@ -227,6 +251,7 @@ export default function AdminSuppliers() {
           <Button variant={tab==="evaluations"?"default":"outline"} onClick={() => setTab("evaluations")}><Star className="h-4 w-4 mr-1"/>Evaluaciones</Button>
           <Button variant={tab==="ranking"?"default":"outline"} onClick={() => { setTab("ranking"); loadRanking(); }}><Trophy className="h-4 w-4 mr-1"/>Ranking</Button>
           <Button variant={tab==="pending"?"default":"outline"} onClick={() => { setTab("pending"); loadPending(); }}><ClipboardCheck className="h-4 w-4 mr-1"/>Pendientes</Button>
+          <Button variant={tab==="gamification"?"default":"outline"} onClick={() => { setTab("gamification"); loadGamification(); }}><Award className="h-4 w-4 mr-1"/>Gamificación</Button>
         </div>
       </div>
 
@@ -484,6 +509,88 @@ export default function AdminSuppliers() {
           </Card>
         </>
       )}
+
+      {tab === "gamification" && (
+        <>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <p className="text-sm text-muted-foreground">Insignias y niveles de confianza calculados automáticamente.</p>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={loadGamification} disabled={gamiLoading}>
+                <Sparkles className="h-4 w-4 mr-1"/>{gamiLoading ? "Cargando…" : "Refrescar"}
+              </Button>
+              <Button size="sm" onClick={runAutoAward} disabled={awarding}>
+                <Award className="h-4 w-4 mr-1"/>{awarding ? "Otorgando…" : "Otorgar automáticamente"}
+              </Button>
+            </div>
+          </div>
+
+          <Card className="p-4">
+            <p className="text-sm font-semibold mb-3 flex items-center gap-2"><Award className="h-4 w-4"/> Catálogo de insignias</p>
+            <div className="flex flex-wrap gap-2">
+              {badges.length === 0 ? (
+                <span className="text-sm text-muted-foreground">Sin insignias configuradas.</span>
+              ) : badges.map((b:any) => (
+                <div key={b.id} className="flex items-center gap-2 border rounded-md px-3 py-1.5 text-sm" style={{ borderColor: b.color }}>
+                  <span className="font-medium" style={{ color: b.color }}>{b.name}</span>
+                  <Badge variant="secondary">+{b.points} pts</Badge>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3">#</th><th className="p-3">Proveedor</th>
+                  <th className="p-3">Categoría</th><th className="p-3">Rating</th>
+                  <th className="p-3">Evals</th><th className="p-3">Puntos</th>
+                  <th className="p-3">Nivel</th><th className="p-3">Insignias</th>
+                </tr></thead>
+                <tbody>
+                  {gami.length === 0 ? (
+                    <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">
+                      {gamiLoading ? "Cargando…" : "Sin datos. Ejecuta 'Otorgar automáticamente' para calcular insignias."}
+                    </td></tr>
+                  ) : gami.map((r:any) => {
+                    const tierColor = r.tier === "Platino" ? "bg-slate-700 text-white"
+                      : r.tier === "Oro" ? "bg-amber-500 text-white"
+                      : r.tier === "Plata" ? "bg-zinc-400 text-white"
+                      : "bg-orange-700 text-white";
+                    return (
+                      <tr key={r.supplier_id} className="border-t">
+                        <td className="p-3 font-mono text-xs">#{r.rank}</td>
+                        <td className="p-3 font-medium">{r.supplier_name}</td>
+                        <td className="p-3 text-xs text-muted-foreground">{r.category || "—"}</td>
+                        <td className="p-3">{Number(r.rating || 0).toFixed(2)} ★</td>
+                        <td className="p-3">{r.evaluations_count}</td>
+                        <td className="p-3 font-bold">{r.points}</td>
+                        <td className="p-3"><span className={`px-2 py-0.5 rounded text-xs font-semibold ${tierColor}`}>{r.tier}</span></td>
+                        <td className="p-3">
+                          <div className="flex flex-wrap gap-1">
+                            {(r.badge_codes || []).length === 0
+                              ? <span className="text-xs text-muted-foreground">—</span>
+                              : (r.badge_codes || []).map((c:string) => {
+                                  const b = badges.find((x:any) => x.code === c);
+                                  return (
+                                    <span key={c} className="text-xs px-2 py-0.5 rounded border" style={{ borderColor: b?.color, color: b?.color }}>
+                                      {b?.name || c}
+                                    </span>
+                                  );
+                                })}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
+
 
 
       {/* Supplier Dialog */}

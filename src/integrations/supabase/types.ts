@@ -3371,6 +3371,90 @@ export type Database = {
           },
         ]
       }
+      supplier_badge_awards: {
+        Row: {
+          awarded_at: string
+          badge_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          supplier_id: string
+        }
+        Insert: {
+          awarded_at?: string
+          badge_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          supplier_id: string
+        }
+        Update: {
+          awarded_at?: string
+          badge_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          supplier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_badge_awards_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_badge_awards_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_badges: {
+        Row: {
+          code: string
+          color: string | null
+          created_at: string
+          criteria: Json
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          points: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          color?: string | null
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          points?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          color?: string | null
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          points?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       supplier_certifications: {
         Row: {
           cert_number: string | null
@@ -4313,6 +4397,7 @@ export type Database = {
         Args: { _limit?: number; _rfq_id: string }
         Returns: number
       }
+      award_supplier_badges: { Args: never; Returns: number }
       check_equipment_availability: {
         Args: {
           _end_date: string
@@ -4490,6 +4575,21 @@ export type Database = {
           supplier_id: string
           supplier_name: string
           title: string
+        }[]
+      }
+      get_supplier_gamification: {
+        Args: { _supplier_id?: string }
+        Returns: {
+          badge_codes: string[]
+          badges_count: number
+          category: string
+          evaluations_count: number
+          points: number
+          rank: number
+          rating: number
+          supplier_id: string
+          supplier_name: string
+          tier: string
         }[]
       }
       get_top_suppliers: {
