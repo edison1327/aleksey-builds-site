@@ -125,6 +125,87 @@ const AdminBI = () => {
     return { inflow, outflow, net: inflow - outflow };
   }, [cash]);
 
+  const alerts = useMemo(() => {
+    const list: { level: "warn" | "critical"; title: string; msg: string }[] = [];
+
+    // 1. Proyectos con margen negativo o bajo
+    projects.forEach((p) => {
+      const pct = Number(p.margin_pct);
+      if (Number(p.total_cost) === 0 && Number(p.invoiced_total) === 0) return;
+      if (pct < 0) {
+        list.push({
+          level: "critical",
+          title: `Proyecto en pérdida: ${p.project_title}`,
+          msg: `Margen ${pct.toFixed(1)}% — costo ${fmt(Number(p.total_cost))} vs facturado ${fmt(Number(p.invoiced_total))}`,
+        });
+      } else if (pct < 10) {
+        list.push({
+          level: "warn",
+          title: `Margen bajo: ${p.project_title}`,
+          msg: `Solo ${pct.toFixed(1)}% de margen (< 10% recomendado)`,
+        });
+      }
+    });
+
+    // 2. Presupuesto excedido por categoría
+    const budgetByProject = new Map<string, Map<string, number>>();
+    budgets.forEach((b) => {
+      if (!budgetByProject.has(b.project_id)) budgetByProject.set(b.project_id, new Map());
+      const m = budgetByProject.get(b.project_id)!;
+      m.set(b.category, (m.get(b.category) || 0) + Number(b.planned_amount));
+    });
+    projects.forEach((p) => {
+      const plans = budgetByProject.get(p.project_id);
+      if (!plans) return;
+      const checks: [string, number, string][] = [
+        ["labor", Number(p.labor_cost), "Mano de obra"],
+        ["materials", Number(p.materials_cost), "Materiales"],
+        ["subcontract", Number(p.subcontract_cost), "Subcontratos"],
+      ];
+      checks.forEach(([cat, real, label]) => {
+        const plan = plans.get(cat) || 0;
+        if (plan > 0 && real > plan) {
+          const over = ((real - plan) / plan) * 100;
+          list.push({
+            level: over > 20 ? "critical" : "warn",
+            title: `Sobrecosto en ${p.project_title} — ${label}`,
+            msg: `Real ${fmt(real)} supera plan ${fmt(plan)} (+${over.toFixed(0)}%)`,
+          });
+        }
+      });
+    });
+
+    // 3. Liquidez negativa próximas 4 semanas
+    const next4 = cash.slice(0, 4);
+    const net4 = next4.reduce((s, r) => s + Number(r.net || 0), 0);
+    if (next4.length && net4 < 0) {
+      list.push({
+        level: "critical",
+        title: "Alerta de liquidez",
+        msg: `Flujo neto proyectado próximas 4 semanas: ${fmt(net4)}`,
+      });
+    }
+
+    // 4. Mes actual con costos > ingresos
+    const now = new Date();
+    const current = monthly.find((m) => {
+      const d = new Date(m.month);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    });
+    if (current) {
+      const cost = Number(current.purchase_cost) + Number(current.labor_cost);
+      if (cost > Number(current.invoiced) && cost > 0) {
+        list.push({
+          level: "warn",
+          title: "Costos superan ingresos este mes",
+          msg: `Ingresos ${fmt(Number(current.invoiced))} vs costos ${fmt(cost)}`,
+        });
+      }
+    }
+
+    return list;
+  }, [projects, budgets, cash, monthly]);
+
   const monthlyChart = monthly.map((m) => ({
     month: new Date(m.month).toLocaleDateString("es-PE", { month: "short", year: "2-digit" }),
     Ingresos: Number(m.invoiced),
