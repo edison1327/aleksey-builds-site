@@ -344,6 +344,7 @@ const ChatWidget = () => {
                 disabled={isLoading || !input.trim()}
                 size="icon"
                 className="shrink-0"
+                aria-label="Enviar mensaje"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
