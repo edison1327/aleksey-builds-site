@@ -63,6 +63,8 @@ const AdminRfqs = () => {
 
   useEffect(() => { load(); }, []);
 
+  const [detailGami, setDetailGami] = useState<Record<string, any>>({});
+
   const loadDetail = async (rfq: Rfq) => {
     setDetail(rfq);
     const [it, inv, resp] = await Promise.all([
@@ -73,6 +75,15 @@ const AdminRfqs = () => {
     setDetailItems(it.data || []);
     setDetailInvites(inv.data || []);
     setDetailResponses(resp.data || []);
+    const supplierIds = Array.from(new Set((resp.data || []).map((r: any) => r.supplier_id).filter(Boolean)));
+    if (supplierIds.length) {
+      const { data: g } = await (supabase as any).rpc("get_supplier_gamification", { _supplier_id: null });
+      const map: Record<string, any> = {};
+      (g || []).forEach((row: any) => { if (supplierIds.includes(row.supplier_id)) map[row.supplier_id] = row; });
+      setDetailGami(map);
+    } else {
+      setDetailGami({});
+    }
   };
 
   const createRfq = async () => {
@@ -318,36 +329,88 @@ const AdminRfqs = () => {
                 </Card>
 
                 <Card>
-                  <CardHeader className="pb-2"><CardTitle className="text-sm">Respuestas ({detailResponses.length})</CardTitle></CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardHeader className="pb-2"><CardTitle className="text-sm">Comparativa de cotizaciones ({detailResponses.length})</CardTitle></CardHeader>
+                  <CardContent className="space-y-3">
                     {detailResponses.length === 0 && <p className="text-xs text-muted-foreground">Aún no hay cotizaciones.</p>}
-                    {detailResponses.map((r: any) => {
-                      const isAwarded = detail.awarded_response_id === r.id;
+                    {detailResponses.length > 0 && (() => {
+                      const prices = detailResponses.map((r:any)=>Number(r.total_amount||0));
+                      const minPrice = Math.min(...prices);
+                      const maxPrice = Math.max(...prices);
+                      const deliveries = detailResponses.map((r:any)=>Number(r.delivery_days||9999));
+                      const minDelivery = Math.min(...deliveries);
+                      const scored = detailResponses.map((r:any) => {
+                        const g = detailGami[r.supplier_id];
+                        const priceScore = maxPrice === minPrice ? 1 : 1 - (Number(r.total_amount)-minPrice)/(maxPrice-minPrice);
+                        const delivScore = Number(r.delivery_days||9999) === minDelivery ? 1 : minDelivery/Number(r.delivery_days||9999);
+                        const trustScore = Math.min(1, (Number(g?.points||0) + Number(g?.rating||0)*10) / 120);
+                        const total = priceScore*0.5 + delivScore*0.25 + trustScore*0.25;
+                        return { r, total };
+                      });
+                      const recommendedId = scored.slice().sort((a,b)=>b.total-a.total)[0]?.r.id;
                       return (
-                        <div key={r.id} className={`border rounded-lg p-3 ${isAwarded ? "border-emerald-500 bg-emerald-500/5" : ""}`}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="font-semibold flex items-center gap-2">
-                                {r.suppliers?.name}
-                                {isAwarded && <Badge className="bg-emerald-500/20 text-emerald-700"><Trophy className="h-3 w-3 mr-1" />Adjudicada</Badge>}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                Entrega: {r.delivery_days ?? "—"} días · Pago: {r.payment_terms || "—"} · Válida: {r.validity_days} días
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-lg font-bold">{r.currency} {Number(r.total_amount).toFixed(2)}</div>
-                              {detail.status !== "awarded" && (
-                                <Button size="sm" className="mt-1 gap-1" onClick={() => award(r.id)}>
-                                  <Trophy className="h-3.5 w-3.5" /> Adjudicar
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                          {r.notes && <p className="text-xs mt-2 text-muted-foreground">{r.notes}</p>}
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="text-left border-b">
+                                <th className="p-2">Proveedor</th>
+                                <th className="p-2">Total</th>
+                                <th className="p-2">Entrega</th>
+                                <th className="p-2">Pago</th>
+                                <th className="p-2">Válida</th>
+                                <th className="p-2">Nivel</th>
+                                <th className="p-2">Rating</th>
+                                <th className="p-2">Score</th>
+                                <th className="p-2"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {scored.map(({ r, total }) => {
+                                const isAwarded = detail.awarded_response_id === r.id;
+                                const isCheapest = Number(r.total_amount) === minPrice;
+                                const isFastest = Number(r.delivery_days||9999) === minDelivery;
+                                const isRecommended = r.id === recommendedId && !isAwarded && detail.status !== "awarded";
+                                const g = detailGami[r.supplier_id];
+                                return (
+                                  <tr key={r.id} className={`border-b ${isAwarded ? "bg-emerald-500/10" : isRecommended ? "bg-blue-500/5" : ""}`}>
+                                    <td className="p-2">
+                                      <div className="font-semibold">{r.suppliers?.name}</div>
+                                      <div className="flex gap-1 mt-1 flex-wrap">
+                                        {isAwarded && <Badge className="bg-emerald-500/20 text-emerald-700 text-[10px]"><Trophy className="h-3 w-3 mr-0.5"/>Adjudicada</Badge>}
+                                        {isRecommended && <Badge className="bg-blue-500/20 text-blue-700 text-[10px]"><Sparkles className="h-3 w-3 mr-0.5"/>Recomendada</Badge>}
+                                        {isCheapest && !isAwarded && <Badge variant="outline" className="text-[10px]">💰 Más barata</Badge>}
+                                        {isFastest && !isAwarded && <Badge variant="outline" className="text-[10px]">⚡ Más rápida</Badge>}
+                                      </div>
+                                    </td>
+                                    <td className="p-2 font-bold whitespace-nowrap">{r.currency} {Number(r.total_amount).toFixed(2)}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.delivery_days ?? "—"} d</td>
+                                    <td className="p-2 text-xs">{r.payment_terms || "—"}</td>
+                                    <td className="p-2 text-xs">{r.validity_days} d</td>
+                                    <td className="p-2 text-xs">{g?.tier || "—"}</td>
+                                    <td className="p-2 text-xs">{g ? `${Number(g.rating).toFixed(1)}★ (${g.evaluations_count})` : "—"}</td>
+                                    <td className="p-2">
+                                      <div className="flex items-center gap-1">
+                                        <div className="h-2 w-16 bg-muted rounded overflow-hidden">
+                                          <div className="h-full bg-primary" style={{ width: `${Math.round(total*100)}%` }} />
+                                        </div>
+                                        <span className="text-xs">{Math.round(total*100)}</span>
+                                      </div>
+                                    </td>
+                                    <td className="p-2 whitespace-nowrap">
+                                      {detail.status !== "awarded" && (
+                                        <Button size="sm" variant={isRecommended ? "default" : "outline"} className="gap-1" onClick={() => award(r.id)}>
+                                          <Trophy className="h-3.5 w-3.5" /> Adjudicar
+                                        </Button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                          <p className="text-[11px] text-muted-foreground mt-2">Score = 50% precio + 25% tiempo de entrega + 25% confianza del proveedor.</p>
                         </div>
                       );
-                    })}
+                    })()}
                   </CardContent>
                 </Card>
               </div>
