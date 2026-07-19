@@ -445,6 +445,13 @@ const ProjectDetailPage = () => {
 
       <section className="pt-32 pb-12 bg-secondary">
         <div className="container mx-auto px-4">
+          <Breadcrumbs
+            items={[
+              { label: "Proyectos", href: "/proyectos" },
+              { label: title },
+            ]}
+            className="mb-4 text-secondary-foreground/70 [&_a:hover]:text-primary [&_[aria-current='page']]:text-secondary-foreground"
+          />
           <Link
             to="/proyectos"
             className="inline-flex items-center gap-2 text-secondary-foreground/80 hover:text-secondary-foreground mb-6 text-sm font-heading"
