@@ -66,6 +66,7 @@ const AdminProjects = () => {
     const { data, error } = await supabase
       .from("projects")
       .select("*")
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true });
 
     if (error) {
