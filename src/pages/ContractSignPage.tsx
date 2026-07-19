@@ -104,7 +104,7 @@ export default function ContractSignPage() {
 
   return (
     <div className="min-h-dvh bg-muted/30 py-8 px-4">
-      <SEO title={`Firmar contrato ${contract.code}`} description="Firma electrónica de contrato" />
+      <SEO title={`Firmar contrato ${contract.code}`} description="Firma electrónica de contrato" path={`/firmar/${token}`} />
       <div className="max-w-3xl mx-auto space-y-4">
         <Card className="p-6 space-y-3">
           <div className="flex items-start justify-between gap-3 flex-wrap">
