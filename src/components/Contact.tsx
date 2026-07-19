@@ -39,6 +39,7 @@ const Contact = () => {
     phone: "",
     message: "",
   });
+  const [website, setWebsite] = useState(""); // honeypot
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
