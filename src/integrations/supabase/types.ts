@@ -4447,6 +4447,18 @@ export type Database = {
           purchase_cost: number
         }[]
       }
+      get_pending_supplier_evaluations: {
+        Args: never
+        Returns: {
+          days_overdue: number
+          end_date: string
+          subcontract_code: string
+          subcontract_id: string
+          subcontract_title: string
+          supplier_id: string
+          supplier_name: string
+        }[]
+      }
       get_project_pnl: {
         Args: never
         Returns: {
@@ -4514,6 +4526,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      notify_pending_supplier_evaluations: { Args: never; Returns: number }
       sign_contract_with_token: {
         Args: {
           _ip: string
