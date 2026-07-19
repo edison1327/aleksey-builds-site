@@ -111,6 +111,22 @@ const QuotePage = () => {
     fetchEquipment();
   }, []);
 
+  // Pre-fill form from URL params or authenticated user session
+  useEffect(() => {
+    const meta = (user?.user_metadata as any) || {};
+    const qName = searchParams.get("nombre") || meta.full_name || meta.name || "";
+    const qEmail = searchParams.get("email") || user?.email || "";
+    const qPhone = searchParams.get("telefono") || meta.phone || "";
+    const qCompany = searchParams.get("empresa") || meta.company || "";
+    setFormData((prev) => ({
+      ...prev,
+      name: prev.name || qName,
+      email: prev.email || qEmail,
+      phone: prev.phone || qPhone,
+      company: prev.company || qCompany,
+    }));
+  }, [user, searchParams]);
+
   const fetchEquipment = async () => {
     const [machineryRes, vehiclesRes] = await Promise.all([
       supabase.from("machinery").select("id, name, brand, model, category, image_url, daily_rate").eq("is_active", true).eq("is_available", true).order("name"),

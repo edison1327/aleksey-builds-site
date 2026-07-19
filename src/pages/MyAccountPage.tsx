@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, FileText, CalendarRange, FileSignature, ClipboardList, LogOut, Plus, MessageSquare, Receipt } from "lucide-react";
+import { Loader2, FileText, CalendarRange, FileSignature, ClipboardList, LogOut, Plus, MessageSquare, Receipt, History } from "lucide-react";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import ClientBookings from "@/components/portal/ClientBookings";
@@ -13,6 +13,7 @@ import ClientDocuments from "@/components/portal/ClientDocuments";
 import ClientInvoices from "@/components/portal/ClientInvoices";
 import ClientContracts from "@/components/portal/ClientContracts";
 import ClientWorkOrders from "@/components/portal/ClientWorkOrders";
+import ClientServiceHistory from "@/components/portal/ClientServiceHistory";
 
 interface Summary {
   quotes: number;
@@ -90,7 +91,9 @@ const MyAccountPage = () => {
             </div>
             <div className="flex gap-2">
               <Button asChild>
-                <Link to="/cotizar"><Plus className="h-4 w-4 mr-2" />Nueva solicitud</Link>
+                <Link to={`/cotizar?nombre=${encodeURIComponent(displayName)}&email=${encodeURIComponent(email)}`}>
+                  <Plus className="h-4 w-4 mr-2" />Nueva solicitud
+                </Link>
               </Button>
               <Button variant="outline" onClick={() => signOut().then(() => navigate("/"))}>
                 <LogOut className="h-4 w-4 mr-2" />Salir
@@ -114,10 +117,11 @@ const MyAccountPage = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="invoices">
-            <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-4 h-auto">
+            <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-4 h-auto">
               <TabsTrigger value="invoices">Facturas</TabsTrigger>
               <TabsTrigger value="contracts">Contratos</TabsTrigger>
               <TabsTrigger value="workorders">Órdenes de trabajo</TabsTrigger>
+              <TabsTrigger value="history"><History className="h-3 w-3 mr-1" />Historial</TabsTrigger>
               <TabsTrigger value="bookings">Reservas</TabsTrigger>
               <TabsTrigger value="documents">Documentos</TabsTrigger>
             </TabsList>
@@ -125,6 +129,7 @@ const MyAccountPage = () => {
             <TabsContent value="invoices"><ClientInvoices email={email} /></TabsContent>
             <TabsContent value="contracts"><ClientContracts email={email} /></TabsContent>
             <TabsContent value="workorders"><ClientWorkOrders email={email} /></TabsContent>
+            <TabsContent value="history"><ClientServiceHistory email={email} /></TabsContent>
             <TabsContent value="bookings"><ClientBookings email={email} /></TabsContent>
             <TabsContent value="documents"><ClientDocuments userId={user.id} /></TabsContent>
           </Tabs>
