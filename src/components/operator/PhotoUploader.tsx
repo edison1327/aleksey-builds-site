@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Camera, Trash2, ImageIcon } from "lucide-react";
+import { Camera, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { compressImage, formatBytes } from "@/lib/imageCompress";
+
 
 type Photo = {
   id: string;
@@ -24,7 +26,9 @@ type Props = {
 export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
 
   const load = async () => {
     const { data } = await supabase
@@ -48,6 +52,7 @@ export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
 
   const handleFile = async (file: File) => {
     setUploading(true);
+    setProgress("Comprimiendo…");
     try {
       // Try to get GPS
       let lat: number | null = null, lng: number | null = null;
@@ -59,11 +64,21 @@ export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
         lng = pos.coords.longitude;
       } catch { /* ignore */ }
 
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `${userId}/${workOrderId}/${kind}/${Date.now()}.${ext}`;
+      // Compress (skip if already very small)
+      let toUpload: Blob = file;
+      let originalSize = file.size, compressedSize = file.size;
+      if (file.size > 300 * 1024) {
+        const c = await compressImage(file, { maxDim: 1600, quality: 0.82 });
+        toUpload = c.blob;
+        originalSize = c.originalSize;
+        compressedSize = c.compressedSize;
+      }
+
+      setProgress(`Subiendo (${formatBytes(compressedSize)})…`);
+      const path = `${userId}/${workOrderId}/${kind}/${Date.now()}.jpg`;
       const { error: upErr } = await supabase.storage
         .from("work-order-media")
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, toUpload, { contentType: "image/jpeg", upsert: false });
       if (upErr) throw upErr;
 
       const { error: dbErr } = await supabase.from("work_order_photos").insert({
@@ -74,14 +89,19 @@ export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
         lat, lng,
       });
       if (dbErr) throw dbErr;
-      toast.success("Foto subida");
+      const saved = originalSize > compressedSize
+        ? `Foto subida · ahorrado ${formatBytes(originalSize - compressedSize)}`
+        : "Foto subida";
+      toast.success(saved);
       load();
     } catch (e: any) {
       toast.error(e.message || "Error subiendo foto");
     } finally {
       setUploading(false);
+      setProgress("");
     }
   };
+
 
   const remove = async (p: Photo) => {
     if (!confirm("¿Eliminar foto?")) return;
@@ -97,7 +117,9 @@ export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
           <ImageIcon className="h-3 w-3" /> {label}
         </p>
         <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()} disabled={uploading}>
-          <Camera className="h-4 w-4 mr-1" /> {uploading ? "Subiendo…" : "Cámara"}
+          {uploading ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Camera className="h-4 w-4 mr-1" />}
+          {uploading ? (progress || "Subiendo…") : "Cámara"}
+
         </Button>
         <input
           ref={inputRef} type="file" accept="image/*" capture="environment" hidden

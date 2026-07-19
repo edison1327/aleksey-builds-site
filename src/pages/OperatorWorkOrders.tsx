@@ -28,7 +28,9 @@ type WO = {
   scheduled_start: string | null; scheduled_end: string | null;
   estimated_cost: number | null; actual_cost: number | null;
   client_signature_url: string | null; client_signature_name: string | null; client_signature_at: string | null;
+  updated_at?: string;
 };
+
 
 
 const STATUS_LABEL: Record<string, string> = {
@@ -104,7 +106,7 @@ export default function OperatorWorkOrders() {
     const next = (wo.checklist || []).map((t) => t.id === taskId ? { ...t, done: !t.done } : t);
     setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, checklist: next } : w));
     if (!navigator.onLine) {
-      enqueue({ table: "work_orders", action: "update", payload: { checklist: next }, match: { id: wo.id }, label: `Checklist OT ${wo.code}` });
+      enqueue({ table: "work_orders", action: "update", payload: { checklist: next }, match: { id: wo.id }, label: `Checklist OT ${wo.code}`, expectedUpdatedAt: wo.updated_at });
       return;
     }
     const { error } = await supabase.from("work_orders").update({ checklist: next }).eq("id", wo.id);
@@ -125,7 +127,7 @@ export default function OperatorWorkOrders() {
       patch.completion_lng = lng;
     }
     if (!navigator.onLine) {
-      enqueue({ table: "work_orders", action: "update", payload: patch, match: { id: wo.id }, label: `Estado OT ${wo.code}: ${status}` });
+      enqueue({ table: "work_orders", action: "update", payload: patch, match: { id: wo.id }, label: `Estado OT ${wo.code}: ${status}`, expectedUpdatedAt: wo.updated_at });
       setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, ...patch } : w));
       toast.info("Sin conexión: cambio en cola");
       return;
@@ -172,7 +174,7 @@ export default function OperatorWorkOrders() {
     if (!note) return;
     const combined = wo.notes ? `${wo.notes}\n\n[${new Date().toLocaleString("es")}] ${note}` : `[${new Date().toLocaleString("es")}] ${note}`;
     if (!navigator.onLine) {
-      enqueue({ table: "work_orders", action: "update", payload: { notes: combined }, match: { id: wo.id }, label: `Nota OT ${wo.code}` });
+      enqueue({ table: "work_orders", action: "update", payload: { notes: combined }, match: { id: wo.id }, label: `Nota OT ${wo.code}`, expectedUpdatedAt: wo.updated_at });
       setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, notes: combined } : w));
       setNotes({ ...notes, [wo.id]: "" });
       toast.info("Sin conexión: nota en cola");

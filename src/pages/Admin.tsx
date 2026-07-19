@@ -11,7 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake, Zap } from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -54,6 +54,8 @@ const AdminIntegrations = lazy(() => import("@/components/admin/AdminIntegration
 const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
 const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
+const AdminIncidents = lazy(() => import("@/components/admin/AdminIncidents"));
+
 const AdminCostsMetrics = lazy(() => import("@/components/admin/AdminCostsMetrics"));
 const AdminPdfSettings = lazy(() => import("@/components/admin/AdminPdfSettings"));
 const AdminOfflinePending = lazy(() => import("@/components/admin/AdminOfflinePending"));
@@ -267,6 +269,8 @@ const Admin = () => {
     { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "operaciones" },
     { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
     { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
+    { id: "incidents", label: "Incidencias de campo", icon: AlertTriangle, category: "operaciones" },
+
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
     { id: "bi", label: "BI & Presupuestos", icon: TrendingUp, category: "operaciones", adminOnly: true },
     { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
@@ -490,6 +494,8 @@ const Admin = () => {
       case "calendar": return <AdminOperationsCalendar />;
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
+      case "incidents": return <AdminIncidents />;
+
       case "costs": return <AdminCostsMetrics />;
       case "bi": return <AdminBI />;
       case "invoices": return <AdminInvoices />;
