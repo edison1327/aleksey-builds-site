@@ -292,6 +292,7 @@ export type Database = {
           email: string
           id: string
           is_read: boolean
+          location_id: string | null
           message: string
           name: string
           phone: string | null
@@ -312,6 +313,7 @@ export type Database = {
           email: string
           id?: string
           is_read?: boolean
+          location_id?: string | null
           message: string
           name: string
           phone?: string | null
@@ -332,6 +334,7 @@ export type Database = {
           email?: string
           id?: string
           is_read?: boolean
+          location_id?: string | null
           message?: string
           name?: string
           phone?: string | null
@@ -339,7 +342,15 @@ export type Database = {
           status?: string | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contact_messages_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       equipment_bookings: {
         Row: {
@@ -351,6 +362,7 @@ export type Database = {
           equipment_id: string
           equipment_type: string
           id: string
+          location_id: string | null
           notes: string | null
           start_date: string
           status: string
@@ -365,6 +377,7 @@ export type Database = {
           equipment_id: string
           equipment_type: string
           id?: string
+          location_id?: string | null
           notes?: string | null
           start_date: string
           status?: string
@@ -379,12 +392,21 @@ export type Database = {
           equipment_id?: string
           equipment_type?: string
           id?: string
+          location_id?: string | null
           notes?: string | null
           start_date?: string
           status?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "equipment_bookings_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       error_log: {
         Row: {
@@ -562,6 +584,7 @@ export type Database = {
           is_active: boolean | null
           location: string
           location_en: string | null
+          location_id: string | null
           requirements: Json | null
           requirements_en: Json | null
           salary: string | null
@@ -582,6 +605,7 @@ export type Database = {
           is_active?: boolean | null
           location: string
           location_en?: string | null
+          location_id?: string | null
           requirements?: Json | null
           requirements_en?: Json | null
           salary?: string | null
@@ -602,6 +626,7 @@ export type Database = {
           is_active?: boolean | null
           location?: string
           location_en?: string | null
+          location_id?: string | null
           requirements?: Json | null
           requirements_en?: Json | null
           salary?: string | null
@@ -610,6 +635,68 @@ export type Database = {
           title_en?: string | null
           type?: string
           type_en?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_positions_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locations: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          hours: string | null
+          id: string
+          is_active: boolean
+          is_primary: boolean
+          lat: number | null
+          lng: number | null
+          name: string
+          phone: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          hours?: string | null
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          lat?: number | null
+          lng?: number | null
+          name: string
+          phone?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          hours?: string | null
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          phone?: string | null
+          slug?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []
@@ -627,6 +714,7 @@ export type Database = {
           image_url: string | null
           is_active: boolean | null
           is_available: boolean | null
+          location_id: string | null
           model: string | null
           name: string
           name_en: string | null
@@ -647,6 +735,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          location_id?: string | null
           model?: string | null
           name: string
           name_en?: string | null
@@ -667,6 +756,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          location_id?: string | null
           model?: string | null
           name?: string
           name_en?: string | null
@@ -675,7 +765,15 @@ export type Database = {
           specs?: Json | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "machinery_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       message_replies: {
         Row: {
@@ -1293,6 +1391,7 @@ export type Database = {
           image_url: string | null
           is_active: boolean | null
           is_available: boolean | null
+          location_id: string | null
           model: string | null
           name: string
           name_en: string | null
@@ -1313,6 +1412,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          location_id?: string | null
           model?: string | null
           name: string
           name_en?: string | null
@@ -1333,6 +1433,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          location_id?: string | null
           model?: string | null
           name?: string
           name_en?: string | null
@@ -1341,7 +1442,15 @@ export type Database = {
           specs?: Json | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

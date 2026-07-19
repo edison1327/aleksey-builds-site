@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, GripHorizontal, Copy } from "lucide-react";
 import { duplicateRow } from "@/lib/duplicateRow";
 import ImageUpload from "./ImageUpload";
+import LocationSelect from "./LocationSelect";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
 
@@ -29,6 +30,7 @@ interface Machinery {
   is_available: boolean;
   is_active: boolean;
   sort_order: number;
+  location_id: string | null;
 }
 
 const AdminMachinery = () => {
@@ -78,6 +80,7 @@ const AdminMachinery = () => {
             is_available: editingMachine.is_available,
             is_active: editingMachine.is_active,
             sort_order: editingMachine.sort_order,
+            location_id: editingMachine.location_id,
           })
           .eq("id", editingMachine.id);
 
@@ -100,6 +103,7 @@ const AdminMachinery = () => {
             is_available: editingMachine.is_available,
             is_active: editingMachine.is_active,
             sort_order: machinery.length,
+            location_id: editingMachine.location_id,
           });
 
         if (error) throw error;
@@ -194,6 +198,7 @@ const AdminMachinery = () => {
       is_available: true,
       is_active: true,
       sort_order: machinery.length,
+      location_id: null,
     });
     setIsDialogOpen(true);
   };
@@ -334,6 +339,13 @@ const AdminMachinery = () => {
               <Input
                 value={editingMachine?.category || ""}
                 onChange={(e) => setEditingMachine(prev => prev ? { ...prev, category: e.target.value } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Sede</label>
+              <LocationSelect
+                value={editingMachine?.location_id || null}
+                onChange={(v) => setEditingMachine(prev => prev ? { ...prev, location_id: v } : null)}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">

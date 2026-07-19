@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -45,6 +45,7 @@ const AdminErrorLog = lazy(() => import("@/components/admin/AdminErrorLog"));
 const AdminClientDocuments = lazy(() => import("@/components/admin/AdminClientDocuments"));
 const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
+const AdminLocations = lazy(() => import("@/components/admin/AdminLocations"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
@@ -175,6 +176,7 @@ const Admin = () => {
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
     { id: "users", label: "Usuarios", icon: UserCog, category: "general", adminOnly: true },
+    { id: "locations", label: "Sedes", icon: MapPin, category: "general", adminOnly: true },
     { id: "hero", label: "Hero", icon: Home, category: "contenido" },
     { id: "about", label: "About", icon: Info, category: "contenido" },
     { id: "teamstats", label: "Estadísticas", icon: BarChart3, category: "contenido" },
@@ -406,6 +408,7 @@ const Admin = () => {
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
       case "pipeline": return <AdminPipeline />;
+      case "locations": return <AdminLocations />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };

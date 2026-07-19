@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, GripHorizontal, Copy } from "lucide-react";
 import { duplicateRow } from "@/lib/duplicateRow";
 import ImageUpload from "./ImageUpload";
+import LocationSelect from "./LocationSelect";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
 
@@ -29,7 +30,9 @@ interface Vehicle {
   is_available: boolean;
   is_active: boolean;
   sort_order: number;
+  location_id: string | null;
 }
+
 
 const AdminVehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -78,6 +81,7 @@ const AdminVehicles = () => {
             is_available: editingVehicle.is_available,
             is_active: editingVehicle.is_active,
             sort_order: editingVehicle.sort_order,
+            location_id: editingVehicle.location_id,
           })
           .eq("id", editingVehicle.id);
 
@@ -100,6 +104,7 @@ const AdminVehicles = () => {
             is_available: editingVehicle.is_available,
             is_active: editingVehicle.is_active,
             sort_order: vehicles.length,
+            location_id: editingVehicle.location_id,
           });
 
         if (error) throw error;
@@ -192,6 +197,7 @@ const AdminVehicles = () => {
       is_available: true,
       is_active: true,
       sort_order: vehicles.length,
+      location_id: null,
     });
     setIsDialogOpen(true);
   };
@@ -332,6 +338,13 @@ const AdminVehicles = () => {
               <Input
                 value={editingVehicle?.category || ""}
                 onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, category: e.target.value } : null)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Sede</label>
+              <LocationSelect
+                value={editingVehicle?.location_id || null}
+                onChange={(v) => setEditingVehicle(prev => prev ? { ...prev, location_id: v } : null)}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
