@@ -268,8 +268,14 @@ export default function AdminOperationsCalendar() {
                 ? format(cursor, "MMMM yyyy", { locale: es })
                 : `${format(startOfWeek(cursor, { weekStartsOn: 1 }), "d MMM", { locale: es })} — ${format(endOfWeek(cursor, { weekStartsOn: 1 }), "d MMM yyyy", { locale: es })}`}
             </div>
-            <Button size="sm" onClick={() => setMOpen(true)}>
-              <Plus className="h-4 w-4 mr-1" /> Mantenimiento
+            <Button size="sm" variant="outline" onClick={exportPdf}>
+              <FileDown className="h-4 w-4 mr-1" /> PDF
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setMOpen(true)}>
+              <Wrench className="h-4 w-4 mr-1" /> Mantto.
+            </Button>
+            <Button size="sm" onClick={() => openBookingFor()}>
+              <CalendarPlus className="h-4 w-4 mr-1" /> Reserva
             </Button>
           </div>
         </CardHeader>
