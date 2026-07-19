@@ -269,17 +269,19 @@ const AdminBI = () => {
             Rentabilidad real por proyecto, P&L mensual y forecast de caja a 90 días
           </p>
         </div>
-        <Button variant="outline" onClick={async () => {
-          const { data, error } = await supabase.functions.invoke('bi-alerts-scan');
-          if (error) return toast.error(error.message);
-          const d = data as { detected: number; sent: number };
-          toast.success(`Escaneo: ${d.detected} alertas, ${d.sent} nuevas notificaciones`);
-        }}>
-          <AlertTriangle className="h-4 w-4 mr-1" /> Escanear alertas
-        </Button>
-        <Button variant="outline" onClick={load}>
-          <RefreshCw className="h-4 w-4 mr-1" /> Refrescar
-        </Button>
+        <div className="flex gap-2 flex-wrap">
+          <Button variant="outline" onClick={async () => {
+            const { data, error } = await supabase.functions.invoke('bi-alerts-scan');
+            if (error) return toast.error(error.message);
+            const d = data as { detected: number; sent: number };
+            toast.success(`Escaneo: ${d.detected} alertas, ${d.sent} nuevas notificaciones`);
+          }}>
+            <AlertTriangle className="h-4 w-4 mr-1" /> Escanear alertas
+          </Button>
+          <Button variant="outline" onClick={load}>
+            <RefreshCw className="h-4 w-4 mr-1" /> Refrescar
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
