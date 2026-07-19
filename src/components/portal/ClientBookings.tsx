@@ -73,7 +73,7 @@ const ClientBookings = ({ email }: Props) => {
             <div className="flex items-start justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-primary" />
-                <span className="font-semibold">{b.equipment_name || b.equipment_type || "Equipo"}</span>
+                <span className="font-semibold">{b.equipment_type || "Equipo"}</span>
                 {statusBadge(b.status)}
               </div>
               <span className="text-xs text-muted-foreground">
@@ -85,9 +85,6 @@ const ClientBookings = ({ email }: Props) => {
                 <CalendarRange className="h-4 w-4" />
                 {format(new Date(b.start_date), "PP", { locale: es })} — {format(new Date(b.end_date), "PP", { locale: es })}
               </span>
-              {b.location && (
-                <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {b.location}</span>
-              )}
             </div>
             {b.notes && <p className="text-sm text-muted-foreground italic">"{b.notes}"</p>}
           </CardContent>
