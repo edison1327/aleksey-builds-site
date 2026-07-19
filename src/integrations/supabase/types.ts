@@ -282,6 +282,13 @@ export type Database = {
         Row: {
           assigned_to: string | null
           created_at: string
+          crm_next_action: string | null
+          crm_next_action_at: string | null
+          crm_notes: string | null
+          crm_order: number
+          crm_stage: Database["public"]["Enums"]["crm_stage"]
+          crm_stage_updated_at: string | null
+          crm_value_pen: number | null
           email: string
           id: string
           is_read: boolean
@@ -295,6 +302,13 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           created_at?: string
+          crm_next_action?: string | null
+          crm_next_action_at?: string | null
+          crm_notes?: string | null
+          crm_order?: number
+          crm_stage?: Database["public"]["Enums"]["crm_stage"]
+          crm_stage_updated_at?: string | null
+          crm_value_pen?: number | null
           email: string
           id?: string
           is_read?: boolean
@@ -308,6 +322,13 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           created_at?: string
+          crm_next_action?: string | null
+          crm_next_action_at?: string | null
+          crm_notes?: string | null
+          crm_order?: number
+          crm_stage?: Database["public"]["Enums"]["crm_stage"]
+          crm_stage_updated_at?: string | null
+          crm_value_pen?: number | null
           email?: string
           id?: string
           is_read?: boolean
@@ -1293,6 +1314,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user" | "editor" | "viewer" | "client"
+      crm_stage: "new" | "contacted" | "quoted" | "negotiation" | "won" | "lost"
       referral_status: "pending" | "registered" | "converted" | "rewarded"
     }
     CompositeTypes: {
@@ -1422,6 +1444,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "editor", "viewer", "client"],
+      crm_stage: ["new", "contacted", "quoted", "negotiation", "won", "lost"],
       referral_status: ["pending", "registered", "converted", "rewarded"],
     },
   },
