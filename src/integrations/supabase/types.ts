@@ -2831,6 +2831,243 @@ export type Database = {
         }
         Relationships: []
       }
+      rfq_invitations: {
+        Row: {
+          access_token: string
+          created_at: string
+          id: string
+          rfq_id: string
+          sent_at: string | null
+          status: string
+          supplier_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          rfq_id: string
+          sent_at?: string | null
+          status?: string
+          supplier_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          rfq_id?: string
+          sent_at?: string | null
+          status?: string
+          supplier_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_invitations_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_invitations_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfq_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          quantity: number
+          rfq_id: string
+          sort_order: number
+          specifications: string | null
+          unit: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          quantity?: number
+          rfq_id: string
+          sort_order?: number
+          specifications?: string | null
+          unit?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          quantity?: number
+          rfq_id?: string
+          sort_order?: number
+          specifications?: string | null
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_items_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfq_responses: {
+        Row: {
+          created_at: string
+          currency: string
+          delivery_days: number | null
+          id: string
+          invitation_id: string | null
+          items_json: Json
+          notes: string | null
+          payment_terms: string | null
+          rfq_id: string
+          status: string
+          submitted_at: string
+          submitted_ip: string | null
+          supplier_id: string
+          total_amount: number
+          updated_at: string
+          validity_days: number | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          delivery_days?: number | null
+          id?: string
+          invitation_id?: string | null
+          items_json?: Json
+          notes?: string | null
+          payment_terms?: string | null
+          rfq_id: string
+          status?: string
+          submitted_at?: string
+          submitted_ip?: string | null
+          supplier_id: string
+          total_amount?: number
+          updated_at?: string
+          validity_days?: number | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          delivery_days?: number | null
+          id?: string
+          invitation_id?: string | null
+          items_json?: Json
+          notes?: string | null
+          payment_terms?: string | null
+          rfq_id?: string
+          status?: string
+          submitted_at?: string
+          submitted_ip?: string | null
+          supplier_id?: string
+          total_amount?: number
+          updated_at?: string
+          validity_days?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_responses_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "rfq_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_responses_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_responses_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfqs: {
+        Row: {
+          awarded_response_id: string | null
+          branch_id: string | null
+          category: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          deadline: string | null
+          description: string | null
+          id: string
+          notes: string | null
+          status: string
+          title: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          awarded_response_id?: string | null
+          branch_id?: string | null
+          category?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          awarded_response_id?: string | null
+          branch_id?: string | null
+          category?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfqs_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           created_at: string
@@ -4222,6 +4459,23 @@ export type Database = {
           total_cost: number
         }[]
       }
+      get_rfq_by_token: {
+        Args: { _token: string }
+        Returns: {
+          category: string
+          code: string
+          currency: string
+          deadline: string
+          description: string
+          invitation_id: string
+          items: Json
+          rfq_id: string
+          status: string
+          supplier_id: string
+          supplier_name: string
+          title: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -4253,6 +4507,20 @@ export type Database = {
         Returns: boolean
       }
       slugify: { Args: { input: string }; Returns: string }
+      submit_rfq_response: {
+        Args: {
+          _currency: string
+          _delivery_days: number
+          _ip: string
+          _items: Json
+          _notes: string
+          _payment_terms: string
+          _token: string
+          _total: number
+          _validity_days: number
+        }
+        Returns: string
+      }
       user_has_branch_access: {
         Args: { _branch_id: string; _user_id: string }
         Returns: boolean
