@@ -30,10 +30,11 @@ type Subcontract = {
   payment_terms: string | null; notes: string | null;
 };
 type Evaluation = {
-  id: string; supplier_id: string; subcontract_id: string | null; project_name: string | null;
+  id: string; supplier_id: string; subcontract_id: string | null; project_id: string | null; project_name: string | null;
   quality_score: number; punctuality_score: number; safety_score: number; communication_score: number;
   overall_score: number | null; would_rehire: boolean; comments: string | null; evaluated_at: string;
 };
+type ProjectLite = { id: string; title: string };
 
 const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista negra" } as Record<string,string>;
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
@@ -44,6 +45,7 @@ export default function AdminSuppliers() {
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
   const [evals, setEvals] = useState<Evaluation[]>([]);
+  const [projects, setProjects] = useState<ProjectLite[]>([]);
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -59,16 +61,18 @@ export default function AdminSuppliers() {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: s }, { data: c }, { data: sc }, { data: ev }] = await Promise.all([
+    const [{ data: s }, { data: c }, { data: sc }, { data: ev }, { data: pr }] = await Promise.all([
       supabase.from("suppliers" as any).select("*").order("name"),
       supabase.from("supplier_certifications" as any).select("*").order("expires_at"),
       supabase.from("subcontracts" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("supplier_evaluations" as any).select("*").order("evaluated_at", { ascending: false }),
+      supabase.from("projects" as any).select("id,title").is("deleted_at", null).order("title"),
     ]);
     setSuppliers((s as any) || []);
     setCerts((c as any) || []);
     setSubs((sc as any) || []);
     setEvals((ev as any) || []);
+    setProjects((pr as any) || []);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -147,7 +151,7 @@ export default function AdminSuppliers() {
   };
 
   // Evaluation CRUD
-  const newEv = (sid?: string) => { setEditEv({ id: "", supplier_id: sid || suppliers[0]?.id || "", subcontract_id: null, project_name: "", quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4, overall_score: null, would_rehire: true, comments: "", evaluated_at: new Date().toISOString().slice(0,10) } as any); setOpenEv(true); };
+  const newEv = (sid?: string) => { setEditEv({ id: "", supplier_id: sid || suppliers[0]?.id || "", subcontract_id: null, project_id: null, project_name: "", quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4, overall_score: null, would_rehire: true, comments: "", evaluated_at: new Date().toISOString().slice(0,10) } as any); setOpenEv(true); };
   const saveEv = async () => {
     if (!editEv) return;
     if (!editEv.supplier_id) return toast.error("Proveedor requerido");
@@ -325,7 +329,7 @@ export default function AdminSuppliers() {
                       <tr key={e.id} className="border-t">
                         <td className="p-3 text-xs">{format(parseISO(e.evaluated_at), "dd/MM/yyyy", { locale: es })}</td>
                         <td className="p-3 font-medium">{supplierName(e.supplier_id)}</td>
-                        <td className="p-3">{e.project_name || (e.subcontract_id ? subs.find(s=>s.id===e.subcontract_id)?.code : "—")}</td>
+                        <td className="p-3">{(e.project_id && projects.find(p=>p.id===e.project_id)?.title) || e.project_name || (e.subcontract_id ? subs.find(s=>s.id===e.subcontract_id)?.code : "—")}</td>
                         <td className="p-3">{e.quality_score}</td>
                         <td className="p-3">{e.punctuality_score}</td>
                         <td className="p-3">{e.safety_score}</td>
@@ -471,7 +475,20 @@ export default function AdminSuppliers() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Nombre del proyecto</Label><Input value={editEv.project_name||""} onChange={(e)=>setEditEv({...editEv, project_name: e.target.value})}/></div>
+              <div><Label>Proyecto del portafolio (opcional)</Label>
+                <Select value={editEv.project_id || "none"} onValueChange={(v)=>{
+                  const pid = v==="none" ? null : v;
+                  const pname = pid ? (projects.find(p=>p.id===pid)?.title || editEv.project_name) : editEv.project_name;
+                  setEditEv({...editEv, project_id: pid, project_name: pid ? (projects.find(p=>p.id===pid)?.title || "") : editEv.project_name });
+                }}>
+                  <SelectTrigger><SelectValue placeholder="— Ninguno —"/></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">— Ninguno —</SelectItem>
+                    {projects.map(p => <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label>Nombre libre del proyecto</Label><Input value={editEv.project_name||""} onChange={(e)=>setEditEv({...editEv, project_name: e.target.value})} placeholder="Si no está en el portafolio"/></div>
               {(["quality_score","punctuality_score","safety_score","communication_score"] as const).map(k => (
                 <div key={k}>
                   <Label>{({quality_score:"Calidad",punctuality_score:"Puntualidad",safety_score:"Seguridad",communication_score:"Comunicación"} as any)[k]} (1-5)</Label>
@@ -531,7 +548,7 @@ export default function AdminSuppliers() {
                       {h.evals.map(e => (
                         <li key={e.id} className="p-2">
                           <div className="flex justify-between">
-                            <span className="font-medium">{e.project_name || "Proyecto"} — ⭐ {Number(e.overall_score||0).toFixed(2)}</span>
+                            <span className="font-medium">{(e.project_id && projects.find(p=>p.id===e.project_id)?.title) || e.project_name || "Proyecto"} — ⭐ {Number(e.overall_score||0).toFixed(2)}</span>
                             <span className="text-xs text-muted-foreground">{format(parseISO(e.evaluated_at), "dd/MM/yyyy", { locale: es })}</span>
                           </div>
                           {e.comments && <p className="text-xs text-muted-foreground mt-1">{e.comments}</p>}

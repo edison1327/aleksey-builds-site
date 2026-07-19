@@ -1868,6 +1868,7 @@ export type Database = {
           evaluated_by: string | null
           id: string
           overall_score: number | null
+          project_id: string | null
           project_name: string | null
           punctuality_score: number
           quality_score: number
@@ -1885,6 +1886,7 @@ export type Database = {
           evaluated_by?: string | null
           id?: string
           overall_score?: number | null
+          project_id?: string | null
           project_name?: string | null
           punctuality_score: number
           quality_score: number
@@ -1902,6 +1904,7 @@ export type Database = {
           evaluated_by?: string | null
           id?: string
           overall_score?: number | null
+          project_id?: string | null
           project_name?: string | null
           punctuality_score?: number
           quality_score?: number
@@ -1912,6 +1915,13 @@ export type Database = {
           would_rehire?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "supplier_evaluations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "supplier_evaluations_subcontract_id_fkey"
             columns: ["subcontract_id"]
