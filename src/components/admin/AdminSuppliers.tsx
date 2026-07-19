@@ -364,6 +364,58 @@ export default function AdminSuppliers() {
         </>
       )}
 
+      {tab === "ranking" && (
+        <>
+          <div className="flex gap-2 items-center flex-wrap">
+            <Input
+              placeholder="Filtrar por categoría (opcional)"
+              value={rankingCategory}
+              onChange={(e)=>setRankingCategory(e.target.value)}
+              className="max-w-xs"
+            />
+            <Button onClick={loadRanking} disabled={rankingLoading}>
+              <Trophy className="h-4 w-4 mr-1"/>Actualizar ranking
+            </Button>
+            <p className="text-xs text-muted-foreground ml-auto">
+              Top proveedores por rating promedio de evaluaciones. Se usa para invitación automática en RFQs.
+            </p>
+          </div>
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50"><tr className="text-left">
+                  <th className="p-3 w-12">#</th>
+                  <th className="p-3">Proveedor</th>
+                  <th className="p-3">Categoría</th>
+                  <th className="p-3">Rating</th>
+                  <th className="p-3">Evaluaciones</th>
+                  <th className="p-3">Recontrataría</th>
+                  <th className="p-3">Última evaluación</th>
+                </tr></thead>
+                <tbody>
+                  {ranking.length === 0 ? (
+                    <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">
+                      {rankingLoading ? "Cargando…" : "Sin datos. Añade evaluaciones para generar el ranking."}
+                    </td></tr>
+                  ) : ranking.map((r, i) => (
+                    <tr key={r.supplier_id} className="border-t">
+                      <td className="p-3 font-bold text-muted-foreground">
+                        {i < 3 ? <Trophy className={`h-4 w-4 ${i===0?"text-amber-500":i===1?"text-slate-400":"text-orange-700"}`}/> : i+1}
+                      </td>
+                      <td className="p-3 font-medium">{r.name}</td>
+                      <td className="p-3">{r.category || "—"}</td>
+                      <td className="p-3 font-bold">⭐ {Number(r.rating ?? 0).toFixed(2)}</td>
+                      <td className="p-3">{r.evaluations_count}</td>
+                      <td className="p-3">{Number(r.would_rehire_pct ?? 0).toFixed(0)}%</td>
+                      <td className="p-3 text-xs">{r.last_evaluated_at ? format(parseISO(r.last_evaluated_at), "dd/MM/yyyy", { locale: es }) : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
 
 
       {/* Supplier Dialog */}
