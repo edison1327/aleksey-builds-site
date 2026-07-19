@@ -40,10 +40,12 @@ const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista 
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
 
 export default function AdminSuppliers() {
-  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking">("suppliers");
+  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations"|"ranking"|"pending">("suppliers");
   const [ranking, setRanking] = useState<any[]>([]);
   const [rankingCategory, setRankingCategory] = useState("");
   const [rankingLoading, setRankingLoading] = useState(false);
+  const [pending, setPending] = useState<any[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
