@@ -1005,6 +1005,51 @@ export type Database = {
         }
         Relationships: []
       }
+      pdf_settings: {
+        Row: {
+          address: string | null
+          company_name: string
+          created_at: string
+          email: string | null
+          footer_note: string | null
+          id: string
+          logo_url: string | null
+          phone: string | null
+          primary_color: string
+          tagline: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          company_name?: string
+          created_at?: string
+          email?: string | null
+          footer_note?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          primary_color?: string
+          tagline?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          company_name?: string
+          created_at?: string
+          email?: string | null
+          footer_note?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          primary_color?: string
+          tagline?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           category: string | null
