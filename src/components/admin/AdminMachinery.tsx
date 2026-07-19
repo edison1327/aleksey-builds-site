@@ -378,7 +378,7 @@ const AdminMachinery = () => {
                 folder="machinery"
               />
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={editingMachine?.is_available || false}
@@ -392,6 +392,20 @@ const AdminMachinery = () => {
                   onCheckedChange={(checked) => setEditingMachine(prev => prev ? { ...prev, is_active: checked } : null)}
                 />
                 <label className="text-sm font-medium">Activo</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={(editingMachine as any)?.is_marketplace || false}
+                  onCheckedChange={(checked) => setEditingMachine(prev => prev ? ({ ...prev, is_marketplace: checked } as any) : null)}
+                />
+                <label className="text-sm font-medium">Marketplace B2B</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={(editingMachine as any)?.is_featured || false}
+                  onCheckedChange={(checked) => setEditingMachine(prev => prev ? ({ ...prev, is_featured: checked } as any) : null)}
+                />
+                <label className="text-sm font-medium">Destacado</label>
               </div>
             </div>
             <Button onClick={handleSave} className="w-full">
