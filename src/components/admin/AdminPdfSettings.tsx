@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,12 +7,34 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { loadPdfSettings, savePdfSettings, DEFAULT_PDF_SETTINGS, type PdfSettings } from "@/lib/pdfSettings";
 import { exportWorkOrderPdf } from "@/lib/pdfExport";
-import { FileDown, Save } from "lucide-react";
+import { FileDown, Save, Upload, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminPdfSettings() {
   const [s, setS] = useState<PdfSettings>(DEFAULT_PDF_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const uploadLogo = async (file: File) => {
+    if (!file.type.startsWith("image/")) { toast.error("Debe ser una imagen"); return; }
+    if (file.size > 2 * 1024 * 1024) { toast.error("Máx 2MB"); return; }
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `pdf-logo-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("site-images").upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      const { data } = supabase.storage.from("site-images").getPublicUrl(path);
+      setS((prev) => ({ ...prev, logo_url: data.publicUrl }));
+      toast.success("Logo subido. Guarda para aplicar.");
+    } catch (e: any) {
+      toast.error(e.message || "Error al subir");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     loadPdfSettings().then((data) => { setS(data); setLoading(false); });
@@ -107,6 +129,40 @@ export default function AdminPdfSettings() {
           <div>
             <Label>Dirección</Label>
             <Input value={s.address || ""} onChange={(e) => update("address", e.target.value)} />
+          </div>
+          <div className="md:col-span-2">
+            <Label>Logo para PDFs</Label>
+            <div className="flex items-start gap-3 flex-wrap">
+              {s.logo_url ? (
+                <div className="relative">
+                  <img src={s.logo_url} alt="Logo" className="h-20 w-20 object-contain rounded-md border border-border bg-white p-1" />
+                  <button
+                    type="button"
+                    onClick={() => update("logo_url", "")}
+                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-0.5"
+                    aria-label="Quitar logo"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="h-20 w-20 rounded-md border border-dashed border-border flex items-center justify-center text-xs text-muted-foreground">Sin logo</div>
+              )}
+              <div className="flex-1 min-w-[240px] space-y-2">
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                  className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadLogo(f); e.target.value = ""; }}
+                />
+                <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>
+                  <Upload className="h-4 w-4 mr-1" /> {uploading ? "Subiendo…" : "Subir logo"}
+                </Button>
+                <Input value={s.logo_url || ""} onChange={(e) => update("logo_url", e.target.value)} placeholder="o pega una URL https://…" />
+                <p className="text-xs text-muted-foreground">PNG/JPG/WebP cuadrado, máx 2MB. Se sube al almacenamiento público del sitio.</p>
+              </div>
+            </div>
           </div>
         </div>
         <div>
