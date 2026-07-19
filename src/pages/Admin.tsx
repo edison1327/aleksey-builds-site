@@ -287,6 +287,7 @@ const Admin = () => {
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
     { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
     { id: "webhooks", label: "Webhooks", icon: Webhook, category: "general", adminOnly: true },
+    { id: "integrations", label: "Integraciones", icon: Zap, category: "general", adminOnly: true },
     { id: "inbox", label: "Bandeja notificaciones", icon: Bell, category: "comunicacion" },
     { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
     { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
