@@ -518,6 +518,7 @@ const Admin = () => {
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;
       case "purchasing": return <AdminPurchasing />;
+      case "rfqs": return <AdminRfqs />;
       case "hr": return <AdminHR />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
