@@ -456,6 +456,51 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment_service_log: {
+        Row: {
+          cost: number | null
+          created_at: string
+          created_by: string | null
+          equipment_id: string
+          equipment_type: string
+          hours_added: number | null
+          hours_at_service: number | null
+          id: string
+          notes: string | null
+          performed_at: string
+          performed_by: string | null
+          service_type: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          equipment_id: string
+          equipment_type: string
+          hours_added?: number | null
+          hours_at_service?: number | null
+          id?: string
+          notes?: string | null
+          performed_at?: string
+          performed_by?: string | null
+          service_type: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          equipment_id?: string
+          equipment_type?: string
+          hours_added?: number | null
+          hours_at_service?: number | null
+          id?: string
+          notes?: string | null
+          performed_at?: string
+          performed_by?: string | null
+          service_type?: string
+        }
+        Relationships: []
+      }
       error_log: {
         Row: {
           context: Json | null
@@ -766,10 +811,13 @@ export type Database = {
           model: string | null
           name: string
           name_en: string | null
+          next_service_hours: number | null
           price: string | null
+          service_interval_hours: number | null
           sort_order: number | null
           specs: Json | null
           updated_at: string
+          usage_hours: number | null
         }
         Insert: {
           brand?: string | null
@@ -787,10 +835,13 @@ export type Database = {
           model?: string | null
           name: string
           name_en?: string | null
+          next_service_hours?: number | null
           price?: string | null
+          service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
+          usage_hours?: number | null
         }
         Update: {
           brand?: string | null
@@ -808,10 +859,13 @@ export type Database = {
           model?: string | null
           name?: string
           name_en?: string | null
+          next_service_hours?: number | null
           price?: string | null
+          service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
+          usage_hours?: number | null
         }
         Relationships: [
           {
@@ -1482,10 +1536,13 @@ export type Database = {
           model: string | null
           name: string
           name_en: string | null
+          next_service_hours: number | null
           price: string | null
+          service_interval_hours: number | null
           sort_order: number | null
           specs: Json | null
           updated_at: string
+          usage_hours: number | null
         }
         Insert: {
           brand?: string | null
@@ -1503,10 +1560,13 @@ export type Database = {
           model?: string | null
           name: string
           name_en?: string | null
+          next_service_hours?: number | null
           price?: string | null
+          service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
+          usage_hours?: number | null
         }
         Update: {
           brand?: string | null
@@ -1524,10 +1584,13 @@ export type Database = {
           model?: string | null
           name?: string
           name_en?: string | null
+          next_service_hours?: number | null
           price?: string | null
+          service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
           updated_at?: string
+          usage_hours?: number | null
         }
         Relationships: [
           {
@@ -1610,6 +1673,87 @@ export type Database = {
           secret?: string
           updated_at?: string
           url?: string
+        }
+        Relationships: []
+      }
+      work_orders: {
+        Row: {
+          assigned_to: string | null
+          checklist: Json
+          code: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          description: string | null
+          equipment_id: string | null
+          equipment_type: string | null
+          id: string
+          notes: string | null
+          priority: string
+          scheduled_end: string | null
+          scheduled_start: string | null
+          site_address: string | null
+          source_id: string | null
+          source_type: string | null
+          started_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          checklist?: Json
+          code?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          description?: string | null
+          equipment_id?: string | null
+          equipment_type?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          scheduled_end?: string | null
+          scheduled_start?: string | null
+          site_address?: string | null
+          source_id?: string | null
+          source_type?: string | null
+          started_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          checklist?: Json
+          code?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          description?: string | null
+          equipment_id?: string | null
+          equipment_type?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          scheduled_end?: string | null
+          scheduled_start?: string | null
+          site_address?: string | null
+          source_id?: string | null
+          source_type?: string | null
+          started_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
