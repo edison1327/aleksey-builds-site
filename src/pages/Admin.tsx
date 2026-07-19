@@ -485,7 +485,7 @@ const Admin = () => {
               <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
                 <Command className="h-5 w-5" />
               </Button>
-              <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
+              <NotificationsBell onNavigate={(link) => { const h = link.split("#")[1]; if (h) setActiveTab(h); }} />
               <Link to="/">
                 <Button variant="ghost" size="icon" className="shrink-0">
                   <Home className="h-5 w-5" />
