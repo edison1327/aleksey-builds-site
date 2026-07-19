@@ -8,6 +8,7 @@ import { Calendar, User, ArrowLeft, Newspaper, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { pickLocalized } from "@/lib/i18nField";
@@ -128,6 +129,13 @@ const BlogPostPage = () => {
 
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
+          <Breadcrumbs
+            items={[
+              { label: "Blog", href: "/blog" },
+              { label: title },
+            ]}
+            className="mb-6"
+          />
           <Link
             to="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"

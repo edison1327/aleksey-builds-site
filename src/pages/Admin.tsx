@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,13 +33,14 @@ import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
-import AdminBlog from "@/components/admin/AdminBlog";
-import AdminAuditLog from "@/components/admin/AdminAuditLog";
-import AdminSiteHealth from "@/components/admin/AdminSiteHealth";
 import AdminBookings from "@/components/admin/AdminBookings";
-import AdminMediaLibrary from "@/components/admin/AdminMediaLibrary";
-import AdminBackup from "@/components/admin/AdminBackup";
-import AdminAnalytics from "@/components/admin/AdminAnalytics";
+// Heavy panels are lazy-loaded to reduce initial admin bundle
+const AdminBlog = lazy(() => import("@/components/admin/AdminBlog"));
+const AdminAuditLog = lazy(() => import("@/components/admin/AdminAuditLog"));
+const AdminSiteHealth = lazy(() => import("@/components/admin/AdminSiteHealth"));
+const AdminMediaLibrary = lazy(() => import("@/components/admin/AdminMediaLibrary"));
+const AdminBackup = lazy(() => import("@/components/admin/AdminBackup"));
+const AdminAnalytics = lazy(() => import("@/components/admin/AdminAnalytics"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -510,7 +511,9 @@ const Admin = () => {
                 </div>
               }
             >
-              {renderContent()}
+              <Suspense fallback={<div className="flex items-center justify-center py-16"><div className="h-8 w-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin" /></div>}>
+                {renderContent()}
+              </Suspense>
             </ErrorBoundary>
           </div>
         </main>
