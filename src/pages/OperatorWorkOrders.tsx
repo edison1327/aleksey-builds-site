@@ -174,7 +174,7 @@ export default function OperatorWorkOrders() {
     if (!note) return;
     const combined = wo.notes ? `${wo.notes}\n\n[${new Date().toLocaleString("es")}] ${note}` : `[${new Date().toLocaleString("es")}] ${note}`;
     if (!navigator.onLine) {
-      enqueue({ table: "work_orders", action: "update", payload: { notes: combined }, match: { id: wo.id }, label: `Nota OT ${wo.code}` });
+      enqueue({ table: "work_orders", action: "update", payload: { notes: combined }, match: { id: wo.id }, label: `Nota OT ${wo.code}`, expectedUpdatedAt: wo.updated_at });
       setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, notes: combined } : w));
       setNotes({ ...notes, [wo.id]: "" });
       toast.info("Sin conexión: nota en cola");
