@@ -364,6 +364,12 @@ export default function OperatorWorkOrders() {
                 <PhotoUploader workOrderId={wo.id} userId={user.id} kind="before" label="Fotos antes" />
                 <PhotoUploader workOrderId={wo.id} userId={user.id} kind="after" label="Fotos después" />
 
+                {/* Materials & Incidents */}
+                <MaterialsPanel workOrderId={wo.id} userId={user.id} />
+                <IncidentReporter workOrderId={wo.id} userId={user.id} />
+
+
+
                 <div>
                   <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Agregar nota</p>
                   <Textarea rows={2} value={notes[wo.id] || ""} onChange={(e) => setNotes({ ...notes, [wo.id]: e.target.value })} />
