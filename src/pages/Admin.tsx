@@ -472,6 +472,7 @@ const Admin = () => {
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
       case "costs": return <AdminCostsMetrics />;
+      case "pdfsettings": return <AdminPdfSettings />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
