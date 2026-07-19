@@ -414,6 +414,48 @@ export type Database = {
           },
         ]
       }
+      equipment_maintenance: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_date: string
+          equipment_id: string
+          equipment_type: string
+          id: string
+          notes: string | null
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_date: string
+          equipment_id: string
+          equipment_type: string
+          id?: string
+          notes?: string | null
+          start_date: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_date?: string
+          equipment_id?: string
+          equipment_type?: string
+          id?: string
+          notes?: string | null
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       error_log: {
         Row: {
           context: Json | null
