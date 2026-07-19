@@ -54,10 +54,12 @@ const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOpera
 const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
 const AdminCostsMetrics = lazy(() => import("@/components/admin/AdminCostsMetrics"));
+const AdminPdfSettings = lazy(() => import("@/components/admin/AdminPdfSettings"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -234,6 +236,7 @@ const Admin = () => {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "analytics", label: "Analítica", icon: TrendingUp, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general", adminOnly: true },
+    { id: "pdfsettings", label: "PDFs & Marca", icon: FileText, category: "general", adminOnly: true },
     { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
@@ -470,6 +473,7 @@ const Admin = () => {
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
       case "costs": return <AdminCostsMetrics />;
+      case "pdfsettings": return <AdminPdfSettings />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
@@ -565,6 +569,7 @@ const Admin = () => {
             </div>
 
             <div className="flex items-center gap-1">
+              <OfflineIndicator />
               <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
                 <Command className="h-5 w-5" />
               </Button>

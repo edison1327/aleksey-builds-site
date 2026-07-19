@@ -15,10 +15,14 @@ import "./i18n/config";
 import { installGlobalErrorHandlers } from "./lib/errorLog";
 import { captureReferralFromUrl } from "./lib/referral";
 import { registerPwa } from "./pwa/register";
+import { initOfflineSync } from "./lib/offlineQueue";
+import { loadPdfSettings } from "./lib/pdfSettings";
 
 installGlobalErrorHandlers();
 captureReferralFromUrl();
 registerPwa();
+initOfflineSync();
+loadPdfSettings().catch(() => {});
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

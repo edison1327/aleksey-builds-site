@@ -1,39 +1,79 @@
 import jsPDF from "jspdf";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { getCachedPdfSettings, hexToRgb, type PdfSettings } from "./pdfSettings";
 
-const BRAND = "ALEKSEY · Ingeniería y Construcción";
+async function fetchLogoDataUrl(url?: string | null): Promise<string | null> {
+  if (!url) return null;
+  try {
+    const res = await fetch(url, { mode: "cors" });
+    const blob = await res.blob();
+    return await new Promise((resolve) => {
+      const r = new FileReader();
+      r.onloadend = () => resolve(r.result as string);
+      r.onerror = () => resolve(null);
+      r.readAsDataURL(blob);
+    });
+  } catch { return null; }
+}
 
-function header(doc: jsPDF, title: string, subtitle?: string) {
-  doc.setFillColor(26, 26, 26);
-  doc.rect(0, 0, doc.internal.pageSize.getWidth(), 22, "F");
+async function header(doc: jsPDF, title: string, subtitle: string | undefined, s: PdfSettings) {
+  const [r, g, b] = hexToRgb(s.primary_color || "#1a1a1a");
+  doc.setFillColor(r, g, b);
+  doc.rect(0, 0, doc.internal.pageSize.getWidth(), 24, "F");
+
+  const logo = await fetchLogoDataUrl(s.logo_url);
+  let textX = 14;
+  if (logo) {
+    try { doc.addImage(logo, "PNG", 12, 5, 14, 14); textX = 30; } catch {}
+  }
+
   doc.setTextColor(255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  doc.text(BRAND, 14, 14);
+  doc.text(s.company_name, textX, 12);
+  if (s.tagline) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.text(s.tagline, textX, 18);
+  }
+  const contactBits = [s.phone, s.email, s.website].filter(Boolean).join("  ·  ");
+  if (contactBits) {
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    const w = doc.getTextWidth(contactBits);
+    doc.text(contactBits, doc.internal.pageSize.getWidth() - 14 - w, 12);
+  }
+  if (s.address) {
+    const w = doc.getTextWidth(s.address);
+    doc.text(s.address, doc.internal.pageSize.getWidth() - 14 - w, 18);
+  }
+
   doc.setTextColor(0);
   doc.setFontSize(16);
-  doc.text(title, 14, 34);
+  doc.setFont("helvetica", "bold");
+  doc.text(title, 14, 36);
   if (subtitle) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(90);
-    doc.text(subtitle, 14, 41);
+    doc.text(subtitle, 14, 43);
     doc.setTextColor(0);
   }
 }
 
-function footer(doc: jsPDF) {
+function footer(doc: jsPDF, s: PdfSettings) {
   const pages = (doc as any).internal.getNumberOfPages();
   for (let i = 1; i <= pages; i++) {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(120);
-    doc.text(
-      `Generado ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}  ·  Página ${i}/${pages}`,
-      14,
-      doc.internal.pageSize.getHeight() - 8,
-    );
+    const gen = `Generado ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}  ·  Página ${i}/${pages}`;
+    doc.text(gen, 14, doc.internal.pageSize.getHeight() - 8);
+    if (s.footer_note) {
+      const w = doc.getTextWidth(s.footer_note);
+      doc.text(s.footer_note, doc.internal.pageSize.getWidth() - 14 - w, doc.internal.pageSize.getHeight() - 8);
+    }
   }
 }
 
@@ -45,14 +85,15 @@ export type CalendarPdfItem = {
   status?: string;
 };
 
-export function exportCalendarPdf(
+export async function exportCalendarPdf(
   rangeLabel: string,
   items: CalendarPdfItem[],
   conflicts: number,
 ) {
+  const s = getCachedPdfSettings();
   const doc = new jsPDF({ unit: "mm", format: "a4" });
-  header(doc, "Calendario operativo", rangeLabel);
-  let y = 50;
+  await header(doc, "Calendario operativo", rangeLabel, s);
+  let y = 52;
   doc.setFontSize(10);
   doc.text(`Eventos: ${items.length}   ·   Conflictos: ${conflicts}`, 14, y);
   y += 6;
@@ -69,10 +110,7 @@ export function exportCalendarPdf(
   y += 5;
 
   for (const it of items) {
-    if (y > 280) {
-      doc.addPage();
-      y = 20;
-    }
+    if (y > 280) { doc.addPage(); y = 20; }
     doc.setFontSize(9);
     doc.text(it.date, 14, y);
     doc.text(it.kind, 44, y);
@@ -81,7 +119,7 @@ export function exportCalendarPdf(
     y += 8;
   }
 
-  footer(doc);
+  footer(doc, s);
   doc.save(`calendario-${format(new Date(), "yyyyMMdd-HHmm")}.pdf`);
 }
 
@@ -103,10 +141,11 @@ export type WorkOrderPdf = {
   notes?: string | null;
 };
 
-export function exportWorkOrderPdf(wo: WorkOrderPdf) {
+export async function exportWorkOrderPdf(wo: WorkOrderPdf) {
+  const s = getCachedPdfSettings();
   const doc = new jsPDF({ unit: "mm", format: "a4" });
-  header(doc, `Orden de trabajo ${wo.code}`, wo.title);
-  let y = 50;
+  await header(doc, `Orden de trabajo ${wo.code}`, wo.title, s);
+  let y = 52;
 
   const row = (label: string, value?: string | null) => {
     if (!value) return;
@@ -183,6 +222,6 @@ export function exportWorkOrderPdf(wo: WorkOrderPdf) {
   doc.line(120, 275, 196, 275);
   doc.text("Firma cliente / conformidad", 120, 280);
 
-  footer(doc);
+  footer(doc, s);
   doc.save(`OT-${wo.code}.pdf`);
 }
