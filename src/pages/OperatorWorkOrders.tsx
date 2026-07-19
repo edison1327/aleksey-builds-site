@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, ClipboardCheck, MapPin, User, Calendar, CheckCircle2, PlayCircle, PauseCircle, LogIn, LogOut, WifiOff, Wifi } from "lucide-react";
+import { Loader2, ClipboardCheck, MapPin, User, Calendar, CheckCircle2, PlayCircle, PauseCircle, LogIn, LogOut, WifiOff, Wifi, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -14,15 +14,22 @@ import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { PhotoUploader } from "@/components/operator/PhotoUploader";
 import { SignaturePad } from "@/components/operator/SignaturePad";
+import { IncidentReporter } from "@/components/operator/IncidentReporter";
+import { MaterialsPanel } from "@/components/operator/MaterialsPanel";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { enqueue, initOfflineSync } from "@/lib/offlineQueue";
+import { exportWorkOrderSummaryPdf } from "@/lib/pdfExport";
 
 type ChecklistItem = { id: string; label: string; done: boolean };
 type WO = {
   id: string; code: string; title: string; description: string | null;
-  customer_name: string | null; customer_phone: string | null; site_address: string | null;
+  customer_name: string | null; customer_email: string | null; customer_phone: string | null; site_address: string | null;
   status: string; priority: string; checklist: ChecklistItem[]; notes: string | null;
   scheduled_start: string | null; scheduled_end: string | null;
-  client_signature_url: string | null; client_signature_name: string | null;
+  estimated_cost: number | null; actual_cost: number | null;
+  client_signature_url: string | null; client_signature_name: string | null; client_signature_at: string | null;
 };
+
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "Pendiente", in_progress: "En curso", on_hold: "En pausa",
@@ -55,11 +62,13 @@ export default function OperatorWorkOrders() {
   }, [user, isLoading, navigate]);
 
   useEffect(() => {
+    initOfflineSync();
     const on = () => setOnline(true), off = () => setOnline(false);
     window.addEventListener("online", on);
     window.addEventListener("offline", off);
     return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
   }, []);
+
 
   const load = async () => {
     if (!user) return;
@@ -94,6 +103,10 @@ export default function OperatorWorkOrders() {
   const toggleTask = async (wo: WO, taskId: string) => {
     const next = (wo.checklist || []).map((t) => t.id === taskId ? { ...t, done: !t.done } : t);
     setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, checklist: next } : w));
+    if (!navigator.onLine) {
+      enqueue({ table: "work_orders", action: "update", payload: { checklist: next }, match: { id: wo.id }, label: `Checklist OT ${wo.code}` });
+      return;
+    }
     const { error } = await supabase.from("work_orders").update({ checklist: next }).eq("id", wo.id);
     if (error) { toast.error(error.message); load(); }
   };
@@ -111,11 +124,18 @@ export default function OperatorWorkOrders() {
       patch.completion_lat = lat;
       patch.completion_lng = lng;
     }
+    if (!navigator.onLine) {
+      enqueue({ table: "work_orders", action: "update", payload: patch, match: { id: wo.id }, label: `Estado OT ${wo.code}: ${status}` });
+      setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, ...patch } : w));
+      toast.info("Sin conexión: cambio en cola");
+      return;
+    }
     const { error } = await supabase.from("work_orders").update(patch).eq("id", wo.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Estado actualizado");
     load();
   };
+
 
   const checkIn = async (wo: WO) => {
     if (!employeeId) { toast.error("Tu usuario no tiene ficha de empleado"); return; }
@@ -151,12 +171,59 @@ export default function OperatorWorkOrders() {
     const note = notes[wo.id];
     if (!note) return;
     const combined = wo.notes ? `${wo.notes}\n\n[${new Date().toLocaleString("es")}] ${note}` : `[${new Date().toLocaleString("es")}] ${note}`;
+    if (!navigator.onLine) {
+      enqueue({ table: "work_orders", action: "update", payload: { notes: combined }, match: { id: wo.id }, label: `Nota OT ${wo.code}` });
+      setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, notes: combined } : w));
+      setNotes({ ...notes, [wo.id]: "" });
+      toast.info("Sin conexión: nota en cola");
+      return;
+    }
     const { error } = await supabase.from("work_orders").update({ notes: combined }).eq("id", wo.id);
     if (error) { toast.error(error.message); return; }
     setNotes({ ...notes, [wo.id]: "" });
     toast.success("Nota agregada");
     load();
   };
+
+  const exportSummary = async (wo: WO) => {
+    try {
+      toast.info("Generando PDF…");
+      const [incR, matR, phR, teR] = await Promise.all([
+        supabase.from("work_order_incidents" as any).select("*").eq("work_order_id", wo.id).order("created_at", { ascending: false }),
+        supabase.from("work_order_material_reservations" as any).select("*, stock_items(name,unit)").eq("work_order_id", wo.id),
+        supabase.from("work_order_photos").select("kind").eq("work_order_id", wo.id),
+        employeeId
+          ? supabase.from("time_entries").select("hours").eq("work_order_id", wo.id).eq("employee_id", employeeId)
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
+      const photos = (phR.data as any[]) || [];
+      const before = photos.filter((p) => p.kind === "before").length;
+      const after = photos.filter((p) => p.kind === "after").length;
+      const hours = ((teR as any).data || []).reduce((a: number, t: any) => a + (Number(t.hours) || 0), 0);
+      await exportWorkOrderSummaryPdf({
+        code: wo.code, title: wo.title, description: wo.description,
+        customer_name: wo.customer_name, customer_email: wo.customer_email, customer_phone: wo.customer_phone,
+        site_address: wo.site_address, status: wo.status, priority: wo.priority,
+        scheduled_start: wo.scheduled_start, scheduled_end: wo.scheduled_end,
+        estimated_cost: wo.estimated_cost, actual_cost: wo.actual_cost,
+        checklist: wo.checklist || [], notes: wo.notes,
+        hours_total: hours, photos_before: before, photos_after: after,
+        incidents: ((incR.data as any[]) || []).map((i) => ({
+          title: i.title, severity: i.severity, status: i.status, category: i.category, description: i.description, created_at: i.created_at,
+        })),
+        materials: ((matR.data as any[]) || []).map((m) => ({
+          name: m.stock_items?.name || "—", quantity: Number(m.quantity),
+          unit: m.stock_items?.unit || null, status: m.status, notes: m.notes,
+        })),
+        client_signature_url: wo.client_signature_url,
+        client_signature_name: wo.client_signature_name,
+        client_signature_at: wo.client_signature_at,
+      });
+    } catch (e: any) {
+      toast.error(e.message || "Error generando PDF");
+    }
+  };
+
 
   const saveSignature = async (wo: WO, dataUrl: string, name: string) => {
     if (!user) return;
@@ -200,9 +267,11 @@ export default function OperatorWorkOrders() {
           <h1 className="font-heading font-bold">Mis OT</h1>
         </div>
         <div className="flex items-center gap-3 text-xs">
+          <OfflineIndicator />
           {online ? <Wifi className="h-4 w-4 text-emerald-600" /> : <WifiOff className="h-4 w-4 text-amber-600" />}
           <Link to="/" className="text-muted-foreground">Salir</Link>
         </div>
+
       </header>
 
       <main className="max-w-2xl mx-auto p-4 space-y-4">
@@ -295,6 +364,12 @@ export default function OperatorWorkOrders() {
                 <PhotoUploader workOrderId={wo.id} userId={user.id} kind="before" label="Fotos antes" />
                 <PhotoUploader workOrderId={wo.id} userId={user.id} kind="after" label="Fotos después" />
 
+                {/* Materials & Incidents */}
+                <MaterialsPanel workOrderId={wo.id} userId={user.id} />
+                <IncidentReporter workOrderId={wo.id} userId={user.id} />
+
+
+
                 <div>
                   <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Agregar nota</p>
                   <Textarea rows={2} value={notes[wo.id] || ""} onChange={(e) => setNotes({ ...notes, [wo.id]: e.target.value })} />
@@ -337,6 +412,10 @@ export default function OperatorWorkOrders() {
                       <PlayCircle className="h-4 w-4 mr-1" /> Reanudar
                     </Button>
                   )}
+                  <Button size="sm" variant="outline" className="ml-auto" onClick={() => exportSummary(wo)}>
+                    <FileDown className="h-4 w-4 mr-1" /> Resumen PDF
+                  </Button>
+
                 </div>
               </CardContent>
             </Card>
