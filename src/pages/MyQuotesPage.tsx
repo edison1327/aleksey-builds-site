@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientBookings from "@/components/portal/ClientBookings";
 import ClientDocuments from "@/components/portal/ClientDocuments";
+import LeaveReviewForm from "@/components/portal/LeaveReviewForm";
 
 interface MyMessage {
   id: string;
