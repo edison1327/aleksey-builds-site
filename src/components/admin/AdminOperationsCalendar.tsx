@@ -161,6 +161,14 @@ export default function AdminOperationsCalendar() {
     load();
   };
 
+  const removeMaintenance = async (id: string) => {
+    const { error } = await supabase.from("equipment_maintenance").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Mantenimiento eliminado");
+    load();
+  };
+
+
   const openBookingFor = (day?: Date) => {
     const d = day ? format(day, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd");
     setBForm({ ...bForm, start_date: d, end_date: d, equipment_id: "", customer_name: "", customer_email: "", notes: "" });
