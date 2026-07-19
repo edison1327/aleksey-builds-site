@@ -215,8 +215,13 @@ const MyQuotesPage = () => {
                         <CardContent className="space-y-3">
                           <pre className="text-sm whitespace-pre-wrap font-sans line-clamp-6 text-muted-foreground">{m.message}</pre>
                           <div className="flex gap-2 flex-wrap">
-                            <Button size="sm" variant="outline" onClick={() => setOpenThread(m)}>
+                            <Button size="sm" variant={unread[m.id] ? "default" : "outline"} onClick={() => openChat(m)} className="relative">
                               <MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat
+                              {unread[m.id] ? (
+                                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
+                                  {unread[m.id]}
+                                </span>
+                              ) : null}
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => handleDownloadPdf(m)}>
                               <Download className="h-3.5 w-3.5 mr-1" /> PDF
