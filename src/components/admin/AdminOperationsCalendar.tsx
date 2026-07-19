@@ -353,6 +353,21 @@ export default function AdminOperationsCalendar() {
               {openDay && format(openDay, "EEEE d 'de' MMMM yyyy", { locale: es })}
             </DialogTitle>
           </DialogHeader>
+          {openDay && (
+            <div className="flex gap-2 mb-2">
+              <Button size="sm" onClick={() => { const d = openDay; setOpenDay(null); openBookingFor(d); }}>
+                <CalendarPlus className="h-4 w-4 mr-1" /> Nueva reserva este día
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => {
+                const iso = format(openDay, "yyyy-MM-dd");
+                setMForm({ ...mForm, start_date: iso, end_date: iso });
+                setOpenDay(null);
+                setMOpen(true);
+              }}>
+                <Wrench className="h-4 w-4 mr-1" /> Mantenimiento
+              </Button>
+            </div>
+          )}
           {openDay && (() => {
             const { bs, ms, conflicts } = itemsOnDay(openDay);
             return (
