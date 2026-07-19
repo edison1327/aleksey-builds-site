@@ -14,12 +14,14 @@ import "./index.css";
 import "./i18n/config";
 import { installGlobalErrorHandlers } from "./lib/errorLog";
 import { captureReferralFromUrl } from "./lib/referral";
+import { captureAttribution } from "./lib/utmTracker";
 import { registerPwa } from "./pwa/register";
 import { initOfflineSync } from "./lib/offlineQueue";
 import { loadPdfSettings } from "./lib/pdfSettings";
 
 installGlobalErrorHandlers();
 captureReferralFromUrl();
+captureAttribution();
 registerPwa();
 initOfflineSync();
 loadPdfSettings().catch(() => {});

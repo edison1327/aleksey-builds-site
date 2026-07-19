@@ -224,6 +224,8 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
 })()}`;
 
       const refCode = getStoredReferralCode();
+      const { getAttribution } = await import("@/lib/utmTracker");
+      const attr = getAttribution();
       const { data: inserted, error } = await supabase
         .from("contact_messages")
         .insert({
@@ -233,6 +235,7 @@ ${formData.message || "Sin mensaje adicional"}${(() => {
           message: fullMessage,
           user_id: user?.id ?? null,
           referral_code: refCode,
+          ...attr,
         })
         .select("id")
         .maybeSingle();

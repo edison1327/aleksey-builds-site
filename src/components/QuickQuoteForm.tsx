@@ -76,6 +76,8 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
 
       // Save to database
       const refCode = getStoredReferralCode();
+      const { getAttribution } = await import("@/lib/utmTracker");
+      const attr = getAttribution();
       const { data: inserted, error } = await supabase
         .from("contact_messages")
         .insert({
@@ -84,6 +86,7 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
           phone: formData.phone?.trim() || null,
           message: fullMessage,
           referral_code: refCode,
+          ...attr,
         })
         .select("id")
         .maybeSingle();

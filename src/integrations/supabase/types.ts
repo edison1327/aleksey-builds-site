@@ -296,13 +296,21 @@ export type Database = {
           email: string
           id: string
           is_read: boolean
+          landing_page: string | null
+          lead_score: number
           location_id: string | null
           message: string
           name: string
           phone: string | null
           referral_code: string | null
+          segment: string | null
           status: string | null
           user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         Insert: {
           assigned_to?: string | null
@@ -318,13 +326,21 @@ export type Database = {
           email: string
           id?: string
           is_read?: boolean
+          landing_page?: string | null
+          lead_score?: number
           location_id?: string | null
           message: string
           name: string
           phone?: string | null
           referral_code?: string | null
+          segment?: string | null
           status?: string | null
           user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Update: {
           assigned_to?: string | null
@@ -340,13 +356,21 @@ export type Database = {
           email?: string
           id?: string
           is_read?: boolean
+          landing_page?: string | null
+          lead_score?: number
           location_id?: string | null
           message?: string
           name?: string
           phone?: string | null
           referral_code?: string | null
+          segment?: string | null
           status?: string | null
           user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Relationships: [
           {
@@ -1180,6 +1204,33 @@ export type Database = {
           },
         ]
       }
+      lead_scoring_rules: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          is_active: boolean
+          name: string
+          points: number
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          is_active?: boolean
+          name: string
+          points?: number
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          points?: number
+        }
+        Relationships: []
+      }
       leave_requests: {
         Row: {
           created_at: string
@@ -1369,6 +1420,125 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_campaign_steps: {
+        Row: {
+          body: string
+          campaign_id: string
+          created_at: string
+          delay_hours: number
+          id: string
+          step_order: number
+          subject: string | null
+        }
+        Insert: {
+          body: string
+          campaign_id: string
+          created_at?: string
+          delay_hours?: number
+          id?: string
+          step_order?: number
+          subject?: string | null
+        }
+        Update: {
+          body?: string
+          campaign_id?: string
+          created_at?: string
+          delay_hours?: number
+          id?: string
+          step_order?: number
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_campaign_steps_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_campaigns: {
+        Row: {
+          channel: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          segment_filter: Json
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          segment_filter?: Json
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          segment_filter?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      marketing_enrollments: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          current_step: number
+          id: string
+          lead_id: string
+          next_send_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          current_step?: number
+          id?: string
+          lead_id: string
+          next_send_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          current_step?: number
+          id?: string
+          lead_id?: string
+          next_send_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_enrollments_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_enrollments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "contact_messages"
             referencedColumns: ["id"]
           },
         ]
