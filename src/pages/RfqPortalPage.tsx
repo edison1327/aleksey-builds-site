@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, ClipboardList } from "lucide-react";
 import SEO from "@/components/SEO";
+import AuctionPanel from "@/components/auction/AuctionPanel";
 
 interface RfqItem {
   id: string;
