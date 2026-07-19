@@ -1462,6 +1462,208 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_order_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          purchase_order_id: string
+          quantity: number
+          received_qty: number
+          subtotal: number
+          unit: string | null
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          purchase_order_id: string
+          quantity?: number
+          received_qty?: number
+          subtotal?: number
+          unit?: string | null
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          purchase_order_id?: string
+          quantity?: number
+          received_qty?: number
+          subtotal?: number
+          unit?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_items_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          delivered_at: string | null
+          expected_at: string | null
+          id: string
+          notes: string | null
+          payment_terms: string | null
+          requisition_id: string | null
+          status: string
+          subtotal: number
+          supplier_id: string | null
+          tax: number
+          title: string
+          total: number
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          delivered_at?: string | null
+          expected_at?: string | null
+          id?: string
+          notes?: string | null
+          payment_terms?: string | null
+          requisition_id?: string | null
+          status?: string
+          subtotal?: number
+          supplier_id?: string | null
+          tax?: number
+          title: string
+          total?: number
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          delivered_at?: string | null
+          expected_at?: string | null
+          id?: string
+          notes?: string | null
+          payment_terms?: string | null
+          requisition_id?: string | null
+          status?: string
+          subtotal?: number
+          supplier_id?: string | null
+          tax?: number
+          title?: string
+          total?: number
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_reception_items: {
+        Row: {
+          id: string
+          notes: string | null
+          po_item_id: string
+          quantity: number
+          reception_id: string
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          po_item_id: string
+          quantity?: number
+          reception_id: string
+        }
+        Update: {
+          id?: string
+          notes?: string | null
+          po_item_id?: string
+          quantity?: number
+          reception_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_reception_items_po_item_id_fkey"
+            columns: ["po_item_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_reception_items_reception_id_fkey"
+            columns: ["reception_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_receptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_receptions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          delivery_note: string | null
+          id: string
+          notes: string | null
+          purchase_order_id: string
+          received_at: string
+          received_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          delivery_note?: string | null
+          id?: string
+          notes?: string | null
+          purchase_order_id: string
+          received_at?: string
+          received_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          delivery_note?: string | null
+          id?: string
+          notes?: string | null
+          purchase_order_id?: string
+          received_at?: string
+          received_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_receptions_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rate_limits: {
         Row: {
           bucket: string
@@ -1589,6 +1791,98 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      requisition_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          notes: string | null
+          quantity: number
+          requisition_id: string
+          unit: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          notes?: string | null
+          quantity?: number
+          requisition_id: string
+          unit?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          notes?: string | null
+          quantity?: number
+          requisition_id?: string
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requisition_items_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "requisitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requisitions: {
+        Row: {
+          code: string
+          converted_po_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          requester_id: string | null
+          requester_name: string | null
+          status: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          code: string
+          converted_po_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          requester_id?: string | null
+          requester_name?: string | null
+          status?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          code?: string
+          converted_po_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          requester_id?: string | null
+          requester_name?: string | null
+          status?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requisitions_converted_po_id_fkey"
+            columns: ["converted_po_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requisitions_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       response_templates: {
         Row: {
