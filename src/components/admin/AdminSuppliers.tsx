@@ -39,10 +39,11 @@ const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista 
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
 
 export default function AdminSuppliers() {
-  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts">("suppliers");
+  const [tab, setTab] = useState<"suppliers"|"certs"|"subcontracts"|"evaluations">("suppliers");
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [certs, setCerts] = useState<Cert[]>([]);
   const [subs, setSubs] = useState<Subcontract[]>([]);
+  const [evals, setEvals] = useState<Evaluation[]>([]);
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -52,17 +53,22 @@ export default function AdminSuppliers() {
   const [openC, setOpenC] = useState(false);
   const [editSc, setEditSc] = useState<Subcontract | null>(null);
   const [openSc, setOpenSc] = useState(false);
+  const [editEv, setEditEv] = useState<Evaluation | null>(null);
+  const [openEv, setOpenEv] = useState(false);
+  const [historySupplier, setHistorySupplier] = useState<Supplier | null>(null);
 
   const load = async () => {
     setLoading(true);
-    const [{ data: s }, { data: c }, { data: sc }] = await Promise.all([
+    const [{ data: s }, { data: c }, { data: sc }, { data: ev }] = await Promise.all([
       supabase.from("suppliers" as any).select("*").order("name"),
       supabase.from("supplier_certifications" as any).select("*").order("expires_at"),
       supabase.from("subcontracts" as any).select("*").order("created_at", { ascending: false }),
+      supabase.from("supplier_evaluations" as any).select("*").order("evaluated_at", { ascending: false }),
     ]);
     setSuppliers((s as any) || []);
     setCerts((c as any) || []);
     setSubs((sc as any) || []);
+    setEvals((ev as any) || []);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
