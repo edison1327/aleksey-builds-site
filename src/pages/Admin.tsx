@@ -205,6 +205,8 @@ const Admin = () => {
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
     { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
     { id: "webhooks", label: "Webhooks", icon: Webhook, category: "general", adminOnly: true },
+    { id: "inbox", label: "Bandeja notificaciones", icon: Bell, category: "comunicacion" },
+    { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
