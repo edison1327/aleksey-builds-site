@@ -161,6 +161,7 @@ export default function AdminPurchasing() {
       const rows = editItems.map(i => ({
         purchase_order_id: poId, description: i.description, quantity: i.quantity,
         unit: i.unit, unit_price: i.unit_price, subtotal: Number(i.quantity) * Number(i.unit_price),
+        framework_agreement_item_id: i.framework_agreement_item_id || null,
       }));
       const { error } = await supabase.from("purchase_order_items" as any).insert(rows);
       if (error) { toast.error(error.message); return; }
