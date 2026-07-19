@@ -204,13 +204,16 @@ const AdminMessages = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de eliminar este mensaje?")) return;
+    if (!confirm("¿Mover este mensaje a la papelera?")) return;
 
     try {
-      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+      const { error } = await supabase
+        .from("contact_messages")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", id);
       if (error) throw error;
-      toast({ title: "Eliminado", description: "Mensaje eliminado correctamente." });
-      logAction("delete", "contact_messages", id);
+      toast({ title: "Movido a papelera", description: "Puedes restaurarlo desde la Papelera." });
+      logAction("soft_delete", "contact_messages", id);
       fetchMessages();
     } catch (error) {
       console.error("Error deleting message:", error);
