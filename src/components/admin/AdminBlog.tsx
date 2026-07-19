@@ -72,6 +72,7 @@ const AdminBlog = () => {
     const { data, error } = await supabase
       .from("blog_posts")
       .select("*")
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
     if (!error) setPosts((data as Post[]) || []);
     setLoading(false);
