@@ -11,7 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain } from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -69,6 +69,7 @@ const AdminPredictive = lazy(() => import("@/components/admin/AdminPredictive"))
 const AdminDocuments = lazy(() => import("@/components/admin/AdminDocuments"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
 const AdminBranches = lazy(() => import("@/components/admin/AdminBranches"));
+const AdminApiKeys = lazy(() => import("@/components/admin/AdminApiKeys"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -304,6 +305,7 @@ const Admin = () => {
     { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
     { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
     { id: "branches", label: "Sucursales & Empresas", icon: Building2, category: "general", adminOnly: true },
+    { id: "api-keys", label: "API Keys", icon: KeyRound, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -509,6 +511,7 @@ const Admin = () => {
       case "predictive": return <AdminPredictive />;
       case "documents": return <AdminDocuments />;
       case "branches": return <AdminBranches />;
+      case "api-keys": return <AdminApiKeys />;
       case "invoices": return <AdminInvoices />;
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;
