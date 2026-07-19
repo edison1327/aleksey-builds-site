@@ -1678,6 +1678,7 @@ export type Database = {
       }
       work_orders: {
         Row: {
+          actual_cost: number | null
           assigned_to: string | null
           checklist: Json
           code: string
@@ -1690,6 +1691,7 @@ export type Database = {
           description: string | null
           equipment_id: string | null
           equipment_type: string | null
+          estimated_cost: number | null
           id: string
           notes: string | null
           priority: string
@@ -1704,6 +1706,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          actual_cost?: number | null
           assigned_to?: string | null
           checklist?: Json
           code?: string
@@ -1716,6 +1719,7 @@ export type Database = {
           description?: string | null
           equipment_id?: string | null
           equipment_type?: string | null
+          estimated_cost?: number | null
           id?: string
           notes?: string | null
           priority?: string
@@ -1730,6 +1734,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          actual_cost?: number | null
           assigned_to?: string | null
           checklist?: Json
           code?: string
@@ -1742,6 +1747,7 @@ export type Database = {
           description?: string | null
           equipment_id?: string | null
           equipment_type?: string | null
+          estimated_cost?: number | null
           id?: string
           notes?: string | null
           priority?: string

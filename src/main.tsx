@@ -14,9 +14,11 @@ import "./index.css";
 import "./i18n/config";
 import { installGlobalErrorHandlers } from "./lib/errorLog";
 import { captureReferralFromUrl } from "./lib/referral";
+import { registerPwa } from "./pwa/register";
 
 installGlobalErrorHandlers();
 captureReferralFromUrl();
+registerPwa();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

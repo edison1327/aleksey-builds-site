@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { ClipboardCheck, Plus, Trash2, User, Calendar, CheckCircle2 } from "lucide-react";
+import { ClipboardCheck, Plus, Trash2, User, Calendar, CheckCircle2, FileDown } from "lucide-react";
+import { exportWorkOrderPdf } from "@/lib/pdfExport";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -170,6 +171,8 @@ export default function AdminWorkOrders() {
       scheduled_end: form.scheduled_end ? new Date(form.scheduled_end).toISOString() : null,
       checklist: form.checklist || [],
       notes: form.notes || null,
+      estimated_cost: form.estimated_cost ?? null,
+      actual_cost: form.actual_cost ?? null,
     };
     if (form.status === "in_progress" && !editing?.started_at) payload.started_at = new Date().toISOString();
     if (form.status === "completed") payload.completed_at = new Date().toISOString();
@@ -356,6 +359,16 @@ export default function AdminWorkOrders() {
                 <Input type="datetime-local" value={form.scheduled_end || ""} onChange={(e) => setForm({ ...form, scheduled_end: e.target.value })} />
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Costo estimado (S/)</Label>
+                <Input type="number" min="0" step="0.01" value={form.estimated_cost ?? ""} onChange={(e) => setForm({ ...form, estimated_cost: e.target.value === "" ? null : Number(e.target.value) })} />
+              </div>
+              <div>
+                <Label>Costo real (S/)</Label>
+                <Input type="number" min="0" step="0.01" value={form.actual_cost ?? ""} onChange={(e) => setForm({ ...form, actual_cost: e.target.value === "" ? null : Number(e.target.value) })} />
+              </div>
+            </div>
 
             <div>
               <Label>Checklist</Label>
@@ -379,7 +392,12 @@ export default function AdminWorkOrders() {
               <Textarea rows={2} value={form.notes || ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 flex-wrap">
+            {editing && (
+              <Button variant="outline" onClick={() => exportWorkOrderPdf({ ...editing, ...form } as any)}>
+                <FileDown className="h-4 w-4 mr-1" /> PDF
+              </Button>
+            )}
             <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
             <Button onClick={save}>Guardar</Button>
           </DialogFooter>

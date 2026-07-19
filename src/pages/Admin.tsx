@@ -53,6 +53,7 @@ const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
 const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
 const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
+const AdminCostsMetrics = lazy(() => import("@/components/admin/AdminCostsMetrics"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -253,6 +254,7 @@ const Admin = () => {
     { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "operaciones" },
     { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
     { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
+    { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
@@ -467,6 +469,7 @@ const Admin = () => {
       case "calendar": return <AdminOperationsCalendar />;
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
+      case "costs": return <AdminCostsMetrics />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Wrench, CalendarCheck, Plus, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Wrench, CalendarCheck, Plus, AlertTriangle, FileDown, CalendarPlus } from "lucide-react";
 import {
   addDays, addMonths, addWeeks, endOfMonth, endOfWeek, format, isSameDay,
   isWithinInterval, parseISO, startOfMonth, startOfWeek, subMonths, subWeeks,
@@ -16,6 +16,7 @@ import {
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { exportCalendarPdf, type CalendarPdfItem } from "@/lib/pdfExport";
 
 type Booking = {
   id: string;
@@ -61,6 +62,19 @@ export default function AdminOperationsCalendar() {
     end_date: format(new Date(), "yyyy-MM-dd"),
     title: "",
     notes: "",
+  });
+
+  // booking dialog
+  const [bOpen, setBOpen] = useState(false);
+  const [bForm, setBForm] = useState({
+    equipment_type: "machinery" as "machinery" | "vehicle",
+    equipment_id: "",
+    start_date: format(new Date(), "yyyy-MM-dd"),
+    end_date: format(new Date(), "yyyy-MM-dd"),
+    customer_name: "",
+    customer_email: "",
+    notes: "",
+    status: "reserved",
   });
 
   const load = async () => {
@@ -154,10 +168,79 @@ export default function AdminOperationsCalendar() {
     load();
   };
 
+
+  const openBookingFor = (day?: Date) => {
+    const d = day ? format(day, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd");
+    setBForm({ ...bForm, start_date: d, end_date: d, equipment_id: "", customer_name: "", customer_email: "", notes: "" });
+    setBOpen(true);
+  };
+
+  const saveBooking = async () => {
+    if (!bForm.equipment_id || !bForm.customer_name) {
+      toast.error("Completa equipo y cliente");
+      return;
+    }
+    if (bForm.end_date < bForm.start_date) {
+      toast.error("Fecha fin inválida");
+      return;
+    }
+    // conflict check
+    const conflict = [...bookings, ...maintenance].some(
+      (x: any) =>
+        x.equipment_type === bForm.equipment_type &&
+        x.equipment_id === bForm.equipment_id &&
+        overlap(bForm.start_date, bForm.end_date, x.start_date, x.end_date),
+    );
+    if (conflict && !confirm("Este equipo ya tiene una reserva o mantenimiento en esas fechas. ¿Continuar?")) return;
+
+    const { error } = await supabase.from("equipment_bookings").insert({
+      equipment_type: bForm.equipment_type,
+      equipment_id: bForm.equipment_id,
+      start_date: bForm.start_date,
+      end_date: bForm.end_date,
+      customer_name: bForm.customer_name,
+      customer_email: bForm.customer_email || null,
+      notes: bForm.notes || null,
+      status: bForm.status,
+    });
+    if (error) { toast.error(error.message); return; }
+    toast.success("Reserva creada");
+    setBOpen(false);
+    load();
+  };
+
+  const exportPdf = () => {
+    const items: CalendarPdfItem[] = [];
+    for (const b of bookings) {
+      items.push({
+        date: `${b.start_date} → ${b.end_date}`,
+        kind: "Reserva",
+        title: equipName(b.equipment_type, b.equipment_id),
+        detail: b.customer_name || "Cliente",
+        status: b.status,
+      });
+    }
+    for (const m of maintenance) {
+      items.push({
+        date: `${m.start_date} → ${m.end_date}`,
+        kind: "Mantenimiento",
+        title: `${m.title} · ${equipName(m.equipment_type, m.equipment_id)}`,
+        detail: m.notes || "—",
+        status: m.status,
+      });
+    }
+    items.sort((a, b) => a.date.localeCompare(b.date));
+    const rangeLabel = view === "month"
+      ? format(cursor, "MMMM yyyy", { locale: es })
+      : `${format(startOfWeek(cursor, { weekStartsOn: 1 }), "d MMM", { locale: es })} — ${format(endOfWeek(cursor, { weekStartsOn: 1 }), "d MMM yyyy", { locale: es })}`;
+    exportCalendarPdf(rangeLabel, items, globalConflicts.length);
+  };
+
   const goPrev = () => setCursor(view === "month" ? subMonths(cursor, 1) : subWeeks(cursor, 1));
   const goNext = () => setCursor(view === "month" ? addMonths(cursor, 1) : addWeeks(cursor, 1));
 
   const equipmentByType = equipment.filter((e) => e.type === mForm.equipment_type);
+  const bookingEquipmentByType = equipment.filter((e) => e.type === bForm.equipment_type);
 
   return (
     <div className="space-y-6">
@@ -185,8 +268,14 @@ export default function AdminOperationsCalendar() {
                 ? format(cursor, "MMMM yyyy", { locale: es })
                 : `${format(startOfWeek(cursor, { weekStartsOn: 1 }), "d MMM", { locale: es })} — ${format(endOfWeek(cursor, { weekStartsOn: 1 }), "d MMM yyyy", { locale: es })}`}
             </div>
-            <Button size="sm" onClick={() => setMOpen(true)}>
-              <Plus className="h-4 w-4 mr-1" /> Mantenimiento
+            <Button size="sm" variant="outline" onClick={exportPdf}>
+              <FileDown className="h-4 w-4 mr-1" /> PDF
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setMOpen(true)}>
+              <Wrench className="h-4 w-4 mr-1" /> Mantto.
+            </Button>
+            <Button size="sm" onClick={() => openBookingFor()}>
+              <CalendarPlus className="h-4 w-4 mr-1" /> Reserva
             </Button>
           </div>
         </CardHeader>
@@ -264,6 +353,21 @@ export default function AdminOperationsCalendar() {
               {openDay && format(openDay, "EEEE d 'de' MMMM yyyy", { locale: es })}
             </DialogTitle>
           </DialogHeader>
+          {openDay && (
+            <div className="flex gap-2 mb-2">
+              <Button size="sm" onClick={() => { const d = openDay; setOpenDay(null); openBookingFor(d); }}>
+                <CalendarPlus className="h-4 w-4 mr-1" /> Nueva reserva este día
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => {
+                const iso = format(openDay, "yyyy-MM-dd");
+                setMForm({ ...mForm, start_date: iso, end_date: iso });
+                setOpenDay(null);
+                setMOpen(true);
+              }}>
+                <Wrench className="h-4 w-4 mr-1" /> Mantenimiento
+              </Button>
+            </div>
+          )}
           {openDay && (() => {
             const { bs, ms, conflicts } = itemsOnDay(openDay);
             return (
@@ -371,6 +475,79 @@ export default function AdminOperationsCalendar() {
           <DialogFooter>
             <Button variant="ghost" onClick={() => setMOpen(false)}>Cancelar</Button>
             <Button onClick={saveMaintenance}>Guardar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* New booking dialog */}
+      <Dialog open={bOpen} onOpenChange={setBOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nueva reserva</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Tipo</Label>
+                <Select value={bForm.equipment_type} onValueChange={(v: "machinery" | "vehicle") => setBForm({ ...bForm, equipment_type: v, equipment_id: "" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="machinery">Maquinaria</SelectItem>
+                    <SelectItem value="vehicle">Vehículo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Equipo</Label>
+                <Select value={bForm.equipment_id} onValueChange={(v) => setBForm({ ...bForm, equipment_id: v })}>
+                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectContent>
+                    {bookingEquipmentByType.map((e) => (
+                      <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Desde</Label>
+                <Input type="date" value={bForm.start_date} onChange={(e) => setBForm({ ...bForm, start_date: e.target.value })} />
+              </div>
+              <div>
+                <Label>Hasta</Label>
+                <Input type="date" value={bForm.end_date} onChange={(e) => setBForm({ ...bForm, end_date: e.target.value })} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Cliente</Label>
+                <Input value={bForm.customer_name} onChange={(e) => setBForm({ ...bForm, customer_name: e.target.value })} />
+              </div>
+              <div>
+                <Label>Email</Label>
+                <Input type="email" value={bForm.customer_email} onChange={(e) => setBForm({ ...bForm, customer_email: e.target.value })} />
+              </div>
+            </div>
+            <div>
+              <Label>Estado</Label>
+              <Select value={bForm.status} onValueChange={(v) => setBForm({ ...bForm, status: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="reserved">Reservada</SelectItem>
+                  <SelectItem value="blocked">Bloqueada</SelectItem>
+                  <SelectItem value="completed">Completada</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Notas</Label>
+              <Textarea value={bForm.notes} onChange={(e) => setBForm({ ...bForm, notes: e.target.value })} rows={2} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBOpen(false)}>Cancelar</Button>
+            <Button onClick={saveBooking}>Crear reserva</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
