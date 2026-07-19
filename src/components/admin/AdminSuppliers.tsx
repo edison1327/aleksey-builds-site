@@ -475,7 +475,20 @@ export default function AdminSuppliers() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Nombre del proyecto</Label><Input value={editEv.project_name||""} onChange={(e)=>setEditEv({...editEv, project_name: e.target.value})}/></div>
+              <div><Label>Proyecto del portafolio (opcional)</Label>
+                <Select value={editEv.project_id || "none"} onValueChange={(v)=>{
+                  const pid = v==="none" ? null : v;
+                  const pname = pid ? (projects.find(p=>p.id===pid)?.title || editEv.project_name) : editEv.project_name;
+                  setEditEv({...editEv, project_id: pid, project_name: pid ? (projects.find(p=>p.id===pid)?.title || "") : editEv.project_name });
+                }}>
+                  <SelectTrigger><SelectValue placeholder="— Ninguno —"/></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">— Ninguno —</SelectItem>
+                    {projects.map(p => <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label>Nombre libre del proyecto</Label><Input value={editEv.project_name||""} onChange={(e)=>setEditEv({...editEv, project_name: e.target.value})} placeholder="Si no está en el portafolio"/></div>
               {(["quality_score","punctuality_score","safety_score","communication_score"] as const).map(k => (
                 <div key={k}>
                   <Label>{({quality_score:"Calidad",punctuality_score:"Puntualidad",safety_score:"Seguridad",communication_score:"Comunicación"} as any)[k]} (1-5)</Label>
