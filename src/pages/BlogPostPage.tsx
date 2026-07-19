@@ -8,6 +8,7 @@ import { Calendar, User, ArrowLeft, Newspaper, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { pickLocalized } from "@/lib/i18nField";
