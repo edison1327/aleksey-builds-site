@@ -357,6 +357,16 @@ export default function AdminWorkOrders() {
                 <Input type="datetime-local" value={form.scheduled_end || ""} onChange={(e) => setForm({ ...form, scheduled_end: e.target.value })} />
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Costo estimado (S/)</Label>
+                <Input type="number" min="0" step="0.01" value={form.estimated_cost ?? ""} onChange={(e) => setForm({ ...form, estimated_cost: e.target.value === "" ? null : Number(e.target.value) })} />
+              </div>
+              <div>
+                <Label>Costo real (S/)</Label>
+                <Input type="number" min="0" step="0.01" value={form.actual_cost ?? ""} onChange={(e) => setForm({ ...form, actual_cost: e.target.value === "" ? null : Number(e.target.value) })} />
+              </div>
+            </div>
 
             <div>
               <Label>Checklist</Label>
