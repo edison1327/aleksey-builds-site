@@ -10,7 +10,7 @@ import {
   LogOut, Home, Building2, FolderOpen, Truck, Car, 
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
-  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database
+  FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -41,6 +41,7 @@ const AdminSiteHealth = lazy(() => import("@/components/admin/AdminSiteHealth"))
 const AdminMediaLibrary = lazy(() => import("@/components/admin/AdminMediaLibrary"));
 const AdminBackup = lazy(() => import("@/components/admin/AdminBackup"));
 const AdminAnalytics = lazy(() => import("@/components/admin/AdminAnalytics"));
+const AdminErrorLog = lazy(() => import("@/components/admin/AdminErrorLog"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -190,6 +191,7 @@ const Admin = () => {
     { id: "audit", label: "Auditoría", icon: History, category: "general", adminOnly: true },
     { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
+    { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -387,6 +389,7 @@ const Admin = () => {
       case "media": return <AdminMediaLibrary />;
       case "health": return <AdminSiteHealth />;
       case "backup": return <AdminBackup />;
+      case "errors": return <AdminErrorLog />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
