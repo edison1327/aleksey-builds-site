@@ -31,7 +31,7 @@ const statusMeta: Record<Referral["status"], { label: string; className: string 
 };
 
 export default function ReferralsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [code, setCode] = useState<string | null>(null);
