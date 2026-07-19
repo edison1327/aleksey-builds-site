@@ -412,6 +412,10 @@ export default function OperatorWorkOrders() {
                       <PlayCircle className="h-4 w-4 mr-1" /> Reanudar
                     </Button>
                   )}
+                  <Button size="sm" variant="outline" className="ml-auto" onClick={() => exportSummary(wo)}>
+                    <FileDown className="h-4 w-4 mr-1" /> Resumen PDF
+                  </Button>
+
                 </div>
               </CardContent>
             </Card>
