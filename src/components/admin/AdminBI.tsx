@@ -20,7 +20,8 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip as RTooltip, Legend, BarChart, Bar, AreaChart, Area,
 } from "recharts";
-import { Loader2, Plus, TrendingUp, DollarSign, Wallet, Trash2, RefreshCw } from "lucide-react";
+import { Loader2, Plus, TrendingUp, DollarSign, Wallet, Trash2, RefreshCw, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { logAction } from "@/lib/auditLog";
 
