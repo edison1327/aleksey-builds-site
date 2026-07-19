@@ -168,7 +168,7 @@ export default function AdminSuppliers() {
       ? await supabase.from("supplier_evaluations" as any).update(rest).eq("id", id)
       : await supabase.from("supplier_evaluations" as any).insert(rest);
     if (error) return toast.error(error.message);
-    toast.success("Evaluación guardada"); setOpenEv(false); setEditEv(null); load();
+    toast.success("Evaluación guardada"); setOpenEv(false); setEditEv(null); load(); if (tab === "pending") loadPending();
   };
   const delEv = async (id: string) => {
     if (!confirm("¿Eliminar evaluación?")) return;
