@@ -328,3 +328,67 @@ export async function exportInvoicePdf(inv: InvoicePdf) {
   doc.save(`Factura-${inv.code}.pdf`);
 }
 
+export type ContractPdf = {
+  code: string;
+  title: string;
+  customer_name: string;
+  customer_email?: string | null;
+  customer_document?: string | null;
+  customer_address?: string | null;
+  amount?: number | null;
+  currency: string;
+  body: string;
+  status: string;
+  signed_at?: string | null;
+  signature_data_url?: string | null;
+};
+
+export async function exportContractPdf(c: ContractPdf) {
+  const s = getCachedPdfSettings();
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  await header(doc, `Contrato ${c.code}`, c.title, s);
+  let y = 52;
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold"); doc.text("Cliente:", 14, y);
+  doc.setFont("helvetica", "normal"); doc.text(c.customer_name, 34, y); y += 5;
+  if (c.customer_document) { doc.setFont("helvetica","bold"); doc.text("Doc:", 14, y); doc.setFont("helvetica","normal"); doc.text(c.customer_document, 34, y); y += 5; }
+  if (c.customer_email) { doc.setFont("helvetica","bold"); doc.text("Email:", 14, y); doc.setFont("helvetica","normal"); doc.text(c.customer_email, 34, y); y += 5; }
+  if (c.customer_address) {
+    doc.setFont("helvetica","bold"); doc.text("Dirección:", 14, y);
+    doc.setFont("helvetica","normal");
+    const lines = doc.splitTextToSize(c.customer_address, 150);
+    doc.text(lines, 34, y); y += lines.length * 5;
+  }
+  if (c.amount != null) {
+    doc.setFont("helvetica","bold"); doc.text("Monto:", 14, y);
+    doc.setFont("helvetica","normal");
+    doc.text(`${c.currency} ${Number(c.amount).toFixed(2)}`, 34, y); y += 5;
+  }
+  doc.setFont("helvetica","bold"); doc.text("Estado:", 14, y);
+  doc.setFont("helvetica","normal"); doc.text(c.status.toUpperCase(), 34, y); y += 8;
+
+  doc.setDrawColor(220); doc.line(14, y, 196, y); y += 6;
+
+  doc.setFontSize(10);
+  const lines = doc.splitTextToSize(c.body, 180);
+  for (const ln of lines) {
+    if (y > 270) { doc.addPage(); y = 20; }
+    doc.text(ln, 14, y); y += 5;
+  }
+
+  y += 10;
+  if (y > 240) { doc.addPage(); y = 30; }
+  doc.setDrawColor(160); doc.line(120, y + 20, 196, y + 20);
+  doc.setFontSize(9); doc.text("Firma del cliente", 120, y + 25);
+
+  if (c.signature_data_url) {
+    try { doc.addImage(c.signature_data_url, "PNG", 120, y - 5, 60, 25); } catch {}
+    if (c.signed_at) doc.text(`Firmado: ${format(new Date(c.signed_at), "dd/MM/yyyy HH:mm", { locale: es })}`, 120, y + 32);
+  }
+
+  footer(doc, s);
+  doc.save(`Contrato-${c.code}.pdf`);
+}
+
+
