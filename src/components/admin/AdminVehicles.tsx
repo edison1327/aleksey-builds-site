@@ -82,7 +82,9 @@ const AdminVehicles = () => {
             is_active: editingVehicle.is_active,
             sort_order: editingVehicle.sort_order,
             location_id: editingVehicle.location_id,
-          })
+            is_marketplace: (editingVehicle as any).is_marketplace ?? false,
+            is_featured: (editingVehicle as any).is_featured ?? false,
+          } as any)
           .eq("id", editingVehicle.id);
 
         if (error) throw error;
@@ -105,7 +107,9 @@ const AdminVehicles = () => {
             is_active: editingVehicle.is_active,
             sort_order: vehicles.length,
             location_id: editingVehicle.location_id,
-          });
+            is_marketplace: (editingVehicle as any).is_marketplace ?? false,
+            is_featured: (editingVehicle as any).is_featured ?? false,
+          } as any);
 
         if (error) throw error;
       }
@@ -377,7 +381,7 @@ const AdminVehicles = () => {
                 folder="vehicles"
               />
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={editingVehicle?.is_available || false}
@@ -391,6 +395,20 @@ const AdminVehicles = () => {
                   onCheckedChange={(checked) => setEditingVehicle(prev => prev ? { ...prev, is_active: checked } : null)}
                 />
                 <label className="text-sm font-medium">Activo</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={(editingVehicle as any)?.is_marketplace || false}
+                  onCheckedChange={(checked) => setEditingVehicle(prev => prev ? ({ ...prev, is_marketplace: checked } as any) : null)}
+                />
+                <label className="text-sm font-medium">Marketplace B2B</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={(editingVehicle as any)?.is_featured || false}
+                  onCheckedChange={(checked) => setEditingVehicle(prev => prev ? ({ ...prev, is_featured: checked } as any) : null)}
+                />
+                <label className="text-sm font-medium">Destacado</label>
               </div>
             </div>
             <Button onClick={handleSave} className="w-full">

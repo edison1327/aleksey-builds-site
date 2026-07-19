@@ -26,6 +26,7 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const OperatorWorkOrders = lazy(() => import("@/pages/OperatorWorkOrders"));
 const ContractSignPage = lazy(() => import("@/pages/ContractSignPage"));
+const MarketplacePage = lazy(() => import("@/pages/MarketplacePage"));
 
 const RouteFallback = () => (
   <div className="min-h-dvh flex items-center justify-center">
@@ -69,6 +70,7 @@ const AnimatedRoutes = () => {
             <Route path="/referidos" element={<ReferralsPage />} />
             <Route path="/privacidad" element={<PrivacyPage />} />
             <Route path="/firmar/:token" element={<ContractSignPage />} />
+            <Route path="/marketplace" element={<MarketplacePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

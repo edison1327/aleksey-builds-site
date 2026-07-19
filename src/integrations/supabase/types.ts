@@ -1611,18 +1611,23 @@ export type Database = {
           category_en: string | null
           created_at: string
           daily_rate: number | null
+          deposit_amount: number | null
           description: string | null
           description_en: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           is_available: boolean | null
+          is_featured: boolean
+          is_marketplace: boolean
           location_id: string | null
+          min_rental_days: number
           model: string | null
           name: string
           name_en: string | null
           next_service_hours: number | null
           price: string | null
+          rental_terms: string | null
           service_interval_hours: number | null
           sort_order: number | null
           specs: Json | null
@@ -1636,18 +1641,23 @@ export type Database = {
           category_en?: string | null
           created_at?: string
           daily_rate?: number | null
+          deposit_amount?: number | null
           description?: string | null
           description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          is_featured?: boolean
+          is_marketplace?: boolean
           location_id?: string | null
+          min_rental_days?: number
           model?: string | null
           name: string
           name_en?: string | null
           next_service_hours?: number | null
           price?: string | null
+          rental_terms?: string | null
           service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
@@ -1661,18 +1671,23 @@ export type Database = {
           category_en?: string | null
           created_at?: string
           daily_rate?: number | null
+          deposit_amount?: number | null
           description?: string | null
           description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          is_featured?: boolean
+          is_marketplace?: boolean
           location_id?: string | null
+          min_rental_days?: number
           model?: string | null
           name?: string
           name_en?: string | null
           next_service_hours?: number | null
           price?: string | null
+          rental_terms?: string | null
           service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
@@ -3545,18 +3560,23 @@ export type Database = {
           category_en: string | null
           created_at: string
           daily_rate: number | null
+          deposit_amount: number | null
           description: string | null
           description_en: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           is_available: boolean | null
+          is_featured: boolean
+          is_marketplace: boolean
           location_id: string | null
+          min_rental_days: number
           model: string | null
           name: string
           name_en: string | null
           next_service_hours: number | null
           price: string | null
+          rental_terms: string | null
           service_interval_hours: number | null
           sort_order: number | null
           specs: Json | null
@@ -3570,18 +3590,23 @@ export type Database = {
           category_en?: string | null
           created_at?: string
           daily_rate?: number | null
+          deposit_amount?: number | null
           description?: string | null
           description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          is_featured?: boolean
+          is_marketplace?: boolean
           location_id?: string | null
+          min_rental_days?: number
           model?: string | null
           name: string
           name_en?: string | null
           next_service_hours?: number | null
           price?: string | null
+          rental_terms?: string | null
           service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
@@ -3595,18 +3620,23 @@ export type Database = {
           category_en?: string | null
           created_at?: string
           daily_rate?: number | null
+          deposit_amount?: number | null
           description?: string | null
           description_en?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           is_available?: boolean | null
+          is_featured?: boolean
+          is_marketplace?: boolean
           location_id?: string | null
+          min_rental_days?: number
           model?: string | null
           name?: string
           name_en?: string | null
           next_service_hours?: number | null
           price?: string | null
+          rental_terms?: string | null
           service_interval_hours?: number | null
           sort_order?: number | null
           specs?: Json | null
@@ -4016,9 +4046,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      marketplace_listings: {
+        Row: {
+          branch_id: string | null
+          brand: string | null
+          category: string | null
+          daily_rate: number | null
+          deposit_amount: number | null
+          description: string | null
+          description_en: string | null
+          equipment_type: string | null
+          id: string | null
+          image_url: string | null
+          is_featured: boolean | null
+          location_id: string | null
+          min_rental_days: number | null
+          model: string | null
+          name: string | null
+          name_en: string | null
+          price: string | null
+          rental_terms: string | null
+          sort_order: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      check_equipment_availability: {
+        Args: {
+          _end_date: string
+          _equipment_id: string
+          _equipment_type: string
+          _start_date: string
+        }
+        Returns: boolean
+      }
       check_rate_limit: {
         Args: {
           _bucket: string

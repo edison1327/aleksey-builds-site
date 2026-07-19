@@ -81,7 +81,9 @@ const AdminMachinery = () => {
             is_active: editingMachine.is_active,
             sort_order: editingMachine.sort_order,
             location_id: editingMachine.location_id,
-          })
+            is_marketplace: (editingMachine as any).is_marketplace ?? false,
+            is_featured: (editingMachine as any).is_featured ?? false,
+          } as any)
           .eq("id", editingMachine.id);
 
         if (error) throw error;
@@ -104,7 +106,9 @@ const AdminMachinery = () => {
             is_active: editingMachine.is_active,
             sort_order: machinery.length,
             location_id: editingMachine.location_id,
-          });
+            is_marketplace: (editingMachine as any).is_marketplace ?? false,
+            is_featured: (editingMachine as any).is_featured ?? false,
+          } as any);
 
         if (error) throw error;
       }
@@ -378,7 +382,7 @@ const AdminMachinery = () => {
                 folder="machinery"
               />
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={editingMachine?.is_available || false}
@@ -392,6 +396,20 @@ const AdminMachinery = () => {
                   onCheckedChange={(checked) => setEditingMachine(prev => prev ? { ...prev, is_active: checked } : null)}
                 />
                 <label className="text-sm font-medium">Activo</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={(editingMachine as any)?.is_marketplace || false}
+                  onCheckedChange={(checked) => setEditingMachine(prev => prev ? ({ ...prev, is_marketplace: checked } as any) : null)}
+                />
+                <label className="text-sm font-medium">Marketplace B2B</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={(editingMachine as any)?.is_featured || false}
+                  onCheckedChange={(checked) => setEditingMachine(prev => prev ? ({ ...prev, is_featured: checked } as any) : null)}
+                />
+                <label className="text-sm font-medium">Destacado</label>
               </div>
             </div>
             <Button onClick={handleSave} className="w-full">
