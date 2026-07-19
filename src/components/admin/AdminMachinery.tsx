@@ -81,7 +81,9 @@ const AdminMachinery = () => {
             is_active: editingMachine.is_active,
             sort_order: editingMachine.sort_order,
             location_id: editingMachine.location_id,
-          })
+            is_marketplace: (editingMachine as any).is_marketplace ?? false,
+            is_featured: (editingMachine as any).is_featured ?? false,
+          } as any)
           .eq("id", editingMachine.id);
 
         if (error) throw error;
