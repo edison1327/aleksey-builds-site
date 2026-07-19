@@ -185,6 +185,7 @@ export default function AdminSuppliers() {
           <Button variant={tab==="suppliers"?"default":"outline"} onClick={() => setTab("suppliers")}><Truck className="h-4 w-4 mr-1"/>Proveedores</Button>
           <Button variant={tab==="certs"?"default":"outline"} onClick={() => setTab("certs")}><ShieldCheck className="h-4 w-4 mr-1"/>Certificaciones</Button>
           <Button variant={tab==="subcontracts"?"default":"outline"} onClick={() => setTab("subcontracts")}><Handshake className="h-4 w-4 mr-1"/>Subcontratos</Button>
+          <Button variant={tab==="evaluations"?"default":"outline"} onClick={() => setTab("evaluations")}><Star className="h-4 w-4 mr-1"/>Evaluaciones</Button>
         </div>
       </div>
 
