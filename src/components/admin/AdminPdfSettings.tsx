@@ -111,10 +111,6 @@ export default function AdminPdfSettings() {
             </div>
           </div>
           <div>
-            <Label>URL del logo (PNG cuadrado)</Label>
-            <Input value={s.logo_url || ""} onChange={(e) => update("logo_url", e.target.value)} placeholder="https://…" />
-          </div>
-          <div>
             <Label>Teléfono</Label>
             <Input value={s.phone || ""} onChange={(e) => update("phone", e.target.value)} />
           </div>
