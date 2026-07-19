@@ -14,6 +14,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import ShortcutsHelpDialog from "@/components/ShortcutsHelpDialog";
 import InstallAppBanner from "@/components/InstallAppBanner";
 import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
+import StructuredData from "@/components/StructuredData";
 
 const queryClient = new QueryClient({
   defaultOptions: {
