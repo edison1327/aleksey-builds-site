@@ -398,6 +398,7 @@ const Admin = () => {
       case "errors": return <AdminErrorLog />;
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
+      case "pipeline": return <AdminPipeline />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
