@@ -449,6 +449,119 @@ export default function AdminSuppliers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Evaluation Dialog */}
+      <Dialog open={openEv} onOpenChange={(v)=>{setOpenEv(v); if(!v) setEditEv(null);}}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>{editEv?.id ? "Editar evaluación" : "Nueva evaluación"}</DialogTitle></DialogHeader>
+          {editEv && (
+            <div className="grid md:grid-cols-2 gap-3">
+              <div className="md:col-span-2"><Label>Proveedor *</Label>
+                <Select value={editEv.supplier_id} onValueChange={(v)=>setEditEv({...editEv, supplier_id: v})}>
+                  <SelectTrigger><SelectValue placeholder="Elegir…"/></SelectTrigger>
+                  <SelectContent>{suppliers.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div><Label>Subcontrato (opcional)</Label>
+                <Select value={editEv.subcontract_id || "none"} onValueChange={(v)=>setEditEv({...editEv, subcontract_id: v==="none"?null:v})}>
+                  <SelectTrigger><SelectValue/></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">— Ninguno —</SelectItem>
+                    {subs.filter(s=>s.supplier_id===editEv.supplier_id).map(s => <SelectItem key={s.id} value={s.id}>{s.code} — {s.title}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label>Nombre del proyecto</Label><Input value={editEv.project_name||""} onChange={(e)=>setEditEv({...editEv, project_name: e.target.value})}/></div>
+              {(["quality_score","punctuality_score","safety_score","communication_score"] as const).map(k => (
+                <div key={k}>
+                  <Label>{({quality_score:"Calidad",punctuality_score:"Puntualidad",safety_score:"Seguridad",communication_score:"Comunicación"} as any)[k]} (1-5)</Label>
+                  <Input type="number" min="1" max="5" value={editEv[k]} onChange={(e)=>setEditEv({...editEv, [k]: Math.min(5, Math.max(1, Number(e.target.value)||1)) })}/>
+                </div>
+              ))}
+              <div><Label>Fecha</Label><Input type="date" value={editEv.evaluated_at} onChange={(e)=>setEditEv({...editEv, evaluated_at: e.target.value})}/></div>
+              <div className="flex items-center gap-2 mt-6">
+                <input id="rehire" type="checkbox" checked={editEv.would_rehire} onChange={(e)=>setEditEv({...editEv, would_rehire: e.target.checked})}/>
+                <Label htmlFor="rehire" className="cursor-pointer">Recontrataría a este proveedor</Label>
+              </div>
+              <div className="md:col-span-2"><Label>Comentarios</Label><Textarea rows={3} value={editEv.comments||""} onChange={(e)=>setEditEv({...editEv, comments: e.target.value})}/></div>
+              <p className="md:col-span-2 text-xs text-muted-foreground">Promedio actual: <strong>{((editEv.quality_score+editEv.punctuality_score+editEv.safety_score+editEv.communication_score)/4).toFixed(2)}</strong>. El rating del proveedor se recalcula automáticamente.</p>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={()=>setOpenEv(false)}>Cancelar</Button>
+            <Button onClick={saveEv}>Guardar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Supplier History Dialog */}
+      <Dialog open={!!historySupplier} onOpenChange={(v)=>{ if(!v) setHistorySupplier(null); }}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle className="flex items-center gap-2"><History className="h-5 w-5"/> Historial — {historySupplier?.name}</DialogTitle></DialogHeader>
+          {historySupplier && (() => {
+            const h = supplierHistory(historySupplier.id);
+            const avg = h.evals.length ? (h.evals.reduce((a,e)=>a+Number(e.overall_score||0),0)/h.evals.length).toFixed(2) : "—";
+            const rehirePct = h.evals.length ? Math.round(100*h.evals.filter(e=>e.would_rehire).length/h.evals.length) : 0;
+            const totalAmount = h.subs.reduce((a,s)=>a+Number(s.amount||0),0);
+            return (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <Card className="p-3"><p className="text-xs text-muted-foreground">Rating global</p><p className="text-xl font-bold">⭐ {avg}</p></Card>
+                  <Card className="p-3"><p className="text-xs text-muted-foreground">Evaluaciones</p><p className="text-xl font-bold">{h.evals.length}</p></Card>
+                  <Card className="p-3"><p className="text-xs text-muted-foreground">Recontratación</p><p className="text-xl font-bold">{rehirePct}%</p></Card>
+                  <Card className="p-3"><p className="text-xs text-muted-foreground">Total facturado</p><p className="text-xl font-bold">{totalAmount.toFixed(0)}</p></Card>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold mb-1">Subcontratos ({h.subs.length})</p>
+                  {h.subs.length === 0 ? <p className="text-sm text-muted-foreground">Sin trabajos previos</p> : (
+                    <ul className="text-sm divide-y border rounded">
+                      {h.subs.map(s => (
+                        <li key={s.id} className="p-2 flex justify-between gap-2">
+                          <span><span className="font-mono text-xs">{s.code}</span> — {s.title}</span>
+                          <span className="text-xs text-muted-foreground">{s.start_date || "—"} · <Badge variant="outline">{SC_STATUS[s.status]}</Badge></span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold mb-1">Evaluaciones ({h.evals.length})</p>
+                  {h.evals.length === 0 ? <p className="text-sm text-muted-foreground">Sin evaluaciones</p> : (
+                    <ul className="text-sm divide-y border rounded">
+                      {h.evals.map(e => (
+                        <li key={e.id} className="p-2">
+                          <div className="flex justify-between">
+                            <span className="font-medium">{e.project_name || "Proyecto"} — ⭐ {Number(e.overall_score||0).toFixed(2)}</span>
+                            <span className="text-xs text-muted-foreground">{format(parseISO(e.evaluated_at), "dd/MM/yyyy", { locale: es })}</span>
+                          </div>
+                          {e.comments && <p className="text-xs text-muted-foreground mt-1">{e.comments}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold mb-1">Certificaciones ({h.certs.length})</p>
+                  {h.certs.length === 0 ? <p className="text-sm text-muted-foreground">Sin certificaciones</p> : (
+                    <ul className="text-sm divide-y border rounded">
+                      {h.certs.map(c => (
+                        <li key={c.id} className="p-2 flex justify-between">
+                          <span>{c.cert_type} {c.cert_number && <span className="text-xs text-muted-foreground">— {c.cert_number}</span>}</span>
+                          <span className="text-xs text-muted-foreground">Vence: {c.expires_at || "—"}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={()=>{ newEv(historySupplier.id); setHistorySupplier(null); }}><Star className="h-4 w-4 mr-1"/>Nueva evaluación</Button>
+                  <Button variant="outline" onClick={()=>setHistorySupplier(null)}>Cerrar</Button>
+                </div>
+              </div>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
