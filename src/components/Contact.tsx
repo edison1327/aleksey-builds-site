@@ -39,6 +39,7 @@ const Contact = () => {
     phone: "",
     message: "",
   });
+  const [website, setWebsite] = useState(""); // honeypot
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -59,6 +60,14 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+
+    // Honeypot: silently drop bot submissions
+    if (website) {
+      toast({ title: "Mensaje enviado", description: "Nos pondremos en contacto contigo pronto." });
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      return;
+    }
+
 
     const wait = getThrottleWait("contact", 30_000);
     if (wait > 0) {
@@ -173,6 +182,18 @@ const Contact = () => {
           >
             <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot field - hidden from users, visible to bots */}
+                <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", top: "auto", width: "1px", height: "1px", overflow: "hidden" }}>
+                  <label htmlFor="website">No completar</label>
+                  <input
+                    id="website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">

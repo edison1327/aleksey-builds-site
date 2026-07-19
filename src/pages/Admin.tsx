@@ -50,6 +50,7 @@ const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
 const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 import CommandPalette from "@/components/admin/CommandPalette";
+import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
@@ -78,6 +79,7 @@ const Admin = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
 
   // Persist active tab in URL hash so it survives refresh and reflects in back/forward
@@ -92,6 +94,58 @@ const Admin = () => {
     const onHashChange = () => setActiveTab(getTabFromHash());
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  // Global keyboard shortcuts: Ctrl/Cmd+K (palette), "?" (help), "g <key>" (goto)
+  useEffect(() => {
+    let gotoPending = false;
+    let gotoTimer: number | undefined;
+    const isTypingTarget = (t: EventTarget | null) => {
+      const el = t as HTMLElement | null;
+      if (!el) return false;
+      const tag = el.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+    };
+    const gotoMap: Record<string, string> = {
+      d: "dashboard",
+      m: "messages",
+      p: "pipeline",
+      i: "inbox",
+      a: "analytics",
+      u: "users",
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen(true);
+        return;
+      }
+      if (isTypingTarget(e.target)) return;
+      if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+        e.preventDefault();
+        setHelpOpen(true);
+        return;
+      }
+      if (gotoPending) {
+        const target = gotoMap[e.key.toLowerCase()];
+        gotoPending = false;
+        if (gotoTimer) window.clearTimeout(gotoTimer);
+        if (target) {
+          e.preventDefault();
+          setActiveTab(target);
+        }
+        return;
+      }
+      if (e.key.toLowerCase() === "g") {
+        gotoPending = true;
+        gotoTimer = window.setTimeout(() => { gotoPending = false; }, 1200);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (gotoTimer) window.clearTimeout(gotoTimer);
+    };
   }, []);
 
   const { counts: badgeCounts } = useAdminBadges();
@@ -442,6 +496,7 @@ const Admin = () => {
         }))}
         onSelect={(id) => setActiveTab(id)}
       />
+      <ShortcutsHelp open={helpOpen} onOpenChange={setHelpOpen} />
 
       {/* Desktop Sidebar */}
       <aside className={cn(
