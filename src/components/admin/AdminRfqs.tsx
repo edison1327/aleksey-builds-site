@@ -108,6 +108,21 @@ const AdminRfqs = () => {
     loadDetail(detail);
   };
 
+  const autoInviteTop = async () => {
+    if (!detail) return;
+    const { data, error } = await (supabase as any).rpc("auto_invite_top_suppliers", {
+      _rfq_id: detail.id, _limit: 5,
+    });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({
+      title: data > 0 ? `${data} proveedores invitados` : "Sin nuevos proveedores",
+      description: data > 0
+        ? `Se invitó automáticamente al top ${data} de la categoría "${detail.category || "general"}".`
+        : "Todos los top-rated ya estaban invitados o no hay proveedores en esa categoría.",
+    });
+    loadDetail(detail);
+  };
+
   const sendRfq = async () => {
     if (!detail) return;
     await (supabase as any).from("rfqs").update({ status: "sent" }).eq("id", detail.id);
