@@ -484,6 +484,139 @@ export type Database = {
           },
         ]
       }
+      employee_certifications: {
+        Row: {
+          cert_number: string | null
+          cert_type: string
+          created_at: string
+          employee_id: string
+          expires_at: string | null
+          file_url: string | null
+          id: string
+          issued_at: string | null
+          issuer: string | null
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          cert_number?: string | null
+          cert_type: string
+          created_at?: string
+          employee_id: string
+          expires_at?: string | null
+          file_url?: string | null
+          id?: string
+          issued_at?: string | null
+          issuer?: string | null
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cert_number?: string | null
+          cert_type?: string
+          created_at?: string
+          employee_id?: string
+          expires_at?: string | null
+          file_url?: string | null
+          id?: string
+          issued_at?: string | null
+          issuer?: string | null
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_certifications_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employees: {
+        Row: {
+          address: string | null
+          birth_date: string | null
+          code: string | null
+          created_at: string
+          currency: string | null
+          document: string | null
+          email: string | null
+          emergency_contact: string | null
+          full_name: string
+          hire_date: string | null
+          hourly_rate: number | null
+          id: string
+          location_id: string | null
+          monthly_base: number | null
+          notes: string | null
+          phone: string | null
+          photo_url: string | null
+          role: string
+          status: string
+          termination_date: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          birth_date?: string | null
+          code?: string | null
+          created_at?: string
+          currency?: string | null
+          document?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          full_name: string
+          hire_date?: string | null
+          hourly_rate?: number | null
+          id?: string
+          location_id?: string | null
+          monthly_base?: number | null
+          notes?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          role?: string
+          status?: string
+          termination_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          birth_date?: string | null
+          code?: string | null
+          created_at?: string
+          currency?: string | null
+          document?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          full_name?: string
+          hire_date?: string | null
+          hourly_rate?: number | null
+          id?: string
+          location_id?: string | null
+          monthly_base?: number | null
+          notes?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          role?: string
+          status?: string
+          termination_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employees_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_bookings: {
         Row: {
           created_at: string
@@ -1047,6 +1180,62 @@ export type Database = {
           },
         ]
       }
+      leave_requests: {
+        Row: {
+          created_at: string
+          days: number | null
+          employee_id: string
+          end_date: string
+          id: string
+          leave_type: string
+          reason: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          days?: number | null
+          employee_id: string
+          end_date: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          days?: number | null
+          employee_id?: string
+          end_date?: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leave_requests_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           address: string | null
@@ -1309,6 +1498,111 @@ export type Database = {
           title?: string
           type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      payroll_items: {
+        Row: {
+          base_pay: number | null
+          bonuses: number | null
+          created_at: string
+          deductions: number | null
+          employee_id: string
+          hourly_rate: number | null
+          hours_worked: number | null
+          id: string
+          net_pay: number | null
+          notes: string | null
+          payroll_run_id: string
+          updated_at: string
+        }
+        Insert: {
+          base_pay?: number | null
+          bonuses?: number | null
+          created_at?: string
+          deductions?: number | null
+          employee_id: string
+          hourly_rate?: number | null
+          hours_worked?: number | null
+          id?: string
+          net_pay?: number | null
+          notes?: string | null
+          payroll_run_id: string
+          updated_at?: string
+        }
+        Update: {
+          base_pay?: number | null
+          bonuses?: number | null
+          created_at?: string
+          deductions?: number | null
+          employee_id?: string
+          hourly_rate?: number | null
+          hours_worked?: number | null
+          id?: string
+          net_pay?: number | null
+          notes?: string | null
+          payroll_run_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payroll_items_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payroll_items_payroll_run_id_fkey"
+            columns: ["payroll_run_id"]
+            isOneToOne: false
+            referencedRelation: "payroll_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payroll_runs: {
+        Row: {
+          created_at: string
+          currency: string | null
+          id: string
+          notes: string | null
+          period_month: number
+          period_year: number
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          total_gross: number | null
+          total_net: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          period_month: number
+          period_year: number
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          total_gross?: number | null
+          total_net?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          period_month?: number
+          period_year?: number
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          total_gross?: number | null
+          total_net?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -2548,6 +2842,81 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "equipment_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_entries: {
+        Row: {
+          approved: boolean
+          approved_at: string | null
+          approved_by: string | null
+          check_in: string | null
+          check_in_lat: number | null
+          check_in_lng: number | null
+          check_out: string | null
+          check_out_lat: number | null
+          check_out_lng: number | null
+          created_at: string
+          employee_id: string
+          entry_date: string
+          hours: number | null
+          id: string
+          notes: string | null
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          check_in?: string | null
+          check_in_lat?: number | null
+          check_in_lng?: number | null
+          check_out?: string | null
+          check_out_lat?: number | null
+          check_out_lng?: number | null
+          created_at?: string
+          employee_id: string
+          entry_date?: string
+          hours?: number | null
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          check_in?: string | null
+          check_in_lat?: number | null
+          check_in_lng?: number | null
+          check_out?: string | null
+          check_out_lat?: number | null
+          check_out_lng?: number | null
+          created_at?: string
+          employee_id?: string
+          entry_date?: string
+          hours?: number | null
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_entries_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_entries_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
             referencedColumns: ["id"]
           },
         ]

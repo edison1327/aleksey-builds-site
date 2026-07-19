@@ -61,6 +61,7 @@ const AdminInvoices = lazy(() => import("@/components/admin/AdminInvoices"));
 const AdminContracts = lazy(() => import("@/components/admin/AdminContracts"));
 const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
 const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"));
+const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -277,6 +278,7 @@ const Admin = () => {
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
     { id: "applications", label: "Postulaciones", icon: Users, category: "rrhh", badgeKey: "applications" },
+    { id: "hr", label: "Empleados & Nómina", icon: Users, category: "rrhh", adminOnly: true },
     { id: "audit", label: "Auditoría", icon: History, category: "general", adminOnly: true },
     { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
@@ -488,6 +490,7 @@ const Admin = () => {
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;
       case "purchasing": return <AdminPurchasing />;
+      case "hr": return <AdminHR />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
       case "templates": return <AdminResponseTemplates />;
