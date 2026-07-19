@@ -31,7 +31,11 @@ export function captureAttribution() {
   } catch {}
 }
 
-export function getAttribution(): Attribution {
+export function getAttribution(): Omit<Attribution, "captured_at"> {
   if (typeof window === "undefined") return {};
-  try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEY) || "{}") as Attribution;
+    const { captured_at, ...rest } = raw;
+    return rest;
+  } catch { return {}; }
 }
