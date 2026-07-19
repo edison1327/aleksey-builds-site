@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, ClipboardCheck, MapPin, User, Calendar, CheckCircle2, PlayCircle, PauseCircle, LogIn, LogOut, WifiOff, Wifi } from "lucide-react";
+import { Loader2, ClipboardCheck, MapPin, User, Calendar, CheckCircle2, PlayCircle, PauseCircle, LogIn, LogOut, WifiOff, Wifi, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -14,15 +14,22 @@ import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { PhotoUploader } from "@/components/operator/PhotoUploader";
 import { SignaturePad } from "@/components/operator/SignaturePad";
+import { IncidentReporter } from "@/components/operator/IncidentReporter";
+import { MaterialsPanel } from "@/components/operator/MaterialsPanel";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { enqueue, initOfflineSync } from "@/lib/offlineQueue";
+import { exportWorkOrderSummaryPdf } from "@/lib/pdfExport";
 
 type ChecklistItem = { id: string; label: string; done: boolean };
 type WO = {
   id: string; code: string; title: string; description: string | null;
-  customer_name: string | null; customer_phone: string | null; site_address: string | null;
+  customer_name: string | null; customer_email: string | null; customer_phone: string | null; site_address: string | null;
   status: string; priority: string; checklist: ChecklistItem[]; notes: string | null;
   scheduled_start: string | null; scheduled_end: string | null;
-  client_signature_url: string | null; client_signature_name: string | null;
+  estimated_cost: number | null; actual_cost: number | null;
+  client_signature_url: string | null; client_signature_name: string | null; client_signature_at: string | null;
 };
+
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "Pendiente", in_progress: "En curso", on_hold: "En pausa",
