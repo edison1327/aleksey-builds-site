@@ -515,6 +515,7 @@ const Admin = () => {
       case "inbox": return <AdminNotificationsInbox />;
       case "reminders": return <AdminReminderTemplates />;
       case "trash": return <AdminTrash />;
+      case "integrations": return <AdminIntegrations />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
