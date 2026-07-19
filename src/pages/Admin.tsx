@@ -11,7 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle } from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -65,6 +65,7 @@ const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
 const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"));
 const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
 const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
+const AdminPredictive = lazy(() => import("@/components/admin/AdminPredictive"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
@@ -273,6 +274,7 @@ const Admin = () => {
 
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
     { id: "bi", label: "BI & Presupuestos", icon: TrendingUp, category: "operaciones", adminOnly: true },
+    { id: "predictive", label: "Inteligencia Predictiva", icon: Brain, category: "operaciones", adminOnly: true },
     { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
     { id: "contracts", label: "Contratos", icon: FileSignature, category: "operaciones", adminOnly: true },
     { id: "suppliers", label: "Proveedores", icon: Handshake, category: "operaciones", adminOnly: true },
@@ -498,6 +500,7 @@ const Admin = () => {
 
       case "costs": return <AdminCostsMetrics />;
       case "bi": return <AdminBI />;
+      case "predictive": return <AdminPredictive />;
       case "invoices": return <AdminInvoices />;
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;

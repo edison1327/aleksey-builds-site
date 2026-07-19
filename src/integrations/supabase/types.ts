@@ -3660,6 +3660,44 @@ export type Database = {
           title: string
         }[]
       }
+      get_cross_sell: {
+        Args: never
+        Returns: {
+          pair_count: number
+          service_a: string
+          service_b: string
+        }[]
+      }
+      get_customer_churn: {
+        Args: never
+        Returns: {
+          customer_email: string
+          customer_name: string
+          days_inactive: number
+          last_activity: string
+          total_orders: number
+        }[]
+      }
+      get_demand_forecast: {
+        Args: never
+        Returns: {
+          bookings: number
+          forecast_next: number
+          month: string
+          service: string
+        }[]
+      }
+      get_maintenance_predictions: {
+        Args: never
+        Returns: {
+          hours_remaining: number
+          machinery_id: string
+          name: string
+          next_service_hours: number
+          risk: string
+          usage_hours: number
+        }[]
+      }
       get_monthly_pnl: {
         Args: never
         Returns: {
