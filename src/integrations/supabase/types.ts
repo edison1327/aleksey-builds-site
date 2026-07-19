@@ -508,6 +508,99 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          checksum: string | null
+          client_email: string | null
+          created_at: string
+          description: string | null
+          doc_type: string
+          entity_id: string | null
+          entity_type: string | null
+          expires_at: string | null
+          file_name: string
+          id: string
+          is_current: boolean
+          issued_at: string | null
+          mime_type: string | null
+          parent_id: string | null
+          size_bytes: number | null
+          storage_path: string
+          supplier_id: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          version: number
+          visibility: string
+        }
+        Insert: {
+          checksum?: string | null
+          client_email?: string | null
+          created_at?: string
+          description?: string | null
+          doc_type?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          expires_at?: string | null
+          file_name: string
+          id?: string
+          is_current?: boolean
+          issued_at?: string | null
+          mime_type?: string | null
+          parent_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          supplier_id?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+          version?: number
+          visibility?: string
+        }
+        Update: {
+          checksum?: string | null
+          client_email?: string | null
+          created_at?: string
+          description?: string | null
+          doc_type?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          expires_at?: string | null
+          file_name?: string
+          id?: string
+          is_current?: boolean
+          issued_at?: string | null
+          mime_type?: string | null
+          parent_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          supplier_id?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          version?: number
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employee_certifications: {
         Row: {
           cert_number: string | null
@@ -3685,6 +3778,16 @@ export type Database = {
           forecast_next: number
           month: string
           service: string
+        }[]
+      }
+      get_expiring_documents: {
+        Args: { _days?: number }
+        Returns: {
+          days_left: number
+          doc_type: string
+          expires_at: string
+          id: string
+          title: string
         }[]
       }
       get_maintenance_predictions: {
