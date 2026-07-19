@@ -27,6 +27,7 @@ const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const OperatorWorkOrders = lazy(() => import("@/pages/OperatorWorkOrders"));
 const ContractSignPage = lazy(() => import("@/pages/ContractSignPage"));
 const MarketplacePage = lazy(() => import("@/pages/MarketplacePage"));
+const RfqPortalPage = lazy(() => import("@/pages/RfqPortalPage"));
 
 const RouteFallback = () => (
   <div className="min-h-dvh flex items-center justify-center">
