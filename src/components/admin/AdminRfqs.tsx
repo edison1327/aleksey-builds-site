@@ -414,7 +414,10 @@ const AdminRfqs = () => {
                     })()}
                   </CardContent>
                 </Card>
+
+                <AuctionAdmin rfqId={detail.id} currency={detail.currency} onChanged={load} />
               </div>
+
             </>
           )}
         </DialogContent>
