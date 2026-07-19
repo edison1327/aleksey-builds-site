@@ -127,6 +127,7 @@ const MarketplacePage = () => {
       <SEO
         title="Marketplace de Equipos B2B — Alquiler de maquinaria y vehículos"
         description="Explora nuestro catálogo B2B: maquinaria pesada y vehículos disponibles para alquiler. Consulta disponibilidad en tiempo real y reserva online."
+        path="/marketplace"
       />
       <main className="min-h-dvh pt-24">
         <section className="container mx-auto px-4 py-8">
