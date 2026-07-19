@@ -55,6 +55,7 @@ const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
 const AdminCostsMetrics = lazy(() => import("@/components/admin/AdminCostsMetrics"));
 const AdminPdfSettings = lazy(() => import("@/components/admin/AdminPdfSettings"));
+const AdminOfflinePending = lazy(() => import("@/components/admin/AdminOfflinePending"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -237,6 +238,7 @@ const Admin = () => {
     { id: "analytics", label: "Analítica", icon: TrendingUp, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general", adminOnly: true },
     { id: "pdfsettings", label: "PDFs & Marca", icon: FileText, category: "general", adminOnly: true },
+    { id: "offline-pending", label: "Pendientes offline", icon: WifiOff, category: "general", adminOnly: true },
     { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
@@ -474,6 +476,7 @@ const Admin = () => {
       case "workorders": return <AdminWorkOrders />;
       case "costs": return <AdminCostsMetrics />;
       case "pdfsettings": return <AdminPdfSettings />;
+      case "offline-pending": return <AdminOfflinePending />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
