@@ -2130,6 +2130,26 @@ export type Database = {
         Returns: boolean
       }
       generate_referral_code: { Args: never; Returns: string }
+      get_contract_by_token: {
+        Args: { _token: string }
+        Returns: {
+          amount: number
+          body: string
+          code: string
+          currency: string
+          customer_address: string
+          customer_document: string
+          customer_email: string
+          customer_name: string
+          id: string
+          sent_at: string
+          service_slug: string
+          signature_data_url: string
+          signed_at: string
+          status: string
+          title: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2150,6 +2170,15 @@ export type Database = {
           _type: string
         }
         Returns: undefined
+      }
+      sign_contract_with_token: {
+        Args: {
+          _ip: string
+          _signature_data_url: string
+          _token: string
+          _ua: string
+        }
+        Returns: boolean
       }
       slugify: { Args: { input: string }; Returns: string }
     }
