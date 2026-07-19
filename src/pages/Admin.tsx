@@ -235,6 +235,7 @@ const Admin = () => {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "analytics", label: "Analítica", icon: TrendingUp, category: "general" },
     { id: "site", label: "Logo & Sitio", icon: Image, category: "general", adminOnly: true },
+    { id: "pdfsettings", label: "PDFs & Marca", icon: FileText, category: "general", adminOnly: true },
     { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
