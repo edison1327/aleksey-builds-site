@@ -20,6 +20,7 @@ const Admin = lazy(() => import("@/pages/Admin"));
 const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const PortalLogin = lazy(() => import("@/pages/PortalLogin"));
 const MyQuotesPage = lazy(() => import("@/pages/MyQuotesPage"));
+const ReferralsPage = lazy(() => import("@/pages/ReferralsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 
