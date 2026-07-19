@@ -82,7 +82,9 @@ const AdminVehicles = () => {
             is_active: editingVehicle.is_active,
             sort_order: editingVehicle.sort_order,
             location_id: editingVehicle.location_id,
-          })
+            is_marketplace: (editingVehicle as any).is_marketplace ?? false,
+            is_featured: (editingVehicle as any).is_featured ?? false,
+          } as any)
           .eq("id", editingVehicle.id);
 
         if (error) throw error;
