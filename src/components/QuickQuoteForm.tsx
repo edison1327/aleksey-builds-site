@@ -32,6 +32,7 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
     phone: "",
     message: "",
   });
+  const [website, setWebsite] = useState(""); // honeypot
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
