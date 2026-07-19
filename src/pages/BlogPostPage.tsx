@@ -128,6 +128,13 @@ const BlogPostPage = () => {
 
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
+          <Breadcrumbs
+            items={[
+              { label: "Blog", href: "/blog" },
+              { label: title },
+            ]}
+            className="mb-6"
+          />
           <Link
             to="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
