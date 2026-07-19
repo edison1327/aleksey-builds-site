@@ -214,6 +214,26 @@ export default function AdminSuppliers() {
     } as any);
     setOpenEv(true);
   };
+  const loadGamification = async () => {
+    setGamiLoading(true);
+    const [{ data: g }, { data: b }] = await Promise.all([
+      (supabase as any).rpc("get_supplier_gamification", { _supplier_id: null }),
+      supabase.from("supplier_badges" as any).select("*").eq("is_active", true).order("points", { ascending: false }),
+    ]);
+    setGami(g || []);
+    setBadges(b || []);
+    setGamiLoading(false);
+  };
+
+  const runAutoAward = async () => {
+    setAwarding(true);
+    const { data, error } = await (supabase as any).rpc("award_supplier_badges");
+    setAwarding(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Insignias otorgadas: ${data ?? 0}`);
+    loadGamification();
+  };
+
 
 
 
