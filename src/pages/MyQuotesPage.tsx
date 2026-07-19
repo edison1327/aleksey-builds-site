@@ -134,10 +134,11 @@ const MyQuotesPage = () => {
           </div>
 
           <Tabs defaultValue="solicitudes" className="w-full">
-            <TabsList className="grid grid-cols-3 w-full max-w-md">
+            <TabsList className="grid grid-cols-4 w-full max-w-xl">
               <TabsTrigger value="solicitudes">Solicitudes</TabsTrigger>
               <TabsTrigger value="reservas">Reservas</TabsTrigger>
               <TabsTrigger value="documentos">Documentos</TabsTrigger>
+              <TabsTrigger value="resenas">Reseñas</TabsTrigger>
             </TabsList>
 
             <TabsContent value="solicitudes" className="mt-4">
