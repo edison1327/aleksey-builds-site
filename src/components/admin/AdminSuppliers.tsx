@@ -251,6 +251,7 @@ export default function AdminSuppliers() {
           <Button variant={tab==="evaluations"?"default":"outline"} onClick={() => setTab("evaluations")}><Star className="h-4 w-4 mr-1"/>Evaluaciones</Button>
           <Button variant={tab==="ranking"?"default":"outline"} onClick={() => { setTab("ranking"); loadRanking(); }}><Trophy className="h-4 w-4 mr-1"/>Ranking</Button>
           <Button variant={tab==="pending"?"default":"outline"} onClick={() => { setTab("pending"); loadPending(); }}><ClipboardCheck className="h-4 w-4 mr-1"/>Pendientes</Button>
+          <Button variant={tab==="gamification"?"default":"outline"} onClick={() => { setTab("gamification"); loadGamification(); }}><Award className="h-4 w-4 mr-1"/>Gamificación</Button>
         </div>
       </div>
 
