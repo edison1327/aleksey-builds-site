@@ -66,6 +66,7 @@ const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"))
 const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
 const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
 const AdminPredictive = lazy(() => import("@/components/admin/AdminPredictive"));
+const AdminDocuments = lazy(() => import("@/components/admin/AdminDocuments"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
@@ -275,6 +276,7 @@ const Admin = () => {
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
     { id: "bi", label: "BI & Presupuestos", icon: TrendingUp, category: "operaciones", adminOnly: true },
     { id: "predictive", label: "Inteligencia Predictiva", icon: Brain, category: "operaciones", adminOnly: true },
+    { id: "documents", label: "Centro de Documentos", icon: FolderLock, category: "operaciones" },
     { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
     { id: "contracts", label: "Contratos", icon: FileSignature, category: "operaciones", adminOnly: true },
     { id: "suppliers", label: "Proveedores", icon: Handshake, category: "operaciones", adminOnly: true },
@@ -501,6 +503,7 @@ const Admin = () => {
       case "costs": return <AdminCostsMetrics />;
       case "bi": return <AdminBI />;
       case "predictive": return <AdminPredictive />;
+      case "documents": return <AdminDocuments />;
       case "invoices": return <AdminInvoices />;
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;
