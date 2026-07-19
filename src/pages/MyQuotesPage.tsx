@@ -14,6 +14,9 @@ import { Helmet } from "react-helmet-async";
 import { downloadQuotePdf } from "@/lib/quotePdf";
 import MessageThread from "@/components/MessageThread";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ClientBookings from "@/components/portal/ClientBookings";
+import ClientDocuments from "@/components/portal/ClientDocuments";
 
 interface MyMessage {
   id: string;
@@ -128,51 +131,69 @@ const MyQuotesPage = () => {
             <Card><CardContent className="pt-4"><p className="text-2xl font-bold text-purple-600">{contacts.length}</p><p className="text-xs text-muted-foreground">Mensajes</p></CardContent></Card>
           </div>
 
-          {messages.length === 0 ? (
-            <Card>
-              <CardContent className="py-16 text-center">
-                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Aún no tienes solicitudes registradas.</p>
-                <Link to="/cotizar"><Button>Solicitar primera cotización</Button></Link>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {messages.map((m) => {
-                const quote = isQuote(m);
-                return (
-                  <Card key={m.id}>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between gap-3 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          {quote ? <Calculator className="h-5 w-5 text-blue-600" /> : <MessageSquare className="h-5 w-5 text-purple-600" />}
-                          <CardTitle className="text-base">{quote ? "Solicitud de cotización" : "Mensaje de contacto"}</CardTitle>
-                          {statusBadge(m.status)}
-                        </div>
-                        <p className="text-xs text-muted-foreground">{format(new Date(m.created_at), "PPp", { locale: es })}</p>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <pre className="text-sm whitespace-pre-wrap font-sans line-clamp-6 text-muted-foreground">{m.message}</pre>
-                      <div className="flex gap-2 flex-wrap">
-                        <Button size="sm" variant="outline" onClick={() => setOpenThread(m)}>
-                          <MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleDownloadPdf(m)}>
-                          <Download className="h-3.5 w-3.5 mr-1" /> PDF
-                        </Button>
-                        {quote && (
-                          <Button size="sm" variant="ghost" onClick={() => handleReQuote(m)}>
-                            <RotateCw className="h-3.5 w-3.5 mr-1" /> Re-cotizar
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+          <Tabs defaultValue="solicitudes" className="w-full">
+            <TabsList className="grid grid-cols-3 w-full max-w-md">
+              <TabsTrigger value="solicitudes">Solicitudes</TabsTrigger>
+              <TabsTrigger value="reservas">Reservas</TabsTrigger>
+              <TabsTrigger value="documentos">Documentos</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="solicitudes" className="mt-4">
+              {messages.length === 0 ? (
+                <Card>
+                  <CardContent className="py-16 text-center">
+                    <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">Aún no tienes solicitudes registradas.</p>
+                    <Link to="/cotizar"><Button>Solicitar primera cotización</Button></Link>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((m) => {
+                    const quote = isQuote(m);
+                    return (
+                      <Card key={m.id}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-start justify-between gap-3 flex-wrap">
+                            <div className="flex items-center gap-2">
+                              {quote ? <Calculator className="h-5 w-5 text-blue-600" /> : <MessageSquare className="h-5 w-5 text-purple-600" />}
+                              <CardTitle className="text-base">{quote ? "Solicitud de cotización" : "Mensaje de contacto"}</CardTitle>
+                              {statusBadge(m.status)}
+                            </div>
+                            <p className="text-xs text-muted-foreground">{format(new Date(m.created_at), "PPp", { locale: es })}</p>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <pre className="text-sm whitespace-pre-wrap font-sans line-clamp-6 text-muted-foreground">{m.message}</pre>
+                          <div className="flex gap-2 flex-wrap">
+                            <Button size="sm" variant="outline" onClick={() => setOpenThread(m)}>
+                              <MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => handleDownloadPdf(m)}>
+                              <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                            </Button>
+                            {quote && (
+                              <Button size="sm" variant="ghost" onClick={() => handleReQuote(m)}>
+                                <RotateCw className="h-3.5 w-3.5 mr-1" /> Re-cotizar
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="reservas" className="mt-4">
+              {user?.email && <ClientBookings email={user.email} />}
+            </TabsContent>
+
+            <TabsContent value="documentos" className="mt-4">
+              {user && <ClientDocuments userId={user.id} />}
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 

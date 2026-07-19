@@ -155,6 +155,45 @@ export type Database = {
         }
         Relationships: []
       }
+      client_documents: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          updated_at: string
+          uploaded_by_admin: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          updated_at?: string
+          uploaded_by_admin?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          updated_at?: string
+          uploaded_by_admin?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       company_benefits: {
         Row: {
           created_at: string
@@ -1178,7 +1217,7 @@ export type Database = {
       slugify: { Args: { input: string }; Returns: string }
     }
     Enums: {
-      app_role: "admin" | "user" | "editor" | "viewer"
+      app_role: "admin" | "user" | "editor" | "viewer" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1306,7 +1345,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "editor", "viewer"],
+      app_role: ["admin", "user", "editor", "viewer", "client"],
     },
   },
 } as const
