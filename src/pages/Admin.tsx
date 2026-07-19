@@ -333,7 +333,13 @@ const Admin = () => {
           "flex items-center gap-2",
           sidebarCollapsed && !isMobile ? "justify-center" : "justify-start"
         )}>
-          <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
+          <NotificationsBell
+            collapsed={sidebarCollapsed && !isMobile}
+            onNavigate={(link) => {
+              const hash = link.split("#")[1];
+              if (hash) setActiveTab(hash);
+            }}
+          />
           {(!sidebarCollapsed || isMobile) && (
             <span className="text-xs text-muted-foreground">Notificaciones</span>
           )}
