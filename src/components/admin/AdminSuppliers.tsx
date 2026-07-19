@@ -151,7 +151,7 @@ export default function AdminSuppliers() {
   };
 
   // Evaluation CRUD
-  const newEv = (sid?: string) => { setEditEv({ id: "", supplier_id: sid || suppliers[0]?.id || "", subcontract_id: null, project_name: "", quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4, overall_score: null, would_rehire: true, comments: "", evaluated_at: new Date().toISOString().slice(0,10) } as any); setOpenEv(true); };
+  const newEv = (sid?: string) => { setEditEv({ id: "", supplier_id: sid || suppliers[0]?.id || "", subcontract_id: null, project_id: null, project_name: "", quality_score: 4, punctuality_score: 4, safety_score: 4, communication_score: 4, overall_score: null, would_rehire: true, comments: "", evaluated_at: new Date().toISOString().slice(0,10) } as any); setOpenEv(true); };
   const saveEv = async () => {
     if (!editEv) return;
     if (!editEv.supplier_id) return toast.error("Proveedor requerido");
