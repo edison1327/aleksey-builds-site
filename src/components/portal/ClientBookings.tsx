@@ -45,7 +45,7 @@ const ClientBookings = ({ email }: Props) => {
     const load = async () => {
       const { data } = await supabase
         .from("equipment_bookings")
-        .select("id, equipment_type, equipment_name, start_date, end_date, status, location, notes, created_at")
+        .select("id, equipment_type, equipment_id, start_date, end_date, status, notes, created_at")
         .eq("customer_email", email)
         .order("created_at", { ascending: false });
       setRows((data as Booking[]) ?? []);
