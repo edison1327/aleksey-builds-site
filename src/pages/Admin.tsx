@@ -62,6 +62,7 @@ const AdminContracts = lazy(() => import("@/components/admin/AdminContracts"));
 const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
 const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"));
 const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
+const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -266,6 +267,7 @@ const Admin = () => {
     { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
     { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
+    { id: "bi", label: "BI & Presupuestos", icon: TrendingUp, category: "operaciones", adminOnly: true },
     { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
     { id: "contracts", label: "Contratos", icon: FileSignature, category: "operaciones", adminOnly: true },
     { id: "suppliers", label: "Proveedores", icon: Handshake, category: "operaciones", adminOnly: true },
@@ -486,6 +488,7 @@ const Admin = () => {
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
       case "costs": return <AdminCostsMetrics />;
+      case "bi": return <AdminBI />;
       case "invoices": return <AdminInvoices />;
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;

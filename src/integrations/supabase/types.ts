@@ -1695,6 +1695,53 @@ export type Database = {
           },
         ]
       }
+      project_budgets: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          id: string
+          notes: string | null
+          planned_amount: number
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          planned_amount?: number
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          planned_amount?: number
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_budgets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           category: string | null
@@ -3118,6 +3165,7 @@ export type Database = {
           id: string
           notes: string | null
           priority: string
+          project_id: string | null
           scheduled_end: string | null
           scheduled_start: string | null
           site_address: string | null
@@ -3146,6 +3194,7 @@ export type Database = {
           id?: string
           notes?: string | null
           priority?: string
+          project_id?: string | null
           scheduled_end?: string | null
           scheduled_start?: string | null
           site_address?: string | null
@@ -3174,6 +3223,7 @@ export type Database = {
           id?: string
           notes?: string | null
           priority?: string
+          project_id?: string | null
           scheduled_end?: string | null
           scheduled_start?: string | null
           site_address?: string | null
@@ -3184,7 +3234,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "work_orders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -3201,6 +3259,15 @@ export type Database = {
         Returns: boolean
       }
       generate_referral_code: { Args: never; Returns: string }
+      get_cash_forecast: {
+        Args: never
+        Returns: {
+          inflow: number
+          net: number
+          outflow: number
+          week: string
+        }[]
+      }
       get_contract_by_token: {
         Args: { _token: string }
         Returns: {
@@ -3219,6 +3286,33 @@ export type Database = {
           signed_at: string
           status: string
           title: string
+        }[]
+      }
+      get_monthly_pnl: {
+        Args: never
+        Returns: {
+          invoiced: number
+          labor_cost: number
+          month: string
+          net: number
+          paid: number
+          purchase_cost: number
+        }[]
+      }
+      get_project_pnl: {
+        Args: never
+        Returns: {
+          invoiced_total: number
+          labor_cost: number
+          margin: number
+          margin_pct: number
+          materials_cost: number
+          paid_total: number
+          planned_total: number
+          project_id: string
+          project_title: string
+          subcontract_cost: number
+          total_cost: number
         }[]
       }
       has_role: {
