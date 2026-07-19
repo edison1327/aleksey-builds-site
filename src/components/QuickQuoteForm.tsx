@@ -136,6 +136,17 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 border-t pt-4 mt-4">
+      <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: "1px", height: "1px", overflow: "hidden" }}>
+        <label htmlFor={`qw-${itemName}`}>No completar</label>
+        <input
+          id={`qw-${itemName}`}
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
       <h4 className="font-heading font-semibold text-foreground">Solicitar Cotización</h4>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
