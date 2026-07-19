@@ -3001,6 +3001,64 @@ export type Database = {
         }
         Relationships: []
       }
+      rfq_auction_bids: {
+        Row: {
+          amount: number
+          created_at: string
+          delivery_days: number | null
+          id: string
+          invitation_id: string
+          ip: string | null
+          notes: string | null
+          rfq_id: string
+          supplier_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          delivery_days?: number | null
+          id?: string
+          invitation_id: string
+          ip?: string | null
+          notes?: string | null
+          rfq_id: string
+          supplier_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          delivery_days?: number | null
+          id?: string
+          invitation_id?: string
+          ip?: string | null
+          notes?: string | null
+          rfq_id?: string
+          supplier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_auction_bids_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "rfq_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_auction_bids_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_auction_bids_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rfq_invitations: {
         Row: {
           access_token: string
@@ -3171,6 +3229,12 @@ export type Database = {
       }
       rfqs: {
         Row: {
+          auction_closed_at: string | null
+          auction_enabled: boolean
+          auction_end_at: string | null
+          auction_min_decrement: number
+          auction_start_at: string | null
+          auction_starting_price: number | null
           awarded_response_id: string | null
           branch_id: string | null
           category: string | null
@@ -3188,6 +3252,12 @@ export type Database = {
           work_order_id: string | null
         }
         Insert: {
+          auction_closed_at?: string | null
+          auction_enabled?: boolean
+          auction_end_at?: string | null
+          auction_min_decrement?: number
+          auction_start_at?: string | null
+          auction_starting_price?: number | null
           awarded_response_id?: string | null
           branch_id?: string | null
           category?: string | null
@@ -3205,6 +3275,12 @@ export type Database = {
           work_order_id?: string | null
         }
         Update: {
+          auction_closed_at?: string | null
+          auction_enabled?: boolean
+          auction_end_at?: string | null
+          auction_min_decrement?: number
+          auction_start_at?: string | null
+          auction_starting_price?: number | null
           awarded_response_id?: string | null
           branch_id?: string | null
           category?: string | null
@@ -4586,6 +4662,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      close_expired_auctions: { Args: never; Returns: number }
       create_api_key: {
         Args: {
           _expires_at?: string
@@ -4614,6 +4691,25 @@ export type Database = {
           supplier_name: string
           title: string
           usage_pct: number
+        }[]
+      }
+      get_auction_state: {
+        Args: { _token: string }
+        Returns: {
+          auction_closed_at: string
+          auction_enabled: boolean
+          auction_end_at: string
+          auction_min_decrement: number
+          auction_start_at: string
+          auction_starting_price: number
+          best_overall: number
+          code: string
+          currency: string
+          my_best: number
+          my_rank: number
+          rfq_id: string
+          title: string
+          total_bidders: number
         }[]
       }
       get_cash_forecast: {
@@ -4814,6 +4910,16 @@ export type Database = {
       }
       notify_expiring_framework_agreements: { Args: never; Returns: number }
       notify_pending_supplier_evaluations: { Args: never; Returns: number }
+      place_auction_bid: {
+        Args: {
+          _amount: number
+          _delivery_days: number
+          _ip: string
+          _notes: string
+          _token: string
+        }
+        Returns: string
+      }
       sign_contract_with_token: {
         Args: {
           _ip: string
