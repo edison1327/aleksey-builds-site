@@ -89,10 +89,14 @@ const AdminBI = () => {
 
   const load = async () => {
     setLoading(true);
+    const sb = supabase as unknown as {
+      rpc: (fn: string) => Promise<{ data: unknown }>;
+      from: typeof supabase.from;
+    };
     const [m, p, c, pl, b] = await Promise.all([
-      supabase.rpc("get_monthly_pnl"),
-      supabase.rpc("get_project_pnl"),
-      supabase.rpc("get_cash_forecast"),
+      sb.rpc("get_monthly_pnl"),
+      sb.rpc("get_project_pnl"),
+      sb.rpc("get_cash_forecast"),
       supabase.from("projects").select("id, title").order("title"),
       supabase.from("project_budgets").select("*").order("created_at", { ascending: false }),
     ]);
