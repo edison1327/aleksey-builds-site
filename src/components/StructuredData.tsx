@@ -43,7 +43,7 @@ const StructuredData = () => {
           },
         }
       : {}),
-    ...(contact?.working_hours ? { openingHours: contact.working_hours } : {}),
+    ...(contact?.business_hours ? { openingHours: contact.business_hours } : {}),
     ...(sameAs.length ? { sameAs } : {}),
   };
 
