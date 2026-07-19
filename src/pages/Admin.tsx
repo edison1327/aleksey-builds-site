@@ -33,6 +33,7 @@ import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
+import AdminBookings from "@/components/admin/AdminBookings";
 // Heavy panels are lazy-loaded to reduce initial admin bundle
 const AdminBlog = lazy(() => import("@/components/admin/AdminBlog"));
 const AdminAuditLog = lazy(() => import("@/components/admin/AdminAuditLog"));
