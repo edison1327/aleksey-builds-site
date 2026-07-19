@@ -191,6 +191,7 @@ const Admin = () => {
     { id: "audit", label: "Auditoría", icon: History, category: "general", adminOnly: true },
     { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
+    { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
