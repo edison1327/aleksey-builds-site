@@ -47,6 +47,8 @@ const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
 const AdminLocations = lazy(() => import("@/components/admin/AdminLocations"));
 const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
+const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
+const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
