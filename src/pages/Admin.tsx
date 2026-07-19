@@ -46,6 +46,7 @@ const AdminClientDocuments = lazy(() => import("@/components/admin/AdminClientDo
 const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
 const AdminLocations = lazy(() => import("@/components/admin/AdminLocations"));
+const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
 import NotificationsBell from "@/components/admin/NotificationsBell";
@@ -201,6 +202,7 @@ const Admin = () => {
     { id: "health", label: "Salud del Sitio", icon: Activity, category: "general" },
     { id: "backup", label: "Backup", icon: Database, category: "general", adminOnly: true },
     { id: "errors", label: "Errores", icon: Bug, category: "general", adminOnly: true },
+    { id: "webhooks", label: "Webhooks", icon: Webhook, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -409,6 +411,7 @@ const Admin = () => {
       case "referrals": return <AdminReferrals />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
+      case "webhooks": return <AdminWebhooks />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
