@@ -63,6 +63,7 @@ const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
 const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"));
 const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
 const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
+const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -276,6 +277,7 @@ const Admin = () => {
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
     { id: "pipeline", label: "Pipeline CRM", icon: Kanban, category: "comunicacion" },
+    { id: "marketing", label: "Marketing & CRM", icon: Zap, category: "comunicacion", adminOnly: true },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
     { id: "positions", label: "Vacantes", icon: Briefcase, category: "rrhh" },
     { id: "benefits", label: "Beneficios", icon: Heart, category: "rrhh" },
@@ -516,6 +518,7 @@ const Admin = () => {
       case "reminders": return <AdminReminderTemplates />;
       case "trash": return <AdminTrash />;
       case "integrations": return <AdminIntegrations />;
+      case "marketing": return <AdminMarketing />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
