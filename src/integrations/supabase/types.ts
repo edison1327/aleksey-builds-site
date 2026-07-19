@@ -1740,6 +1740,173 @@ export type Database = {
         }
         Relationships: []
       }
+      subcontracts: {
+        Row: {
+          amount: number | null
+          code: string
+          created_at: string
+          currency: string
+          end_date: string | null
+          id: string
+          notes: string | null
+          payment_terms: string | null
+          scope: string | null
+          start_date: string | null
+          status: string
+          supplier_id: string
+          title: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          code: string
+          created_at?: string
+          currency?: string
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          payment_terms?: string | null
+          scope?: string | null
+          start_date?: string | null
+          status?: string
+          supplier_id: string
+          title: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          code?: string
+          created_at?: string
+          currency?: string
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          payment_terms?: string | null
+          scope?: string | null
+          start_date?: string | null
+          status?: string
+          supplier_id?: string
+          title?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontracts_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subcontracts_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_certifications: {
+        Row: {
+          cert_number: string | null
+          cert_type: string
+          created_at: string
+          expires_at: string | null
+          file_url: string | null
+          id: string
+          issued_at: string | null
+          issuer: string | null
+          notes: string | null
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          cert_number?: string | null
+          cert_type: string
+          created_at?: string
+          expires_at?: string | null
+          file_url?: string | null
+          id?: string
+          issued_at?: string | null
+          issuer?: string | null
+          notes?: string | null
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          cert_number?: string | null
+          cert_type?: string
+          created_at?: string
+          expires_at?: string | null
+          file_url?: string | null
+          id?: string
+          issued_at?: string | null
+          issuer?: string | null
+          notes?: string | null
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_certifications_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      suppliers: {
+        Row: {
+          address: string | null
+          category: string | null
+          contact_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          rating: number | null
+          ruc: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          category?: string | null
+          contact_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          rating?: number | null
+          ruc?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          category?: string | null
+          contact_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          rating?: number | null
+          ruc?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_stats: {
         Row: {
           created_at: string
