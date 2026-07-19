@@ -161,17 +161,78 @@ export default function AdminOperationsCalendar() {
     load();
   };
 
-  const removeMaintenance = async (id: string) => {
-    const { error } = await supabase.from("equipment_maintenance").delete().eq("id", id);
+  const openBookingFor = (day?: Date) => {
+    const d = day ? format(day, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd");
+    setBForm({ ...bForm, start_date: d, end_date: d, equipment_id: "", customer_name: "", customer_email: "", notes: "" });
+    setBOpen(true);
+  };
+
+  const saveBooking = async () => {
+    if (!bForm.equipment_id || !bForm.customer_name) {
+      toast.error("Completa equipo y cliente");
+      return;
+    }
+    if (bForm.end_date < bForm.start_date) {
+      toast.error("Fecha fin inválida");
+      return;
+    }
+    // conflict check
+    const conflict = [...bookings, ...maintenance].some(
+      (x: any) =>
+        x.equipment_type === bForm.equipment_type &&
+        x.equipment_id === bForm.equipment_id &&
+        overlap(bForm.start_date, bForm.end_date, x.start_date, x.end_date),
+    );
+    if (conflict && !confirm("Este equipo ya tiene una reserva o mantenimiento en esas fechas. ¿Continuar?")) return;
+
+    const { error } = await supabase.from("equipment_bookings").insert({
+      equipment_type: bForm.equipment_type,
+      equipment_id: bForm.equipment_id,
+      start_date: bForm.start_date,
+      end_date: bForm.end_date,
+      customer_name: bForm.customer_name,
+      customer_email: bForm.customer_email || null,
+      notes: bForm.notes || null,
+      status: bForm.status,
+    });
     if (error) { toast.error(error.message); return; }
-    toast.success("Mantenimiento eliminado");
+    toast.success("Reserva creada");
+    setBOpen(false);
     load();
+  };
+
+  const exportPdf = () => {
+    const items: CalendarPdfItem[] = [];
+    for (const b of bookings) {
+      items.push({
+        date: `${b.start_date} → ${b.end_date}`,
+        kind: "Reserva",
+        title: equipName(b.equipment_type, b.equipment_id),
+        detail: b.customer_name || "Cliente",
+        status: b.status,
+      });
+    }
+    for (const m of maintenance) {
+      items.push({
+        date: `${m.start_date} → ${m.end_date}`,
+        kind: "Mantenimiento",
+        title: `${m.title} · ${equipName(m.equipment_type, m.equipment_id)}`,
+        detail: m.notes || "—",
+        status: m.status,
+      });
+    }
+    items.sort((a, b) => a.date.localeCompare(b.date));
+    const rangeLabel = view === "month"
+      ? format(cursor, "MMMM yyyy", { locale: es })
+      : `${format(startOfWeek(cursor, { weekStartsOn: 1 }), "d MMM", { locale: es })} — ${format(endOfWeek(cursor, { weekStartsOn: 1 }), "d MMM yyyy", { locale: es })}`;
+    exportCalendarPdf(rangeLabel, items, globalConflicts.length);
   };
 
   const goPrev = () => setCursor(view === "month" ? subMonths(cursor, 1) : subWeeks(cursor, 1));
   const goNext = () => setCursor(view === "month" ? addMonths(cursor, 1) : addWeeks(cursor, 1));
 
   const equipmentByType = equipment.filter((e) => e.type === mForm.equipment_type);
+  const bookingEquipmentByType = equipment.filter((e) => e.type === bForm.equipment_type);
 
   return (
     <div className="space-y-6">
