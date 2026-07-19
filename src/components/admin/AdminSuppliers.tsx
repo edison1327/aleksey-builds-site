@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History } from "lucide-react";
+import { Plus, Pencil, Trash2, Truck, ShieldCheck, FileText, AlertTriangle, Handshake, Star, History, Trophy } from "lucide-react";
 import { format, differenceInDays, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 
