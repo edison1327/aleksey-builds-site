@@ -65,6 +65,98 @@ export type Database = {
         }
         Relationships: []
       }
+      api_keys: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          owner_user_id: string | null
+          rate_limit_per_min: number
+          revoked_at: string | null
+          scopes: string[]
+          updated_at: string
+          usage_count: number
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          owner_user_id?: string | null
+          rate_limit_per_min?: number
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+          usage_count?: number
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          owner_user_id?: string | null
+          rate_limit_per_min?: number
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+          usage_count?: number
+        }
+        Relationships: []
+      }
+      api_usage_log: {
+        Row: {
+          api_key_id: string | null
+          created_at: string
+          endpoint: string
+          id: number
+          ip: string | null
+          method: string
+          response_ms: number | null
+          status_code: number
+          user_agent: string | null
+        }
+        Insert: {
+          api_key_id?: string | null
+          created_at?: string
+          endpoint: string
+          id?: number
+          ip?: string | null
+          method: string
+          response_ms?: number | null
+          status_code: number
+          user_agent?: string | null
+        }
+        Update: {
+          api_key_id?: string | null
+          created_at?: string
+          endpoint?: string
+          id?: number
+          ip?: string | null
+          method?: string
+          response_ms?: number | null
+          status_code?: number
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_usage_log_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -3936,6 +4028,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      create_api_key: {
+        Args: {
+          _expires_at?: string
+          _name: string
+          _rate_limit?: number
+          _scopes?: string[]
+        }
+        Returns: {
+          id: string
+          key_prefix: string
+          raw_key: string
+        }[]
+      }
       generate_referral_code: { Args: never; Returns: string }
       get_cash_forecast: {
         Args: never
@@ -4089,6 +4194,15 @@ export type Database = {
       user_has_branch_access: {
         Args: { _branch_id: string; _user_id: string }
         Returns: boolean
+      }
+      verify_api_key: {
+        Args: { _raw_key: string }
+        Returns: {
+          id: string
+          owner_user_id: string
+          rate_limit_per_min: number
+          scopes: string[]
+        }[]
       }
     }
     Enums: {
