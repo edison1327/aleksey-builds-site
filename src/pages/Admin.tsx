@@ -59,6 +59,7 @@ const AdminPdfSettings = lazy(() => import("@/components/admin/AdminPdfSettings"
 const AdminOfflinePending = lazy(() => import("@/components/admin/AdminOfflinePending"));
 const AdminInvoices = lazy(() => import("@/components/admin/AdminInvoices"));
 const AdminContracts = lazy(() => import("@/components/admin/AdminContracts"));
+const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
