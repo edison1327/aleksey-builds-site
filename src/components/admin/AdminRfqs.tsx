@@ -63,6 +63,8 @@ const AdminRfqs = () => {
 
   useEffect(() => { load(); }, []);
 
+  const [detailGami, setDetailGami] = useState<Record<string, any>>({});
+
   const loadDetail = async (rfq: Rfq) => {
     setDetail(rfq);
     const [it, inv, resp] = await Promise.all([
@@ -73,6 +75,15 @@ const AdminRfqs = () => {
     setDetailItems(it.data || []);
     setDetailInvites(inv.data || []);
     setDetailResponses(resp.data || []);
+    const supplierIds = Array.from(new Set((resp.data || []).map((r: any) => r.supplier_id).filter(Boolean)));
+    if (supplierIds.length) {
+      const { data: g } = await (supabase as any).rpc("get_supplier_gamification", { _supplier_id: null });
+      const map: Record<string, any> = {};
+      (g || []).forEach((row: any) => { if (supplierIds.includes(row.supplier_id)) map[row.supplier_id] = row; });
+      setDetailGami(map);
+    } else {
+      setDetailGami({});
+    }
   };
 
   const createRfq = async () => {
