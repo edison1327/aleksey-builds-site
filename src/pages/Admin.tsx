@@ -51,6 +51,8 @@ const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotif
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
 const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
+const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
+const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
