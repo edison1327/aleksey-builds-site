@@ -541,6 +541,7 @@ const Admin = () => {
   };
 
   return (
+    <BranchProvider>
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex">
       {/* Skip to main content link for keyboard users */}
       <a
@@ -671,6 +672,7 @@ const Admin = () => {
         </main>
       </div>
     </div>
+    </BranchProvider>
   );
 };
 
