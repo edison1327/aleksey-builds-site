@@ -18,6 +18,7 @@ import { captureAttribution } from "./lib/utmTracker";
 import { registerPwa } from "./pwa/register";
 import { initOfflineSync } from "./lib/offlineQueue";
 import { loadPdfSettings } from "./lib/pdfSettings";
+import { initNative } from "./lib/native";
 
 installGlobalErrorHandlers();
 captureReferralFromUrl();
@@ -25,6 +26,7 @@ captureAttribution();
 registerPwa();
 initOfflineSync();
 loadPdfSettings().catch(() => {});
+initNative().catch(() => {});
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
