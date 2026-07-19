@@ -66,14 +66,28 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
       const fullMessage = `[Cotización de ${itemType}: ${itemName}]\n\n${formData.message || "Solicito información y cotización."}`;
 
       // Save to database
-      const { error } = await supabase.from("contact_messages").insert({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone?.trim() || null,
-        message: fullMessage,
-      });
+      const refCode = getStoredReferralCode();
+      const { data: inserted, error } = await supabase
+        .from("contact_messages")
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone?.trim() || null,
+          message: fullMessage,
+          referral_code: refCode,
+        })
+        .select("id")
+        .maybeSingle();
 
       if (error) throw error;
+
+      if (refCode) {
+        await trackReferralUse({
+          email: formData.email.trim(),
+          source: `quick-quote:${itemType}`,
+          contactMessageId: inserted?.id ?? null,
+        });
+      }
 
       // Send email notification (don't fail if email fails)
       try {
