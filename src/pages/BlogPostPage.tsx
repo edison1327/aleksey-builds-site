@@ -46,7 +46,7 @@ const BlogPostPage = () => {
 
   useEffect(() => {
     if (!slug) return;
-    const query = supabase.from("blog_posts").select("*").eq("slug", slug);
+    const query = supabase.from("blog_posts").select("*").eq("slug", slug).is("deleted_at", null);
     const fetch = isPreview
       ? query.eq("preview_token", previewToken!).maybeSingle()
       : query.eq("published", true).maybeSingle();
