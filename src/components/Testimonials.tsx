@@ -131,8 +131,40 @@ const Testimonials = () => {
     emblaApi.on("reInit", onSelect);
   }, [emblaApi, onSelect]);
 
+  // JSON-LD Review schema for rich snippets
+  const reviewSchema = useMemo(() => {
+    const ratings = testimonials.map((t) => t.rating || 5);
+    const avg = ratings.reduce((a, b) => a + b, 0) / (ratings.length || 1);
+    return {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "ALEKSEY",
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: avg.toFixed(1),
+        reviewCount: testimonials.length,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      review: testimonials.slice(0, 10).map((t) => ({
+        "@type": "Review",
+        author: { "@type": "Person", name: t.name },
+        reviewBody: t.content,
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: t.rating || 5,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      })),
+    };
+  }, [testimonials]);
+
   return (
     <section className="py-24 bg-gradient-to-b from-background to-secondary/30 overflow-hidden">
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(reviewSchema)}</script>
+      </Helmet>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div
