@@ -26,7 +26,9 @@ type Props = {
 export function PhotoUploader({ workOrderId, userId, kind, label }: Props) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
 
   const load = async () => {
     const { data } = await supabase
