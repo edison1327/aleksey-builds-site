@@ -368,25 +368,23 @@ const AdminBlog = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Contenido (ES) *</Label>
-              <Textarea
+              <RichTextEditor
                 value={form.content}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
-                rows={12}
-                placeholder={"Escribe aquí el artículo. Usa dos saltos para separar párrafos."}
-                className="font-mono text-sm"
+                onChange={(html) => setForm({ ...form, content: html })}
+                placeholder="Escribe aquí el artículo..."
+                minHeight={280}
               />
             </div>
             <div className="space-y-1.5">
               <Label>Content (EN)</Label>
-              <Textarea
+              <RichTextEditor
                 value={form.content_en}
-                onChange={(e) => setForm({ ...form, content_en: e.target.value })}
-                rows={12}
+                onChange={(html) => setForm({ ...form, content_en: html })}
                 placeholder="Optional English version. Falls back to Spanish if empty."
-                className="font-mono text-sm"
+                minHeight={280}
               />
               <p className="text-xs text-muted-foreground">
-                Se renderiza como texto con saltos de línea respetados.
+                Editor con formato enriquecido. Se guarda como HTML.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
