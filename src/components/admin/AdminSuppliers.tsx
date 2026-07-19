@@ -61,16 +61,18 @@ export default function AdminSuppliers() {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: s }, { data: c }, { data: sc }, { data: ev }] = await Promise.all([
+    const [{ data: s }, { data: c }, { data: sc }, { data: ev }, { data: pr }] = await Promise.all([
       supabase.from("suppliers" as any).select("*").order("name"),
       supabase.from("supplier_certifications" as any).select("*").order("expires_at"),
       supabase.from("subcontracts" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("supplier_evaluations" as any).select("*").order("evaluated_at", { ascending: false }),
+      supabase.from("projects" as any).select("id,title").is("deleted_at", null).order("title"),
     ]);
     setSuppliers((s as any) || []);
     setCerts((c as any) || []);
     setSubs((sc as any) || []);
     setEvals((ev as any) || []);
+    setProjects((pr as any) || []);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
