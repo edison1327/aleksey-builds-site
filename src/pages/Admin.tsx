@@ -262,6 +262,7 @@ const Admin = () => {
     { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
     { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
+    { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
