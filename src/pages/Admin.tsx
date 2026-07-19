@@ -389,6 +389,7 @@ const Admin = () => {
       case "media": return <AdminMediaLibrary />;
       case "health": return <AdminSiteHealth />;
       case "backup": return <AdminBackup />;
+      case "errors": return <AdminErrorLog />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
