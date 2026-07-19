@@ -1357,6 +1357,50 @@ export type Database = {
         }
         Relationships: []
       }
+      po_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          method: string
+          notes: string | null
+          paid_at: string
+          purchase_order_id: string
+          reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          method?: string
+          notes?: string | null
+          paid_at?: string
+          purchase_order_id: string
+          reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          method?: string
+          notes?: string | null
+          paid_at?: string
+          purchase_order_id?: string
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "po_payments_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           category: string | null
@@ -1508,6 +1552,10 @@ export type Database = {
       }
       purchase_orders: {
         Row: {
+          amount_paid: number
+          approval_notes: string | null
+          approved_at: string | null
+          approved_by: string | null
           code: string
           created_at: string
           created_by: string | null
@@ -1516,6 +1564,7 @@ export type Database = {
           expected_at: string | null
           id: string
           notes: string | null
+          payment_status: string
           payment_terms: string | null
           requisition_id: string | null
           status: string
@@ -1528,6 +1577,10 @@ export type Database = {
           work_order_id: string | null
         }
         Insert: {
+          amount_paid?: number
+          approval_notes?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           code: string
           created_at?: string
           created_by?: string | null
@@ -1536,6 +1589,7 @@ export type Database = {
           expected_at?: string | null
           id?: string
           notes?: string | null
+          payment_status?: string
           payment_terms?: string | null
           requisition_id?: string | null
           status?: string
@@ -1548,6 +1602,10 @@ export type Database = {
           work_order_id?: string | null
         }
         Update: {
+          amount_paid?: number
+          approval_notes?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           code?: string
           created_at?: string
           created_by?: string | null
@@ -1556,6 +1614,7 @@ export type Database = {
           expected_at?: string | null
           id?: string
           notes?: string | null
+          payment_status?: string
           payment_terms?: string | null
           requisition_id?: string | null
           status?: string
@@ -2033,6 +2092,109 @@ export type Database = {
           url?: string
         }
         Relationships: []
+      }
+      stock_items: {
+        Row: {
+          created_at: string
+          current_qty: number
+          id: string
+          is_active: boolean
+          location: string | null
+          min_qty: number
+          name: string
+          notes: string | null
+          sku: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_qty?: number
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          min_qty?: number
+          name: string
+          notes?: string | null
+          sku?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_qty?: number
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          min_qty?: number
+          name?: string
+          notes?: string | null
+          sku?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stock_movements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          movement_type: string
+          notes: string | null
+          po_id: string | null
+          quantity: number
+          reference: string | null
+          stock_item_id: string
+          work_order_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          movement_type: string
+          notes?: string | null
+          po_id?: string | null
+          quantity: number
+          reference?: string | null
+          stock_item_id: string
+          work_order_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          movement_type?: string
+          notes?: string | null
+          po_id?: string | null
+          quantity?: number
+          reference?: string | null
+          stock_item_id?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_po_id_fkey"
+            columns: ["po_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_stock_item_id_fkey"
+            columns: ["stock_item_id"]
+            isOneToOne: false
+            referencedRelation: "stock_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subcontracts: {
         Row: {
