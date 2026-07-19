@@ -72,10 +72,10 @@ const ClientInvoices = ({ email }: Props) => {
         .from("invoice_items")
         .select("description, quantity, unit_price, subtotal")
         .eq("invoice_id", inv.id);
-      await downloadInvoicePdf(inv as any, (items as any) ?? []);
+      await exportInvoicePdf(inv as any, (items as any) ?? []);
     } catch {
       // fallback minimal
-      await downloadInvoicePdf(inv as any, []);
+      await exportInvoicePdf(inv as any, []);
     }
   };
 
