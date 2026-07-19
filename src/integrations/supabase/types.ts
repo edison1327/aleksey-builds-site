@@ -4309,6 +4309,10 @@ export type Database = {
       }
     }
     Functions: {
+      auto_invite_top_suppliers: {
+        Args: { _limit?: number; _rfq_id: string }
+        Returns: number
+      }
       check_equipment_availability: {
         Args: {
           _end_date: string
@@ -4474,6 +4478,19 @@ export type Database = {
           supplier_id: string
           supplier_name: string
           title: string
+        }[]
+      }
+      get_top_suppliers: {
+        Args: { _category?: string; _limit?: number }
+        Returns: {
+          category: string
+          email: string
+          evaluations_count: number
+          last_evaluated_at: string
+          name: string
+          rating: number
+          supplier_id: string
+          would_rehire_pct: number
         }[]
       }
       has_role: {
