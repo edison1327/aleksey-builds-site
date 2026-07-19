@@ -13,9 +13,9 @@ const StructuredData = () => {
   const { data: socials } = useSocialLinks();
   const { data: settings } = useSiteSettings();
 
-  const name = settings?.site_name || "Aleksey";
+  const name = "Aleksey";
   const description =
-    settings?.site_description ||
+    settings?.footer_description ||
     "Servicios de ingeniería, construcción, alquiler de maquinaria y vehículos industriales.";
 
   const sameAs = (socials ?? [])
