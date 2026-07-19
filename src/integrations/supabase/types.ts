@@ -358,6 +358,132 @@ export type Database = {
           },
         ]
       }
+      contract_templates: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          service_slug: string | null
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          service_slug?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          service_slug?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contracts: {
+        Row: {
+          amount: number | null
+          body: string
+          code: string
+          created_at: string
+          currency: string
+          customer_address: string | null
+          customer_document: string | null
+          customer_email: string | null
+          customer_name: string
+          id: string
+          invoice_id: string | null
+          notes: string | null
+          quote_id: string | null
+          sent_at: string | null
+          service_slug: string | null
+          sign_token: string
+          signature_data_url: string | null
+          signature_ip: string | null
+          signature_user_agent: string | null
+          signed_at: string | null
+          status: string
+          template_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          body: string
+          code: string
+          created_at?: string
+          currency?: string
+          customer_address?: string | null
+          customer_document?: string | null
+          customer_email?: string | null
+          customer_name: string
+          id?: string
+          invoice_id?: string | null
+          notes?: string | null
+          quote_id?: string | null
+          sent_at?: string | null
+          service_slug?: string | null
+          sign_token?: string
+          signature_data_url?: string | null
+          signature_ip?: string | null
+          signature_user_agent?: string | null
+          signed_at?: string | null
+          status?: string
+          template_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          body?: string
+          code?: string
+          created_at?: string
+          currency?: string
+          customer_address?: string | null
+          customer_document?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          id?: string
+          invoice_id?: string | null
+          notes?: string | null
+          quote_id?: string | null
+          sent_at?: string | null
+          service_slug?: string | null
+          sign_token?: string
+          signature_data_url?: string | null
+          signature_ip?: string | null
+          signature_user_agent?: string | null
+          signed_at?: string | null
+          status?: string
+          template_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "contract_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_bookings: {
         Row: {
           created_at: string
