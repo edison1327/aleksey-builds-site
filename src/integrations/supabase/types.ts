@@ -3346,13 +3346,62 @@ export type Database = {
         }
         Relationships: []
       }
+      work_order_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          kind: string
+          lat: number | null
+          lng: number | null
+          storage_path: string
+          uploaded_by: string | null
+          work_order_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          lat?: number | null
+          lng?: number | null
+          storage_path: string
+          uploaded_by?: string | null
+          work_order_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          lat?: number | null
+          lng?: number | null
+          storage_path?: string
+          uploaded_by?: string | null
+          work_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_order_photos_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_orders: {
         Row: {
           actual_cost: number | null
           assigned_to: string | null
           checklist: Json
+          client_signature_at: string | null
+          client_signature_name: string | null
+          client_signature_url: string | null
           code: string
           completed_at: string | null
+          completion_lat: number | null
+          completion_lng: number | null
           created_at: string
           created_by: string | null
           customer_email: string | null
@@ -3380,8 +3429,13 @@ export type Database = {
           actual_cost?: number | null
           assigned_to?: string | null
           checklist?: Json
+          client_signature_at?: string | null
+          client_signature_name?: string | null
+          client_signature_url?: string | null
           code?: string
           completed_at?: string | null
+          completion_lat?: number | null
+          completion_lng?: number | null
           created_at?: string
           created_by?: string | null
           customer_email?: string | null
@@ -3409,8 +3463,13 @@ export type Database = {
           actual_cost?: number | null
           assigned_to?: string | null
           checklist?: Json
+          client_signature_at?: string | null
+          client_signature_name?: string | null
+          client_signature_url?: string | null
           code?: string
           completed_at?: string | null
+          completion_lat?: number | null
+          completion_lng?: number | null
           created_at?: string
           created_by?: string | null
           customer_email?: string | null
