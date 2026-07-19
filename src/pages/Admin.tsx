@@ -478,6 +478,7 @@ const Admin = () => {
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
       case "costs": return <AdminCostsMetrics />;
+      case "invoices": return <AdminInvoices />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
       case "templates": return <AdminResponseTemplates />;
