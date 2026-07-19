@@ -47,6 +47,7 @@ const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
+import NotificationsBell from "@/components/admin/NotificationsBell";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
