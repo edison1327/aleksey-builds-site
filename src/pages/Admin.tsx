@@ -68,6 +68,9 @@ const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
 const AdminPredictive = lazy(() => import("@/components/admin/AdminPredictive"));
 const AdminDocuments = lazy(() => import("@/components/admin/AdminDocuments"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
+const AdminBranches = lazy(() => import("@/components/admin/AdminBranches"));
+import { BranchProvider } from "@/hooks/useBranch";
+import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
 import NotificationCenter from "@/components/admin/NotificationCenter";
@@ -300,6 +303,7 @@ const Admin = () => {
     { id: "inbox", label: "Bandeja notificaciones", icon: Bell, category: "comunicacion" },
     { id: "reminders", label: "Plantillas recordatorios", icon: AlarmClock, category: "comunicacion", adminOnly: true },
     { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
+    { id: "branches", label: "Sucursales & Empresas", icon: Building2, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -504,6 +508,7 @@ const Admin = () => {
       case "bi": return <AdminBI />;
       case "predictive": return <AdminPredictive />;
       case "documents": return <AdminDocuments />;
+      case "branches": return <AdminBranches />;
       case "invoices": return <AdminInvoices />;
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;
@@ -536,6 +541,7 @@ const Admin = () => {
   };
 
   return (
+    <BranchProvider>
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex">
       {/* Skip to main content link for keyboard users */}
       <a
@@ -607,7 +613,8 @@ const Admin = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
+              <div className="hidden md:block"><BranchSwitcher /></div>
               <OfflineIndicator />
               <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
                 <Command className="h-5 w-5" />
@@ -665,6 +672,7 @@ const Admin = () => {
         </main>
       </div>
     </div>
+    </BranchProvider>
   );
 };
 
