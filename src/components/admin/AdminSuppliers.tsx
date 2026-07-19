@@ -29,6 +29,11 @@ type Subcontract = {
   start_date: string | null; end_date: string | null; status: string;
   payment_terms: string | null; notes: string | null;
 };
+type Evaluation = {
+  id: string; supplier_id: string; subcontract_id: string | null; project_name: string | null;
+  quality_score: number; punctuality_score: number; safety_score: number; communication_score: number;
+  overall_score: number | null; would_rehire: boolean; comments: string | null; evaluated_at: string;
+};
 
 const STATUS = { active: "Activo", suspended: "Suspendido", blacklisted: "Lista negra" } as Record<string,string>;
 const SC_STATUS = { draft: "Borrador", sent: "Enviado", signed: "Firmado", in_progress: "En curso", completed: "Completado", cancelled: "Cancelado" } as Record<string,string>;
