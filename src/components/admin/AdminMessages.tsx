@@ -244,12 +244,16 @@ const AdminMessages = () => {
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
     if (!confirm(`¿Eliminar ${selectedIds.size} mensaje(s)? Esta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Mover ${selectedIds.size} mensaje(s) a la papelera?`)) return;
     const ids = Array.from(selectedIds);
     try {
-      const { error } = await supabase.from("contact_messages").delete().in("id", ids);
+      const { error } = await supabase
+        .from("contact_messages")
+        .update({ deleted_at: new Date().toISOString() })
+        .in("id", ids);
       if (error) throw error;
-      toast({ title: "Eliminados", description: `${ids.length} mensaje(s) eliminados.` });
-      logAction("bulk_delete", "contact_messages", null, { count: ids.length });
+      toast({ title: "Movidos a papelera", description: `${ids.length} mensaje(s) en la papelera.` });
+      logAction("bulk_soft_delete", "contact_messages", null, { count: ids.length });
       setSelectedIds(new Set());
       fetchMessages();
     } catch (e) {
