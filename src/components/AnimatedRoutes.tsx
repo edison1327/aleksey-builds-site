@@ -26,6 +26,7 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const OperatorWorkOrders = lazy(() => import("@/pages/OperatorWorkOrders"));
 const ContractSignPage = lazy(() => import("@/pages/ContractSignPage"));
+const MarketplacePage = lazy(() => import("@/pages/MarketplacePage"));
 
 const RouteFallback = () => (
   <div className="min-h-dvh flex items-center justify-center">
