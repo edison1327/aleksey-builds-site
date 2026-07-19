@@ -102,12 +102,14 @@ const GlobalSearch = () => {
             .from("projects")
             .select("id,title,slug,location,category")
             .eq("is_active", true)
+            .is("deleted_at", null)
             .or(`title.ilike.${like},description.ilike.${like},location.ilike.${like}`)
             .limit(6),
           supabase
             .from("blog_posts")
             .select("id,title,slug,excerpt")
             .eq("published", true)
+            .is("deleted_at", null)
             .or(`title.ilike.${like},excerpt.ilike.${like}`)
             .limit(6),
           supabase
