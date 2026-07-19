@@ -416,6 +416,8 @@ const Admin = () => {
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
+      case "inbox": return <AdminNotificationsInbox />;
+      case "reminders": return <AdminReminderTemplates />;
       default: return <DashboardOverview onNavigateToMessages={() => setActiveTab("messages")} />;
     }
   };
