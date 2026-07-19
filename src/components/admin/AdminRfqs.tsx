@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Send, Trash2, Copy, Trophy, Eye, Sparkles } from "lucide-react";
+import AuctionAdmin from "@/components/auction/AuctionAdmin";
 
 interface Rfq {
   id: string; code: string; title: string; description: string | null;
@@ -413,7 +414,10 @@ const AdminRfqs = () => {
                     })()}
                   </CardContent>
                 </Card>
+
+                <AuctionAdmin rfqId={detail.id} currency={detail.currency} onChanged={load} />
               </div>
+
             </>
           )}
         </DialogContent>
