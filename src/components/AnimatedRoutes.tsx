@@ -70,6 +70,7 @@ const AnimatedRoutes = () => {
             <Route path="/referidos" element={<ReferralsPage />} />
             <Route path="/privacidad" element={<PrivacyPage />} />
             <Route path="/firmar/:token" element={<ContractSignPage />} />
+            <Route path="/marketplace" element={<MarketplacePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
