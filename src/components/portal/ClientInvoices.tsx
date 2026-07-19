@@ -67,16 +67,35 @@ const ClientInvoices = ({ email }: Props) => {
   }, [email]);
 
   const handleDownload = async (inv: Invoice) => {
-    try {
-      const { data: items } = await (supabase as any)
-        .from("invoice_items")
-        .select("description, quantity, unit_price, subtotal")
-        .eq("invoice_id", inv.id);
-      await exportInvoicePdf(inv as any, (items as any) ?? []);
-    } catch {
-      // fallback minimal
-      await exportInvoicePdf(inv as any, []);
-    }
+    const { data: items } = await (supabase as any)
+      .from("invoice_items")
+      .select("description, quantity, unit_price, subtotal")
+      .eq("invoice_id", inv.id);
+    const mapped = ((items as any[]) ?? []).map((it) => ({
+      description: it.description,
+      quantity: Number(it.quantity),
+      unit_price: Number(it.unit_price),
+      total: Number(it.subtotal),
+    }));
+    await exportInvoicePdf({
+      code: inv.code,
+      issue_date: inv.issue_date,
+      due_date: inv.due_date || inv.issue_date,
+      currency: inv.currency,
+      customer_name: inv.customer_name || "",
+      customer_email: inv.customer_email,
+      customer_tax_id: inv.customer_tax_id,
+      customer_address: inv.customer_address,
+      items: mapped,
+      subtotal: mapped.reduce((s, i) => s + i.total, 0),
+      tax_rate: 0,
+      tax_amount: 0,
+      total: Number(inv.total),
+      amount_paid: Number(inv.amount_paid || 0),
+      status: inv.status,
+      notes: inv.notes,
+      terms: inv.terms,
+    });
   };
 
   if (loading) return <div className="py-8 flex justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
