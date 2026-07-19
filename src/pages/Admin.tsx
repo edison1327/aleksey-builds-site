@@ -494,6 +494,8 @@ const Admin = () => {
       case "calendar": return <AdminOperationsCalendar />;
       case "inventory": return <AdminInventory />;
       case "workorders": return <AdminWorkOrders />;
+      case "incidents": return <AdminIncidents />;
+
       case "costs": return <AdminCostsMetrics />;
       case "bi": return <AdminBI />;
       case "invoices": return <AdminInvoices />;
