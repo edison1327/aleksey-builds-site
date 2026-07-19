@@ -9,11 +9,10 @@ import { es } from "date-fns/locale";
 interface Booking {
   id: string;
   equipment_type: string | null;
-  equipment_name: string | null;
+  equipment_id: string | null;
   start_date: string;
   end_date: string;
   status: string;
-  location: string | null;
   notes: string | null;
   created_at: string;
 }
