@@ -107,7 +107,9 @@ const AdminVehicles = () => {
             is_active: editingVehicle.is_active,
             sort_order: vehicles.length,
             location_id: editingVehicle.location_id,
-          });
+            is_marketplace: (editingVehicle as any).is_marketplace ?? false,
+            is_featured: (editingVehicle as any).is_featured ?? false,
+          } as any);
 
         if (error) throw error;
       }
