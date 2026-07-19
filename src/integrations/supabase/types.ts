@@ -3346,6 +3346,119 @@ export type Database = {
         }
         Relationships: []
       }
+      work_order_incidents: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          lat: number | null
+          lng: number | null
+          photo_url: string | null
+          reported_by: string | null
+          resolved_at: string | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+          work_order_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          photo_url?: string | null
+          reported_by?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title: string
+          updated_at?: string
+          work_order_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          photo_url?: string | null
+          reported_by?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          work_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_order_incidents_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_order_material_reservations: {
+        Row: {
+          consumed_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          quantity: number
+          requested_by: string | null
+          status: string
+          stock_item_id: string
+          updated_at: string
+          work_order_id: string
+        }
+        Insert: {
+          consumed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          quantity: number
+          requested_by?: string | null
+          status?: string
+          stock_item_id: string
+          updated_at?: string
+          work_order_id: string
+        }
+        Update: {
+          consumed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          quantity?: number
+          requested_by?: string | null
+          status?: string
+          stock_item_id?: string
+          updated_at?: string
+          work_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_order_material_reservations_stock_item_id_fkey"
+            columns: ["stock_item_id"]
+            isOneToOne: false
+            referencedRelation: "stock_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_order_material_reservations_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_order_photos: {
         Row: {
           caption: string | null
