@@ -503,6 +503,7 @@ const Admin = () => {
       case "costs": return <AdminCostsMetrics />;
       case "bi": return <AdminBI />;
       case "predictive": return <AdminPredictive />;
+      case "documents": return <AdminDocuments />;
       case "invoices": return <AdminInvoices />;
       case "contracts": return <AdminContracts />;
       case "suppliers": return <AdminSuppliers />;
