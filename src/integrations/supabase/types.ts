@@ -1859,6 +1859,75 @@ export type Database = {
           },
         ]
       }
+      supplier_evaluations: {
+        Row: {
+          comments: string | null
+          communication_score: number
+          created_at: string
+          evaluated_at: string
+          evaluated_by: string | null
+          id: string
+          overall_score: number | null
+          project_name: string | null
+          punctuality_score: number
+          quality_score: number
+          safety_score: number
+          subcontract_id: string | null
+          supplier_id: string
+          updated_at: string
+          would_rehire: boolean
+        }
+        Insert: {
+          comments?: string | null
+          communication_score: number
+          created_at?: string
+          evaluated_at?: string
+          evaluated_by?: string | null
+          id?: string
+          overall_score?: number | null
+          project_name?: string | null
+          punctuality_score: number
+          quality_score: number
+          safety_score: number
+          subcontract_id?: string | null
+          supplier_id: string
+          updated_at?: string
+          would_rehire?: boolean
+        }
+        Update: {
+          comments?: string | null
+          communication_score?: number
+          created_at?: string
+          evaluated_at?: string
+          evaluated_by?: string | null
+          id?: string
+          overall_score?: number | null
+          project_name?: string | null
+          punctuality_score?: number
+          quality_score?: number
+          safety_score?: number
+          subcontract_id?: string | null
+          supplier_id?: string
+          updated_at?: string
+          would_rehire?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_evaluations_subcontract_id_fkey"
+            columns: ["subcontract_id"]
+            isOneToOne: false
+            referencedRelation: "subcontracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_evaluations_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           address: string | null
