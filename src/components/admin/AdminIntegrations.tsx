@@ -72,9 +72,10 @@ export default function AdminIntegrations() {
   const { toast } = useToast();
   const [zapUrl, setZapUrl] = useState(localStorage.getItem("zap_webhook_url") || "");
   const [waPhone, setWaPhone] = useState("");
-  const [waTemplates, setWaTemplates] = useState<WaTemplate[]>(() => loadWaTemplates());
-  const [waTemplateKey, setWaTemplateKey] = useState<string>(() => loadWaTemplates()[0]?.key ?? "");
-  const [waBody, setWaBody] = useState<string>(() => loadWaTemplates()[0]?.body ?? "");
+  const [waTemplates, setWaTemplates] = useState<WaTemplate[]>(DEFAULT_WA_TEMPLATES);
+  const [waTemplateKey, setWaTemplateKey] = useState<string>(DEFAULT_WA_TEMPLATES[0].key);
+  const [waBody, setWaBody] = useState<string>(DEFAULT_WA_TEMPLATES[0].body);
+  const [templatesLoading, setTemplatesLoading] = useState(true);
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editLabel, setEditLabel] = useState("");
   const [editBody, setEditBody] = useState("");
@@ -96,6 +97,31 @@ export default function AdminIntegrations() {
     [waTemplates, waTemplateKey],
   );
 
+  // Load templates from DB on mount
+  const loadTemplates = async () => {
+    setTemplatesLoading(true);
+    const { data, error } = await (supabase as any)
+      .from("whatsapp_templates")
+      .select("id,key,label,body,sort_order")
+      .order("sort_order", { ascending: true });
+    setTemplatesLoading(false);
+    if (error) {
+      toast({ title: "Error cargando plantillas", description: error.message, variant: "destructive" });
+      return;
+    }
+    const list: WaTemplate[] = (data && data.length ? data : DEFAULT_WA_TEMPLATES) as WaTemplate[];
+    setWaTemplates(list);
+    if (!list.find((t) => t.key === waTemplateKey)) {
+      setWaTemplateKey(list[0].key);
+      setWaBody(list[0].body);
+    }
+  };
+
+  useEffect(() => {
+    loadTemplates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (currentTemplate) setWaBody(currentTemplate.body);
   }, [waTemplateKey]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -107,35 +133,45 @@ export default function AdminIntegrations() {
     setEditBody(t.body);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editingKey) return;
     const label = editLabel.trim();
     const body = editBody.trim();
     if (!label || !body) return toast({ title: "Completa nombre y mensaje", variant: "destructive" });
-    const next = waTemplates.map((t) => (t.key === editingKey ? { ...t, label, body } : t));
-    setWaTemplates(next);
-    saveWaTemplates(next);
+    const target = waTemplates.find((t) => t.key === editingKey);
+    if (!target) return;
+    const { error } = await (supabase as any)
+      .from("whatsapp_templates")
+      .update({ label, body })
+      .eq("key", editingKey);
+    if (error) return toast({ title: "Error al guardar", description: error.message, variant: "destructive" });
+    setWaTemplates((prev) => prev.map((t) => (t.key === editingKey ? { ...t, label, body } : t)));
     if (waTemplateKey === editingKey) setWaBody(body);
     setEditingKey(null);
     toast({ title: "Plantilla guardada" });
   };
 
-  const addTemplate = () => {
+  const addTemplate = async () => {
     const key = `custom-${Date.now()}`;
-    const next: WaTemplate[] = [
-      ...waTemplates,
-      { key, label: "Nueva plantilla", body: "Hola {nombre}, …" },
-    ];
-    setWaTemplates(next);
-    saveWaTemplates(next);
-    startEdit(next[next.length - 1]);
+    const nextOrder = (waTemplates[waTemplates.length - 1]?.sort_order ?? waTemplates.length) + 1;
+    const payload = { key, label: "Nueva plantilla", body: "Hola {nombre}, …", sort_order: nextOrder };
+    const { data, error } = await (supabase as any)
+      .from("whatsapp_templates")
+      .insert(payload)
+      .select("id,key,label,body,sort_order")
+      .single();
+    if (error) return toast({ title: "Error al crear", description: error.message, variant: "destructive" });
+    const created = data as WaTemplate;
+    setWaTemplates((prev) => [...prev, created]);
+    startEdit(created);
   };
 
-  const removeTemplate = (key: string) => {
+  const removeTemplate = async (key: string) => {
     if (waTemplates.length <= 1) return toast({ title: "Debe existir al menos una plantilla", variant: "destructive" });
+    const { error } = await (supabase as any).from("whatsapp_templates").delete().eq("key", key);
+    if (error) return toast({ title: "Error al eliminar", description: error.message, variant: "destructive" });
     const next = waTemplates.filter((t) => t.key !== key);
     setWaTemplates(next);
-    saveWaTemplates(next);
     if (waTemplateKey === key) {
       setWaTemplateKey(next[0].key);
       setWaBody(next[0].body);
@@ -143,9 +179,14 @@ export default function AdminIntegrations() {
     if (editingKey === key) setEditingKey(null);
   };
 
-  const resetTemplates = () => {
-    setWaTemplates(DEFAULT_WA_TEMPLATES);
-    saveWaTemplates(DEFAULT_WA_TEMPLATES);
+  const resetTemplates = async () => {
+    if (!confirm("Se eliminarán las plantillas actuales y se restaurarán las por defecto. ¿Continuar?")) return;
+    const del = await (supabase as any).from("whatsapp_templates").delete().neq("key", "__none__");
+    if (del.error) return toast({ title: "Error", description: del.error.message, variant: "destructive" });
+    const rows = DEFAULT_WA_TEMPLATES.map((t, i) => ({ ...t, sort_order: i + 1 }));
+    const ins = await (supabase as any).from("whatsapp_templates").insert(rows);
+    if (ins.error) return toast({ title: "Error", description: ins.error.message, variant: "destructive" });
+    await loadTemplates();
     setWaTemplateKey(DEFAULT_WA_TEMPLATES[0].key);
     setWaBody(DEFAULT_WA_TEMPLATES[0].body);
     setEditingKey(null);
