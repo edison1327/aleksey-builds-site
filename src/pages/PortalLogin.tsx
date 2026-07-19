@@ -38,7 +38,7 @@ const PortalLogin = () => {
       return;
     }
     toast({ title: "Bienvenido", description: "Sesión iniciada correctamente." });
-    navigate("/mis-solicitudes");
+    navigate("/mi-cuenta");
   };
 
   return (
