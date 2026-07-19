@@ -284,6 +284,29 @@ const AdminBI = () => {
 
         {/* OVERVIEW */}
         <TabsContent value="overview" className="space-y-4">
+          {alerts.length > 0 && (
+            <Card className="border-destructive/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  Alertas financieras ({alerts.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {alerts.slice(0, 8).map((a, i) => (
+                  <Alert key={i} variant={a.level === "critical" ? "destructive" : "default"}>
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle className="text-sm">{a.title}</AlertTitle>
+                    <AlertDescription className="text-xs">{a.msg}</AlertDescription>
+                  </Alert>
+                ))}
+                {alerts.length > 8 && (
+                  <p className="text-xs text-muted-foreground text-center">y {alerts.length - 8} más…</p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
             <Card><CardContent className="pt-4">
               <p className="text-xs text-muted-foreground">Ingresos 12m</p>
