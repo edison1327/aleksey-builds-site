@@ -269,6 +269,8 @@ const Admin = () => {
     { id: "calendar", label: "Calendario operativo", icon: CalendarRange, category: "operaciones" },
     { id: "inventory", label: "Inventario & Mantto.", icon: Wrench, category: "operaciones" },
     { id: "workorders", label: "Órdenes de trabajo", icon: ClipboardCheck, category: "operaciones" },
+    { id: "incidents", label: "Incidencias de campo", icon: AlertTriangle, category: "operaciones" },
+
     { id: "costs", label: "Costos & Métricas", icon: TrendingUp, category: "operaciones" },
     { id: "bi", label: "BI & Presupuestos", icon: TrendingUp, category: "operaciones", adminOnly: true },
     { id: "invoices", label: "Facturación", icon: FileText, category: "operaciones", adminOnly: true },
