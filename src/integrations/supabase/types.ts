@@ -769,6 +769,42 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string | null
+          message: string | null
+          metadata: Json | null
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string | null
+          metadata?: Json | null
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string | null
+          metadata?: Json | null
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           category: string | null
@@ -1309,6 +1345,16 @@ export type Database = {
       has_role_text: {
         Args: { _role: string; _user_id: string }
         Returns: boolean
+      }
+      notify_admins: {
+        Args: {
+          _link: string
+          _message: string
+          _metadata?: Json
+          _title: string
+          _type: string
+        }
+        Returns: undefined
       }
       slugify: { Args: { input: string }; Returns: string }
     }

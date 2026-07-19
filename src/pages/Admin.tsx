@@ -47,6 +47,7 @@ const AdminReferrals = lazy(() => import("@/components/admin/AdminReferrals"));
 const AdminPipeline = lazy(() => import("@/components/admin/AdminPipeline"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import NotificationCenter from "@/components/admin/NotificationCenter";
+import NotificationsBell from "@/components/admin/NotificationsBell";
 import RealtimeNotificationsList from "@/components/admin/RealtimeNotificationsList";
 import UserMenu from "@/components/admin/UserMenu";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -332,7 +333,13 @@ const Admin = () => {
           "flex items-center gap-2",
           sidebarCollapsed && !isMobile ? "justify-center" : "justify-start"
         )}>
-          <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
+          <NotificationsBell
+            collapsed={sidebarCollapsed && !isMobile}
+            onNavigate={(link) => {
+              const hash = link.split("#")[1];
+              if (hash) setActiveTab(hash);
+            }}
+          />
           {(!sidebarCollapsed || isMobile) && (
             <span className="text-xs text-muted-foreground">Notificaciones</span>
           )}
@@ -478,7 +485,7 @@ const Admin = () => {
               <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
                 <Command className="h-5 w-5" />
               </Button>
-              <NotificationCenter onNavigateToMessages={() => setActiveTab("messages")} />
+              <NotificationsBell onNavigate={(link) => { const h = link.split("#")[1]; if (h) setActiveTab(h); }} />
               <Link to="/">
                 <Button variant="ghost" size="icon" className="shrink-0">
                   <Home className="h-5 w-5" />
@@ -791,7 +798,7 @@ const DashboardOverview = ({ onNavigateToMessages }: { onNavigateToMessages: () 
               Gestiona todo el contenido de tu sitio web desde aquí.
             </p>
           </div>
-          <NotificationCenter onNavigateToMessages={onNavigateToMessages} />
+          <NotificationsBell onNavigate={(link) => { const h = link.split("#")[1]; if (h && onNavigateToMessages && h === "messages") onNavigateToMessages(); }} />
         </div>
       </div>
 
