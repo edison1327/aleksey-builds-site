@@ -1188,6 +1188,7 @@ export type Database = {
       testimonials: {
         Row: {
           avatar_url: string | null
+          booking_id: string | null
           company: string
           company_en: string | null
           content: string
@@ -1200,10 +1201,15 @@ export type Database = {
           role: string
           role_en: string | null
           sort_order: number | null
+          status: string
+          submitted_by_email: string | null
           updated_at: string
+          user_id: string | null
+          verified: boolean
         }
         Insert: {
           avatar_url?: string | null
+          booking_id?: string | null
           company: string
           company_en?: string | null
           content: string
@@ -1216,10 +1222,15 @@ export type Database = {
           role: string
           role_en?: string | null
           sort_order?: number | null
+          status?: string
+          submitted_by_email?: string | null
           updated_at?: string
+          user_id?: string | null
+          verified?: boolean
         }
         Update: {
           avatar_url?: string | null
+          booking_id?: string | null
           company?: string
           company_en?: string | null
           content?: string
@@ -1232,9 +1243,21 @@ export type Database = {
           role?: string
           role_en?: string | null
           sort_order?: number | null
+          status?: string
+          submitted_by_email?: string | null
           updated_at?: string
+          user_id?: string | null
+          verified?: boolean
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

@@ -271,9 +271,20 @@ const Testimonials = () => {
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-heading font-bold text-foreground truncate">
-                            {testimonial.name}
-                          </h4>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <h4 className="font-heading font-bold text-foreground truncate">
+                              {testimonial.name}
+                            </h4>
+                            {(testimonial as any).verified && (
+                              <span
+                                className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
+                                title="Reseña verificada de cliente con reserva completada"
+                              >
+                                <svg className="h-2.5 w-2.5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                Verificada
+                              </span>
+                            )}
+                          </div>
                           <p className="text-sm text-muted-foreground truncate">
                             {tr(testimonial as any, "role") || testimonial.role}
                           </p>

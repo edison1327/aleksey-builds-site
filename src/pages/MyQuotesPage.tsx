@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientBookings from "@/components/portal/ClientBookings";
 import ClientDocuments from "@/components/portal/ClientDocuments";
+import LeaveReviewForm from "@/components/portal/LeaveReviewForm";
 
 interface MyMessage {
   id: string;
@@ -133,10 +134,11 @@ const MyQuotesPage = () => {
           </div>
 
           <Tabs defaultValue="solicitudes" className="w-full">
-            <TabsList className="grid grid-cols-3 w-full max-w-md">
+            <TabsList className="grid grid-cols-4 w-full max-w-xl">
               <TabsTrigger value="solicitudes">Solicitudes</TabsTrigger>
               <TabsTrigger value="reservas">Reservas</TabsTrigger>
               <TabsTrigger value="documentos">Documentos</TabsTrigger>
+              <TabsTrigger value="resenas">Reseñas</TabsTrigger>
             </TabsList>
 
             <TabsContent value="solicitudes" className="mt-4">
@@ -193,6 +195,10 @@ const MyQuotesPage = () => {
 
             <TabsContent value="documentos" className="mt-4">
               {user && <ClientDocuments userId={user.id} />}
+            </TabsContent>
+
+            <TabsContent value="resenas" className="mt-4">
+              <LeaveReviewForm />
             </TabsContent>
           </Tabs>
         </div>
