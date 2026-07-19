@@ -39,6 +39,14 @@ const QuickQuoteForm = ({ itemName, itemType, onSuccess }: QuickQuoteFormProps) 
     e.preventDefault();
     setErrors({});
 
+    if (website) {
+      toast({ title: "¡Solicitud enviada!", description: "Nos pondremos en contacto contigo pronto." });
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      onSuccess?.();
+      return;
+    }
+
+
     const wait = getThrottleWait("quote", 30_000);
     if (wait > 0) {
       toast({
