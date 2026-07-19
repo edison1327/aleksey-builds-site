@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CalendarRange, MapPin, Package } from "lucide-react";
+import { Loader2, CalendarRange, Package } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
