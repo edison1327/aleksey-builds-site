@@ -1075,6 +1075,146 @@ export type Database = {
         }
         Relationships: []
       }
+      framework_agreement_items: {
+        Row: {
+          agreement_id: string
+          consumed_quantity: number
+          created_at: string
+          description: string
+          id: string
+          lead_time_days: number | null
+          max_quantity: number | null
+          min_quantity: number | null
+          notes: string | null
+          sku: string | null
+          sort_order: number
+          unit: string
+          unit_price: number
+          updated_at: string
+        }
+        Insert: {
+          agreement_id: string
+          consumed_quantity?: number
+          created_at?: string
+          description: string
+          id?: string
+          lead_time_days?: number | null
+          max_quantity?: number | null
+          min_quantity?: number | null
+          notes?: string | null
+          sku?: string | null
+          sort_order?: number
+          unit?: string
+          unit_price?: number
+          updated_at?: string
+        }
+        Update: {
+          agreement_id?: string
+          consumed_quantity?: number
+          created_at?: string
+          description?: string
+          id?: string
+          lead_time_days?: number | null
+          max_quantity?: number | null
+          min_quantity?: number | null
+          notes?: string | null
+          sku?: string | null
+          sort_order?: number
+          unit?: string
+          unit_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framework_agreement_items_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "framework_agreements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      framework_agreements: {
+        Row: {
+          branch_id: string | null
+          category: string | null
+          code: string
+          consumed_amount: number
+          created_at: string
+          created_by: string | null
+          currency: string
+          delivery_terms: string | null
+          end_date: string
+          id: string
+          max_amount: number | null
+          min_amount: number | null
+          notes: string | null
+          payment_terms: string | null
+          start_date: string
+          status: string
+          supplier_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id?: string | null
+          category?: string | null
+          code: string
+          consumed_amount?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          delivery_terms?: string | null
+          end_date: string
+          id?: string
+          max_amount?: number | null
+          min_amount?: number | null
+          notes?: string | null
+          payment_terms?: string | null
+          start_date: string
+          status?: string
+          supplier_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string | null
+          category?: string | null
+          code?: string
+          consumed_amount?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          delivery_terms?: string | null
+          end_date?: string
+          id?: string
+          max_amount?: number | null
+          min_amount?: number | null
+          notes?: string | null
+          payment_terms?: string | null
+          start_date?: string
+          status?: string
+          supplier_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framework_agreements_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "framework_agreements_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hero_content: {
         Row: {
           accident_free_hours: number | null
@@ -2358,6 +2498,8 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          framework_agreement_id: string | null
+          framework_agreement_item_id: string | null
           id: string
           purchase_order_id: string
           quantity: number
@@ -2369,6 +2511,8 @@ export type Database = {
         Insert: {
           created_at?: string
           description: string
+          framework_agreement_id?: string | null
+          framework_agreement_item_id?: string | null
           id?: string
           purchase_order_id: string
           quantity?: number
@@ -2380,6 +2524,8 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
+          framework_agreement_id?: string | null
+          framework_agreement_item_id?: string | null
           id?: string
           purchase_order_id?: string
           quantity?: number
@@ -2389,6 +2535,20 @@ export type Database = {
           unit_price?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "purchase_order_items_framework_agreement_id_fkey"
+            columns: ["framework_agreement_id"]
+            isOneToOne: false
+            referencedRelation: "framework_agreements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_items_framework_agreement_item_id_fkey"
+            columns: ["framework_agreement_item_id"]
+            isOneToOne: false
+            referencedRelation: "framework_agreement_items"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "purchase_order_items_purchase_order_id_fkey"
             columns: ["purchase_order_id"]
@@ -4430,6 +4590,22 @@ export type Database = {
         }[]
       }
       generate_referral_code: { Args: never; Returns: string }
+      get_active_framework_agreements: {
+        Args: { _supplier_id?: string }
+        Returns: {
+          code: string
+          consumed_amount: number
+          currency: string
+          end_date: string
+          id: string
+          items_count: number
+          max_amount: number
+          supplier_id: string
+          supplier_name: string
+          title: string
+          usage_pct: number
+        }[]
+      }
       get_cash_forecast: {
         Args: never
         Returns: {
@@ -4626,6 +4802,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      notify_expiring_framework_agreements: { Args: never; Returns: number }
       notify_pending_supplier_evaluations: { Args: never; Returns: number }
       sign_contract_with_token: {
         Args: {
