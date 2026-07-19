@@ -221,6 +221,8 @@ export default function AdminSuppliers() {
                         <td className="p-3"><Badge variant={s.status==="active"?"default":s.status==="suspended"?"secondary":"destructive"}>{STATUS[s.status]}</Badge></td>
                         <td className="p-3">{s.rating ? `⭐ ${s.rating}` : "—"}</td>
                         <td className="p-3 whitespace-nowrap">
+                          <Button size="icon" variant="ghost" title="Historial" onClick={()=>setHistorySupplier(s)}><History className="h-4 w-4"/></Button>
+                          <Button size="icon" variant="ghost" title="Evaluar" onClick={()=>newEv(s.id)}><Star className="h-4 w-4"/></Button>
                           <Button size="icon" variant="ghost" title="Nueva certificación" onClick={()=>newC(s.id)}><ShieldCheck className="h-4 w-4"/></Button>
                           <Button size="icon" variant="ghost" title="Editar" onClick={()=>{setEditS(s);setOpenS(true);}}><Pencil className="h-4 w-4"/></Button>
                           <Button size="icon" variant="ghost" title="Eliminar" onClick={()=>delS(s.id)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
