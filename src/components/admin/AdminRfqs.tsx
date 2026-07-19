@@ -54,7 +54,7 @@ const AdminRfqs = () => {
     setLoading(true);
     const [{ data: r }, { data: s }] = await Promise.all([
       (supabase as any).from("rfqs").select("*").order("created_at", { ascending: false }),
-      supabase.from("suppliers").select("id,name,email").eq("is_active", true).order("name"),
+      supabase.from("suppliers").select("id,name,email").order("name"),
     ]);
     setRfqs(r || []);
     setSuppliers((s as any) || []);
