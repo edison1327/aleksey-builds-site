@@ -181,6 +181,17 @@ export default function AdminSuppliers() {
     certs: certs.filter(c => c.supplier_id === sid),
   });
 
+  const loadRanking = async () => {
+    setRankingLoading(true);
+    const { data } = await (supabase as any).rpc("get_top_suppliers", {
+      _category: rankingCategory || null, _limit: 20,
+    });
+    setRanking(data || []);
+    setRankingLoading(false);
+  };
+
+
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2 flex-wrap">
