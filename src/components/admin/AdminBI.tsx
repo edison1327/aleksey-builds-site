@@ -20,7 +20,8 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip as RTooltip, Legend, BarChart, Bar, AreaChart, Area,
 } from "recharts";
-import { Loader2, Plus, TrendingUp, DollarSign, Wallet, Trash2, RefreshCw } from "lucide-react";
+import { Loader2, Plus, TrendingUp, DollarSign, Wallet, Trash2, RefreshCw, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { logAction } from "@/lib/auditLog";
 
@@ -124,6 +125,87 @@ const AdminBI = () => {
     return { inflow, outflow, net: inflow - outflow };
   }, [cash]);
 
+  const alerts = useMemo(() => {
+    const list: { level: "warn" | "critical"; title: string; msg: string }[] = [];
+
+    // 1. Proyectos con margen negativo o bajo
+    projects.forEach((p) => {
+      const pct = Number(p.margin_pct);
+      if (Number(p.total_cost) === 0 && Number(p.invoiced_total) === 0) return;
+      if (pct < 0) {
+        list.push({
+          level: "critical",
+          title: `Proyecto en pérdida: ${p.project_title}`,
+          msg: `Margen ${pct.toFixed(1)}% — costo ${fmt(Number(p.total_cost))} vs facturado ${fmt(Number(p.invoiced_total))}`,
+        });
+      } else if (pct < 10) {
+        list.push({
+          level: "warn",
+          title: `Margen bajo: ${p.project_title}`,
+          msg: `Solo ${pct.toFixed(1)}% de margen (< 10% recomendado)`,
+        });
+      }
+    });
+
+    // 2. Presupuesto excedido por categoría
+    const budgetByProject = new Map<string, Map<string, number>>();
+    budgets.forEach((b) => {
+      if (!budgetByProject.has(b.project_id)) budgetByProject.set(b.project_id, new Map());
+      const m = budgetByProject.get(b.project_id)!;
+      m.set(b.category, (m.get(b.category) || 0) + Number(b.planned_amount));
+    });
+    projects.forEach((p) => {
+      const plans = budgetByProject.get(p.project_id);
+      if (!plans) return;
+      const checks: [string, number, string][] = [
+        ["labor", Number(p.labor_cost), "Mano de obra"],
+        ["materials", Number(p.materials_cost), "Materiales"],
+        ["subcontract", Number(p.subcontract_cost), "Subcontratos"],
+      ];
+      checks.forEach(([cat, real, label]) => {
+        const plan = plans.get(cat) || 0;
+        if (plan > 0 && real > plan) {
+          const over = ((real - plan) / plan) * 100;
+          list.push({
+            level: over > 20 ? "critical" : "warn",
+            title: `Sobrecosto en ${p.project_title} — ${label}`,
+            msg: `Real ${fmt(real)} supera plan ${fmt(plan)} (+${over.toFixed(0)}%)`,
+          });
+        }
+      });
+    });
+
+    // 3. Liquidez negativa próximas 4 semanas
+    const next4 = cash.slice(0, 4);
+    const net4 = next4.reduce((s, r) => s + Number(r.net || 0), 0);
+    if (next4.length && net4 < 0) {
+      list.push({
+        level: "critical",
+        title: "Alerta de liquidez",
+        msg: `Flujo neto proyectado próximas 4 semanas: ${fmt(net4)}`,
+      });
+    }
+
+    // 4. Mes actual con costos > ingresos
+    const now = new Date();
+    const current = monthly.find((m) => {
+      const d = new Date(m.month);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    });
+    if (current) {
+      const cost = Number(current.purchase_cost) + Number(current.labor_cost);
+      if (cost > Number(current.invoiced) && cost > 0) {
+        list.push({
+          level: "warn",
+          title: "Costos superan ingresos este mes",
+          msg: `Ingresos ${fmt(Number(current.invoiced))} vs costos ${fmt(cost)}`,
+        });
+      }
+    }
+
+    return list;
+  }, [projects, budgets, cash, monthly]);
+
   const monthlyChart = monthly.map((m) => ({
     month: new Date(m.month).toLocaleDateString("es-PE", { month: "short", year: "2-digit" }),
     Ingresos: Number(m.invoiced),
@@ -202,6 +284,29 @@ const AdminBI = () => {
 
         {/* OVERVIEW */}
         <TabsContent value="overview" className="space-y-4">
+          {alerts.length > 0 && (
+            <Card className="border-destructive/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  Alertas financieras ({alerts.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {alerts.slice(0, 8).map((a, i) => (
+                  <Alert key={i} variant={a.level === "critical" ? "destructive" : "default"}>
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle className="text-sm">{a.title}</AlertTitle>
+                    <AlertDescription className="text-xs">{a.msg}</AlertDescription>
+                  </Alert>
+                ))}
+                {alerts.length > 8 && (
+                  <p className="text-xs text-muted-foreground text-center">y {alerts.length - 8} más…</p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
             <Card><CardContent className="pt-4">
               <p className="text-xs text-muted-foreground">Ingresos 12m</p>
