@@ -28,7 +28,9 @@ type WO = {
   scheduled_start: string | null; scheduled_end: string | null;
   estimated_cost: number | null; actual_cost: number | null;
   client_signature_url: string | null; client_signature_name: string | null; client_signature_at: string | null;
+  updated_at?: string;
 };
+
 
 
 const STATUS_LABEL: Record<string, string> = {
