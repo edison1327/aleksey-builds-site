@@ -79,6 +79,7 @@ const Admin = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
 
   // Persist active tab in URL hash so it survives refresh and reflects in back/forward
