@@ -66,6 +66,7 @@ const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"))
 const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
 const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
 const AdminPredictive = lazy(() => import("@/components/admin/AdminPredictive"));
+const AdminDocuments = lazy(() => import("@/components/admin/AdminDocuments"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
 import CommandPalette from "@/components/admin/CommandPalette";
 import ShortcutsHelp from "@/components/admin/ShortcutsHelp";
