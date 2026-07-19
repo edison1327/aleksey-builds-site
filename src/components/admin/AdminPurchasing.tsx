@@ -19,9 +19,11 @@ type PO = {
   status: string; expected_at: string | null; delivered_at: string | null;
   payment_terms: string | null; notes: string | null; created_at: string;
   approved_by: string | null; approved_at: string | null; approval_notes: string | null;
-  amount_paid: number; payment_status: string;
+  amount_paid: number; payment_status: string; framework_agreement_id?: string | null;
 };
-type POItem = { id: string; purchase_order_id: string; description: string; quantity: number; unit: string; unit_price: number; subtotal: number; received_qty: number; };
+type POItem = { id: string; purchase_order_id: string; description: string; quantity: number; unit: string; unit_price: number; subtotal: number; received_qty: number; framework_agreement_item_id?: string | null; };
+type FrameworkAgreement = { id: string; code: string; title: string; supplier_id: string; currency: string; status: string; end_date: string; payment_terms: string | null };
+type FrameworkAgreementItem = { id: string; agreement_id: string; description: string; sku: string | null; unit: string; unit_price: number; max_quantity: number | null; consumed_quantity: number };
 type Reception = { id: string; purchase_order_id: string; received_at: string; delivery_note: string | null; received_by: string | null; notes: string | null; };
 type Req = { id: string; code: string; work_order_id: string | null; requester_name: string | null; status: string; notes: string | null; converted_po_id: string | null; created_at: string; };
 type ReqItem = { id: string; requisition_id: string; description: string; quantity: number; unit: string; notes: string | null };
@@ -63,6 +65,8 @@ export default function AdminPurchasing() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [stock, setStock] = useState<StockItem[]>([]);
   const [moves, setMoves] = useState<StockMove[]>([]);
+  const [agreements, setAgreements] = useState<FrameworkAgreement[]>([]);
+  const [agreementItems, setAgreementItems] = useState<FrameworkAgreementItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [editPo, setEditPo] = useState<PO | null>(null);
@@ -89,7 +93,7 @@ export default function AdminPurchasing() {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: s }, { data: p }, { data: pi }, { data: r }, { data: rq }, { data: ri }, { data: pay }, { data: st }, { data: mv }] = await Promise.all([
+    const [{ data: s }, { data: p }, { data: pi }, { data: r }, { data: rq }, { data: ri }, { data: pay }, { data: st }, { data: mv }, { data: fa }, { data: fai }] = await Promise.all([
       supabase.from("suppliers" as any).select("id,name").order("name"),
       supabase.from("purchase_orders" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("purchase_order_items" as any).select("*"),
@@ -99,6 +103,8 @@ export default function AdminPurchasing() {
       supabase.from("po_payments" as any).select("*").order("paid_at", { ascending: false }),
       supabase.from("stock_items" as any).select("*").order("name"),
       supabase.from("stock_movements" as any).select("*").order("created_at", { ascending: false }).limit(200),
+      supabase.from("framework_agreements" as any).select("id,code,title,supplier_id,currency,status,end_date,payment_terms").eq("status", "active"),
+      supabase.from("framework_agreement_items" as any).select("id,agreement_id,description,sku,unit,unit_price,max_quantity,consumed_quantity"),
     ]);
     setSuppliers((s as any) || []);
     setPos((p as any) || []);
@@ -109,6 +115,8 @@ export default function AdminPurchasing() {
     setPayments((pay as any) || []);
     setStock((st as any) || []);
     setMoves((mv as any) || []);
+    setAgreements((fa as any) || []);
+    setAgreementItems((fai as any) || []);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -153,6 +161,7 @@ export default function AdminPurchasing() {
       const rows = editItems.map(i => ({
         purchase_order_id: poId, description: i.description, quantity: i.quantity,
         unit: i.unit, unit_price: i.unit_price, subtotal: Number(i.quantity) * Number(i.unit_price),
+        framework_agreement_item_id: i.framework_agreement_item_id || null,
       }));
       const { error } = await supabase.from("purchase_order_items" as any).insert(rows);
       if (error) { toast.error(error.message); return; }
@@ -646,6 +655,83 @@ export default function AdminPurchasing() {
               </div>
               <div className="md:col-span-2"><Label>Condiciones de pago</Label><Textarea rows={2} value={editPo.payment_terms || ""} onChange={(e) => setEditPo({ ...editPo, payment_terms: e.target.value })} /></div>
               <div className="md:col-span-2"><Label>Notas</Label><Textarea rows={2} value={editPo.notes || ""} onChange={(e) => setEditPo({ ...editPo, notes: e.target.value })} /></div>
+
+              {editPo.supplier_id && (() => {
+                const supplierAgreements = agreements.filter(a => a.supplier_id === editPo.supplier_id);
+                if (supplierAgreements.length === 0) return null;
+                const selected = agreements.find(a => a.id === editPo.framework_agreement_id);
+                return (
+                  <div className="md:col-span-2 p-3 border rounded-lg bg-muted/30 space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <FileEdit className="h-4 w-4" /> Contrato marco (opcional)
+                    </Label>
+                    <Select
+                      value={editPo.framework_agreement_id || "none"}
+                      onValueChange={(v) => {
+                        const fa = v === "none" ? null : agreements.find(a => a.id === v);
+                        setEditPo({
+                          ...editPo,
+                          framework_agreement_id: fa?.id || null,
+                          currency: fa?.currency || editPo.currency,
+                          payment_terms: fa?.payment_terms || editPo.payment_terms,
+                        });
+                      }}
+                    >
+                      <SelectTrigger><SelectValue placeholder="Sin contrato marco" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Sin contrato marco</SelectItem>
+                        {supplierAgreements.map(a => (
+                          <SelectItem key={a.id} value={a.id}>
+                            {a.code} — {a.title} (vence {a.end_date})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {selected && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Ítems del catálogo — clic para añadir con precio pactado
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {agreementItems.filter(i => i.agreement_id === selected.id).map(fi => {
+                            const remaining = fi.max_quantity != null ? Number(fi.max_quantity) - Number(fi.consumed_quantity || 0) : null;
+                            const exhausted = remaining != null && remaining <= 0;
+                            return (
+                              <Button
+                                key={fi.id}
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                disabled={exhausted}
+                                onClick={() => setEditItems([...editItems, {
+                                  id: "", purchase_order_id: editPo.id,
+                                  description: fi.description,
+                                  quantity: 1, unit: fi.unit,
+                                  unit_price: Number(fi.unit_price),
+                                  subtotal: Number(fi.unit_price),
+                                  received_qty: 0,
+                                  framework_agreement_item_id: fi.id,
+                                }])}
+                              >
+                                <Plus className="h-3 w-3 mr-1" />
+                                {fi.description} · {Number(fi.unit_price).toFixed(2)} {selected.currency}/{fi.unit}
+                                {remaining != null && (
+                                  <span className={`ml-2 text-xs ${exhausted ? "text-destructive" : "text-muted-foreground"}`}>
+                                    ({exhausted ? "agotado" : `${remaining} disp.`})
+                                  </span>
+                                )}
+                              </Button>
+                            );
+                          })}
+                          {agreementItems.filter(i => i.agreement_id === selected.id).length === 0 && (
+                            <p className="text-xs text-muted-foreground italic">Contrato sin ítems</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               <div className="md:col-span-2">
                 <div className="flex justify-between items-center mb-2">
