@@ -23,6 +23,7 @@ const MyQuotesPage = lazy(() => import("@/pages/MyQuotesPage"));
 const ReferralsPage = lazy(() => import("@/pages/ReferralsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
+const OperatorWorkOrders = lazy(() => import("@/pages/OperatorWorkOrders"));
 
 const RouteFallback = () => (
   <div className="min-h-dvh flex items-center justify-center">
