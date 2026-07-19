@@ -465,6 +465,8 @@ const Admin = () => {
       case "quotes": return <AdminQuotes />;
       case "bookings": return <AdminBookings />;
       case "calendar": return <AdminOperationsCalendar />;
+      case "inventory": return <AdminInventory />;
+      case "workorders": return <AdminWorkOrders />;
       case "templates": return <AdminResponseTemplates />;
       case "blog": return <AdminBlog />;
       case "positions": return <AdminJobPositions />;
