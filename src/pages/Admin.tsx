@@ -51,6 +51,7 @@ const AdminWebhooks = lazy(() => import("@/components/admin/AdminWebhooks"));
 const AdminNotificationsInbox = lazy(() => import("@/components/admin/AdminNotificationsInbox"));
 const AdminReminderTemplates = lazy(() => import("@/components/admin/AdminReminderTemplates"));
 const AdminTrash = lazy(() => import("@/components/admin/AdminTrash"));
+const AdminIntegrations = lazy(() => import("@/components/admin/AdminIntegrations"));
 const AdminOperationsCalendar = lazy(() => import("@/components/admin/AdminOperationsCalendar"));
 const AdminInventory = lazy(() => import("@/components/admin/AdminInventory"));
 const AdminWorkOrders = lazy(() => import("@/components/admin/AdminWorkOrders"));
