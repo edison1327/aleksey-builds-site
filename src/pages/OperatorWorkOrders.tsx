@@ -62,11 +62,13 @@ export default function OperatorWorkOrders() {
   }, [user, isLoading, navigate]);
 
   useEffect(() => {
+    initOfflineSync();
     const on = () => setOnline(true), off = () => setOnline(false);
     window.addEventListener("online", on);
     window.addEventListener("offline", off);
     return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
   }, []);
+
 
   const load = async () => {
     if (!user) return;
