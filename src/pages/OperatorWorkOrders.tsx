@@ -171,12 +171,59 @@ export default function OperatorWorkOrders() {
     const note = notes[wo.id];
     if (!note) return;
     const combined = wo.notes ? `${wo.notes}\n\n[${new Date().toLocaleString("es")}] ${note}` : `[${new Date().toLocaleString("es")}] ${note}`;
+    if (!navigator.onLine) {
+      enqueue({ table: "work_orders", action: "update", payload: { notes: combined }, match: { id: wo.id }, label: `Nota OT ${wo.code}` });
+      setItems((prev) => prev.map((w) => w.id === wo.id ? { ...w, notes: combined } : w));
+      setNotes({ ...notes, [wo.id]: "" });
+      toast.info("Sin conexión: nota en cola");
+      return;
+    }
     const { error } = await supabase.from("work_orders").update({ notes: combined }).eq("id", wo.id);
     if (error) { toast.error(error.message); return; }
     setNotes({ ...notes, [wo.id]: "" });
     toast.success("Nota agregada");
     load();
   };
+
+  const exportSummary = async (wo: WO) => {
+    try {
+      toast.info("Generando PDF…");
+      const [incR, matR, phR, teR] = await Promise.all([
+        supabase.from("work_order_incidents" as any).select("*").eq("work_order_id", wo.id).order("created_at", { ascending: false }),
+        supabase.from("work_order_material_reservations" as any).select("*, stock_items(name,unit)").eq("work_order_id", wo.id),
+        supabase.from("work_order_photos").select("kind").eq("work_order_id", wo.id),
+        employeeId
+          ? supabase.from("time_entries").select("hours").eq("work_order_id", wo.id).eq("employee_id", employeeId)
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
+      const photos = (phR.data as any[]) || [];
+      const before = photos.filter((p) => p.kind === "before").length;
+      const after = photos.filter((p) => p.kind === "after").length;
+      const hours = ((teR as any).data || []).reduce((a: number, t: any) => a + (Number(t.hours) || 0), 0);
+      await exportWorkOrderSummaryPdf({
+        code: wo.code, title: wo.title, description: wo.description,
+        customer_name: wo.customer_name, customer_email: wo.customer_email, customer_phone: wo.customer_phone,
+        site_address: wo.site_address, status: wo.status, priority: wo.priority,
+        scheduled_start: wo.scheduled_start, scheduled_end: wo.scheduled_end,
+        estimated_cost: wo.estimated_cost, actual_cost: wo.actual_cost,
+        checklist: wo.checklist || [], notes: wo.notes,
+        hours_total: hours, photos_before: before, photos_after: after,
+        incidents: ((incR.data as any[]) || []).map((i) => ({
+          title: i.title, severity: i.severity, status: i.status, category: i.category, description: i.description, created_at: i.created_at,
+        })),
+        materials: ((matR.data as any[]) || []).map((m) => ({
+          name: m.stock_items?.name || "—", quantity: Number(m.quantity),
+          unit: m.stock_items?.unit || null, status: m.status, notes: m.notes,
+        })),
+        client_signature_url: wo.client_signature_url,
+        client_signature_name: wo.client_signature_name,
+        client_signature_at: wo.client_signature_at,
+      });
+    } catch (e: any) {
+      toast.error(e.message || "Error generando PDF");
+    }
+  };
+
 
   const saveSignature = async (wo: WO, dataUrl: string, name: string) => {
     if (!user) return;
