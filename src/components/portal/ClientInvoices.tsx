@@ -3,10 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileText, Download, CreditCard } from "lucide-react";
+import { Loader2, FileText, Download } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { exportInvoicePdf } from "@/lib/pdfExport";
+import PayInvoiceDialog from "./PayInvoiceDialog";
 
 interface Invoice {
   id: string;
@@ -138,9 +139,14 @@ const ClientInvoices = ({ email }: Props) => {
                   <Download className="h-4 w-4 mr-1" />PDF
                 </Button>
                 {pending > 0 && inv.status !== "cancelled" && (
-                  <Button size="sm" variant="secondary" disabled title="Próximamente: pagos online">
-                    <CreditCard className="h-4 w-4 mr-1" />Pagar
-                  </Button>
+                  <PayInvoiceDialog
+                    invoiceId={inv.id}
+                    invoiceCode={inv.code}
+                    pending={pending}
+                    currency={inv.currency}
+                    customerName={inv.customer_name || ""}
+                    customerEmail={inv.customer_email || email}
+                  />
                 )}
               </div>
             </CardContent>

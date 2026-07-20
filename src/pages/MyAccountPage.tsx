@@ -14,6 +14,7 @@ import ClientInvoices from "@/components/portal/ClientInvoices";
 import ClientContracts from "@/components/portal/ClientContracts";
 import ClientWorkOrders from "@/components/portal/ClientWorkOrders";
 import ClientServiceHistory from "@/components/portal/ClientServiceHistory";
+import UpsellSuggestions from "@/components/portal/UpsellSuggestions";
 
 interface Summary {
   quotes: number;
@@ -133,6 +134,11 @@ const MyAccountPage = () => {
             <TabsContent value="bookings"><ClientBookings email={email} /></TabsContent>
             <TabsContent value="documents"><ClientDocuments userId={user.id} /></TabsContent>
           </Tabs>
+
+          {/* Upsell */}
+          <div className="mt-8">
+            <UpsellSuggestions email={email} customerName={displayName} />
+          </div>
 
           {/* Quick links */}
           <Card className="mt-8">
