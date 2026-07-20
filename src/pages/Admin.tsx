@@ -351,7 +351,7 @@ const Admin = () => {
     setSidebarOpen(false);
   };
 
-  const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
+  const renderSidebar = (isMobile: boolean = false) => (
     <div className="flex flex-col h-full">
       {/* Sidebar Header */}
       <div className={cn(
@@ -613,7 +613,7 @@ const Admin = () => {
         "hidden lg:flex flex-col bg-card/95 backdrop-blur-md border-r border-border/50 transition-all duration-300 sticky top-0 h-screen",
         sidebarCollapsed ? "w-[72px]" : "w-64"
       )}>
-        <SidebarContent />
+        {renderSidebar(false)}
         
         {/* Collapse Toggle */}
         <button
@@ -640,7 +640,7 @@ const Admin = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-72">
-                <SidebarContent isMobile />
+                {renderSidebar(true)}
               </SheetContent>
             </Sheet>
             
