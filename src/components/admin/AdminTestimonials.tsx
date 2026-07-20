@@ -12,7 +12,6 @@ import { Plus, Pencil, Trash2, Loader2, Star, Quote } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import ModerateReviews from "./ModerateReviews";
 
-import { I18nField } from "./I18nField";
 
 interface Testimonial {
   id: string;
@@ -199,7 +198,7 @@ const AdminTestimonials = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="role">Cargo (ES)</Label>
+                    <Label htmlFor="role">Cargo</Label>
                     <Input
                       id="role"
                       value={editingTestimonial.role || ""}
@@ -211,37 +210,22 @@ const AdminTestimonials = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="role_en">Role (EN)</Label>
-                  <Input
-                    id="role_en"
-                    value={editingTestimonial.role_en || ""}
-                    onChange={(e) =>
-                      setEditingTestimonial({ ...editingTestimonial, role_en: e.target.value })
-                    }
-                    placeholder="Optional — falls back to ES"
-                  />
-                </div>
 
-                <I18nField
-                  label="Empresa"
-                  valueEs={editingTestimonial.company || ""}
-                  valueEn={editingTestimonial.company_en || ""}
-                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, company: v })}
-                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, company_en: v })}
-                  placeholderEs="Nombre de la empresa"
-                />
+                <div>
+  <label className="text-sm font-medium">Empresa</label>
+  <Input
+    value={editingTestimonial.company || ""}
+    onChange={(e) => setEditingTestimonial({ ...editingTestimonial, company: e.target.value })}
+  />
+</div>
 
-                <I18nField
-                  label="Testimonio"
-                  valueEs={editingTestimonial.content || ""}
-                  valueEn={editingTestimonial.content_en || ""}
-                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, content: v })}
-                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, content_en: v })}
-                  textarea
-                  rows={4}
-                  placeholderEs="El testimonio del cliente..."
-                />
+                <div>
+  <label className="text-sm font-medium">Testimonio</label>
+  <Textarea
+    value={editingTestimonial.content || ""}
+    onChange={(e) => setEditingTestimonial({ ...editingTestimonial, content: e.target.value })} rows={4}
+  />
+</div>
 
 
                 <div className="grid grid-cols-2 gap-4">

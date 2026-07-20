@@ -159,43 +159,22 @@ const AdminAbout = () => {
             <CardDescription>Título y descripción de la empresa</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium">Título (ES)</label>
-                <Input
-                  value={content?.title || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
-                  placeholder="SOBRE ALEKSEY"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Title (EN)</label>
-                <Input
-                  value={content?.title_en || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, title_en: e.target.value } : null)}
-                  placeholder="ABOUT ALEKSEY"
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium">Título</label>
+              <Input
+                value={content?.title || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
+                placeholder="SOBRE ALEKSEY"
+              />
             </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium">Descripción / Historia (ES)</label>
-                <Textarea
-                  value={content?.description || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  placeholder="Historia de la empresa..."
-                  rows={8}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Description / Story (EN)</label>
-                <Textarea
-                  value={content?.description_en || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, description_en: e.target.value } : null)}
-                  placeholder="Optional English version..."
-                  rows={8}
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium">Descripción / Historia</label>
+              <Textarea
+                value={content?.description || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
+                placeholder="Historia de la empresa..."
+                rows={8}
+              />
             </div>
             <p className="text-xs text-muted-foreground">
               Usa doble salto de línea para separar párrafos. Si la versión en inglés está vacía, se muestra la española.

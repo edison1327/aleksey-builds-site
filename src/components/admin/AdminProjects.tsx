@@ -13,7 +13,6 @@ import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
-import { I18nField } from "./I18nField";
 
 interface ProjectMetric {
   label: string;
@@ -331,36 +330,34 @@ const AdminProjects = () => {
             <DialogTitle>{editingProject?.id ? "Editar proyecto" : "Nuevo proyecto"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <I18nField
-              label="Título"
-              valueEs={editingProject?.title || ""}
-              valueEn={editingProject?.title_en || ""}
-              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, title: v } : null)}
-              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, title_en: v } : null)}
-            />
-            <I18nField
-              label="Descripción"
-              valueEs={editingProject?.description || ""}
-              valueEn={editingProject?.description_en || ""}
-              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, description: v } : null)}
-              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, description_en: v } : null)}
-              textarea
-              rows={3}
-            />
-            <I18nField
-              label="Categoría"
-              valueEs={editingProject?.category || ""}
-              valueEn={editingProject?.category_en || ""}
-              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, category: v } : null)}
-              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, category_en: v } : null)}
-            />
-            <I18nField
-              label="Ubicación"
-              valueEs={editingProject?.location || ""}
-              valueEn={editingProject?.location_en || ""}
-              onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, location: v } : null)}
-              onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, location_en: v } : null)}
-            />
+            <div>
+  <label className="text-sm font-medium">Título</label>
+  <Input
+    value={editingProject?.title || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
+  />
+</div>
+            <div>
+  <label className="text-sm font-medium">Descripción</label>
+  <Textarea
+    value={editingProject?.description || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })} rows={3}
+  />
+</div>
+            <div>
+  <label className="text-sm font-medium">Categoría</label>
+  <Input
+    value={editingProject?.category || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value })}
+  />
+</div>
+            <div>
+  <label className="text-sm font-medium">Ubicación</label>
+  <Input
+    value={editingProject?.location || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, location: e.target.value })}
+  />
+</div>
 
             <div>
               <label className="text-sm font-medium">Año</label>
@@ -427,42 +424,36 @@ const AdminProjects = () => {
                       placeholder="Empresa o entidad"
                     />
                   </div>
-                  <I18nField
-                    label="Duración"
-                    valueEs={editingProject?.duration || ""}
-                    valueEn={editingProject?.duration_en || ""}
-                    onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, duration: v } : null)}
-                    onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, duration_en: v } : null)}
-                  />
+                  <div>
+  <label className="text-sm font-medium">Duración</label>
+  <Input
+    value={editingProject?.duration || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, duration: e.target.value })}
+  />
+</div>
                 </div>
 
-                <I18nField
-                  label="El reto"
-                  valueEs={editingProject?.challenge || ""}
-                  valueEn={editingProject?.challenge_en || ""}
-                  onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, challenge: v } : null)}
-                  onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, challenge_en: v } : null)}
-                  textarea
-                  rows={4}
-                />
-                <I18nField
-                  label="La solución"
-                  valueEs={editingProject?.solution || ""}
-                  valueEn={editingProject?.solution_en || ""}
-                  onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, solution: v } : null)}
-                  onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, solution_en: v } : null)}
-                  textarea
-                  rows={4}
-                />
-                <I18nField
-                  label="El resultado"
-                  valueEs={editingProject?.outcome || ""}
-                  valueEn={editingProject?.outcome_en || ""}
-                  onChangeEs={(v) => setEditingProject(prev => prev ? { ...prev, outcome: v } : null)}
-                  onChangeEn={(v) => setEditingProject(prev => prev ? { ...prev, outcome_en: v } : null)}
-                  textarea
-                  rows={4}
-                />
+                <div>
+  <label className="text-sm font-medium">El reto</label>
+  <Textarea
+    value={editingProject?.challenge || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, challenge: e.target.value })} rows={4}
+  />
+</div>
+                <div>
+  <label className="text-sm font-medium">La solución</label>
+  <Textarea
+    value={editingProject?.solution || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, solution: e.target.value })} rows={4}
+  />
+</div>
+                <div>
+  <label className="text-sm font-medium">El resultado</label>
+  <Textarea
+    value={editingProject?.outcome || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, outcome: e.target.value })} rows={4}
+  />
+</div>
 
                 <div>
                   <label className="text-sm font-medium">Servicios aplicados (separados por coma)</label>

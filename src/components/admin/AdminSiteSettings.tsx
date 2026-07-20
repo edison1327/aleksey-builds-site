@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Save, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "./ImageUpload";
-import { I18nField } from "./I18nField";
 
 const AdminSiteSettings = () => {
   const { data: settings, isLoading } = useSiteSettings();
@@ -141,39 +140,34 @@ const AdminSiteSettings = () => {
             </div>
 
             {/* Tagline */}
-            <I18nField
-              label="Eslogan / Subtítulo"
-              valueEs={formData.tagline}
-              valueEn={formData.tagline_en}
-              onChangeEs={(v) => setFormData({ ...formData, tagline: v })}
-              onChangeEn={(v) => setFormData({ ...formData, tagline_en: v })}
-              placeholderEs="Ingeniería y Construcción"
-            />
+            <div>
+  <label className="text-sm font-medium">Eslogan / Subtítulo</label>
+  <Input
+    value={formData.tagline || ""}
+    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+  />
+</div>
 
             {/* Footer Description */}
-            <I18nField
-              label="Descripción del Footer"
-              valueEs={formData.footer_description}
-              valueEn={formData.footer_description_en}
-              onChangeEs={(v) => setFormData({ ...formData, footer_description: v })}
-              onChangeEn={(v) => setFormData({ ...formData, footer_description_en: v })}
-              textarea
-              rows={3}
-              placeholderEs="Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada."
-            />
+            <div>
+  <label className="text-sm font-medium">Descripción del Footer</label>
+  <Textarea
+    value={formData.footer_description || ""}
+    onChange={(e) => setFormData({ ...formData, footer_description: e.target.value })} rows={3}
+  />
+</div>
             <p className="text-sm text-muted-foreground -mt-3">
               Este texto aparece debajo del logo en el footer del sitio.
             </p>
 
             {/* Footer Copyright */}
-            <I18nField
-              label="Texto de Copyright"
-              valueEs={formData.footer_copyright}
-              valueEn={formData.footer_copyright_en}
-              onChangeEs={(v) => setFormData({ ...formData, footer_copyright: v })}
-              onChangeEn={(v) => setFormData({ ...formData, footer_copyright_en: v })}
-              placeholderEs="Todos los derechos reservados."
-            />
+            <div>
+  <label className="text-sm font-medium">Texto de Copyright</label>
+  <Input
+    value={formData.footer_copyright || ""}
+    onChange={(e) => setFormData({ ...formData, footer_copyright: e.target.value })}
+  />
+</div>
             <p className="text-sm text-muted-foreground -mt-3">
               Aparece al final del footer junto con el año y nombre de la empresa.
             </p>

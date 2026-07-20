@@ -526,79 +526,38 @@ const AdminHero = () => {
             <CardDescription>Título, subtítulo y descripción</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium">Título (ES)</label>
-                <Input
-                  value={content?.title || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
-                  placeholder="ALEKSEY"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Title (EN)</label>
-                <Input
-                  value={content?.title_en || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, title_en: e.target.value } : null)}
-                  placeholder="Optional"
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium">Título</label>
+              <Input
+                value={content?.title || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
+                placeholder="ALEKSEY"
+              />
             </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium">Subtítulo (ES)</label>
-                <Input
-                  value={content?.subtitle || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, subtitle: e.target.value } : null)}
-                  placeholder="INGENIERÍA Y CONSTRUCCIÓN"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Subtitle (EN)</label>
-                <Input
-                  value={content?.subtitle_en || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, subtitle_en: e.target.value } : null)}
-                  placeholder="ENGINEERING AND CONSTRUCTION"
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium">Subtítulo</label>
+              <Input
+                value={content?.subtitle || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, subtitle: e.target.value } : null)}
+                placeholder="INGENIERÍA Y CONSTRUCCIÓN"
+              />
             </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium">Badge (ES)</label>
-                <Input
-                  value={content?.badge_text || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, badge_text: e.target.value } : null)}
-                  placeholder="MÁS DE 10 AÑOS DE EXPERIENCIA"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Badge (EN)</label>
-                <Input
-                  value={content?.badge_text_en || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, badge_text_en: e.target.value } : null)}
-                  placeholder="OVER 10 YEARS OF EXPERIENCE"
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium">Badge</label>
+              <Input
+                value={content?.badge_text || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, badge_text: e.target.value } : null)}
+                placeholder="MÁS DE 10 AÑOS DE EXPERIENCIA"
+              />
             </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium">Descripción (ES)</label>
-                <Textarea
-                  value={content?.description || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  placeholder="Descripción del negocio..."
-                  rows={3}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Description (EN)</label>
-                <Textarea
-                  value={content?.description_en || ""}
-                  onChange={(e) => setContent(prev => prev ? { ...prev, description_en: e.target.value } : null)}
-                  placeholder="Optional English description..."
-                  rows={3}
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium">Descripción</label>
+              <Textarea
+                value={content?.description || ""}
+                onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
+                placeholder="Descripción del negocio..."
+                rows={3}
+              />
             </div>
           </CardContent>
         </Card>

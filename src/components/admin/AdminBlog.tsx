@@ -298,26 +298,16 @@ const AdminBlog = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label>Título (ES) *</Label>
-                <Input
-                  value={form.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  maxLength={200}
-                  placeholder="Cómo elegir la maquinaria adecuada"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Title (EN)</Label>
-                <Input
-                  value={form.title_en}
-                  onChange={(e) => setForm({ ...form, title_en: e.target.value })}
-                  maxLength={200}
-                  placeholder="Optional English title"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <Label>Título *</Label>
+              <Input
+                value={form.title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                maxLength={200}
+                placeholder="Cómo elegir la maquinaria adecuada"
+              />
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Slug *</Label>
@@ -340,28 +330,18 @@ const AdminBlog = () => {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label>Resumen (ES)</Label>
-                <Textarea
-                  value={form.excerpt}
-                  onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-                  rows={2}
-                  placeholder="Breve descripción que aparece en la lista."
-                  maxLength={300}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Excerpt (EN)</Label>
-                <Textarea
-                  value={form.excerpt_en}
-                  onChange={(e) => setForm({ ...form, excerpt_en: e.target.value })}
-                  rows={2}
-                  placeholder="Optional English summary."
-                  maxLength={300}
-                />
-              </div>
+
+            <div className="space-y-1.5">
+              <Label>Resumen</Label>
+              <Textarea
+                value={form.excerpt}
+                onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+                rows={2}
+                placeholder="Breve descripción que aparece en la lista."
+                maxLength={300}
+              />
             </div>
+
             <div className="space-y-1.5">
               <Label>Imagen de portada</Label>
               <ImageUpload
@@ -370,27 +350,20 @@ const AdminBlog = () => {
                 folder="blog"
               />
             </div>
+
             <div className="space-y-1.5">
-              <Label>Contenido (ES) *</Label>
+              <Label>Contenido *</Label>
               <RichTextEditor
                 value={form.content}
                 onChange={(html) => setForm({ ...form, content: html })}
                 placeholder="Escribe aquí el artículo..."
                 minHeight={280}
               />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Content (EN)</Label>
-              <RichTextEditor
-                value={form.content_en}
-                onChange={(html) => setForm({ ...form, content_en: html })}
-                placeholder="Optional English version. Falls back to Spanish if empty."
-                minHeight={280}
-              />
               <p className="text-xs text-muted-foreground">
                 Editor con formato enriquecido. Se guarda como HTML.
               </p>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Etiquetas (separadas por coma)</Label>
@@ -411,6 +384,7 @@ const AdminBlog = () => {
                     {form.published ? "Visible en el sitio" : "Borrador"}
                   </span>
                 </div>
+              </div>
             </div>
             <SEOIndicator
               title={form.title}
@@ -419,7 +393,7 @@ const AdminBlog = () => {
               hasSlug={!!form.slug.trim()}
             />
           </div>
-          </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Cancelar

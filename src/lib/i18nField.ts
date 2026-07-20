@@ -1,12 +1,5 @@
 import { useTranslation } from "react-i18next";
 
-/**
- * Picks the localized variant of a field with automatic fallback.
- * Convention: English variants are stored in `${field}_en` columns.
- *
- *   const t = useLocalizedField();
- *   t(service, "title")         // returns title_en when lang=en and non-empty, else title
- */
 export function useLocalizedField() {
   const { i18n } = useTranslation();
   const lang = (i18n.resolvedLanguage || i18n.language || "es").slice(0, 2);
