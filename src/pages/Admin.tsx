@@ -77,6 +77,7 @@ const AdminPools = lazy(() => import("@/components/admin/AdminPools"));
 const AdminDispatch = lazy(() => import("@/components/admin/AdminDispatch"));
 const AdminInspections = lazy(() => import("@/components/admin/AdminInspections"));
 const AdminLoyalty = lazy(() => import("@/components/admin/AdminLoyalty"));
+const AdminAssistant = lazy(() => import("@/components/admin/AdminAssistant"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -320,6 +321,7 @@ const Admin = () => {
     { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
     { id: "branches", label: "Sucursales & Empresas", icon: Building2, category: "general", adminOnly: true },
     { id: "api-keys", label: "API Keys", icon: KeyRound, category: "general", adminOnly: true },
+    { id: "assistant", label: "Asistente IA", icon: Brain, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -552,6 +554,7 @@ const Admin = () => {
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
       case "loyalty": return <AdminLoyalty />;
+      case "assistant": return <AdminAssistant />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
