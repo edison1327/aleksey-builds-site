@@ -199,7 +199,7 @@ const AdminTestimonials = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="role">Cargo (ES)</Label>
+                    <Label htmlFor="role">Cargo</Label>
                     <Input
                       id="role"
                       value={editingTestimonial.role || ""}
@@ -211,17 +211,6 @@ const AdminTestimonials = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="role_en">Role (EN)</Label>
-                  <Input
-                    id="role_en"
-                    value={editingTestimonial.role_en || ""}
-                    onChange={(e) =>
-                      setEditingTestimonial({ ...editingTestimonial, role_en: e.target.value })
-                    }
-                    placeholder="Optional — falls back to ES"
-                  />
-                </div>
 
                 <div>
   <label className="text-sm font-medium">Empresa</label>
