@@ -290,6 +290,7 @@ const Admin = () => {
     { id: "purchasing", label: "Compras", icon: ShoppingCart, category: "operaciones", adminOnly: true },
     { id: "rfqs", label: "RFQs (Cotizaciones)", icon: ClipboardList, category: "operaciones", adminOnly: true },
     { id: "framework", label: "Contratos Marco", icon: FileSpreadsheet, category: "operaciones", adminOnly: true },
+    { id: "pools", label: "Pool de compras", icon: Layers, category: "operaciones", adminOnly: true },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
