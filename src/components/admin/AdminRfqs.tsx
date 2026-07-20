@@ -457,6 +457,31 @@ const AdminRfqs = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Copilot IA de negociación */}
+      <Dialog open={!!copilotResult} onOpenChange={(o) => !o && setCopilotResult(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-primary" />
+              Copiloto IA — {copilotResult?.supplier}
+            </DialogTitle>
+          </DialogHeader>
+          {copilotResult && (
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <ReactMarkdown>{copilotResult.text}</ReactMarkdown>
+              <div className="not-prose mt-4 flex justify-end">
+                <Button variant="outline" size="sm" onClick={() => {
+                  navigator.clipboard.writeText(copilotResult.text);
+                  toast({ title: "Copiado al portapapeles" });
+                }}>
+                  <Copy className="h-3.5 w-3.5 mr-1" /> Copiar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
