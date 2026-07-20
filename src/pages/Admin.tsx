@@ -81,6 +81,8 @@ const AdminAssistant = lazy(() => import("@/components/admin/AdminAssistant"));
 const AdminAlertsCenter = lazy(() => import("@/components/admin/AdminAlertsCenter"));
 const AdminReportsCenter = lazy(() => import("@/components/admin/AdminReportsCenter"));
 const AdminApprovals = lazy(() => import("@/components/admin/AdminApprovals"));
+const AdminChat = lazy(() => import("@/components/admin/AdminChat"));
+const AdminStatusManager = lazy(() => import("@/components/admin/AdminStatusManager"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -328,6 +330,8 @@ const Admin = () => {
     { id: "alerts", label: "Centro de alertas", icon: AlertTriangle, category: "general", adminOnly: true },
     { id: "reports", label: "Reportes personalizados", icon: FileSpreadsheet, category: "general" },
     { id: "approvals", label: "Aprobaciones y firmas", icon: FileSignature, category: "general" },
+    { id: "chat", label: "Chat interno", icon: MessageSquareQuote, category: "comunicacion" },
+    { id: "status", label: "Portal de estado", icon: Activity, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -564,6 +568,8 @@ const Admin = () => {
       case "alerts": return <AdminAlertsCenter />;
       case "reports": return <AdminReportsCenter />;
       case "approvals": return <AdminApprovals />;
+      case "chat": return <AdminChat />;
+      case "status": return <AdminStatusManager />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
