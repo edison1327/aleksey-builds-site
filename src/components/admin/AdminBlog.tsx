@@ -321,18 +321,9 @@ const AdminBlog = () => {
                   placeholder="como-elegir-maquinaria"
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label>Autor</Label>
-                <Input
-                  value={form.author}
-                  onChange={(e) => setForm({ ...form, author: e.target.value })}
-                  placeholder="Equipo Aleksey"
-                />
-              </div>
-            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Resumen (ES)</Label>
+                <Label>Resumen</Label>
                 <Textarea
                   value={form.excerpt}
                   onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
@@ -342,33 +333,23 @@ const AdminBlog = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Excerpt (EN)</Label>
-                <Textarea
-                  value={form.excerpt_en}
-                  onChange={(e) => setForm({ ...form, excerpt_en: e.target.value })}
-                  rows={2}
-                  placeholder="Optional English summary."
-                  maxLength={300}
+                <Label>Imagen de portada</Label>
+                <ImageUpload
+                  value={form.cover_image}
+                  onChange={(url) => setForm({ ...form, cover_image: url })}
+                  folder="blog"
                 />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>Imagen de portada</Label>
-              <ImageUpload
-                value={form.cover_image}
-                onChange={(url) => setForm({ ...form, cover_image: url })}
-                folder="blog"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Contenido (ES) *</Label>
+              <Label>Contenido *</Label>
               <RichTextEditor
                 value={form.content}
                 onChange={(html) => setForm({ ...form, content: html })}
                 placeholder="Escribe aquí el artículo..."
                 minHeight={280}
               />
-            </div>
+
             <div className="space-y-1.5">
               <Label>Content (EN)</Label>
               <RichTextEditor
