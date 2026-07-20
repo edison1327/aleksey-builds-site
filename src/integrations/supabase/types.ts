@@ -5155,6 +5155,36 @@ export type Database = {
       }
     }
     Views: {
+      dw_monthly_sales: {
+        Row: {
+          invoice_count: number | null
+          month: string | null
+          total_invoiced: number | null
+          total_paid: number | null
+          total_pending: number | null
+        }
+        Relationships: []
+      }
+      dw_top_clients: {
+        Row: {
+          customer_email: string | null
+          customer_name: string | null
+          invoice_count: number | null
+          last_invoice_date: string | null
+          total_paid: number | null
+          total_revenue: number | null
+        }
+        Relationships: []
+      }
+      dw_top_equipment: {
+        Row: {
+          booking_count: number | null
+          equipment_id: string | null
+          equipment_name: string | null
+          equipment_type: string | null
+        }
+        Relationships: []
+      }
       marketplace_listings: {
         Row: {
           branch_id: string | null
@@ -5346,6 +5376,10 @@ export type Database = {
           status: string
           title: string
         }[]
+      }
+      get_executive_kpis: {
+        Args: { _from?: string; _to?: string }
+        Returns: Json
       }
       get_expiring_documents: {
         Args: { _days?: number }
