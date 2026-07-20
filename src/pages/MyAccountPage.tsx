@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, FileText, CalendarRange, FileSignature, ClipboardList, LogOut, Plus, MessageSquare, Receipt, History } from "lucide-react";
+import { Loader2, FileText, CalendarRange, FileSignature, ClipboardList, LogOut, Plus, MessageSquare, Receipt, History, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import ClientBookings from "@/components/portal/ClientBookings";
@@ -15,6 +15,7 @@ import ClientContracts from "@/components/portal/ClientContracts";
 import ClientWorkOrders from "@/components/portal/ClientWorkOrders";
 import ClientServiceHistory from "@/components/portal/ClientServiceHistory";
 import UpsellSuggestions from "@/components/portal/UpsellSuggestions";
+import ClientLoyalty from "@/components/portal/ClientLoyalty";
 
 interface Summary {
   quotes: number;
