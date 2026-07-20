@@ -29,6 +29,7 @@ const ContractSignPage = lazy(() => import("@/pages/ContractSignPage"));
 const MarketplacePage = lazy(() => import("@/pages/MarketplacePage"));
 const RfqPortalPage = lazy(() => import("@/pages/RfqPortalPage"));
 const StatusPage = lazy(() => import("@/pages/StatusPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 
 const RouteFallback = () => (
   <div className="min-h-dvh flex items-center justify-center">
@@ -75,6 +76,7 @@ const AnimatedRoutes = () => {
             <Route path="/marketplace" element={<MarketplacePage />} />
             <Route path="/rfq/:token" element={<RfqPortalPage />} />
             <Route path="/estado" element={<StatusPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
