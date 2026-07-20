@@ -341,13 +341,6 @@ const Navbar = () => {
 
             {/* Mobile: utilities + hamburger */}
             <div className="xl:hidden flex items-center gap-0.5">
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent(GLOBAL_SEARCH_EVENT))}
-                aria-label="Buscar"
-                className="flex items-center justify-center w-10 h-10 rounded-full text-secondary-foreground/80 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
-              >
-                <Search className="h-[18px] w-[18px]" aria-hidden="true" />
-              </button>
               <ThemeToggle />
               <LanguageSwitcher />
               <button
