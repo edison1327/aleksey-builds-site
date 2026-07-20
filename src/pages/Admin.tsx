@@ -554,6 +554,7 @@ const Admin = () => {
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
       case "loyalty": return <AdminLoyalty />;
+      case "assistant": return <AdminAssistant />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
