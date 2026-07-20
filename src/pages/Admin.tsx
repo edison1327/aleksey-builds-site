@@ -524,6 +524,7 @@ const Admin = () => {
       case "purchasing": return <AdminPurchasing />;
       case "rfqs": return <AdminRfqs />;
       case "framework": return <AdminFrameworkAgreements />;
+      case "pools": return <AdminPools />;
       case "hr": return <AdminHR />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
