@@ -176,6 +176,25 @@ const AdminRfqs = () => {
     load();
   };
 
+  const runCopilot = async (responseId: string, supplierName: string) => {
+    setCopilotLoading(responseId);
+    try {
+      const { data, error } = await supabase.functions.invoke("rfq-negotiation-copilot", {
+        body: { response_id: responseId },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) {
+        toast({ title: "Error del copiloto", description: (data as any).message || (data as any).error, variant: "destructive" });
+        return;
+      }
+      setCopilotResult({ supplier: supplierName, text: (data as any).suggestion });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setCopilotLoading(null);
+    }
+  };
+
   const availableSuppliers = useMemo(
     () => suppliers.filter((s) => !detailInvites.some((i) => i.supplier_id === s.id)),
     [suppliers, detailInvites],
