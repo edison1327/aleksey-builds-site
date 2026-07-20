@@ -324,24 +324,20 @@ const AdminBenefits = () => {
             </DialogHeader>
             {editingBenefit && (
               <div className="space-y-4 py-4">
-                <I18nField
-                  label="Título"
-                  valueEs={editingBenefit.title}
-                  valueEn={editingBenefit.title_en || ""}
-                  onChangeEs={(v) => setEditingBenefit({ ...editingBenefit, title: v })}
-                  onChangeEn={(v) => setEditingBenefit({ ...editingBenefit, title_en: v })}
-                  placeholderEs="Ej: Salario Competitivo"
-                />
-                <I18nField
-                  label="Descripción"
-                  valueEs={editingBenefit.description}
-                  valueEn={editingBenefit.description_en || ""}
-                  onChangeEs={(v) => setEditingBenefit({ ...editingBenefit, description: v })}
-                  onChangeEn={(v) => setEditingBenefit({ ...editingBenefit, description_en: v })}
-                  textarea
-                  rows={3}
-                  placeholderEs="Descripción del beneficio..."
-                />
+                <div>
+  <label className="text-sm font-medium">Título</label>
+  <Input
+    value={editingBenefit.title || ""}
+    onChange={(e) => (None)(e.target.value)}
+  />
+</div>
+                <div>
+  <label className="text-sm font-medium">Descripción</label>
+  <Textarea
+    value={editingBenefit.description || ""}
+    onChange={(e) => (None)(e.target.value)} rows={3}
+  />
+</div>
 
                 <div className="space-y-2">
                   <Label>Icono</Label>

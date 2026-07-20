@@ -164,16 +164,13 @@ const AdminContact = () => {
                 placeholder="info@aleksey.com"
               />
             </div>
-            <I18nField
-              label="Dirección"
-              valueEs={contact?.address || ""}
-              valueEn={contact?.address_en || ""}
-              onChangeEs={(v) => setContact(prev => prev ? { ...prev, address: v } : null)}
-              onChangeEn={(v) => setContact(prev => prev ? { ...prev, address_en: v } : null)}
-              textarea
-              rows={2}
-              placeholderEs="Calle Principal 123"
-            />
+            <div>
+  <label className="text-sm font-medium">Dirección</label>
+  <Textarea
+    value={contact?.address || "" || ""}
+    onChange={(e) => (None)(e.target.value)} rows={2}
+  />
+</div>
           </CardContent>
         </Card>
 
@@ -201,14 +198,13 @@ const AdminContact = () => {
                 />
               </div>
             </div>
-            <I18nField
-              label="Horario de atención"
-              valueEs={contact?.business_hours || ""}
-              valueEn={contact?.business_hours_en || ""}
-              onChangeEs={(v) => setContact(prev => prev ? { ...prev, business_hours: v } : null)}
-              onChangeEn={(v) => setContact(prev => prev ? { ...prev, business_hours_en: v } : null)}
-              placeholderEs="Lun - Vie: 8:00 - 18:00"
-            />
+            <div>
+  <label className="text-sm font-medium">Horario de atención</label>
+  <Input
+    value={contact?.business_hours || "" || ""}
+    onChange={(e) => (None)(e.target.value)}
+  />
+</div>
             <div>
               <label className="text-sm font-medium">URL de Google Maps (embed)</label>
               <Input

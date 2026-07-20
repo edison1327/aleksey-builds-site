@@ -223,25 +223,21 @@ const AdminTestimonials = () => {
                   />
                 </div>
 
-                <I18nField
-                  label="Empresa"
-                  valueEs={editingTestimonial.company || ""}
-                  valueEn={editingTestimonial.company_en || ""}
-                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, company: v })}
-                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, company_en: v })}
-                  placeholderEs="Nombre de la empresa"
-                />
+                <div>
+  <label className="text-sm font-medium">Empresa</label>
+  <Input
+    value={editingTestimonial.company || "" || ""}
+    onChange={(e) => (None)(e.target.value)}
+  />
+</div>
 
-                <I18nField
-                  label="Testimonio"
-                  valueEs={editingTestimonial.content || ""}
-                  valueEn={editingTestimonial.content_en || ""}
-                  onChangeEs={(v) => setEditingTestimonial({ ...editingTestimonial, content: v })}
-                  onChangeEn={(v) => setEditingTestimonial({ ...editingTestimonial, content_en: v })}
-                  textarea
-                  rows={4}
-                  placeholderEs="El testimonio del cliente..."
-                />
+                <div>
+  <label className="text-sm font-medium">Testimonio</label>
+  <Textarea
+    value={editingTestimonial.content || "" || ""}
+    onChange={(e) => (None)(e.target.value)} rows={4}
+  />
+</div>
 
 
                 <div className="grid grid-cols-2 gap-4">
