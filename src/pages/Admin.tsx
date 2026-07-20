@@ -321,6 +321,7 @@ const Admin = () => {
     { id: "trash", label: "Papelera", icon: Trash2, category: "general", adminOnly: true },
     { id: "branches", label: "Sucursales & Empresas", icon: Building2, category: "general", adminOnly: true },
     { id: "api-keys", label: "API Keys", icon: KeyRound, category: "general", adminOnly: true },
+    { id: "assistant", label: "Asistente IA", icon: Brain, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
