@@ -63,7 +63,7 @@ const AdminDispatch = () => {
         _from: `${dateFrom}T00:00:00Z`,
         _to: `${dateTo}T23:59:59Z`,
       }),
-      supabase.from("vehicles").select("id,license_plate,brand,model").order("license_plate"),
+      supabase.from("vehicles").select("id,name,brand,model").order("name"),
     ]);
     setWos((wo as WO[]) || []);
     setVehicles(veh || []);
@@ -206,7 +206,7 @@ const AdminDispatch = () => {
                     <SelectContent>
                       {vehicles.map((v) => (
                         <SelectItem key={v.id} value={v.id}>
-                          {v.license_plate} {v.brand && `· ${v.brand}`}
+                          {v.name} {v.brand && `· ${v.brand}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -240,7 +240,7 @@ const AdminDispatch = () => {
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <CardTitle className="text-base flex items-center gap-2">
                       <Truck className="h-4 w-4" />
-                      {veh ? `${veh.license_plate} · ${veh.brand || ""} ${veh.model || ""}` : "Vehículo"}
+                      {veh ? `${veh.name} · ${veh.brand || ""} ${veh.model || ""}` : "Vehículo"}
                       <Badge variant="secondary">{stats.stops} paradas · {stats.km} km</Badge>
                     </CardTitle>
                     <div className="flex gap-2">
