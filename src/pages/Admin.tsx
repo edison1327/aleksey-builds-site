@@ -65,6 +65,7 @@ const AdminSuppliers = lazy(() => import("@/components/admin/AdminSuppliers"));
 const AdminPurchasing = lazy(() => import("@/components/admin/AdminPurchasing"));
 const AdminHR = lazy(() => import("@/components/admin/AdminHR"));
 const AdminBI = lazy(() => import("@/components/admin/AdminBI"));
+const AdminWarehouse = lazy(() => import("@/components/admin/AdminWarehouse"));
 const AdminPredictive = lazy(() => import("@/components/admin/AdminPredictive"));
 const AdminDocuments = lazy(() => import("@/components/admin/AdminDocuments"));
 const AdminMarketing = lazy(() => import("@/components/admin/AdminMarketing"));
