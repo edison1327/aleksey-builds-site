@@ -317,14 +317,6 @@ const Navbar = () => {
               {/* Divider + utilities */}
               <div className="ml-1 xl:ml-2 pl-1 xl:pl-2 flex items-center gap-0 xl:gap-1 border-l border-border/40">
                 <button
-                  onClick={() => window.dispatchEvent(new CustomEvent(GLOBAL_SEARCH_EVENT))}
-                  aria-label="Buscar (Ctrl+K)"
-                  title="Buscar (Ctrl+K)"
-                  className="hidden xl:flex items-center justify-center w-9 h-9 xl:w-10 xl:h-10 rounded-full text-secondary-foreground/75 hover:text-secondary-foreground hover:bg-secondary-foreground/10 transition-all duration-200"
-                >
-                  <Search className="h-[18px] w-[18px]" aria-hidden="true" />
-                </button>
-                <button
                   onClick={() => navigate(user ? "/mis-solicitudes" : "/portal/login")}
                   aria-label={user ? "Mi cuenta" : "Iniciar sesión"}
                   title={user ? "Mi cuenta" : "Iniciar sesión"}
