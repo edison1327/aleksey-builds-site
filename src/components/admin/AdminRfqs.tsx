@@ -419,11 +419,24 @@ const AdminRfqs = () => {
                                       </div>
                                     </td>
                                     <td className="p-2 whitespace-nowrap">
-                                      {detail.status !== "awarded" && (
-                                        <Button size="sm" variant={isRecommended ? "default" : "outline"} className="gap-1" onClick={() => award(r.id)}>
-                                          <Trophy className="h-3.5 w-3.5" /> Adjudicar
+                                      <div className="flex gap-1">
+                                        <Button
+                                          size="sm" variant="secondary" className="gap-1"
+                                          disabled={copilotLoading === r.id}
+                                          onClick={() => runCopilot(r.id, r.suppliers?.name || "proveedor")}
+                                          title="Sugerir contraoferta con IA"
+                                        >
+                                          {copilotLoading === r.id
+                                            ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                            : <Bot className="h-3.5 w-3.5" />}
+                                          IA
                                         </Button>
-                                      )}
+                                        {detail.status !== "awarded" && (
+                                          <Button size="sm" variant={isRecommended ? "default" : "outline"} className="gap-1" onClick={() => award(r.id)}>
+                                            <Trophy className="h-3.5 w-3.5" /> Adjudicar
+                                          </Button>
+                                        )}
+                                      </div>
                                     </td>
                                   </tr>
                                 );
