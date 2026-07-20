@@ -7,6 +7,9 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import PasswordStrength from "./PasswordStrength";
+import { evaluatePassword } from "@/lib/passwordPolicy";
+
 
 interface Props {
   open: boolean;
@@ -19,10 +22,12 @@ const ChangePasswordDialog = ({ open, onOpenChange }: Props) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
+  const { valid } = evaluatePassword(password);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      toast({ title: "Contraseña muy corta", description: "Mínimo 8 caracteres.", variant: "destructive" });
+    if (!valid) {
+      toast({ title: "Contraseña insegura", description: "Cumple todos los requisitos antes de continuar.", variant: "destructive" });
       return;
     }
     if (password !== confirm) {
@@ -46,20 +51,26 @@ const ChangePasswordDialog = ({ open, onOpenChange }: Props) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Cambiar contraseña</DialogTitle>
-          <DialogDescription>Ingresa tu nueva contraseña (mínimo 8 caracteres).</DialogDescription>
+          <DialogDescription>Elige una contraseña fuerte que cumpla todos los requisitos.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label>Nueva contraseña</Label>
-            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" />
+            <PasswordStrength password={password} />
           </div>
           <div className="space-y-2">
             <Label>Confirmar contraseña</Label>
-            <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
+            <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required autoComplete="new-password" />
+            {confirm.length > 0 && confirm !== password && (
+              <p className="text-xs text-destructive">Las contraseñas no coinciden</p>
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button type="submit" disabled={loading}>{loading ? "Guardando..." : "Guardar"}</Button>
+            <Button type="submit" disabled={loading || !valid || password !== confirm}>
+              {loading ? "Guardando..." : "Guardar"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

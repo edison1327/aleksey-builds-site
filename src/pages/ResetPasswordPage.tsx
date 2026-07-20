@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Lock, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import PasswordStrength from "@/components/admin/PasswordStrength";
+import { evaluatePassword } from "@/lib/passwordPolicy";
 
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -28,10 +30,12 @@ const ResetPasswordPage = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const { valid } = evaluatePassword(password);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      toast({ title: "Contraseña muy corta", description: "Mínimo 8 caracteres.", variant: "destructive" });
+    if (!valid) {
+      toast({ title: "Contraseña insegura", description: "Cumple todos los requisitos antes de continuar.", variant: "destructive" });
       return;
     }
     if (password !== confirm) {
@@ -71,14 +75,18 @@ const ResetPasswordPage = () => {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Nueva contraseña</label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••" required disabled={!ready} />
+                  placeholder="••••••••" required disabled={!ready} autoComplete="new-password" />
+                <PasswordStrength password={password} />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Confirmar contraseña</label>
                 <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)}
-                  placeholder="••••••••" required disabled={!ready} />
+                  placeholder="••••••••" required disabled={!ready} autoComplete="new-password" />
+                {confirm.length > 0 && confirm !== password && (
+                  <p className="text-xs text-destructive">Las contraseñas no coinciden</p>
+                )}
               </div>
-              <Button type="submit" className="w-full font-heading tracking-wider" disabled={!ready || loading}>
+              <Button type="submit" className="w-full font-heading tracking-wider" disabled={!ready || loading || !valid || password !== confirm}>
                 {loading ? "Actualizando..." : "ACTUALIZAR CONTRASEÑA"}
               </Button>
             </form>
