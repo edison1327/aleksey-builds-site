@@ -2671,6 +2671,168 @@ export type Database = {
           },
         ]
       }
+      purchase_pool_contributions: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          pool_id: string
+          pool_item_id: string
+          quantity: number
+          requested_by: string | null
+          requisition_id: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pool_id: string
+          pool_item_id: string
+          quantity: number
+          requested_by?: string | null
+          requisition_id?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pool_id?: string
+          pool_item_id?: string
+          quantity?: number
+          requested_by?: string | null
+          requisition_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_pool_contributions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_pool_contributions_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_pools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_pool_contributions_pool_item_id_fkey"
+            columns: ["pool_item_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_pool_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_pool_contributions_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "requisitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_pool_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          pool_id: string
+          sort_order: number
+          specifications: string | null
+          target_price: number | null
+          total_quantity: number
+          unit: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          pool_id: string
+          sort_order?: number
+          specifications?: string | null
+          target_price?: number | null
+          total_quantity?: number
+          unit?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          pool_id?: string
+          sort_order?: number
+          specifications?: string | null
+          target_price?: number | null
+          total_quantity?: number
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_pool_items_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_pools: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          deadline: string | null
+          id: string
+          notes: string | null
+          rfq_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          deadline?: string | null
+          id?: string
+          notes?: string | null
+          rfq_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          deadline?: string | null
+          id?: string
+          notes?: string | null
+          rfq_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_pools_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       purchase_reception_items: {
         Row: {
           id: string
@@ -4663,6 +4825,7 @@ export type Database = {
         Returns: boolean
       }
       close_expired_auctions: { Args: never; Returns: number }
+      convert_pool_to_rfq: { Args: { _pool_id: string }; Returns: string }
       create_api_key: {
         Args: {
           _expires_at?: string
@@ -4824,6 +4987,17 @@ export type Database = {
           subcontract_title: string
           supplier_id: string
           supplier_name: string
+        }[]
+      }
+      get_pool_summary: {
+        Args: { _pool_id: string }
+        Returns: {
+          branches_count: number
+          contributions_count: number
+          description: string
+          pool_item_id: string
+          total_quantity: number
+          unit: string
         }[]
       }
       get_project_pnl: {
