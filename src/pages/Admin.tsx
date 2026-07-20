@@ -299,6 +299,7 @@ const Admin = () => {
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
+    { id: "loyalty", label: "Fidelización", icon: Award, category: "comunicacion", adminOnly: true },
     { id: "pipeline", label: "Pipeline CRM", icon: Kanban, category: "comunicacion" },
     { id: "marketing", label: "Marketing & CRM", icon: Zap, category: "comunicacion", adminOnly: true },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
@@ -547,6 +548,7 @@ const Admin = () => {
       case "errors": return <AdminErrorLog />;
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
+      case "loyalty": return <AdminLoyalty />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
