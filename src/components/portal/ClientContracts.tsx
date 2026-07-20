@@ -105,9 +105,16 @@ const ClientContracts = ({ email }: Props) => {
                 </Button>
               )}
               {c.status === "signed" && (
-                <Button size="sm" variant="outline" onClick={() => exportContractPdf(c as any)}>
-                  <Download className="h-4 w-4 mr-1" />PDF
-                </Button>
+                <>
+                  <Button size="sm" variant="outline" onClick={() => exportContractPdf(c as any)}>
+                    <Download className="h-4 w-4 mr-1" />PDF
+                  </Button>
+                  <RenewContractButton
+                    contractCode={c.code}
+                    customerName={c.customer_name || ""}
+                    customerEmail={c.customer_email || email}
+                  />
+                </>
               )}
             </div>
           </CardContent>
