@@ -8,6 +8,7 @@ import { Loader2, FileSignature, PenLine, Download } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { exportContractPdf } from "@/lib/pdfExport";
+import RenewContractButton from "./RenewContractButton";
 
 interface Contract {
   id: string;
