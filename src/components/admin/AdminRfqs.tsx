@@ -35,6 +35,8 @@ const AdminRfqs = () => {
   const [loading, setLoading] = useState(true);
   const [openNew, setOpenNew] = useState(false);
   const [detail, setDetail] = useState<Rfq | null>(null);
+  const [copilotLoading, setCopilotLoading] = useState<string | null>(null);
+  const [copilotResult, setCopilotResult] = useState<{ supplier: string; text: string } | null>(null);
   const { toast } = useToast();
 
   // New RFQ form
