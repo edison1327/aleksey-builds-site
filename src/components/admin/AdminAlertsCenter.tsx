@@ -70,7 +70,7 @@ export default function AdminAlertsCenter() {
       safe(supabase.from("work_orders").select("id,code,scheduled_date,status").in("status", ["pending", "in_progress"]).lt("scheduled_date", today).limit(50)),
       safe(supabase.from("invoices").select("id,code,customer_name,total,due_date,status").neq("status", "paid").lt("due_date", today).limit(50)),
       safe(supabase.from("contracts").select("id,code,title,customer_name").eq("status", "signed").limit(100)),
-      safe(supabase.from("supplier_evaluations").select("id,supplier_id,status").eq("status", "pending").limit(50)),
+      safe(supabase.from("supplier_evaluations").select("id,supplier_id").is("evaluated_at", null).limit(50)),
       safe(supabase.from("documents").select("id,title,expires_at").not("expires_at", "is", null).lte("expires_at", in30).limit(50)),
       safe(supabase.from("job_applications").select("id,full_name,position_id").eq("status", "pending").limit(50)),
       safe(supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "new")),
