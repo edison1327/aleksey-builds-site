@@ -667,9 +667,6 @@ const Admin = () => {
             <div className="flex items-center gap-2">
               <div className="hidden md:block"><BranchSwitcher /></div>
               <OfflineIndicator />
-              <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setPaletteOpen(true)} title="Buscar (Ctrl+K)">
-                <Command className="h-5 w-5" />
-              </Button>
               <NotificationsBell onNavigate={(link) => { const h = link.split("#")[1]; if (h) setActiveTab(h); }} />
               <Link to="/">
                 <Button variant="ghost" size="icon" className="shrink-0">
