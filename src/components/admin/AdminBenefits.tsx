@@ -328,14 +328,14 @@ const AdminBenefits = () => {
   <label className="text-sm font-medium">Título</label>
   <Input
     value={editingBenefit.title || ""}
-    onChange={(e) => (None)(e.target.value)}
+    onChange={(e) => setEditingBenefit({ ...editingBenefit, title: e.target.value })}
   />
 </div>
                 <div>
   <label className="text-sm font-medium">Descripción</label>
   <Textarea
     value={editingBenefit.description || ""}
-    onChange={(e) => (None)(e.target.value)} rows={3}
+    onChange={(e) => setEditingBenefit({ ...editingBenefit, description: e.target.value })} rows={3}
   />
 </div>
 

@@ -323,28 +323,28 @@ const AdminJobPositions = () => {
   <label className="text-sm font-medium">Título del Puesto</label>
   <Input
     value={editingPosition.title || ""}
-    onChange={(e) => (None)(e.target.value)}
+    onChange={(e) => setEditingPosition({ ...editingPosition, title: e.target.value })}
   />
 </div>
                 <div>
   <label className="text-sm font-medium">Departamento</label>
   <Input
     value={editingPosition.department || ""}
-    onChange={(e) => (None)(e.target.value)}
+    onChange={(e) => setEditingPosition({ ...editingPosition, department: e.target.value })}
   />
 </div>
                 <div>
   <label className="text-sm font-medium">Ubicación</label>
   <Input
     value={editingPosition.location || ""}
-    onChange={(e) => (None)(e.target.value)}
+    onChange={(e) => setEditingPosition({ ...editingPosition, location: e.target.value })}
   />
 </div>
                 <div>
   <label className="text-sm font-medium">Tipo de Empleo</label>
   <Input
     value={editingPosition.type || ""}
-    onChange={(e) => (None)(e.target.value)}
+    onChange={(e) => setEditingPosition({ ...editingPosition, type: e.target.value })}
   />
 </div>
                 <div className="space-y-2">
@@ -360,8 +360,8 @@ const AdminJobPositions = () => {
                 <div>
   <label className="text-sm font-medium">Descripción</label>
   <Textarea
-    value={editingPosition.description || "" || ""}
-    onChange={(e) => (None)(e.target.value)} rows={3}
+    value={editingPosition.description || ""}
+    onChange={(e) => setEditingPosition({ ...editingPosition, description: e.target.value })} rows={3}
   />
 </div>
                 <div className="flex items-center gap-2">

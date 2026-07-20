@@ -334,29 +334,29 @@ const AdminProjects = () => {
             <div>
   <label className="text-sm font-medium">Título</label>
   <Input
-    value={editingProject?.title || "" || ""}
-    onChange={(e) => (None)(e.target.value)}
+    value={editingProject?.title || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
   />
 </div>
             <div>
   <label className="text-sm font-medium">Descripción</label>
   <Textarea
-    value={editingProject?.description || "" || ""}
-    onChange={(e) => (None)(e.target.value)} rows={3}
+    value={editingProject?.description || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })} rows={3}
   />
 </div>
             <div>
   <label className="text-sm font-medium">Categoría</label>
   <Input
-    value={editingProject?.category || "" || ""}
-    onChange={(e) => (None)(e.target.value)}
+    value={editingProject?.category || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value })}
   />
 </div>
             <div>
   <label className="text-sm font-medium">Ubicación</label>
   <Input
-    value={editingProject?.location || "" || ""}
-    onChange={(e) => (None)(e.target.value)}
+    value={editingProject?.location || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, location: e.target.value })}
   />
 </div>
 
@@ -428,8 +428,8 @@ const AdminProjects = () => {
                   <div>
   <label className="text-sm font-medium">Duración</label>
   <Input
-    value={editingProject?.duration || "" || ""}
-    onChange={(e) => (None)(e.target.value)}
+    value={editingProject?.duration || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, duration: e.target.value })}
   />
 </div>
                 </div>
@@ -437,22 +437,22 @@ const AdminProjects = () => {
                 <div>
   <label className="text-sm font-medium">El reto</label>
   <Textarea
-    value={editingProject?.challenge || "" || ""}
-    onChange={(e) => (None)(e.target.value)} rows={4}
+    value={editingProject?.challenge || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, challenge: e.target.value })} rows={4}
   />
 </div>
                 <div>
   <label className="text-sm font-medium">La solución</label>
   <Textarea
-    value={editingProject?.solution || "" || ""}
-    onChange={(e) => (None)(e.target.value)} rows={4}
+    value={editingProject?.solution || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, solution: e.target.value })} rows={4}
   />
 </div>
                 <div>
   <label className="text-sm font-medium">El resultado</label>
   <Textarea
-    value={editingProject?.outcome || "" || ""}
-    onChange={(e) => (None)(e.target.value)} rows={4}
+    value={editingProject?.outcome || ""}
+    onChange={(e) => setEditingProject({ ...editingProject, outcome: e.target.value })} rows={4}
   />
 </div>
 

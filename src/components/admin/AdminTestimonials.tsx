@@ -226,16 +226,16 @@ const AdminTestimonials = () => {
                 <div>
   <label className="text-sm font-medium">Empresa</label>
   <Input
-    value={editingTestimonial.company || "" || ""}
-    onChange={(e) => (None)(e.target.value)}
+    value={editingTestimonial.company || ""}
+    onChange={(e) => setEditingTestimonial({ ...editingTestimonial, company: e.target.value })}
   />
 </div>
 
                 <div>
   <label className="text-sm font-medium">Testimonio</label>
   <Textarea
-    value={editingTestimonial.content || "" || ""}
-    onChange={(e) => (None)(e.target.value)} rows={4}
+    value={editingTestimonial.content || ""}
+    onChange={(e) => setEditingTestimonial({ ...editingTestimonial, content: e.target.value })} rows={4}
   />
 </div>
 
