@@ -4654,6 +4654,7 @@ export type Database = {
         Row: {
           actual_cost: number | null
           assigned_to: string | null
+          assigned_vehicle_id: string | null
           branch_id: string | null
           checklist: Json
           client_signature_at: string | null
@@ -4676,9 +4677,13 @@ export type Database = {
           notes: string | null
           priority: string
           project_id: string | null
+          route_eta_minutes: number | null
+          route_order: number | null
           scheduled_end: string | null
           scheduled_start: string | null
           site_address: string | null
+          site_lat: number | null
+          site_lng: number | null
           source_id: string | null
           source_type: string | null
           started_at: string | null
@@ -4689,6 +4694,7 @@ export type Database = {
         Insert: {
           actual_cost?: number | null
           assigned_to?: string | null
+          assigned_vehicle_id?: string | null
           branch_id?: string | null
           checklist?: Json
           client_signature_at?: string | null
@@ -4711,9 +4717,13 @@ export type Database = {
           notes?: string | null
           priority?: string
           project_id?: string | null
+          route_eta_minutes?: number | null
+          route_order?: number | null
           scheduled_end?: string | null
           scheduled_start?: string | null
           site_address?: string | null
+          site_lat?: number | null
+          site_lng?: number | null
           source_id?: string | null
           source_type?: string | null
           started_at?: string | null
@@ -4724,6 +4734,7 @@ export type Database = {
         Update: {
           actual_cost?: number | null
           assigned_to?: string | null
+          assigned_vehicle_id?: string | null
           branch_id?: string | null
           checklist?: Json
           client_signature_at?: string | null
@@ -4746,9 +4757,13 @@ export type Database = {
           notes?: string | null
           priority?: string
           project_id?: string | null
+          route_eta_minutes?: number | null
+          route_order?: number | null
           scheduled_end?: string | null
           scheduled_start?: string | null
           site_address?: string | null
+          site_lat?: number | null
+          site_lng?: number | null
           source_id?: string | null
           source_type?: string | null
           started_at?: string | null
@@ -4757,6 +4772,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "work_orders_assigned_vehicle_id_fkey"
+            columns: ["assigned_vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "work_orders_branch_id_fkey"
             columns: ["branch_id"]
@@ -4801,6 +4823,10 @@ export type Database = {
       }
     }
     Functions: {
+      assign_dispatch_route: {
+        Args: { _vehicle_id: string; _work_order_ids: string[] }
+        Returns: undefined
+      }
       auto_invite_top_suppliers: {
         Args: { _limit?: number; _rfq_id: string }
         Returns: number
@@ -4943,6 +4969,24 @@ export type Database = {
           forecast_next: number
           month: string
           service: string
+        }[]
+      }
+      get_dispatch_board: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          assigned_vehicle_id: string
+          branch_id: string
+          id: string
+          priority: string
+          route_eta_minutes: number
+          route_order: number
+          scheduled_end: string
+          scheduled_start: string
+          site_address: string
+          site_lat: number
+          site_lng: number
+          status: string
+          title: string
         }[]
       }
       get_expiring_documents: {

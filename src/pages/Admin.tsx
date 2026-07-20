@@ -73,6 +73,7 @@ const AdminApiKeys = lazy(() => import("@/components/admin/AdminApiKeys"));
 const AdminRfqs = lazy(() => import("@/components/admin/AdminRfqs"));
 const AdminFrameworkAgreements = lazy(() => import("@/components/admin/AdminFrameworkAgreements"));
 const AdminPools = lazy(() => import("@/components/admin/AdminPools"));
+const AdminDispatch = lazy(() => import("@/components/admin/AdminDispatch"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -291,6 +292,7 @@ const Admin = () => {
     { id: "rfqs", label: "RFQs (Cotizaciones)", icon: ClipboardList, category: "operaciones", adminOnly: true },
     { id: "framework", label: "Contratos Marco", icon: FileSpreadsheet, category: "operaciones", adminOnly: true },
     { id: "pools", label: "Pool de compras", icon: Layers, category: "operaciones", adminOnly: true },
+    { id: "dispatch", label: "Despacho y rutas", icon: Truck, category: "operaciones", adminOnly: true },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
@@ -525,6 +527,7 @@ const Admin = () => {
       case "rfqs": return <AdminRfqs />;
       case "framework": return <AdminFrameworkAgreements />;
       case "pools": return <AdminPools />;
+      case "dispatch": return <AdminDispatch />;
       case "hr": return <AdminHR />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
