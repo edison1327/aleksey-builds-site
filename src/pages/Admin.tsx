@@ -527,6 +527,7 @@ const Admin = () => {
       case "rfqs": return <AdminRfqs />;
       case "framework": return <AdminFrameworkAgreements />;
       case "pools": return <AdminPools />;
+      case "dispatch": return <AdminDispatch />;
       case "hr": return <AdminHR />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
