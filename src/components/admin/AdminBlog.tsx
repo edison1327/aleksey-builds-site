@@ -298,26 +298,16 @@ const AdminBlog = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label>Título (ES) *</Label>
-                <Input
-                  value={form.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  maxLength={200}
-                  placeholder="Cómo elegir la maquinaria adecuada"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Title (EN)</Label>
-                <Input
-                  value={form.title_en}
-                  onChange={(e) => setForm({ ...form, title_en: e.target.value })}
-                  maxLength={200}
-                  placeholder="Optional English title"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <Label>Título *</Label>
+              <Input
+                value={form.title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                maxLength={200}
+                placeholder="Cómo elegir la maquinaria adecuada"
+              />
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Slug *</Label>
