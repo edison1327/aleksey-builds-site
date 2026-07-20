@@ -168,7 +168,7 @@ const AdminContact = () => {
   <label className="text-sm font-medium">Dirección</label>
   <Textarea
     value={contact?.address || ""}
-    onChange={(e) => setContent(prev => prev ? { ...prev, address: e.target.value } : null)} rows={2}
+    onChange={(e) => setContact(prev => prev ? { ...prev, address: e.target.value } : null)} rows={2}
   />
 </div>
           </CardContent>
@@ -202,7 +202,7 @@ const AdminContact = () => {
   <label className="text-sm font-medium">Horario de atención</label>
   <Input
     value={contact?.business_hours || ""}
-    onChange={(e) => setContent(prev => prev ? { ...prev, business_hours: e.target.value } : null)}
+    onChange={(e) => setContact(prev => prev ? { ...prev, business_hours: e.target.value } : null)}
   />
 </div>
             <div>
