@@ -323,6 +323,7 @@ const Admin = () => {
     { id: "branches", label: "Sucursales & Empresas", icon: Building2, category: "general", adminOnly: true },
     { id: "api-keys", label: "API Keys", icon: KeyRound, category: "general", adminOnly: true },
     { id: "assistant", label: "Asistente IA", icon: Brain, category: "general", adminOnly: true },
+    { id: "alerts", label: "Centro de alertas", icon: AlertTriangle, category: "general", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -556,6 +557,7 @@ const Admin = () => {
       case "referrals": return <AdminReferrals />;
       case "loyalty": return <AdminLoyalty />;
       case "assistant": return <AdminAssistant />;
+      case "alerts": return <AdminAlertsCenter />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
