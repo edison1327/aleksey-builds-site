@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, User, Shield, ChevronDown, ShieldCheck } from "lucide-react";
+import { LogOut, User, Shield, ChevronDown, ShieldCheck, KeyRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MfaSetupDialog from "./MfaSetupDialog";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 interface UserMenuProps {
   collapsed?: boolean;
@@ -23,6 +24,7 @@ const UserMenu = ({ collapsed = false }: UserMenuProps) => {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
   const [mfaOpen, setMfaOpen] = useState(false);
+  const [pwOpen, setPwOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -108,6 +110,10 @@ const UserMenu = ({ collapsed = false }: UserMenuProps) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setPwOpen(true)} className="cursor-pointer">
+          <KeyRound className="mr-2 h-4 w-4" />
+          Cambiar contraseña
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setMfaOpen(true)} className="cursor-pointer">
           <ShieldCheck className="mr-2 h-4 w-4" />
           Seguridad (2FA)
@@ -122,6 +128,7 @@ const UserMenu = ({ collapsed = false }: UserMenuProps) => {
         </DropdownMenuItem>
       </DropdownMenuContent>
       <MfaSetupDialog open={mfaOpen} onOpenChange={setMfaOpen} />
+      <ChangePasswordDialog open={pwOpen} onOpenChange={setPwOpen} />
     </DropdownMenu>
   );
 };
