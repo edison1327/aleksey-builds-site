@@ -77,6 +77,7 @@ const AdminPools = lazy(() => import("@/components/admin/AdminPools"));
 const AdminDispatch = lazy(() => import("@/components/admin/AdminDispatch"));
 const AdminInspections = lazy(() => import("@/components/admin/AdminInspections"));
 const AdminLoyalty = lazy(() => import("@/components/admin/AdminLoyalty"));
+const AdminAssistant = lazy(() => import("@/components/admin/AdminAssistant"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
