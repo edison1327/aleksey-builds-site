@@ -11,7 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound, ClipboardList, FileSpreadsheet } from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound, ClipboardList, FileSpreadsheet, Layers } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -72,6 +72,7 @@ const AdminBranches = lazy(() => import("@/components/admin/AdminBranches"));
 const AdminApiKeys = lazy(() => import("@/components/admin/AdminApiKeys"));
 const AdminRfqs = lazy(() => import("@/components/admin/AdminRfqs"));
 const AdminFrameworkAgreements = lazy(() => import("@/components/admin/AdminFrameworkAgreements"));
+const AdminPools = lazy(() => import("@/components/admin/AdminPools"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -289,6 +290,7 @@ const Admin = () => {
     { id: "purchasing", label: "Compras", icon: ShoppingCart, category: "operaciones", adminOnly: true },
     { id: "rfqs", label: "RFQs (Cotizaciones)", icon: ClipboardList, category: "operaciones", adminOnly: true },
     { id: "framework", label: "Contratos Marco", icon: FileSpreadsheet, category: "operaciones", adminOnly: true },
+    { id: "pools", label: "Pool de compras", icon: Layers, category: "operaciones", adminOnly: true },
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
@@ -522,6 +524,7 @@ const Admin = () => {
       case "purchasing": return <AdminPurchasing />;
       case "rfqs": return <AdminRfqs />;
       case "framework": return <AdminFrameworkAgreements />;
+      case "pools": return <AdminPools />;
       case "hr": return <AdminHR />;
       case "pdfsettings": return <AdminPdfSettings />;
       case "offline-pending": return <AdminOfflinePending />;
