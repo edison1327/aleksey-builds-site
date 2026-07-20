@@ -333,6 +333,7 @@ const Admin = () => {
     { id: "approvals", label: "Aprobaciones y firmas", icon: FileSignature, category: "general" },
     { id: "chat", label: "Chat interno", icon: MessageSquareQuote, category: "comunicacion" },
     { id: "status", label: "Portal de estado", icon: Activity, category: "general", adminOnly: true },
+    { id: "sla", label: "SLA y tiempos", icon: Timer, category: "operaciones", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
