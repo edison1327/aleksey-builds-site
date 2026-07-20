@@ -332,7 +332,7 @@ const AdminNavigation = () => {
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <Label className="text-xs">Título del grupo (ES)</Label>
+                    <Label className="text-xs">Título del grupo</Label>
                     <Input
                       value={group.title}
                       onChange={(e) => updateGroupTitle(group.location, e.target.value)}
@@ -375,7 +375,7 @@ const AdminNavigation = () => {
                   <div key={link.id} className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg">
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-3 flex-1">
                       <div>
-                        <Label className="text-xs">Etiqueta (ES)</Label>
+                        <Label className="text-xs">Etiqueta</Label>
                         <Input
                           value={link.label}
                           onChange={(e) => updateLink(link.id, "label", e.target.value)}

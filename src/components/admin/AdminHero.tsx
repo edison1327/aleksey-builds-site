@@ -527,7 +527,7 @@ const AdminHero = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Título (ES)</label>
+              <label className="text-sm font-medium">Título</label>
               <Input
                 value={content?.title || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
@@ -535,7 +535,7 @@ const AdminHero = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Subtítulo (ES)</label>
+              <label className="text-sm font-medium">Subtítulo</label>
               <Input
                 value={content?.subtitle || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, subtitle: e.target.value } : null)}
@@ -543,7 +543,7 @@ const AdminHero = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Badge (ES)</label>
+              <label className="text-sm font-medium">Badge</label>
               <Input
                 value={content?.badge_text || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, badge_text: e.target.value } : null)}
@@ -551,7 +551,7 @@ const AdminHero = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (ES)</label>
+              <label className="text-sm font-medium">Descripción</label>
               <Textarea
                 value={content?.description || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}

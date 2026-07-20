@@ -256,14 +256,14 @@ const AdminServices = () => {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium">Título (ES)</label>
+              <label className="text-sm font-medium">Título</label>
               <Input
                 value={editingService?.title || ""}
                 onChange={(e) => setEditingService(prev => prev ? { ...prev, title: e.target.value } : null)}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (ES)</label>
+              <label className="text-sm font-medium">Descripción</label>
               <Textarea
                 value={editingService?.description || ""}
                 onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}

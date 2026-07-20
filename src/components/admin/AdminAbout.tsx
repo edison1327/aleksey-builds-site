@@ -160,7 +160,7 @@ const AdminAbout = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Título (ES)</label>
+              <label className="text-sm font-medium">Título</label>
               <Input
                 value={content?.title || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, title: e.target.value } : null)}
@@ -168,7 +168,7 @@ const AdminAbout = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción / Historia (ES)</label>
+              <label className="text-sm font-medium">Descripción / Historia</label>
               <Textarea
                 value={content?.description || ""}
                 onChange={(e) => setContent(prev => prev ? { ...prev, description: e.target.value } : null)}
