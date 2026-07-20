@@ -522,6 +522,7 @@ const Admin = () => {
 
       case "costs": return <AdminCostsMetrics />;
       case "bi": return <AdminBI />;
+      case "warehouse": return <AdminWarehouse />;
       case "predictive": return <AdminPredictive />;
       case "documents": return <AdminDocuments />;
       case "branches": return <AdminBranches />;
