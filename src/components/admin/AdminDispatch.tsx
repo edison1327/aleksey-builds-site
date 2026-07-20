@@ -23,7 +23,7 @@ interface WO {
   route_order: number | null;
   route_eta_minutes: number | null;
 }
-interface Vehicle { id: string; license_plate: string; brand: string | null; model: string | null; }
+interface Vehicle { id: string; name: string; brand: string | null; model: string | null; }
 
 const PRIORITY_COLOR: Record<string, string> = {
   urgent: "bg-destructive/15 text-destructive",
