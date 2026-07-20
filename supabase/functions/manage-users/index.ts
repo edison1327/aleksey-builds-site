@@ -7,27 +7,30 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const RoleEnum = z.enum(['admin', 'editor', 'viewer', 'user']);
+const RoleEnum = z.enum([
+  'admin', 'manager', 'editor', 'viewer', 'operator', 'supplier', 'client', 'user',
+]);
+
+const BranchIds = z.array(z.string().uuid()).optional();
 
 const ActionSchema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('list') }),
   z.object({
     action: z.literal('create'),
     email: z.string().trim().email('Email inválido').max(255),
-    password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres').max(72),
+    password: z.string().min(8).max(72),
     role: RoleEnum.optional(),
+    branch_ids: BranchIds,
   }),
   z.object({
     action: z.literal('update'),
-    userId: z.string().uuid('ID de usuario inválido'),
+    userId: z.string().uuid(),
     email: z.string().trim().email().max(255).optional(),
     password: z.string().min(8).max(72).optional(),
     role: RoleEnum.optional(),
+    branch_ids: BranchIds,
   }),
-  z.object({
-    action: z.literal('delete'),
-    userId: z.string().uuid('ID de usuario inválido'),
-  }),
+  z.object({ action: z.literal('delete'), userId: z.string().uuid() }),
 ]);
 
 const jsonResponse = (body: unknown, status = 200) =>
@@ -36,206 +39,157 @@ const jsonResponse = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+async function syncUserBranches(admin: any, userId: string, branchIds: string[]) {
+  await admin.from('user_branches').delete().eq('user_id', userId);
+  if (branchIds.length) {
+    await admin.from('user_branches').insert(
+      branchIds.map((branch_id) => ({ user_id: userId, branch_id }))
+    );
   }
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
-    // Create admin client with service role key
+
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
+      auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    // Create regular client to verify the requesting user is admin
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.log('No authorization header provided');
-      return new Response(
-        JSON.stringify({ error: 'No autorizado' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    if (!authHeader) return jsonResponse({ error: 'No autorizado' }, 401);
 
     const supabaseClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    // Get the requesting user
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    if (userError || !user) {
-      console.log('Error getting user:', userError);
-      return new Response(
-        JSON.stringify({ error: 'No autorizado' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    if (userError || !user) return jsonResponse({ error: 'No autorizado' }, 401);
 
-    // Check if requesting user is admin
-    const { data: roleData, error: roleError } = await supabaseAdmin
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
-
-    if (roleError || !roleData) {
-      console.log('User is not admin:', user.id);
-      return new Response(
-        JSON.stringify({ error: 'Acceso denegado. Se requiere rol de administrador.' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // Requester must be admin OR manager
+    const { data: rolesData } = await supabaseAdmin
+      .from('user_roles').select('role').eq('user_id', user.id);
+    const requesterRoles: string[] = (rolesData ?? []).map((r: any) => r.role);
+    const isAdmin = requesterRoles.includes('admin');
+    const isManager = requesterRoles.includes('manager');
+    if (!isAdmin && !isManager) {
+      return jsonResponse({ error: 'Acceso denegado. Se requiere admin o manager.' }, 403);
     }
 
     let rawPayload: unknown;
-    try {
-      rawPayload = await req.json();
-    } catch {
-      return jsonResponse({ error: 'Cuerpo de la solicitud inválido' }, 400);
-    }
+    try { rawPayload = await req.json(); }
+    catch { return jsonResponse({ error: 'Cuerpo de la solicitud inválido' }, 400); }
 
     const validated = ActionSchema.safeParse(rawPayload);
     if (!validated.success) {
-      console.log('Validation failed:', validated.error.flatten());
       return jsonResponse(
-        { error: 'Datos inválidos', details: validated.error.flatten().fieldErrors },
-        400
+        { error: 'Datos inválidos', details: validated.error.flatten().fieldErrors }, 400,
       );
     }
-    const action = validated.data.action;
-    console.log('Action:', action);
+    const payload = validated.data;
 
-    switch (action) {
+    // Manager restriction: cannot touch admins
+    const guardManager = async (targetUserId?: string, requestedRole?: string) => {
+      if (isAdmin) return null;
+      if (requestedRole === 'admin') {
+        return jsonResponse({ error: 'Solo un administrador puede asignar el rol admin.' }, 403);
+      }
+      if (targetUserId) {
+        const { data: tRoles } = await supabaseAdmin
+          .from('user_roles').select('role').eq('user_id', targetUserId);
+        if ((tRoles ?? []).some((r: any) => r.role === 'admin')) {
+          return jsonResponse({ error: 'No puedes modificar a un administrador.' }, 403);
+        }
+      }
+      return null;
+    };
+
+    switch (payload.action) {
       case 'list': {
         const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-        if (listError) {
-          console.error('Error listing users:', listError);
-          throw listError;
-        }
-
-        const { data: roles, error: rolesError } = await supabaseAdmin
-          .from('user_roles')
-          .select('*');
-
-        if (rolesError) {
-          console.error('Error fetching roles:', rolesError);
-          throw rolesError;
-        }
-
+        if (listError) throw listError;
+        const { data: roles } = await supabaseAdmin.from('user_roles').select('*');
+        const { data: userBranches } = await supabaseAdmin.from('user_branches').select('*');
         const usersWithRoles = users.map((u) => ({
           id: u.id,
           email: u.email,
           created_at: u.created_at,
           last_sign_in_at: u.last_sign_in_at,
-          role: roles.find((r) => r.user_id === u.id)?.role || 'user',
+          role: (roles ?? []).find((r: any) => r.user_id === u.id)?.role || 'user',
+          branch_ids: (userBranches ?? []).filter((b: any) => b.user_id === u.id).map((b: any) => b.branch_id),
         }));
-
-        console.log('Listed users:', usersWithRoles.length);
         return jsonResponse({ users: usersWithRoles });
       }
 
       case 'create': {
-        const { email, password, role } = validated.data;
+        const { email, password, role, branch_ids } = payload;
+        const guard = await guardManager(undefined, role);
+        if (guard) return guard;
 
         const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
-          email,
-          password,
-          email_confirm: true,
+          email, password, email_confirm: true,
+        });
+        if (createError) return jsonResponse({ error: createError.message }, 400);
+
+        await supabaseAdmin.from('user_roles').insert({
+          user_id: newUser.user.id, role: role || 'user',
         });
 
-        if (createError) {
-          console.error('Error creating user:', createError);
-          return jsonResponse({ error: createError.message }, 400);
+        if (branch_ids && branch_ids.length) {
+          await syncUserBranches(supabaseAdmin, newUser.user.id, branch_ids);
         }
 
-        const { error: roleInsertError } = await supabaseAdmin
-          .from('user_roles')
-          .insert({
-            user_id: newUser.user.id,
-            role: role || 'user',
-          });
-
-        if (roleInsertError) {
-          console.error('Error assigning role:', roleInsertError);
-        }
-
-        console.log('Created user:', newUser.user.id);
         return jsonResponse({ user: newUser.user, message: 'Usuario creado correctamente' });
       }
 
       case 'update': {
-        const { userId, email, password, role } = validated.data;
+        const { userId, email, password, role, branch_ids } = payload;
+        const guard = await guardManager(userId, role);
+        if (guard) return guard;
 
         const updateData: { email?: string; password?: string } = {};
         if (email) updateData.email = email;
         if (password) updateData.password = password;
-
         if (Object.keys(updateData).length > 0) {
           const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
-            userId,
-            updateData
+            userId, updateData,
           );
-
-          if (updateError) {
-            console.error('Error updating user:', updateError);
-            return jsonResponse({ error: updateError.message }, 400);
-          }
+          if (updateError) return jsonResponse({ error: updateError.message }, 400);
         }
 
         if (role) {
           const { data: existingRole } = await supabaseAdmin
-            .from('user_roles')
-            .select('id')
-            .eq('user_id', userId)
-            .maybeSingle();
-
+            .from('user_roles').select('id').eq('user_id', userId).maybeSingle();
           if (existingRole) {
-            const { error: roleUpdateError } = await supabaseAdmin
-              .from('user_roles')
-              .update({ role })
-              .eq('user_id', userId);
-
-            if (roleUpdateError) console.error('Error updating role:', roleUpdateError);
+            await supabaseAdmin.from('user_roles').update({ role }).eq('user_id', userId);
           } else {
-            const { error: roleInsertError } = await supabaseAdmin
-              .from('user_roles')
-              .insert({ user_id: userId, role });
-
-            if (roleInsertError) console.error('Error inserting role:', roleInsertError);
+            await supabaseAdmin.from('user_roles').insert({ user_id: userId, role });
           }
         }
 
-        console.log('Updated user:', userId);
+        if (Array.isArray(branch_ids)) {
+          await syncUserBranches(supabaseAdmin, userId, branch_ids);
+        }
+
         return jsonResponse({ message: 'Usuario actualizado correctamente' });
       }
 
       case 'delete': {
-        const { userId } = validated.data;
-
+        const { userId } = payload;
         if (userId === user.id) {
           return jsonResponse({ error: 'No puedes eliminar tu propia cuenta' }, 400);
         }
+        const guard = await guardManager(userId);
+        if (guard) return guard;
 
-        await supabaseAdmin
-          .from('user_roles')
-          .delete()
-          .eq('user_id', userId);
-
+        await supabaseAdmin.from('user_roles').delete().eq('user_id', userId);
+        await supabaseAdmin.from('user_branches').delete().eq('user_id', userId);
         const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+        if (deleteError) return jsonResponse({ error: deleteError.message }, 400);
 
-        if (deleteError) {
-          console.error('Error deleting user:', deleteError);
-          return jsonResponse({ error: deleteError.message }, 400);
-        }
-
-        console.log('Deleted user:', userId);
         return jsonResponse({ message: 'Usuario eliminado correctamente' });
       }
 
@@ -244,6 +198,6 @@ serve(async (req) => {
     }
   } catch (error) {
     console.error('Error in manage-users function:', error);
-    return jsonResponse({ error: 'Error interno del servidor. Intenta de nuevo más tarde.' }, 500);
+    return jsonResponse({ error: 'Error interno del servidor.' }, 500);
   }
 });

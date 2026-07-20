@@ -4035,6 +4035,48 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          can_approve: boolean
+          can_create: boolean
+          can_delete: boolean
+          can_edit: boolean
+          can_view: boolean
+          created_at: string
+          id: string
+          module: string
+          role: Database["public"]["Enums"]["app_role"]
+          scope: string
+          updated_at: string
+        }
+        Insert: {
+          can_approve?: boolean
+          can_create?: boolean
+          can_delete?: boolean
+          can_edit?: boolean
+          can_view?: boolean
+          created_at?: string
+          id?: string
+          module: string
+          role: Database["public"]["Enums"]["app_role"]
+          scope?: string
+          updated_at?: string
+        }
+        Update: {
+          can_approve?: boolean
+          can_create?: boolean
+          can_delete?: boolean
+          can_edit?: boolean
+          can_view?: boolean
+          created_at?: string
+          id?: string
+          module?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          scope?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       saved_reports: {
         Row: {
           config: Json
@@ -5938,6 +5980,15 @@ export type Database = {
           would_rehire_pct: number
         }[]
       }
+      get_user_branches: { Args: { _user_id: string }; Returns: string[] }
+      has_branch_access: {
+        Args: { _branch_id: string; _user_id: string }
+        Returns: boolean
+      }
+      has_permission: {
+        Args: { _action: string; _module: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -5949,6 +6000,7 @@ export type Database = {
         Args: { _role: string; _user_id: string }
         Returns: boolean
       }
+      is_admin_or_manager: { Args: { _user_id: string }; Returns: boolean }
       is_channel_member: {
         Args: { _channel_id: string; _user_id: string }
         Returns: boolean
@@ -6037,7 +6089,15 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user" | "editor" | "viewer" | "client"
+      app_role:
+        | "admin"
+        | "user"
+        | "editor"
+        | "viewer"
+        | "client"
+        | "manager"
+        | "operator"
+        | "supplier"
       crm_stage: "new" | "contacted" | "quoted" | "negotiation" | "won" | "lost"
       referral_status: "pending" | "registered" | "converted" | "rewarded"
     }
@@ -6167,7 +6227,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "editor", "viewer", "client"],
+      app_role: [
+        "admin",
+        "user",
+        "editor",
+        "viewer",
+        "client",
+        "manager",
+        "operator",
+        "supplier",
+      ],
       crm_stage: ["new", "contacted", "quoted", "negotiation", "won", "lost"],
       referral_status: ["pending", "registered", "converted", "rewarded"],
     },
