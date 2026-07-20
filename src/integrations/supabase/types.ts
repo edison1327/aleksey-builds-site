@@ -622,6 +622,11 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           segment: string | null
+          sla_breached: boolean
+          sla_first_response_at: string | null
+          sla_first_response_due: string | null
+          sla_policy_id: string | null
+          sla_resolution_due: string | null
           status: string | null
           user_id: string | null
           utm_campaign: string | null
@@ -652,6 +657,11 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           segment?: string | null
+          sla_breached?: boolean
+          sla_first_response_at?: string | null
+          sla_first_response_due?: string | null
+          sla_policy_id?: string | null
+          sla_resolution_due?: string | null
           status?: string | null
           user_id?: string | null
           utm_campaign?: string | null
@@ -682,6 +692,11 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           segment?: string | null
+          sla_breached?: boolean
+          sla_first_response_at?: string | null
+          sla_first_response_due?: string | null
+          sla_policy_id?: string | null
+          sla_resolution_due?: string | null
           status?: string | null
           user_id?: string | null
           utm_campaign?: string | null
@@ -696,6 +711,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_messages_sla_policy_id_fkey"
+            columns: ["sla_policy_id"]
+            isOneToOne: false
+            referencedRelation: "sla_policies"
             referencedColumns: ["id"]
           },
         ]
@@ -4139,6 +4161,51 @@ export type Database = {
         }
         Relationships: []
       }
+      sla_policies: {
+        Row: {
+          business_hours_only: boolean
+          created_at: string
+          description: string | null
+          first_response_minutes: number
+          id: string
+          is_active: boolean
+          name: string
+          priority: string | null
+          resolution_minutes: number
+          sort_order: number
+          target_type: string
+          updated_at: string
+        }
+        Insert: {
+          business_hours_only?: boolean
+          created_at?: string
+          description?: string | null
+          first_response_minutes?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          priority?: string | null
+          resolution_minutes?: number
+          sort_order?: number
+          target_type: string
+          updated_at?: string
+        }
+        Update: {
+          business_hours_only?: boolean
+          created_at?: string
+          description?: string | null
+          first_response_minutes?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          priority?: string | null
+          resolution_minutes?: number
+          sort_order?: number
+          target_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       social_links: {
         Row: {
           created_at: string
@@ -5373,6 +5440,11 @@ export type Database = {
           site_address: string | null
           site_lat: number | null
           site_lng: number | null
+          sla_breached: boolean
+          sla_first_response_at: string | null
+          sla_first_response_due: string | null
+          sla_policy_id: string | null
+          sla_resolution_due: string | null
           source_id: string | null
           source_type: string | null
           started_at: string | null
@@ -5413,6 +5485,11 @@ export type Database = {
           site_address?: string | null
           site_lat?: number | null
           site_lng?: number | null
+          sla_breached?: boolean
+          sla_first_response_at?: string | null
+          sla_first_response_due?: string | null
+          sla_policy_id?: string | null
+          sla_resolution_due?: string | null
           source_id?: string | null
           source_type?: string | null
           started_at?: string | null
@@ -5453,6 +5530,11 @@ export type Database = {
           site_address?: string | null
           site_lat?: number | null
           site_lng?: number | null
+          sla_breached?: boolean
+          sla_first_response_at?: string | null
+          sla_first_response_due?: string | null
+          sla_policy_id?: string | null
+          sla_resolution_due?: string | null
           source_id?: string | null
           source_type?: string | null
           started_at?: string | null
@@ -5480,6 +5562,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_sla_policy_id_fkey"
+            columns: ["sla_policy_id"]
+            isOneToOne: false
+            referencedRelation: "sla_policies"
             referencedColumns: ["id"]
           },
         ]
@@ -5809,6 +5898,18 @@ export type Database = {
           title: string
         }[]
       }
+      get_sla_metrics: {
+        Args: { _days?: number }
+        Returns: {
+          avg_first_response_min: number
+          avg_resolution_min: number
+          breached: number
+          compliance_pct: number
+          on_time: number
+          scope: string
+          total: number
+        }[]
+      }
       get_supplier_gamification: {
         Args: { _supplier_id?: string }
         Returns: {
@@ -5864,6 +5965,29 @@ export type Database = {
       }
       notify_expiring_framework_agreements: { Args: never; Returns: number }
       notify_pending_supplier_evaluations: { Args: never; Returns: number }
+      pick_sla_policy: {
+        Args: { _priority: string; _type: string }
+        Returns: {
+          business_hours_only: boolean
+          created_at: string
+          description: string | null
+          first_response_minutes: number
+          id: string
+          is_active: boolean
+          name: string
+          priority: string | null
+          resolution_minutes: number
+          sort_order: number
+          target_type: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "sla_policies"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       place_auction_bid: {
         Args: {
           _amount: number

@@ -11,7 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound, ClipboardList, FileSpreadsheet, Layers, Award } from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound, ClipboardList, FileSpreadsheet, Layers, Award, Timer } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -83,6 +83,7 @@ const AdminReportsCenter = lazy(() => import("@/components/admin/AdminReportsCen
 const AdminApprovals = lazy(() => import("@/components/admin/AdminApprovals"));
 const AdminChat = lazy(() => import("@/components/admin/AdminChat"));
 const AdminStatusManager = lazy(() => import("@/components/admin/AdminStatusManager"));
+const AdminSLA = lazy(() => import("@/components/admin/AdminSLA"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -332,6 +333,7 @@ const Admin = () => {
     { id: "approvals", label: "Aprobaciones y firmas", icon: FileSignature, category: "general" },
     { id: "chat", label: "Chat interno", icon: MessageSquareQuote, category: "comunicacion" },
     { id: "status", label: "Portal de estado", icon: Activity, category: "general", adminOnly: true },
+    { id: "sla", label: "SLA y tiempos", icon: Timer, category: "operaciones", adminOnly: true },
   ];
 
   const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
@@ -570,6 +572,7 @@ const Admin = () => {
       case "approvals": return <AdminApprovals />;
       case "chat": return <AdminChat />;
       case "status": return <AdminStatusManager />;
+      case "sla": return <AdminSLA />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
