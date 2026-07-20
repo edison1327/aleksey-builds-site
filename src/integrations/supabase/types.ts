@@ -949,6 +949,98 @@ export type Database = {
           },
         ]
       }
+      equipment_inspections: {
+        Row: {
+          created_at: string
+          gps_lat: number | null
+          gps_lng: number | null
+          hours_meter: number | null
+          id: string
+          machinery_id: string | null
+          moment: string
+          notes: string | null
+          odometer: number | null
+          operator_id: string | null
+          operator_name: string | null
+          photo_url: string | null
+          signature_url: string | null
+          status: string
+          template_id: string | null
+          updated_at: string
+          vehicle_id: string | null
+          work_order_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          hours_meter?: number | null
+          id?: string
+          machinery_id?: string | null
+          moment: string
+          notes?: string | null
+          odometer?: number | null
+          operator_id?: string | null
+          operator_name?: string | null
+          photo_url?: string | null
+          signature_url?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+          vehicle_id?: string | null
+          work_order_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          hours_meter?: number | null
+          id?: string
+          machinery_id?: string | null
+          moment?: string
+          notes?: string | null
+          odometer?: number | null
+          operator_id?: string | null
+          operator_name?: string | null
+          photo_url?: string | null
+          signature_url?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+          vehicle_id?: string | null
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_inspections_machinery_id_fkey"
+            columns: ["machinery_id"]
+            isOneToOne: false
+            referencedRelation: "machinery"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_inspections_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_inspections_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_inspections_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_maintenance: {
         Row: {
           created_at: string
@@ -1296,6 +1388,131 @@ export type Database = {
           updated_at?: string
           video_url?: string | null
           years_count?: number | null
+        }
+        Relationships: []
+      }
+      inspection_responses: {
+        Row: {
+          created_at: string
+          critical: boolean
+          id: string
+          inspection_id: string
+          is_fail: boolean
+          item_id: string | null
+          label: string
+          observation: string | null
+          photo_url: string | null
+          value: string | null
+        }
+        Insert: {
+          created_at?: string
+          critical?: boolean
+          id?: string
+          inspection_id: string
+          is_fail?: boolean
+          item_id?: string | null
+          label: string
+          observation?: string | null
+          photo_url?: string | null
+          value?: string | null
+        }
+        Update: {
+          created_at?: string
+          critical?: boolean
+          id?: string
+          inspection_id?: string
+          is_fail?: boolean
+          item_id?: string | null
+          label?: string
+          observation?: string | null
+          photo_url?: string | null
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_responses_inspection_id_fkey"
+            columns: ["inspection_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_inspections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_responses_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_template_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_template_items: {
+        Row: {
+          created_at: string
+          critical: boolean
+          id: string
+          item_type: string
+          label: string
+          sort_order: number
+          template_id: string
+        }
+        Insert: {
+          created_at?: string
+          critical?: boolean
+          id?: string
+          item_type?: string
+          label: string
+          sort_order?: number
+          template_id: string
+        }
+        Update: {
+          created_at?: string
+          critical?: boolean
+          id?: string
+          item_type?: string
+          label?: string
+          sort_order?: number
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_template_items_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_templates: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          equipment_type: string
+          id: string
+          moment: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          equipment_type: string
+          id?: string
+          moment: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          equipment_type?: string
+          id?: string
+          moment?: string
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }
