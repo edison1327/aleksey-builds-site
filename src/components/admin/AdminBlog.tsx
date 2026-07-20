@@ -321,26 +321,36 @@ const AdminBlog = () => {
                   placeholder="como-elegir-maquinaria"
                 />
               </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Resumen</Label>
-                <Textarea
-                  value={form.excerpt}
-                  onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-                  rows={2}
-                  placeholder="Breve descripción que aparece en la lista."
-                  maxLength={300}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Imagen de portada</Label>
-                <ImageUpload
-                  value={form.cover_image}
-                  onChange={(url) => setForm({ ...form, cover_image: url })}
-                  folder="blog"
+                <Label>Autor</Label>
+                <Input
+                  value={form.author}
+                  onChange={(e) => setForm({ ...form, author: e.target.value })}
+                  placeholder="Equipo Aleksey"
                 />
               </div>
             </div>
+
+            <div className="space-y-1.5">
+              <Label>Resumen</Label>
+              <Textarea
+                value={form.excerpt}
+                onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+                rows={2}
+                placeholder="Breve descripción que aparece en la lista."
+                maxLength={300}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Imagen de portada</Label>
+              <ImageUpload
+                value={form.cover_image}
+                onChange={(url) => setForm({ ...form, cover_image: url })}
+                folder="blog"
+              />
+            </div>
+
             <div className="space-y-1.5">
               <Label>Contenido *</Label>
               <RichTextEditor
@@ -349,19 +359,11 @@ const AdminBlog = () => {
                 placeholder="Escribe aquí el artículo..."
                 minHeight={280}
               />
-
-            <div className="space-y-1.5">
-              <Label>Content (EN)</Label>
-              <RichTextEditor
-                value={form.content_en}
-                onChange={(html) => setForm({ ...form, content_en: html })}
-                placeholder="Optional English version. Falls back to Spanish if empty."
-                minHeight={280}
-              />
               <p className="text-xs text-muted-foreground">
                 Editor con formato enriquecido. Se guarda como HTML.
               </p>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Etiquetas (separadas por coma)</Label>
@@ -382,6 +384,7 @@ const AdminBlog = () => {
                     {form.published ? "Visible en el sitio" : "Borrador"}
                   </span>
                 </div>
+              </div>
             </div>
             <SEOIndicator
               title={form.title}
@@ -390,7 +393,7 @@ const AdminBlog = () => {
               hasSlug={!!form.slug.trim()}
             />
           </div>
-          </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Cancelar
