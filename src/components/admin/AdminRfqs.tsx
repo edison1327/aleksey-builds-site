@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Send, Trash2, Copy, Trophy, Eye, Sparkles } from "lucide-react";
+import { Loader2, Plus, Send, Trash2, Copy, Trophy, Eye, Sparkles, Bot } from "lucide-react";
 import AuctionAdmin from "@/components/auction/AuctionAdmin";
+import ReactMarkdown from "react-markdown";
 
 interface Rfq {
   id: string; code: string; title: string; description: string | null;
@@ -34,6 +35,8 @@ const AdminRfqs = () => {
   const [loading, setLoading] = useState(true);
   const [openNew, setOpenNew] = useState(false);
   const [detail, setDetail] = useState<Rfq | null>(null);
+  const [copilotLoading, setCopilotLoading] = useState<string | null>(null);
+  const [copilotResult, setCopilotResult] = useState<{ supplier: string; text: string } | null>(null);
   const { toast } = useToast();
 
   // New RFQ form
@@ -171,6 +174,25 @@ const AdminRfqs = () => {
     if (!confirm("¿Eliminar RFQ?")) return;
     await (supabase as any).from("rfqs").delete().eq("id", id);
     load();
+  };
+
+  const runCopilot = async (responseId: string, supplierName: string) => {
+    setCopilotLoading(responseId);
+    try {
+      const { data, error } = await supabase.functions.invoke("rfq-negotiation-copilot", {
+        body: { response_id: responseId },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) {
+        toast({ title: "Error del copiloto", description: (data as any).message || (data as any).error, variant: "destructive" });
+        return;
+      }
+      setCopilotResult({ supplier: supplierName, text: (data as any).suggestion });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setCopilotLoading(null);
+    }
   };
 
   const availableSuppliers = useMemo(
@@ -397,11 +419,24 @@ const AdminRfqs = () => {
                                       </div>
                                     </td>
                                     <td className="p-2 whitespace-nowrap">
-                                      {detail.status !== "awarded" && (
-                                        <Button size="sm" variant={isRecommended ? "default" : "outline"} className="gap-1" onClick={() => award(r.id)}>
-                                          <Trophy className="h-3.5 w-3.5" /> Adjudicar
+                                      <div className="flex gap-1">
+                                        <Button
+                                          size="sm" variant="secondary" className="gap-1"
+                                          disabled={copilotLoading === r.id}
+                                          onClick={() => runCopilot(r.id, r.suppliers?.name || "proveedor")}
+                                          title="Sugerir contraoferta con IA"
+                                        >
+                                          {copilotLoading === r.id
+                                            ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                            : <Bot className="h-3.5 w-3.5" />}
+                                          IA
                                         </Button>
-                                      )}
+                                        {detail.status !== "awarded" && (
+                                          <Button size="sm" variant={isRecommended ? "default" : "outline"} className="gap-1" onClick={() => award(r.id)}>
+                                            <Trophy className="h-3.5 w-3.5" /> Adjudicar
+                                          </Button>
+                                        )}
+                                      </div>
                                     </td>
                                   </tr>
                                 );
@@ -419,6 +454,31 @@ const AdminRfqs = () => {
               </div>
 
             </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Copilot IA de negociación */}
+      <Dialog open={!!copilotResult} onOpenChange={(o) => !o && setCopilotResult(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-primary" />
+              Copiloto IA — {copilotResult?.supplier}
+            </DialogTitle>
+          </DialogHeader>
+          {copilotResult && (
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <ReactMarkdown>{copilotResult.text}</ReactMarkdown>
+              <div className="not-prose mt-4 flex justify-end">
+                <Button variant="outline" size="sm" onClick={() => {
+                  navigator.clipboard.writeText(copilotResult.text);
+                  toast({ title: "Copiado al portapapeles" });
+                }}>
+                  <Copy className="h-3.5 w-3.5 mr-1" /> Copiar
+                </Button>
+              </div>
+            </div>
           )}
         </DialogContent>
       </Dialog>
