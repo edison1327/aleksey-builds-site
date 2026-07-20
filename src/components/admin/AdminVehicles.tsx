@@ -286,14 +286,14 @@ const AdminVehicles = () => {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium">Nombre (ES)</label>
+              <label className="text-sm font-medium">Nombre</label>
               <Input
                 value={editingVehicle?.name || ""}
                 onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, name: e.target.value } : null)}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (ES)</label>
+              <label className="text-sm font-medium">Descripción</label>
               <Textarea
                 value={editingVehicle?.description || ""}
                 onChange={(e) => setEditingVehicle(prev => prev ? { ...prev, description: e.target.value } : null)}

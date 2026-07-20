@@ -287,14 +287,14 @@ const AdminMachinery = () => {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium">Nombre (ES)</label>
+              <label className="text-sm font-medium">Nombre</label>
               <Input
                 value={editingMachine?.name || ""}
                 onChange={(e) => setEditingMachine(prev => prev ? { ...prev, name: e.target.value } : null)}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (ES)</label>
+              <label className="text-sm font-medium">Descripción</label>
               <Textarea
                 value={editingMachine?.description || ""}
                 onChange={(e) => setEditingMachine(prev => prev ? { ...prev, description: e.target.value } : null)}
