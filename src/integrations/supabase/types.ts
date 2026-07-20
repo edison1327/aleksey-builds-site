@@ -6037,7 +6037,15 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user" | "editor" | "viewer" | "client"
+      app_role:
+        | "admin"
+        | "user"
+        | "editor"
+        | "viewer"
+        | "client"
+        | "manager"
+        | "operator"
+        | "supplier"
       crm_stage: "new" | "contacted" | "quoted" | "negotiation" | "won" | "lost"
       referral_status: "pending" | "registered" | "converted" | "rewarded"
     }
@@ -6167,7 +6175,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "editor", "viewer", "client"],
+      app_role: [
+        "admin",
+        "user",
+        "editor",
+        "viewer",
+        "client",
+        "manager",
+        "operator",
+        "supplier",
+      ],
       crm_stage: ["new", "contacted", "quoted", "negotiation", "won", "lost"],
       referral_status: ["pending", "registered", "converted", "rewarded"],
     },
