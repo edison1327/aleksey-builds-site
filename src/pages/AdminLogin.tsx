@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Lock, Mail, ArrowLeft, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { z } from "zod";
+import ForgotPasswordDialog from "@/components/admin/ForgotPasswordDialog";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Email inválido" }),
@@ -30,6 +31,7 @@ const AdminLogin = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [forgotOpen, setForgotOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, isStaff, signIn, signUp } = useAuth();
