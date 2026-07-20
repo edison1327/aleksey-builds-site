@@ -359,7 +359,8 @@ const Admin = () => {
         sidebarCollapsed && !isMobile && "px-2"
       )}>
         {(!sidebarCollapsed || isMobile) ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-start gap-2">
+
             {siteSettings?.logo_url ? (
               <img 
                 src={siteSettings.logo_url} 
