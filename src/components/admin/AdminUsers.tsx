@@ -21,7 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
-  Loader2, Plus, Trash2, Pencil, Users, Shield, User as UserIcon,
+  Loader2, Plus, Trash2, Pencil, Users, Shield, User as UserIcon, KeyRound,
   RefreshCw, Edit3, Eye, Briefcase, HardHat, Truck, Handshake,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -152,6 +152,14 @@ const AdminUsers = () => {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Error al eliminar usuario");
     }
+  };
+
+  const handleSendReset = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) toast.error(error.message);
+    else toast.success(`Enlace de recuperación enviado a ${email}`);
   };
 
   const openEditDialog = (user: UserData) => {
@@ -310,6 +318,10 @@ const AdminUsers = () => {
                             disabled={!canModify}
                             title={canModify ? "Editar" : "Solo un administrador puede editar administradores"}>
                             <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleSendReset(u.email)}
+                            title="Enviar enlace de recuperación de contraseña">
+                            <KeyRound className="h-4 w-4" />
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
