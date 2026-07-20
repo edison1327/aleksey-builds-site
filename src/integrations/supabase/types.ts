@@ -1960,6 +1960,147 @@ export type Database = {
         }
         Relationships: []
       }
+      loyalty_points: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          customer_email: string
+          id: string
+          invoice_id: string | null
+          points: number
+          reason: string
+          reference_amount: number | null
+          referral_id: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_email: string
+          id?: string
+          invoice_id?: string | null
+          points: number
+          reason: string
+          reference_amount?: number | null
+          referral_id?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string
+          id?: string
+          invoice_id?: string | null
+          points?: number
+          reason?: string
+          reference_amount?: number | null
+          referral_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_points_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_points_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_points_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_redemptions: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string | null
+          id: string
+          notes: string | null
+          points_spent: number
+          reward_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          customer_name?: string | null
+          id?: string
+          notes?: string | null
+          points_spent: number
+          reward_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string | null
+          id?: string
+          notes?: string | null
+          points_spent?: number
+          reward_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "loyalty_rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_rewards: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          points_required: number
+          stock: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          points_required: number
+          stock?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          points_required?: number
+          stock?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       machinery: {
         Row: {
           branch_id: string | null
@@ -5214,6 +5355,15 @@ export type Database = {
           expires_at: string
           id: string
           title: string
+        }[]
+      }
+      get_loyalty_balance: {
+        Args: { _email: string }
+        Returns: {
+          available: number
+          earned: number
+          spent: number
+          tier: string
         }[]
       }
       get_maintenance_predictions: {

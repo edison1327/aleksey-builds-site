@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, FileText, CalendarRange, FileSignature, ClipboardList, LogOut, Plus, MessageSquare, Receipt, History } from "lucide-react";
+import { Loader2, FileText, CalendarRange, FileSignature, ClipboardList, LogOut, Plus, MessageSquare, Receipt, History, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import ClientBookings from "@/components/portal/ClientBookings";
@@ -15,6 +15,7 @@ import ClientContracts from "@/components/portal/ClientContracts";
 import ClientWorkOrders from "@/components/portal/ClientWorkOrders";
 import ClientServiceHistory from "@/components/portal/ClientServiceHistory";
 import UpsellSuggestions from "@/components/portal/UpsellSuggestions";
+import ClientLoyalty from "@/components/portal/ClientLoyalty";
 
 interface Summary {
   quotes: number;
@@ -118,13 +119,14 @@ const MyAccountPage = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="invoices">
-            <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-4 h-auto">
+            <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-4 h-auto">
               <TabsTrigger value="invoices">Facturas</TabsTrigger>
               <TabsTrigger value="contracts">Contratos</TabsTrigger>
               <TabsTrigger value="workorders">Órdenes de trabajo</TabsTrigger>
               <TabsTrigger value="history"><History className="h-3 w-3 mr-1" />Historial</TabsTrigger>
               <TabsTrigger value="bookings">Reservas</TabsTrigger>
               <TabsTrigger value="documents">Documentos</TabsTrigger>
+              <TabsTrigger value="loyalty"><Award className="h-3 w-3 mr-1" />Puntos</TabsTrigger>
             </TabsList>
 
             <TabsContent value="invoices"><ClientInvoices email={email} /></TabsContent>
@@ -133,6 +135,7 @@ const MyAccountPage = () => {
             <TabsContent value="history"><ClientServiceHistory email={email} /></TabsContent>
             <TabsContent value="bookings"><ClientBookings email={email} /></TabsContent>
             <TabsContent value="documents"><ClientDocuments userId={user.id} /></TabsContent>
+            <TabsContent value="loyalty"><ClientLoyalty email={email} name={displayName} /></TabsContent>
           </Tabs>
 
           {/* Upsell */}

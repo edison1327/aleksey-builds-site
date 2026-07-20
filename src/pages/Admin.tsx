@@ -11,7 +11,7 @@ import {
   Mail, Users, Settings, LayoutDashboard, Info, Briefcase, Heart, Image,
   Menu, ChevronLeft, ChevronRight, X, Quote, Navigation, BarChart3, Share2,
   FileText, TrendingUp, UserCog, MessageSquareQuote, Newspaper, History, Command, CalendarRange, Activity, Database, Bug, FolderLock, Gift, Kanban, MapPin, Webhook, Bell, AlarmClock, Trash2, Wrench, ClipboardCheck, ShoppingCart
-  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound, ClipboardList, FileSpreadsheet, Layers } from "lucide-react";
+  , WifiOff, FileSignature, Handshake, Zap, AlertTriangle, Brain, KeyRound, ClipboardList, FileSpreadsheet, Layers, Award } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Area, AreaChart, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import AdminHero from "@/components/admin/AdminHero";
@@ -75,6 +75,7 @@ const AdminFrameworkAgreements = lazy(() => import("@/components/admin/AdminFram
 const AdminPools = lazy(() => import("@/components/admin/AdminPools"));
 const AdminDispatch = lazy(() => import("@/components/admin/AdminDispatch"));
 const AdminInspections = lazy(() => import("@/components/admin/AdminInspections"));
+const AdminLoyalty = lazy(() => import("@/components/admin/AdminLoyalty"));
 import { BranchProvider } from "@/hooks/useBranch";
 import BranchSwitcher from "@/components/admin/BranchSwitcher";
 import CommandPalette from "@/components/admin/CommandPalette";
@@ -298,6 +299,7 @@ const Admin = () => {
     { id: "templates", label: "Plantillas", icon: MessageSquareQuote, category: "comunicacion", adminOnly: true },
     { id: "client-docs", label: "Docs. Clientes", icon: FolderLock, category: "comunicacion" },
     { id: "referrals", label: "Referidos", icon: Gift, category: "comunicacion" },
+    { id: "loyalty", label: "Fidelización", icon: Award, category: "comunicacion", adminOnly: true },
     { id: "pipeline", label: "Pipeline CRM", icon: Kanban, category: "comunicacion" },
     { id: "marketing", label: "Marketing & CRM", icon: Zap, category: "comunicacion", adminOnly: true },
     { id: "blog", label: "Blog", icon: Newspaper, category: "contenido" },
@@ -546,6 +548,7 @@ const Admin = () => {
       case "errors": return <AdminErrorLog />;
       case "client-docs": return <AdminClientDocuments />;
       case "referrals": return <AdminReferrals />;
+      case "loyalty": return <AdminLoyalty />;
       case "pipeline": return <AdminPipeline />;
       case "locations": return <AdminLocations />;
       case "webhooks": return <AdminWebhooks />;
