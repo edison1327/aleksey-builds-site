@@ -359,7 +359,7 @@ const Admin = () => {
         sidebarCollapsed && !isMobile && "px-2"
       )}>
         {(!sidebarCollapsed || isMobile) ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {siteSettings?.logo_url ? (
               <img 
                 src={siteSettings.logo_url} 
@@ -377,15 +377,31 @@ const Admin = () => {
               </p>
               <p className="text-xs text-muted-foreground truncate">CMS</p>
             </div>
+            {!isMobile && (
+              <button
+                onClick={() => setSidebarCollapsed(true)}
+                className="shrink-0 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                title="Ocultar menú"
+                aria-label="Ocultar menú"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+            )}
           </div>
         ) : (
-          <div className="flex justify-center">
-            <div className="bg-primary rounded-lg p-2">
-              <Building2 className="h-5 w-5 text-primary-foreground" />
-            </div>
+          <div className="flex flex-col items-center gap-2">
+            <button
+              onClick={() => setSidebarCollapsed(false)}
+              className="rounded-lg bg-primary p-2 hover:opacity-90 transition-opacity"
+              title="Mostrar menú"
+              aria-label="Mostrar menú"
+            >
+              <ChevronRight className="h-5 w-5 text-primary-foreground" />
+            </button>
           </div>
         )}
       </div>
+
 
       {/* Menu Items */}
       <ScrollArea className="flex-1 py-4">
@@ -614,19 +630,8 @@ const Admin = () => {
         sidebarCollapsed ? "w-[72px]" : "w-64"
       )}>
         {renderSidebar(false)}
-        
-        {/* Collapse Toggle */}
-        <button
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="absolute -right-3 top-20 bg-card border border-border rounded-full p-1.5 shadow-md hover:bg-muted transition-colors"
-        >
-          {sidebarCollapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </button>
       </aside>
+
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
