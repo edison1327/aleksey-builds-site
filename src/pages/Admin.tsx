@@ -32,6 +32,7 @@ import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminTeamStats from "@/components/admin/AdminTeamStats";
 import AdminSocialLinks from "@/components/admin/AdminSocialLinks";
 import AdminUsers from "@/components/admin/AdminUsers";
+import AdminRolesPermissions from "@/components/admin/AdminRolesPermissions";
 import AdminResponseTemplates from "@/components/admin/AdminResponseTemplates";
 import AdminBookings from "@/components/admin/AdminBookings";
 // Heavy panels are lazy-loaded to reduce initial admin bundle
@@ -104,7 +105,7 @@ import { useToast } from "@/hooks/use-toast";
 const Tooltip = RechartsTooltip;
 
 const Admin = () => {
-  const { user, isAdmin, isStaff, isLoading, signOut } = useAuth();
+  const { user, isAdmin, isManager, isAdminOrManager, isStaff, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const getTabFromHash = () => {
@@ -263,6 +264,7 @@ const Admin = () => {
     category: string;
     badgeKey?: keyof typeof badgeCounts;
     adminOnly?: boolean;
+    managerOk?: boolean;
   }> = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, category: "general" },
     { id: "analytics", label: "Analítica", icon: TrendingUp, category: "general" },
@@ -272,7 +274,8 @@ const Admin = () => {
     { id: "media", label: "Biblioteca de medios", icon: Image, category: "general" },
     { id: "navigation", label: "Navegación", icon: Navigation, category: "general" },
     { id: "social", label: "Redes Sociales", icon: Share2, category: "general" },
-    { id: "users", label: "Usuarios", icon: UserCog, category: "general", adminOnly: true },
+    { id: "users", label: "Usuarios", icon: UserCog, category: "general", adminOnly: true, managerOk: true },
+    { id: "roles", label: "Roles y permisos", icon: ShieldCheck, category: "general", adminOnly: true },
     { id: "locations", label: "Sedes", icon: MapPin, category: "general", adminOnly: true },
     { id: "hero", label: "Hero", icon: Home, category: "contenido" },
     { id: "about", label: "About", icon: Info, category: "contenido" },
@@ -336,7 +339,9 @@ const Admin = () => {
     { id: "sla", label: "SLA y tiempos", icon: Timer, category: "operaciones", adminOnly: true },
   ];
 
-  const menuItems = allMenuItems.filter((m) => isAdmin || !m.adminOnly);
+  const menuItems = allMenuItems.filter(
+    (m) => isAdmin || (isManager && m.managerOk) || !m.adminOnly
+  );
 
   const categories = [
     { id: "general", label: "General" },
@@ -522,6 +527,7 @@ const Admin = () => {
       case "navigation": return <AdminNavigation />;
       case "social": return <AdminSocialLinks />;
       case "users": return <AdminUsers />;
+      case "roles": return <AdminRolesPermissions />;
       case "hero": return <AdminHero />;
       case "about": return <AdminAbout />;
       case "teamstats": return <AdminTeamStats />;
