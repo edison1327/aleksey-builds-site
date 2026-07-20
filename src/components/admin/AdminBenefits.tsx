@@ -28,7 +28,6 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { I18nField } from "./I18nField";
 
 interface Benefit {
   id: string;

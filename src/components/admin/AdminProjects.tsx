@@ -13,7 +13,6 @@ import ImageUpload from "./ImageUpload";
 import MultiImageUpload from "./MultiImageUpload";
 import { SortableGrid } from "./SortableGrid";
 import { logAction } from "@/lib/auditLog";
-import { I18nField } from "./I18nField";
 
 interface ProjectMetric {
   label: string;

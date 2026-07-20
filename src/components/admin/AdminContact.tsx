@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Save, Loader2 } from "lucide-react";
 
-import { I18nField } from "./I18nField";
 
 interface ContactInfo {
   id: string;

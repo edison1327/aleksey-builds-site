@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Save, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "./ImageUpload";
-import { I18nField } from "./I18nField";
 
 const AdminSiteSettings = () => {
   const { data: settings, isLoading } = useSiteSettings();
