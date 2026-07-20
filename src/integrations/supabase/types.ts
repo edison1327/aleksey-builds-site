@@ -157,6 +157,66 @@ export type Database = {
           },
         ]
       }
+      approval_requests: {
+        Row: {
+          amount: number | null
+          approved_at: string | null
+          approved_by: string | null
+          approver_role: string
+          created_at: string
+          currency: string | null
+          delegated_to: string | null
+          entity_id: string
+          entity_label: string | null
+          entity_type: string
+          id: string
+          notes: string | null
+          rejection_reason: string | null
+          requested_by: string | null
+          signature_data: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          approver_role?: string
+          created_at?: string
+          currency?: string | null
+          delegated_to?: string | null
+          entity_id: string
+          entity_label?: string | null
+          entity_type: string
+          id?: string
+          notes?: string | null
+          rejection_reason?: string | null
+          requested_by?: string | null
+          signature_data?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          approver_role?: string
+          created_at?: string
+          currency?: string | null
+          delegated_to?: string | null
+          entity_id?: string
+          entity_label?: string | null
+          entity_type?: string
+          id?: string
+          notes?: string | null
+          rejection_reason?: string | null
+          requested_by?: string | null
+          signature_data?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
@@ -3833,6 +3893,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_reports: {
+        Row: {
+          config: Json
+          created_at: string
+          description: string | null
+          id: string
+          is_shared: boolean
+          name: string
+          source: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_shared?: boolean
+          name: string
+          source: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_shared?: boolean
+          name?: string
+          source?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       services: {
         Row: {
