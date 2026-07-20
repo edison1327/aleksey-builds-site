@@ -145,7 +145,7 @@ const AdminSiteSettings = () => {
   <label className="text-sm font-medium">Eslogan / Subtítulo</label>
   <Input
     value={formData.tagline || ""}
-    onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
+    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
   />
 </div>
 
@@ -154,7 +154,7 @@ const AdminSiteSettings = () => {
   <label className="text-sm font-medium">Descripción del Footer</label>
   <Textarea
     value={formData.footer_description || ""}
-    onChange={(e) => setSettings({ ...settings, footer_description: e.target.value })} rows={3}
+    onChange={(e) => setFormData({ ...formData, footer_description: e.target.value })} rows={3}
   />
 </div>
             <p className="text-sm text-muted-foreground -mt-3">
@@ -166,7 +166,7 @@ const AdminSiteSettings = () => {
   <label className="text-sm font-medium">Texto de Copyright</label>
   <Input
     value={formData.footer_copyright || ""}
-    onChange={(e) => setSettings({ ...settings, footer_copyright: e.target.value })}
+    onChange={(e) => setFormData({ ...formData, footer_copyright: e.target.value })}
   />
 </div>
             <p className="text-sm text-muted-foreground -mt-3">
