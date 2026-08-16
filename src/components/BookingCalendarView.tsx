@@ -36,7 +36,7 @@ const BookingCalendarView = ({ equipmentType, equipmentId }: Props) => {
     let active = true;
     const load = async () => {
       setLoading(true);
-      const today = new Date().toISOString().slice(0, 10);
+      
       const { data } = await (supabase as any).rpc("get_equipment_availability", {
         _equipment_type: equipmentType,
         _equipment_id: equipmentId,
