@@ -46,14 +46,26 @@ const BlogPostPage = () => {
 
   useEffect(() => {
     if (!slug) return;
-    const query = supabase.from("blog_posts").select("*").eq("slug", slug).is("deleted_at", null);
-    const fetch = isPreview
-      ? query.eq("preview_token", previewToken!).maybeSingle()
-      : query.eq("published", true).maybeSingle();
-    fetch.then(({ data }) => {
-      setPost(data as Post | null);
+    const run = async () => {
+      if (isPreview) {
+        const { data } = await (supabase as any).rpc("get_preview_blog_post", {
+          _slug: slug,
+          _token: previewToken,
+        });
+        setPost(((Array.isArray(data) ? data[0] : data) ?? null) as Post | null);
+      } else {
+        const { data } = await supabase
+          .from("blog_posts")
+          .select("*")
+          .eq("slug", slug)
+          .is("deleted_at", null)
+          .eq("published", true)
+          .maybeSingle();
+        setPost(data as Post | null);
+      }
       setLoading(false);
-    });
+    };
+    run();
   }, [slug, isPreview, previewToken]);
 
 
