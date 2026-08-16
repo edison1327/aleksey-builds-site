@@ -36,15 +36,11 @@ const BookingCalendarView = ({ equipmentType, equipmentId }: Props) => {
     let active = true;
     const load = async () => {
       setLoading(true);
-      const today = new Date().toISOString().slice(0, 10);
-      const { data } = await (supabase as any)
-        .from("equipment_bookings")
-        .select("id, start_date, end_date, status")
-        .eq("equipment_type", equipmentType)
-        .eq("equipment_id", equipmentId)
-        .gte("end_date", today)
-        .in("status", ["reserved", "blocked"])
-        .order("start_date");
+      
+      const { data } = await (supabase as any).rpc("get_equipment_availability", {
+        _equipment_type: equipmentType,
+        _equipment_id: equipmentId,
+      });
       if (active) {
         setBookings((data || []) as Booking[]);
         setLoading(false);
