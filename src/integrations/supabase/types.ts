@@ -5839,6 +5839,15 @@ export type Database = {
           title: string
         }[]
       }
+      get_equipment_availability: {
+        Args: { _equipment_id: string; _equipment_type: string }
+        Returns: {
+          end_date: string
+          id: string
+          start_date: string
+          status: string
+        }[]
+      }
       get_executive_kpis: {
         Args: { _from?: string; _to?: string }
         Returns: Json
@@ -5906,6 +5915,78 @@ export type Database = {
           total_quantity: number
           unit: string
         }[]
+      }
+      get_preview_blog_post: {
+        Args: { _slug: string; _token: string }
+        Returns: {
+          author: string | null
+          content: string
+          content_en: string | null
+          cover_image: string | null
+          created_at: string
+          deleted_at: string | null
+          excerpt: string | null
+          excerpt_en: string | null
+          id: string
+          preview_token: string | null
+          published: boolean
+          published_at: string | null
+          slug: string
+          tags: string[]
+          title: string
+          title_en: string | null
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "blog_posts"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_preview_project: {
+        Args: { _slug: string; _token: string }
+        Returns: {
+          branch_id: string | null
+          category: string | null
+          category_en: string | null
+          challenge: string | null
+          challenge_en: string | null
+          client: string | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          description_en: string | null
+          duration: string | null
+          duration_en: string | null
+          gallery_images: string[] | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_case_study: boolean
+          is_featured: boolean | null
+          location: string | null
+          location_en: string | null
+          metrics: Json
+          outcome: string | null
+          outcome_en: string | null
+          preview_token: string | null
+          services_used: string[]
+          slug: string | null
+          solution: string | null
+          solution_en: string | null
+          sort_order: number | null
+          title: string
+          title_en: string | null
+          updated_at: string
+          year: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "projects"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       get_project_pnl: {
         Args: never
