@@ -53,7 +53,14 @@ const AdminSiteSettings = () => {
     e.preventDefault();
     
     try {
-      await updateSettings.mutateAsync(formData);
+      await updateSettings.mutateAsync({
+        ...formData,
+        logo_url_dark: formData.logo_url_dark || null,
+        footer_logo_url: formData.footer_logo_url || null,
+        footer_logo_url_dark: formData.footer_logo_url_dark || null,
+        site_url: formData.site_url || null,
+        favicon_url: formData.favicon_url || null,
+      });
       toast.success("Configuración actualizada correctamente");
     } catch (error) {
       console.error("Error updating settings:", error);
