@@ -376,11 +376,11 @@ const Admin = () => {
         {(!sidebarCollapsed || isMobile) ? (
           <div className="flex items-start gap-2">
 
-            {siteSettings?.logo_url ? (
+            {logoUrl ? (
               <img 
-                src={siteSettings.logo_url} 
-                alt={siteSettings.company_name || "Logo"} 
-                className="h-8 object-contain"
+                src={logoUrl} 
+                alt={siteSettings?.company_name || "Logo"} 
+                className="h-8 object-contain logo-transition"
               />
             ) : (
               <div className="bg-primary rounded-lg p-2">
@@ -391,6 +391,7 @@ const Admin = () => {
               <p className="font-heading font-bold text-sm truncate">
                 {siteSettings?.company_name || "ALEKSEY"}
               </p>
+
               <p className="text-xs text-muted-foreground truncate">CMS</p>
             </div>
             {!isMobile && (
