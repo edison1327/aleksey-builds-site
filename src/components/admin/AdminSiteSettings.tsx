@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Loader2, Save, Image as ImageIcon } from "lucide-react";
+import { Loader2, Save, ImageIcon, Sun, Moon, Layout } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "./ImageUpload";
 
@@ -18,6 +18,9 @@ const AdminSiteSettings = () => {
     tagline: "",
     tagline_en: "",
     logo_url: "",
+    logo_url_dark: "",
+    footer_logo_url: "",
+    footer_logo_url_dark: "",
     footer_description: "",
     footer_description_en: "",
     footer_copyright: "",
@@ -31,6 +34,9 @@ const AdminSiteSettings = () => {
         tagline: settings.tagline || "",
         tagline_en: settings.tagline_en || "",
         logo_url: settings.logo_url || "",
+        logo_url_dark: settings.logo_url_dark || "",
+        footer_logo_url: settings.footer_logo_url || "",
+        footer_logo_url_dark: settings.footer_logo_url_dark || "",
         footer_description: settings.footer_description || "",
         footer_description_en: settings.footer_description_en || "",
         footer_copyright: settings.footer_copyright || "",
@@ -68,122 +74,136 @@ const AdminSiteSettings = () => {
             Configuración del Sitio
           </CardTitle>
           <CardDescription>
-            Gestiona el logo y la información general del sitio web
+            Gestiona los logos independientes y la información general del sitio
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Logo Upload */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold">Logo de la Empresa</Label>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <ImageUpload
-                    value={formData.logo_url}
-                    onChange={(url) => setFormData({ ...formData, logo_url: url })}
-                    folder="logos"
-                  />
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Sube el logo de tu empresa. Formato recomendado: PNG con fondo transparente.
-                  </p>
-                </div>
-                
-                {/* Preview */}
-                <div className="space-y-3">
-                  <Label className="text-sm text-muted-foreground">Vista previa</Label>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Logos Section */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold border-b pb-2 flex items-center gap-2">
+                <Layout className="h-5 w-5" /> Logos del Sitio
+              </h3>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Navbar Logos */}
+                <div className="space-y-6 p-4 border rounded-xl bg-muted/30">
+                  <h4 className="font-medium flex items-center gap-2 text-primary">
+                    Logo del Menú (Navbar)
+                  </h4>
+                  
                   <div className="space-y-4">
-                    {/* Light background preview */}
-                    <div className="bg-white border rounded-lg p-4">
-                      <p className="text-xs text-gray-500 mb-2">Fondo claro:</p>
-                      {formData.logo_url ? (
-                        <img 
-                          src={formData.logo_url} 
-                          alt="Logo preview" 
-                          className="h-12 object-contain"
-                        />
-                      ) : (
-                        <div className="h-12 flex items-center">
-                          <span className="text-xl font-bold text-gray-800">{formData.company_name}</span>
-                        </div>
-                      )}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Sun className="h-4 w-4 text-orange-500" /> Modo Claro
+                      </Label>
+                      <ImageUpload
+                        value={formData.logo_url}
+                        onChange={(url) => setFormData({ ...formData, logo_url: url })}
+                        folder="logos"
+                      />
                     </div>
                     
-                    {/* Dark background preview */}
-                    <div className="bg-secondary border rounded-lg p-4">
-                      <p className="text-xs text-secondary-foreground/60 mb-2">Fondo oscuro (Footer):</p>
-                      {formData.logo_url ? (
-                        <img 
-                          src={formData.logo_url} 
-                          alt="Logo preview" 
-                          className="h-12 object-contain brightness-0 invert"
-                        />
-                      ) : (
-                        <div className="h-12 flex items-center">
-                          <span className="text-xl font-bold text-white">{formData.company_name}</span>
-                        </div>
-                      )}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Moon className="h-4 w-4 text-blue-400" /> Modo Oscuro
+                      </Label>
+                      <ImageUpload
+                        value={formData.logo_url_dark}
+                        onChange={(url) => setFormData({ ...formData, logo_url_dark: url })}
+                        folder="logos"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Logos */}
+                <div className="space-y-6 p-4 border rounded-xl bg-muted/30">
+                  <h4 className="font-medium flex items-center gap-2 text-primary">
+                    Logo del Footer
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Sun className="h-4 w-4 text-orange-500" /> Modo Claro
+                      </Label>
+                      <ImageUpload
+                        value={formData.footer_logo_url}
+                        onChange={(url) => setFormData({ ...formData, footer_logo_url: url })}
+                        folder="logos"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Moon className="h-4 w-4 text-blue-400" /> Modo Oscuro
+                      </Label>
+                      <ImageUpload
+                        value={formData.footer_logo_url_dark}
+                        onChange={(url) => setFormData({ ...formData, footer_logo_url_dark: url })}
+                        folder="logos"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Company Name */}
-            <div className="space-y-2">
-              <Label htmlFor="company_name">Nombre de la Empresa</Label>
-              <Input
-                id="company_name"
-                value={formData.company_name}
-                onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
-                placeholder="ALEKSEY"
-              />
+            {/* General Info Section */}
+            <div className="space-y-4 pt-4">
+              <h3 className="text-lg font-semibold border-b pb-2">Información General</h3>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="company_name">Nombre de la Empresa</Label>
+                  <Input
+                    id="company_name"
+                    value={formData.company_name}
+                    onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
+                    placeholder="ALEKSEY"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Eslogan / Subtítulo</Label>
+                  <Input
+                    value={formData.tagline || ""}
+                    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Descripción del Footer</Label>
+                <Textarea
+                  value={formData.footer_description || ""}
+                  onChange={(e) => setFormData({ ...formData, footer_description: e.target.value })} 
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Texto de Copyright</Label>
+                <Input
+                  value={formData.footer_copyright || ""}
+                  onChange={(e) => setFormData({ ...formData, footer_copyright: e.target.value })}
+                />
+              </div>
             </div>
-
-            {/* Tagline */}
-            <div>
-  <label className="text-sm font-medium">Eslogan / Subtítulo</label>
-  <Input
-    value={formData.tagline || ""}
-    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-  />
-</div>
-
-            {/* Footer Description */}
-            <div>
-  <label className="text-sm font-medium">Descripción del Footer</label>
-  <Textarea
-    value={formData.footer_description || ""}
-    onChange={(e) => setFormData({ ...formData, footer_description: e.target.value })} rows={3}
-  />
-</div>
-            <p className="text-sm text-muted-foreground -mt-3">
-              Este texto aparece debajo del logo en el footer del sitio.
-            </p>
-
-            {/* Footer Copyright */}
-            <div>
-  <label className="text-sm font-medium">Texto de Copyright</label>
-  <Input
-    value={formData.footer_copyright || ""}
-    onChange={(e) => setFormData({ ...formData, footer_copyright: e.target.value })}
-  />
-</div>
-            <p className="text-sm text-muted-foreground -mt-3">
-              Aparece al final del footer junto con el año y nombre de la empresa.
-            </p>
-
 
             <Button 
               type="submit" 
               disabled={updateSettings.isPending}
-              className="gap-2"
+              className="w-full md:w-auto gap-2"
+              size="lg"
             >
               {updateSettings.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Save className="h-4 w-4" />
               )}
-              Guardar Cambios
+              Guardar Configuración de Marca
             </Button>
           </form>
         </CardContent>

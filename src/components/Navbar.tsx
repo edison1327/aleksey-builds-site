@@ -62,7 +62,7 @@ const Navbar = () => {
   const lang = i18n.resolvedLanguage;
 
   const logoFallback = resolvedTheme === "dark" ? logoDark : logoLight;
-  const logoUrl = siteSettings?.logo_url || logoFallback;
+  const logoUrl = (resolvedTheme === "dark" ? siteSettings?.logo_url_dark : siteSettings?.logo_url) || siteSettings?.logo_url || logoFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
 
   const items = navLinks.length > 0 ? navLinks : FALLBACK_ITEMS;
