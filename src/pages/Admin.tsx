@@ -98,6 +98,10 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useAdminBadges } from "@/hooks/useAdminBadges";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/ThemeProvider";
+import logoLight from "@/assets/logo-aleksey-light.png";
+import logoDark from "@/assets/logo-aleksey.png";
+
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -108,6 +112,8 @@ const Admin = () => {
   const { user, isAdmin, isManager, isAdminOrManager, isStaff, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { resolvedTheme } = useTheme();
+
   const getTabFromHash = () => {
     if (typeof window === "undefined") return "dashboard";
     const h = window.location.hash.replace(/^#/, "");
@@ -120,8 +126,12 @@ const Admin = () => {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
+  
+  const logoFallback = resolvedTheme === "dark" ? logoDark : logoLight;
+  const logoUrl = (resolvedTheme === "dark" ? siteSettings?.logo_url_dark : siteSettings?.logo_url) || siteSettings?.logo_url || logoFallback;
 
   // Persist active tab in URL hash so it survives refresh and reflects in back/forward
+
   useEffect(() => {
     const current = window.location.hash.replace(/^#/, "");
     if (current !== activeTab) {
@@ -366,11 +376,11 @@ const Admin = () => {
         {(!sidebarCollapsed || isMobile) ? (
           <div className="flex items-start gap-2">
 
-            {siteSettings?.logo_url ? (
+            {logoUrl ? (
               <img 
-                src={siteSettings.logo_url} 
-                alt={siteSettings.company_name || "Logo"} 
-                className="h-8 object-contain"
+                src={logoUrl} 
+                alt={siteSettings?.company_name || "Logo"} 
+                className="h-8 object-contain logo-transition"
               />
             ) : (
               <div className="bg-primary rounded-lg p-2">
@@ -381,6 +391,7 @@ const Admin = () => {
               <p className="font-heading font-bold text-sm truncate">
                 {siteSettings?.company_name || "ALEKSEY"}
               </p>
+
               <p className="text-xs text-muted-foreground truncate">CMS</p>
             </div>
             {!isMobile && (
@@ -645,11 +656,11 @@ const Admin = () => {
             </Sheet>
             
             <div className="flex items-center gap-2 min-w-0">
-              {siteSettings?.logo_url ? (
+              {logoUrl ? (
                 <img 
-                  src={siteSettings.logo_url} 
-                  alt={siteSettings.company_name || "Logo"} 
-                  className="h-7 object-contain"
+                  src={logoUrl} 
+                  alt={siteSettings?.company_name || "Logo"} 
+                  className="h-7 object-contain logo-transition"
                 />
               ) : (
                 <span className="font-heading font-bold text-sm truncate">
@@ -657,6 +668,7 @@ const Admin = () => {
                 </span>
               )}
             </div>
+
 
             <div className="flex items-center gap-2">
               <div className="hidden md:block"><BranchSwitcher /></div>

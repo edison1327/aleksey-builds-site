@@ -105,10 +105,13 @@ const Footer = () => {
                 src={logoUrl} 
                 alt={`${companyName} - Ingeniería y Construcción`} 
                 className={cn(
-                  "h-10 object-contain",
-                  // Only apply invert filter if we're using the fallback logo which is typically dark
-                  !siteSettings?.footer_logo_url && !siteSettings?.footer_logo_url_dark && resolvedTheme === "light" && "brightness-0"
+                  "h-10 object-contain logo-transition",
+                  // Only apply brightness filter if we're using a local fallback (which is colored) and theme is light
+                  !siteSettings?.footer_logo_url && !siteSettings?.footer_logo_url_dark && 
+                  !siteSettings?.logo_url && !siteSettings?.logo_url_dark && 
+                  resolvedTheme === "light" && "brightness-0"
                 )} 
+
               />
             </div>
             <p className="text-secondary-foreground/80 leading-relaxed mb-6">
