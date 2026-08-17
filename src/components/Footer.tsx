@@ -24,6 +24,7 @@ const socialIcons: Record<string, React.ComponentType<{ className?: string }>> =
 
 import { useTranslation } from "react-i18next";
 import { useLocalizedField } from "@/lib/i18nField";
+import { useTheme } from "@/components/ThemeProvider";
 
 const Footer = () => {
   const { t } = useTranslation();
