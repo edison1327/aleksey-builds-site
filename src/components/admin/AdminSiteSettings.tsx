@@ -81,15 +81,17 @@ const AdminSiteSettings = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Logos Section */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold border-b pb-2 flex items-center gap-2">
-                <Layout className="h-5 w-5" /> Logos del Sitio
-              </h3>
+              <div className="flex items-center justify-between border-b pb-2">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Layout className="h-5 w-5" /> Gestión de Logos Independientes
+                </h3>
+              </div>
               
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Navbar Logos */}
-                <div className="space-y-6 p-4 border rounded-xl bg-muted/30">
-                  <h4 className="font-medium flex items-center gap-2 text-primary">
-                    Logo del Menú (Navbar)
+                <div className="space-y-6 p-6 border rounded-xl bg-muted/30 shadow-sm">
+                  <h4 className="font-bold flex items-center gap-2 text-primary uppercase tracking-wider text-sm">
+                    Logo del Menú Principal (Navbar)
                   </h4>
                   
                   <div className="space-y-4">
