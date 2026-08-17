@@ -14,13 +14,13 @@ export const LogoMark = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <title>Aleksey</title>
-    <polygon points="100,20 60,90 100,90" fill="#f4b5b0" />
-    <polygon points="60,90 100,90 80,125" fill="#e88a82" />
-    <polygon points="60,90 80,125 40,160" fill="#f4b5b0" />
-    <polygon points="80,125 100,160 40,160" fill="#d65048" />
-    <polygon points="100,20 160,160 120,160 100,90" fill="#e30613" />
-    <polygon points="100,20 100,90 60,90" fill="#e30613" opacity="0.92" />
-    <polygon points="78,118 122,118 117,128 83,128" fill="#e30613" />
+    <path d="M100 20L60 90H100L100 20Z" fill="#f4b5b0" />
+    <path d="M60 90L100 90L80 125L60 90Z" fill="#e88a82" />
+    <path d="M60 90L80 125L40 160L60 90Z" fill="#f4b5b0" />
+    <path d="M80 125L100 160H40L80 125Z" fill="#d65048" />
+    <path d="M100 20L160 160H120L100 90L100 20Z" fill="currentColor" className="text-primary" />
+    <path d="M100 20L100 90H60L100 20Z" fill="currentColor" className="text-primary" opacity="0.92" />
+    <path d="M78 118H122L117 128H83L78 118Z" fill="currentColor" className="text-primary" />
   </svg>
 );
 

@@ -5,7 +5,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
 import { useAuth } from "@/hooks/useAuth";
-import logoAlekseyFallback from "@/assets/logo-aleksey-light.png";
+import logoLight from "@/assets/logo-aleksey-light.png";
+import logoDark from "@/assets/logo-aleksey-dark.png";
 import LogoMark from "@/components/LogoMark";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
@@ -13,6 +14,7 @@ import { translateNavLabel } from "@/i18n/config";
 import { useLocalizedField } from "@/lib/i18nField";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useTheme } from "@/components/ThemeProvider";
 import { getPrefetchHandlers } from "@/lib/routePrefetch";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -54,11 +56,13 @@ const Navbar = () => {
   const { data: siteSettings } = useSiteSettings();
   const { data: navLinks } = useNavigationLinks("navbar");
   const { user } = useAuth();
+  const { resolvedTheme } = useTheme();
   const { t, i18n } = useTranslation();
   // re-render when language changes
   const lang = i18n.resolvedLanguage;
 
-  const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
+  const logoFallback = resolvedTheme === "dark" ? logoDark : logoLight;
+  const logoUrl = siteSettings?.logo_url || logoFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
 
   const items = navLinks.length > 0 ? navLinks : FALLBACK_ITEMS;
@@ -251,11 +255,11 @@ const Navbar = () => {
                 src={logoUrl}
                 alt={`${companyName} - Ingeniería y Construcción`}
                 className={cn(
-                  "transition-all duration-300",
-                  scrolled ? "hidden sm:block sm:h-9" : "h-9 sm:h-10 md:h-11"
+                  "transition-all duration-300 object-contain",
+                  scrolled ? "hidden sm:block sm:h-8" : "h-8 sm:h-9 md:h-10"
                 )}
-                width={180}
-                height={44}
+                width={160}
+                height={40}
               />
             </button>
 

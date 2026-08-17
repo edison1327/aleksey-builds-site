@@ -14,6 +14,14 @@ a[href*="lovable.app"][class*="badge"],
   pointer-events: none !important;
 }
 
+.logo-transition {
+  transition: filter 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .logo-glow {
+  filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.2));
+}
+
 @layer base {
   /* Charcoal & Red — Industrial premium palette
      Charcoal:  #1a1a1a / #2d2d2d / #4a4a4a
