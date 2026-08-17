@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet-async";
-
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const DEFAULT_URL = "https://aleksey.com.pe";
@@ -36,13 +35,13 @@ const SEO = ({
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   const url = `${siteUrl}${cleanPath}`;
   const ogImage = image || DEFAULT_OG;
-  const favicon = siteSettings?.favicon_url;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   const lang =
     locale ||
     (typeof document !== "undefined" ? document.documentElement.lang : "es") ||
     "es";
   const ogLocale = lang === "en" ? "en_US" : "es_ES";
+  const favicon = siteSettings?.favicon_url;
 
   return (
     <Helmet>
