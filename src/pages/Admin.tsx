@@ -112,6 +112,8 @@ const Admin = () => {
   const { user, isAdmin, isManager, isAdminOrManager, isStaff, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { resolvedTheme } = useTheme();
+
   const getTabFromHash = () => {
     if (typeof window === "undefined") return "dashboard";
     const h = window.location.hash.replace(/^#/, "");
