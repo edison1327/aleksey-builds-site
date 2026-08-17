@@ -656,11 +656,11 @@ const Admin = () => {
             </Sheet>
             
             <div className="flex items-center gap-2 min-w-0">
-              {siteSettings?.logo_url ? (
+              {logoUrl ? (
                 <img 
-                  src={siteSettings.logo_url} 
-                  alt={siteSettings.company_name || "Logo"} 
-                  className="h-7 object-contain"
+                  src={logoUrl} 
+                  alt={siteSettings?.company_name || "Logo"} 
+                  className="h-7 object-contain logo-transition"
                 />
               ) : (
                 <span className="font-heading font-bold text-sm truncate">
@@ -668,6 +668,7 @@ const Admin = () => {
                 </span>
               )}
             </div>
+
 
             <div className="flex items-center gap-2">
               <div className="hidden md:block"><BranchSwitcher /></div>
