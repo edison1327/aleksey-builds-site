@@ -34,7 +34,12 @@ const Footer = () => {
   const { data: hero } = useHeroContent();
   const tr = useLocalizedField();
 
-  const logoUrl = siteSettings?.logo_url || logoAlekseyFallback;
+  const { resolvedTheme } = useTheme();
+  const logoUrl = (resolvedTheme === "dark" ? siteSettings?.footer_logo_url_dark : siteSettings?.footer_logo_url) || 
+                  siteSettings?.footer_logo_url || 
+                  (resolvedTheme === "dark" ? siteSettings?.logo_url_dark : siteSettings?.logo_url) ||
+                  siteSettings?.logo_url || 
+                  logoAlekseyFallback;
   const companyName = siteSettings?.company_name || "ALEKSEY";
   const footerDescription = tr(siteSettings as any, "footer_description") || (siteSettings as any)?.footer_description || "Soluciones integrales en construcción, ingeniería y alquiler de maquinaria pesada.";
   const footerCopyright = tr(siteSettings as any, "footer_copyright") || (siteSettings as any)?.footer_copyright || "Todos los derechos reservados.";

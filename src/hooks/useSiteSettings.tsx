@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 interface SiteSettings {
   id: string;
   logo_url: string | null;
+  logo_url_dark: string | null;
+  footer_logo_url: string | null;
+  footer_logo_url_dark: string | null;
   company_name: string;
   tagline: string;
   tagline_en: string | null;
