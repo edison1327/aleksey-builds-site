@@ -126,8 +126,12 @@ const Admin = () => {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const { data: siteSettings } = useSiteSettings();
+  
+  const logoFallback = resolvedTheme === "dark" ? logoDark : logoLight;
+  const logoUrl = (resolvedTheme === "dark" ? siteSettings?.logo_url_dark : siteSettings?.logo_url) || siteSettings?.logo_url || logoFallback;
 
   // Persist active tab in URL hash so it survives refresh and reflects in back/forward
+
   useEffect(() => {
     const current = window.location.hash.replace(/^#/, "");
     if (current !== activeTab) {
