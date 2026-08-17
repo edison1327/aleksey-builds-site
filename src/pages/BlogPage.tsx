@@ -52,9 +52,9 @@ const BlogPage = () => {
           name="description"
           content="Artículos, casos de éxito y novedades sobre construcción, ingeniería y maquinaria pesada en Perú."
         />
-        <link rel="canonical" href="https://aleksey.lovable.app/blog" />
+        <link rel="canonical" href="https://aleksey.com.pe/blog" />
         <meta property="og:title" content="Blog ALEKSEY" />
-        <meta property="og:url" content="https://aleksey.lovable.app/blog" />
+        <meta property="og:url" content="https://aleksey.com.pe/blog" />
         <meta property="og:type" content="website" />
       </Helmet>
 

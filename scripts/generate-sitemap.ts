@@ -4,7 +4,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
-const BASE_URL = "https://aleksey.pe";
+const BASE_URL = "https://aleksey.com.pe";
 const SUPABASE_URL = "https://rqpcugvaikhqaeoacuhg.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxcGN1Z3ZhaWtocWFlb2FjdWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMjg1MTMsImV4cCI6MjA3NzYwNDUxM30.ht28ZvKSGX4X2Rt2g2eWrTMCGLAFmIvhSxlzp3xUM34";

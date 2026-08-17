@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 import Footer from "@/components/Footer";
 import { useServices, useHeroContent, Service } from "@/hooks/useSiteData";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -71,6 +72,11 @@ const Engineering = () => {
 
   return (
     <div className="min-h-dvh">
+      <SEO
+        title="Ingeniería: diseño estructural, geotecnia y vial | ALEKSEY"
+        description="Servicios de ingeniería en diseño estructural, estudios geotécnicos, ingeniería vial y consultoría técnica para proyectos de infraestructura en Perú."
+        path="/ingenieria"
+      />
       {/* Hero Section */}
       <section className="relative pt-24 bg-secondary">
         <div 

@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { useContactInfo, useSocialLinks } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const SITE_URL = "https://aleksey.pe";
+const SITE_URL = "https://aleksey.com.pe";
 
 /**
  * Global JSON-LD schema (LocalBusiness) rendered on public pages.

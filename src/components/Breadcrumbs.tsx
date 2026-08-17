@@ -9,7 +9,7 @@ export interface Crumb {
 
 interface BreadcrumbsProps {
   items: Crumb[];
-  /** Base absolute URL for schema, e.g. https://aleksey.pe */
+  /** Base absolute URL for schema, e.g. https://aleksey.com.pe */
   baseUrl?: string;
   className?: string;
 }
@@ -18,7 +18,7 @@ interface BreadcrumbsProps {
  * Accessible breadcrumbs with BreadcrumbList JSON-LD for SEO.
  * The last item is rendered as the current page (no link, aria-current).
  */
-const Breadcrumbs = ({ items, baseUrl = "https://aleksey.pe", className = "" }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ items, baseUrl = "https://aleksey.com.pe", className = "" }: BreadcrumbsProps) => {
   const full: Crumb[] = [{ label: "Inicio", href: "/" }, ...items];
 
   const jsonLd = {
