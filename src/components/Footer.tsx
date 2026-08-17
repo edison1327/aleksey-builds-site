@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, MapPin, Phone, Mail, Clock, ShieldCheck, Award, HardHat, Leaf } from "lucide-react";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { useContactInfo, useNavigationGroups, useSocialLinks, useHeroContent } from "@/hooks/useSiteData";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logoAlekseyFallback from "@/assets/logo-aleksey.png";
