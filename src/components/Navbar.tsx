@@ -255,7 +255,7 @@ const Navbar = () => {
                 src={logoUrl}
                 alt={`${companyName} - Ingeniería y Construcción`}
                 className={cn(
-                  "transition-all duration-300 object-contain",
+                  "transition-all duration-300 object-contain logo-transition logo-glow",
                   scrolled ? "hidden sm:block sm:h-8" : "h-8 sm:h-9 md:h-10"
                 )}
                 width={160}
