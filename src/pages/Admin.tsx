@@ -98,6 +98,10 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useAdminBadges } from "@/hooks/useAdminBadges";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/ThemeProvider";
+import logoLight from "@/assets/logo-aleksey-light.png";
+import logoDark from "@/assets/logo-aleksey.png";
+
 
 import { useToast } from "@/hooks/use-toast";
 
