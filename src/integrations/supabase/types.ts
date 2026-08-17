@@ -5677,6 +5677,7 @@ export type Database = {
         Args: { _vehicle_id: string; _work_order_ids: string[] }
         Returns: undefined
       }
+      auth_user_exists: { Args: { _user_id: string }; Returns: boolean }
       auto_invite_top_suppliers: {
         Args: { _limit?: number; _rfq_id: string }
         Returns: number
