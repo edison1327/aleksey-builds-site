@@ -71,6 +71,11 @@ const Engineering = () => {
 
   return (
     <div className="min-h-dvh">
+      <SEO
+        title="Ingeniería: diseño estructural, geotecnia y vial | ALEKSEY"
+        description="Servicios de ingeniería en diseño estructural, estudios geotécnicos, ingeniería vial y consultoría técnica para proyectos de infraestructura en Perú."
+        path="/ingenieria"
+      />
       {/* Hero Section */}
       <section className="relative pt-24 bg-secondary">
         <div 

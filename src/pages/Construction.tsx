@@ -71,6 +71,11 @@ const Construction = () => {
 
   return (
     <div className="min-h-dvh">
+      <SEO
+        title="Construcción de obras civiles e infraestructura | ALEKSEY"
+        description="Construcción residencial, comercial e industrial, infraestructura vial y movimiento de tierras en Perú. Ejecución con equipo propio y estándares de seguridad."
+        path="/construccion"
+      />
       {/* Hero Section */}
       <section className="relative pt-24 bg-secondary">
         <div 
