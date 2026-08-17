@@ -100,7 +100,15 @@ const Footer = () => {
           {/* Logo y descripción */}
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <img src={logoUrl} alt={`${companyName} - Ingeniería y Construcción`} className="h-10 brightness-0 invert" />
+              <img 
+                src={logoUrl} 
+                alt={`${companyName} - Ingeniería y Construcción`} 
+                className={cn(
+                  "h-10 object-contain",
+                  // Only apply invert filter if we're using the fallback logo which is typically dark
+                  !siteSettings?.footer_logo_url && !siteSettings?.footer_logo_url_dark && resolvedTheme === "light" && "brightness-0"
+                )} 
+              />
             </div>
             <p className="text-secondary-foreground/80 leading-relaxed mb-6">
               {footerDescription}
