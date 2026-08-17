@@ -6,7 +6,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useNavigationLinks } from "@/hooks/useSiteData";
 import { useAuth } from "@/hooks/useAuth";
 import logoLight from "@/assets/logo-aleksey-light.png";
-import logoDark from "@/assets/logo-aleksey-dark.png";
+import logoDark from "@/assets/logo-aleksey.png";
 import LogoMark from "@/components/LogoMark";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
