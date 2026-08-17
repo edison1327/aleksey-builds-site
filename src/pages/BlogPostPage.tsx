@@ -95,7 +95,7 @@ const BlogPostPage = () => {
     );
   }
 
-  const canonical = `https://aleksey.lovable.app/blog/${post.slug}`;
+  const canonical = `https://aleksey.com.pe/blog/${post.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -106,7 +106,7 @@ const BlogPostPage = () => {
     publisher: {
       "@type": "Organization",
       name: "ALEKSEY",
-      logo: { "@type": "ImageObject", url: "https://aleksey.lovable.app/logo.png" },
+      logo: { "@type": "ImageObject", url: "https://aleksey.com.pe/logo.png" },
     },
     datePublished: post.published_at,
     dateModified: post.published_at,
