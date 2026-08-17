@@ -14,6 +14,8 @@ interface SiteSettings {
   footer_description_en: string | null;
   footer_copyright: string | null;
   footer_copyright_en: string | null;
+  site_url: string | null;
+  favicon_url: string | null;
   created_at: string;
   updated_at: string;
 }

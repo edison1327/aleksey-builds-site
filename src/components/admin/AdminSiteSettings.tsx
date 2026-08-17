@@ -25,6 +25,8 @@ const AdminSiteSettings = () => {
     footer_description_en: "",
     footer_copyright: "",
     footer_copyright_en: "",
+    site_url: "",
+    favicon_url: "",
   });
 
   useEffect(() => {
@@ -41,6 +43,8 @@ const AdminSiteSettings = () => {
         footer_description_en: settings.footer_description_en || "",
         footer_copyright: settings.footer_copyright || "",
         footer_copyright_en: settings.footer_copyright_en || "",
+        site_url: settings.site_url || "",
+        favicon_url: settings.favicon_url || "",
       });
     }
   }, [settings]);
@@ -164,6 +168,25 @@ const AdminSiteSettings = () => {
                     value={formData.company_name}
                     onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                     placeholder="ALEKSEY"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="site_url">URL del Sitio (Dominio)</Label>
+                  <Input
+                    id="site_url"
+                    value={formData.site_url}
+                    onChange={(e) => setFormData({ ...formData, site_url: e.target.value })}
+                    placeholder="https://aleksey.com.pe"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Favicon del Sitio</Label>
+                  <ImageUpload
+                    value={formData.favicon_url}
+                    onChange={(url) => setFormData({ ...formData, favicon_url: url })}
+                    folder="logos"
                   />
                 </div>
 
