@@ -4165,6 +4165,7 @@ export type Database = {
         Row: {
           company_name: string | null
           created_at: string
+          favicon_url: string | null
           footer_copyright: string | null
           footer_copyright_en: string | null
           footer_description: string | null
@@ -4174,6 +4175,7 @@ export type Database = {
           id: string
           logo_url: string | null
           logo_url_dark: string | null
+          site_url: string | null
           tagline: string | null
           tagline_en: string | null
           updated_at: string
@@ -4181,6 +4183,7 @@ export type Database = {
         Insert: {
           company_name?: string | null
           created_at?: string
+          favicon_url?: string | null
           footer_copyright?: string | null
           footer_copyright_en?: string | null
           footer_description?: string | null
@@ -4190,6 +4193,7 @@ export type Database = {
           id?: string
           logo_url?: string | null
           logo_url_dark?: string | null
+          site_url?: string | null
           tagline?: string | null
           tagline_en?: string | null
           updated_at?: string
@@ -4197,6 +4201,7 @@ export type Database = {
         Update: {
           company_name?: string | null
           created_at?: string
+          favicon_url?: string | null
           footer_copyright?: string | null
           footer_copyright_en?: string | null
           footer_description?: string | null
@@ -4206,6 +4211,7 @@ export type Database = {
           id?: string
           logo_url?: string | null
           logo_url_dark?: string | null
+          site_url?: string | null
           tagline?: string | null
           tagline_en?: string | null
           updated_at?: string

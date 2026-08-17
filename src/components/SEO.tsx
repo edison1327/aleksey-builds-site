@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const SITE_URL = "https://aleksey.com.pe";
-const DEFAULT_OG = `${SITE_URL}/og-image.jpg`;
+const DEFAULT_URL = "https://aleksey.com.pe";
+const DEFAULT_OG = `${DEFAULT_URL}/og-image.jpg`;
 
 interface SEOProps {
   title: string;
@@ -29,8 +30,10 @@ const SEO = ({
   jsonLd,
   locale,
 }: SEOProps) => {
+  const { data: siteSettings } = useSiteSettings();
+  const siteUrl = siteSettings?.site_url || DEFAULT_URL;
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  const url = `${SITE_URL}${cleanPath}`;
+  const url = `${siteUrl}${cleanPath}`;
   const ogImage = image || DEFAULT_OG;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   const lang =
@@ -38,6 +41,7 @@ const SEO = ({
     (typeof document !== "undefined" ? document.documentElement.lang : "es") ||
     "es";
   const ogLocale = lang === "en" ? "en_US" : "es_ES";
+  const favicon = siteSettings?.favicon_url;
 
   return (
     <Helmet>
@@ -46,6 +50,8 @@ const SEO = ({
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
       {noindex && <meta name="robots" content="noindex, nofollow" />}
+      {favicon && <link rel="icon" href={favicon} />}
+      {favicon && <link rel="apple-touch-icon" href={favicon} />}
 
       {/* hreflang alternates — same path is served in both languages via the in-app switcher */}
       <link rel="alternate" hrefLang="es" href={url} />
